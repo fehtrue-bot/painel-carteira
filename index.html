@@ -598,48 +598,66 @@ table.tg.multi tr.dh th.tp{background:#3B5754}
 .list.rl table{min-width:900px}
 @media (max-width:1150px){.s7,.s5{grid-column:span 12}}
 
-/* ===== monitor (estilo TV, escuro) ===== */
-.mon{background:radial-gradient(1200px 500px at 10% -10%,#163B52 0%,#0C1B2A 45%,#0A1522 100%);border-radius:18px;padding:22px 24px;color:#DCE7F2;box-shadow:0 10px 30px rgba(5,15,25,.35)}
-.mh{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap;border-bottom:1px solid rgba(255,255,255,.08);padding-bottom:14px}
-.mt{font-family:var(--f-display);font-size:22px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#fff}
-.ms{font-size:13px;color:#8FA7BD;margin-top:4px}
-.mclock{text-align:right}.mclock b{display:block;font-family:var(--f-display);font-size:40px;font-weight:600;color:#fff;line-height:1;font-variant-numeric:tabular-nums}
-.mclock small{color:#8FA7BD;font-size:12.5px;text-transform:capitalize}
-.mclock b::before{content:"";display:inline-block;width:10px;height:10px;border-radius:50%;background:#22C55E;box-shadow:0 0 0 4px rgba(34,197,94,.2);margin-right:12px;vertical-align:middle;animation:pisca 1.6s infinite}
-@keyframes pisca{50%{opacity:.35}}
-.mtop{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:16px 0}
-.mk{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:12px 16px}
-.mk small{display:block;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#8FA7BD}
-.mk b{font-family:var(--f-display);font-size:32px;font-weight:600;font-variant-numeric:tabular-nums}
-.mk.b b{color:#5AA9FF}.mk.g b{color:#4ADE80}.mk.r b{color:#F87171}.mk.w b{color:#fff}
-.mk em{display:block;font-style:normal;font-size:12px;color:#8FA7BD}
-.mtab{display:flex;flex-direction:column}
-.mrow{display:grid;grid-template-columns:minmax(180px,1.6fr) 110px 110px 110px 70px minmax(120px,1fr) 64px;gap:14px;align-items:center;padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.06)}
-.mrow.mhd{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#8FA7BD;border-bottom:1px solid rgba(255,255,255,.12)}
-.mrow .c{text-align:center}
-.mrow.mhd .b{color:#5AA9FF}.mrow.mhd .g{color:#4ADE80}.mrow.mhd .r{color:#F87171}
-.mrow.grp{cursor:pointer}
-.mrow.grp:hover{background:rgba(255,255,255,.04)}
-.mrow .nm{font-family:var(--f-display);font-weight:700;font-size:15px;letter-spacing:.03em;text-transform:uppercase;color:#fff;display:flex;align-items:center;gap:10px}
-.mrow .nm::before{content:"▸";color:#8FA7BD;font-size:12px;transition:transform .15s}
-.mrow.aberto .nm::before{transform:rotate(90deg)}
-.mrow.sub{background:rgba(255,255,255,.02);padding-top:7px;padding-bottom:7px}
-.mrow.sub .nm{font-size:12.5px;text-transform:none;font-weight:600;color:#C4D3E2;padding-left:22px;letter-spacing:0}
-.mrow.sub .nm::before{content:"";}
-.bx{display:inline-block;min-width:70px;text-align:center;font-family:var(--f-display);font-weight:700;font-size:18px;border-radius:6px;padding:4px 8px;font-variant-numeric:tabular-nums;cursor:pointer}
-.bx.b{color:#5AA9FF;border:1.5px solid rgba(90,169,255,.7);background:rgba(90,169,255,.08)}
-.bx.g{color:#4ADE80;border:1.5px solid rgba(74,222,128,.6);background:rgba(74,222,128,.08)}
-.bx.r{color:#F87171;border:1.5px solid rgba(248,113,113,.7);background:rgba(248,113,113,.08)}
-.mrow.sub .bx{font-size:14px;min-width:54px;padding:2px 6px}
-.tt2{font-family:var(--f-display);font-weight:700;font-size:18px;text-align:center;color:#fff}
-.mbar{display:flex;height:10px;border-radius:3px;overflow:hidden;background:rgba(255,255,255,.08)}
-.mbar i{display:block;height:100%;background:repeating-linear-gradient(90deg,#22C55E 0 7px,#16A34A 7px 8px)}
-.mbar i.f{background:repeating-linear-gradient(90deg,#EF4444 0 7px,#B91C1C 7px 8px)}
-.pc{text-align:center;font-weight:700;font-size:13px;color:#8FA7BD}.pc.alto{color:#F87171}
-.mfoot{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:14px;font-size:12px;color:#6F879D;flex-wrap:wrap}
-.mfoot button{background:rgba(255,255,255,.06);color:#DCE7F2;border-color:rgba(255,255,255,.18)}
-.mon:fullscreen{border-radius:0;overflow:auto;padding:30px 40px}
-@media (max-width:900px){.mtop{grid-template-columns:repeat(2,minmax(0,1fr))}.mrow{grid-template-columns:minmax(120px,1fr) 64px 64px 64px 50px;}.mrow>:nth-child(6),.mrow>:nth-child(7){display:none}.bx{min-width:50px;font-size:15px}}
+/* ===== monitor de acompanhamento (claro, visual) ===== */
+.mon{--ok:#14A394;--ok-s:#D7F4EF;--at:#F59E0B;--at-s:#FEF1D6;--fo:#E5484D;--fo-s:#FDE3E4;background:linear-gradient(160deg,#FFFFFF 0%,#F4FAF9 60%,#EEF7F5 100%);border:1px solid var(--line);border-radius:20px;padding:22px 24px;box-shadow:var(--shadow)}
+.mh{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:16px}
+.mt{font-family:var(--f-display);font-size:24px;font-weight:600;color:#0A3D3A}
+.ms{font-size:13px;color:var(--muted);margin-top:3px}
+.mclock{display:flex;align-items:center;gap:12px;background:#0A3D3A;color:#fff;border-radius:14px;padding:10px 16px}
+.mclock b{font-family:var(--f-display);font-size:32px;font-weight:600;line-height:1;font-variant-numeric:tabular-nums}
+.mclock small{font-size:12px;color:#A7D8D0;max-width:110px;line-height:1.2}
+.vivo{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#7EF0C8}
+.vivo::before{content:"";width:9px;height:9px;border-radius:50%;background:#34D399;box-shadow:0 0 0 4px rgba(52,211,153,.25);animation:pisca 1.6s infinite}
+@keyframes pisca{50%{opacity:.3}}
+.mgrid{display:grid;grid-template-columns:260px minmax(0,1fr) minmax(0,1.5fr);gap:14px}
+.mcard{background:#fff;border:1px solid var(--line);border-radius:16px;padding:14px 16px;box-shadow:0 1px 2px rgba(10,61,58,.04)}
+.mct{font-size:12px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:#0F5E57;display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.mleg{text-transform:none;letter-spacing:0;font-weight:600;color:var(--muted);display:inline-flex;align-items:center;gap:6px}
+.mleg i{width:10px;height:10px;border-radius:3px;background:var(--c)}
+.mgauge{display:flex;flex-direction:column;align-items:center}
+.mgauge svg{width:100%;max-width:220px;height:auto;display:block;margin-top:6px}
+.mstats{display:grid;grid-template-rows:repeat(3,1fr);gap:10px}
+.mst{display:flex;align-items:center;gap:14px;border-radius:14px;padding:10px 16px;cursor:pointer;border:1px solid transparent}
+.mst:hover{border-color:currentColor}
+.mst .ico{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;color:#fff;flex:none}
+.mst b{font-family:var(--f-display);font-size:30px;font-weight:600;line-height:1;font-variant-numeric:tabular-nums}
+.mst small{display:block;font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;opacity:.85}
+.mst em{display:block;font-style:normal;font-size:12px;color:var(--muted)}
+.mst.k-ok{background:var(--ok-s);color:#0B6B60}.mst.k-ok .ico{background:var(--ok)}
+.mst.k-at{background:var(--at-s);color:#9A5B00}.mst.k-at .ico{background:var(--at)}
+.mst.k-fo{background:var(--fo-s);color:#B42328}.mst.k-fo .ico{background:var(--fo)}
+.mtl svg{width:100%;height:auto;display:block;margin-top:6px}
+.mct2{font-family:var(--f-display);font-size:16px;font-weight:600;color:#0A3D3A;margin:20px 0 10px;display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.mct2 span{font-family:var(--f-body);font-size:12.5px;font-weight:500;color:var(--muted)}
+.mserv{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}
+.sv3{background:#fff;border:1px solid var(--line);border-radius:16px;padding:14px 16px;display:flex;flex-direction:column;gap:10px;border-top:5px solid var(--c);cursor:pointer;transition:box-shadow .15s,transform .15s}
+.sv3:hover{box-shadow:0 8px 22px rgba(10,61,58,.1);transform:translateY(-2px)}
+.sv3 .t{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.sv3 .t b{font-family:var(--f-display);font-size:16px;font-weight:600}
+.sv3 .t span{font-size:12px;color:var(--muted);font-weight:600}
+.sv3 .mid{display:flex;align-items:center;gap:14px}
+.sv3 .ring{position:relative;width:104px;height:104px;flex:none}
+.sv3 .ring svg{width:104px;height:104px;transform:rotate(-90deg)}
+.sv3 .ring div{position:absolute;inset:0;display:grid;place-items:center;text-align:center}
+.sv3 .ring b{font-family:var(--f-display);font-size:19px;font-weight:600;line-height:1}
+.sv3 .ring small{display:block;font-size:9.5px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.05em}
+.sv3 .nums{display:flex;flex-direction:column;gap:5px;flex:1;min-width:0}
+.pill3{display:flex;justify-content:space-between;align-items:center;border-radius:9px;padding:5px 10px;font-size:12.5px;font-weight:700}
+.pill3 b{font-family:var(--f-display);font-size:17px}
+.pill3.k-ok{background:var(--ok-s);color:#0B6B60}.pill3.k-at{background:var(--at-s);color:#9A5B00}.pill3.k-fo{background:var(--fo-s);color:#B42328}
+.pill3:hover{filter:brightness(.96)}
+.sv3 .polos3{display:flex;flex-direction:column;gap:4px;font-size:11.5px;color:var(--muted)}
+.sv3 .pr{display:grid;grid-template-columns:70px minmax(0,1fr) 34px;gap:8px;align-items:center}
+.sbar{display:flex;height:8px;border-radius:999px;overflow:hidden;background:var(--line-2)}
+.sbar i{display:block;height:100%}
+.sv3 .tss3{border-top:1px dashed var(--line);padding-top:8px;display:flex;flex-direction:column;gap:6px}
+.sv3 .tr3{display:grid;grid-template-columns:minmax(0,1fr) 90px 40px;gap:8px;align-items:center;font-size:11.5px}
+.sv3 .tr3 span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600}
+.sv3 .tr3 b{text-align:right;font-family:var(--f-display)}
+.mfoot{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:16px;font-size:12px;color:var(--muted);flex-wrap:wrap}
+.mon:fullscreen{border-radius:0;overflow:auto;padding:28px 36px}
+@media (max-width:1150px){.mgrid{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.mtl{grid-column:1/-1}}
+@media (max-width:640px){.mgrid{grid-template-columns:minmax(0,1fr)}}
 .brand-t{white-space:nowrap}.brand-s{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:240px}
 .tab{padding:12px 11px 13px;font-size:13.5px;white-space:nowrap}
 .actions button{white-space:nowrap}
@@ -647,6 +665,9 @@ table.tg.multi tr.dh th.tp{background:#3B5754}
 .appbar-in{grid-template-columns:minmax(0,1fr) auto!important}
 .tabs{grid-column:1/-1;justify-self:start;order:3}
 .brand-s{max-width:none}
+
+.gpol{display:grid;grid-template-columns:1fr 1fr;gap:8px;width:100%;margin-top:6px}.gpol div{background:var(--sunk);border-radius:10px;padding:8px 10px;text-align:center;cursor:pointer}.gpol span{display:block;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}.gpol b{font-family:var(--f-display);font-size:22px}.gpol small{display:block;font-size:10.5px;color:var(--muted)}
+.mserv{align-items:start}.sv3 .tr3{grid-template-columns:minmax(0,1fr) 60px 28px}
 
 </style>
 </head>
@@ -758,15 +779,17 @@ table.tg.multi tr.dh th.tp{background:#3B5754}
   <section id="v-mon" class="view" hidden>
     <div class="mon" id="mon">
       <div class="mh">
-        <div><div class="mt">Monitor da carteira · ao vivo</div><div class="ms" id="monSub"></div></div>
-        <div class="mclock"><b id="monHora">--:--</b><small id="monData"></small></div>
+        <div><div class="mt">Acompanhamento da carteira</div><div class="ms" id="monSub"></div></div>
+        <div class="mclock"><span class="vivo">ao vivo</span><b id="monHora">--:--</b><small id="monData"></small></div>
       </div>
-      <div class="mtop" id="monTop"></div>
-      <div class="mtab">
-        <div class="mrow mhd"><span>Serviço</span><span class="c b">Vencem em 24h</span><span class="c g">No prazo</span><span class="c r">Fora do prazo</span><span class="c">Total</span><span></span><span class="c">% fora</span></div>
-        <div id="monRows"></div>
+      <div class="mgrid">
+        <div class="mcard mgauge"><div class="mct">No prazo agora</div><div id="monGauge"></div></div>
+        <div class="mstats" id="monTop"></div>
+        <div class="mcard mtl"><div class="mct">Vencimentos nas próximas 24 horas <span class="mleg"><i style="--c:#EA580C"></i>até 6h <i style="--c:#F59E0B"></i>6 a 12h <i style="--c:#F7C873"></i>12 a 24h</span></div><div id="monLinha"></div></div>
       </div>
-      <div class="mfoot"><span>Clique num serviço para abrir os tipos (TSS). O prazo é contado até agora e se atualiza sozinho a cada minuto.</span><button type="button" id="monTela">Tela cheia</button></div>
+      <div class="mct2">Por serviço <span>clique num serviço para ver os tipos · clique num número para ver as OS</span></div>
+      <div class="mserv" id="monRows"></div>
+      <div class="mfoot"><span>O prazo é contado até agora e se atualiza sozinho a cada 30 segundos.</span><button type="button" id="monTela">Tela cheia</button></div>
     </div>
   </section>
 
@@ -1418,24 +1441,58 @@ setInterval(()=>{if(abaAtual==="rel"&&refRel==="agora"&&!document.hidden)renderR
 
 /* ================= monitor ao vivo ================= */
 const monAberto=new Set();
-function situAgora(r,agora){const pf=parseDT(r.pf);const h=pf!=null?(pf-agora)/3600000:minutosResid(r.tr)/60;return h<0?"r":h<=24?"b":"g";}
+const CK={ok:"#14A394",at:"#F59E0B",fo:"#E5484D"};
+function situAgora(r,agora){const pf=parseDT(r.pf);const h=pf!=null?(pf-agora)/3600000:minutosResid(r.tr)/60;return {h,sx:h<0?"fo":h<=24?"at":"ok"};}
+function anel(pctOk,pctAt,tam){const R=36,C=2*Math.PI*R;const ok=Math.max(0,pctOk-pctAt);
+  return `<svg viewBox="0 0 86 86"><circle cx="43" cy="43" r="${R}" fill="none" stroke="#FDE3E4" stroke-width="9"/>`+
+   `<circle cx="43" cy="43" r="${R}" fill="none" stroke="${CK.fo}" stroke-width="9" stroke-dasharray="${C} ${C}" />`+
+   `<circle cx="43" cy="43" r="${R}" fill="none" stroke="${CK.at}" stroke-width="9" stroke-dasharray="${(pctOk*C).toFixed(1)} ${C}"/>`+
+   `<circle cx="43" cy="43" r="${R}" fill="none" stroke="${CK.ok}" stroke-width="9" stroke-dasharray="${(ok*C).toFixed(1)} ${C}"/></svg>`;}
+function gauge(p){const W=220,H=130,cx=110,cy=115,R=90;const pt=a=>[cx+R*Math.cos(Math.PI*(1-a)),cy-R*Math.sin(Math.PI*(1-a))];
+  const arc=(a0,a1,c,w)=>{const seg=(b0,b1)=>{const [x0,y0]=pt(b0),[x1,y1]=pt(b1);return `M${x0.toFixed(1)} ${y0.toFixed(1)} A${R} ${R} 0 0 1 ${x1.toFixed(1)} ${y1.toFixed(1)}`;};const d=a1-a0>.5?seg(a0,a0+.5)+" "+seg(a0+.5,a1).replace(/^M[^A]+/,""):seg(a0,a1);return `<path d="${d}" fill="none" stroke="${c}" stroke-width="${w}" stroke-linecap="round"/>`;};
+  const [mx,my]=pt(META),cor=p>=META?CK.ok:p>=META-.15?CK.at:CK.fo;
+  return `<svg viewBox="0 0 ${W} ${H}">${arc(0,1,"#E6EFED",18)}${p>0?arc(0,Math.min(p,1)-.0001,cor,18):""}<line x1="${mx}" y1="${my-14}" x2="${mx}" y2="${my+14}" stroke="#0A3D3A" stroke-width="3"/>`+
+   `<text x="${mx}" y="${my-18}" text-anchor="middle" font-size="10" font-weight="700" fill="#0A3D3A">meta ${Math.round(META*100)}%</text>`+
+   `<text x="${cx}" y="${cy-18}" text-anchor="middle" font-size="40" font-weight="700" fill="${cor}">${(Math.round(p*1000)/10).toLocaleString("pt-BR")}%</text>`+
+   `<text x="${cx}" y="${cy+2}" text-anchor="middle" font-size="11" fill="#5E6E7B">${p>=META?"dentro da meta":"abaixo da meta"}</text></svg>`;}
+function linhaHoras(ca,agora){const b=new Array(24).fill(0);for(const r of ca){if(r.h>=0&&r.h<24)b[Math.floor(r.h)]++;}
+  const W=640,H=170,l=28,t=18,bt=34,ch=H-t-bt,mx=Math.max(1,...b),bw=(W-l-8)/24;
+  let s=`<svg viewBox="0 0 ${W} ${H}">`;for(let k=0;k<=2;k++){const y=t+ch-ch*k/2;s+=`<line x1="${l}" x2="${W-4}" y1="${y}" y2="${y}" stroke="#E6EFED"/><text x="${l-6}" y="${y+4}" text-anchor="end" font-size="10" fill="#8A9AA5">${Math.round(mx*k/2)}</text>`;}
+  b.forEach((v,i)=>{const hh=v*ch/mx,x=l+i*bw+2;const cor=i<6?"#EA580C":i<12?CK.at:"#F7C873";
+    s+=`<rect x="${x.toFixed(1)}" y="${(t+ch-hh).toFixed(1)}" width="${(bw-4).toFixed(1)}" height="${Math.max(hh,v?2:0).toFixed(1)}" rx="3" fill="${cor}"><title>${v} OS vencem entre ${i}h e ${i+1}h a partir de agora</title></rect>`;
+    if(v)s+=`<text x="${(x+(bw-4)/2).toFixed(1)}" y="${(t+ch-hh-4).toFixed(1)}" text-anchor="middle" font-size="10" font-weight="700" fill="#33424E">${v}</text>`;
+    if(i%3===0){const hr=new Date(agora+i*3600000).getHours();s+=`<text x="${(x+(bw-4)/2).toFixed(1)}" y="${H-bt+16}" text-anchor="middle" font-size="10.5" font-weight="600" fill="#33424E">${String(hr).padStart(2,"0")}h</text>`;}});
+  s+=`<text x="${l}" y="${H-4}" font-size="10" fill="#8A9AA5">agora</text><text x="${W-4}" y="${H-4}" text-anchor="end" font-size="10" fill="#8A9AA5">+24h</text></svg>`;return s;}
 function renderMon(){
-  const u=S.ult,agora=Date.now();const ca=u.ca.filter(r=>fp(r)).map(r=>({...r,sx:situAgora(r,agora)}));
+  const u=S.ult,agora=Date.now();const ca=u.ca.filter(r=>fp(r)).map(r=>({...r,...situAgora(r,agora)}));
   const d=new Date(agora);$("monHora").textContent=d.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"});
-  $("monData").textContent=d.toLocaleDateString("pt-BR",{weekday:"long",day:"numeric",month:"long"});
+  $("monData").textContent=d.toLocaleDateString("pt-BR",{weekday:"long",day:"numeric",month:"short"});
   const mom=momentoCarteira(u.ca);
   $("monSub").textContent=`${poloSel==="Todos"?"Interlagos e Grajaú":poloSel} · carteira tirada do sistema em ${mom?fmtHM(mom):dmy(u.dc)} · prazo contado até agora`;
-  const c=k=>ca.filter(r=>k==="g"?r.sx!=="r":r.sx===k).length;const tot=ca.length;
-  $("monTop").innerHTML=`<div class="mk w"><small>Na carteira</small><b>${nf(tot)}</b><em>${POLOS.slice().reverse().map(p=>ca.filter(r=>r.p===p).length+" "+p).join(" · ")}</em></div>
-    <div class="mk g"><small>No prazo</small><b>${nf(c("g"))}</b><em>${tot?pctTxt(c("g"),tot):"–"} da carteira</em></div>
-    <div class="mk b"><small>Vencem nas próximas 24h</small><b>${nf(c("b"))}</b><em>ainda no prazo, atenção</em></div>
-    <div class="mk r"><small>Fora do prazo agora</small><b>${nf(c("r"))}</b><em>${tot?pctTxt(c("r"),tot):"–"} da carteira</em></div>`;
-  const linha=(nome,L,cls,attrs,goBase)=>{const b=L.filter(r=>r.sx==="b").length,r=L.filter(r=>r.sx==="r").length,g=L.length-r,t=L.length;const pf=t?Math.round(r*100/t):0;
-    return `<div class="mrow ${cls}" ${attrs||""}><span class="nm">${esc(nome)}</span><span class="c"><span class="bx b"${go({...goBase,modo:"carteira"})}>${nf(b)}</span></span><span class="c"><span class="bx g"${go({...goBase,modo:"carteira",prazo:"no"})}>${nf(g)}</span></span><span class="c"><span class="bx r"${go({...goBase,modo:"carteira",prazo:"fora"})}>${nf(r)}</span></span><span class="tt2">${nf(t)}</span><span class="mbar"><i style="width:${t?(g*100/t):0}%"></i><i class="f" style="width:${t?(r*100/t):0}%"></i></span><span class="pc ${pf>=30?"alto":""}">${pf}%</span></div>`;};
-  let h="";for(const g of GRUPOS){const L=ca.filter(r=>r.g===g);const ab=monAberto.has(g);h+=linha(g,L,"grp"+(ab?" aberto":""),`data-mg="${esc(g)}"`,{g});
-    if(ab){const ts=[...new Set(L.map(r=>r.tss))].sort((a,b)=>L.filter(r=>r.tss===b).length-L.filter(r=>r.tss===a).length);for(const t of ts)h+=linha(t,L.filter(r=>r.tss===t),"sub","",{g,tss:t});}}
-  $("monRows").innerHTML=h||`<div class="empty">Suba a carteira para ver o monitor.</div>`;}
-$("monRows").addEventListener("click",e=>{if(e.target.closest("[data-go]"))return;const r=e.target.closest(".mrow[data-mg]");if(!r)return;const g=r.dataset.mg;monAberto.has(g)?monAberto.delete(g):monAberto.add(g);renderMon();});
+  const n=k=>ca.filter(r=>r.sx===k).length;const tot=ca.length,fo=n("fo"),at=n("at"),ok=n("ok");
+  $("monGauge").innerHTML=tot?gauge((ok+at)/tot):`<div class="empty">Sem carteira.</div>`;
+  if(tot)$("monGauge").innerHTML+=`<div class="gpol">${POLOS.slice().reverse().map(p=>{const P=ca.filter(r=>r.p===p),t=P.length,f=P.filter(r=>r.sx==="fo").length;const v=t?(t-f)/t:0;return `<div${go({modo:"carteira",p})}><span>${p}</span><b style="color:${v>=META?CK.ok:v>=META-.15?CK.at:CK.fo}">${t?Math.round(v*100)+"%":"–"}</b><small>${nf(t-f)} de ${nf(t)}</small></div>`;}).join("")}</div>`;
+  const icC='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"/></svg>',
+        icA='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>',
+        icF='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 3 2 20h20L12 3z"/><path d="M12 10v4M12 17h.01"/></svg>';
+  $("monTop").innerHTML=`<div class="mst k-ok"${go({modo:"carteira",prazo:"no"})}><span class="ico">${icC}</span><div><small>No prazo, com folga</small><b>${nf(ok)}</b><em>mais de 24h para vencer</em></div></div>
+    <div class="mst k-at"${go({modo:"carteira",prazo:"no"})}><span class="ico">${icA}</span><div><small>Vencem em até 24h</small><b>${nf(at)}</b><em>${n24(ca,6)} vencem nas próximas 6h</em></div></div>
+    <div class="mst k-fo"${go({modo:"carteira",prazo:"fora"})}><span class="ico">${icF}</span><div><small>Fora do prazo agora</small><b>${nf(fo)}</b><em>${tot?pctTxt(fo,tot):"–"} da carteira de ${nf(tot)}</em></div></div>`;
+  $("monLinha").innerHTML=linhaHoras(ca,agora);
+  let h="";for(const g of GRUPOS){const L=ca.filter(r=>r.g===g);const t=L.length;if(!t&&!u.ca.length)continue;
+    const f=L.filter(r=>r.sx==="fo").length,a=L.filter(r=>r.sx==="at").length,o=t-f-a;const pOk=t?(o+a)/t:0;
+    const pol=POLOS.slice().reverse().map(p=>{const P=L.filter(r=>r.p===p),pt=P.length,pf=P.filter(r=>r.sx==="fo").length,pa=P.filter(r=>r.sx==="at").length;
+      return `<div class="pr"><span>${p}</span><div class="sbar">${pt?`<i style="width:${((pt-pf-pa)*100/pt).toFixed(1)}%;background:${CK.ok}"></i><i style="width:${(pa*100/pt).toFixed(1)}%;background:${CK.at}"></i><i style="width:${(pf*100/pt).toFixed(1)}%;background:${CK.fo}"></i>`:""}</div><span style="text-align:right">${pt}</span></div>`;}).join("");
+    let tss="";if(monAberto.has(g)){const ts=[...new Set(L.map(r=>r.tss))].sort((x,y)=>L.filter(r=>r.tss===y).length-L.filter(r=>r.tss===x).length);
+      tss=`<div class="tss3">`+ts.map(ti=>{const T=L.filter(r=>r.tss===ti),tt=T.length,tf=T.filter(r=>r.sx==="fo").length,ta=T.filter(r=>r.sx==="at").length;
+        return `<div class="tr3"${go({modo:"carteira",g,tss:ti})}><span title="${esc(ti)}">${esc(ti)}</span><div class="sbar"><i style="width:${((tt-tf-ta)*100/tt).toFixed(1)}%;background:${CK.ok}"></i><i style="width:${(ta*100/tt).toFixed(1)}%;background:${CK.at}"></i><i style="width:${(tf*100/tt).toFixed(1)}%;background:${CK.fo}"></i></div><b>${tt}</b></div>`;}).join("")+`</div>`;}
+    h+=`<div class="sv3" data-mg="${esc(g)}" style="--c:${COR[g]}"><div class="t"><b>${g}</b><span>${nf(t)} OS ${monAberto.has(g)?"▾":"▸"}</span></div>
+      <div class="mid"><div class="ring">${anel(pOk,t?a/t:0)}<div><span><b>${t?Math.round(pOk*100):0}%</b><small>no prazo</small></span></div></div>
+      <div class="nums"><div class="pill3 k-ok"${go({modo:"carteira",g,prazo:"no"})}><span>Com folga</span><b>${nf(o)}</b></div><div class="pill3 k-at"${go({modo:"carteira",g,prazo:"no"})}><span>Até 24h</span><b>${nf(a)}</b></div><div class="pill3 k-fo"${go({modo:"carteira",g,prazo:"fora"})}><span>Fora</span><b>${nf(f)}</b></div></div></div>
+      <div class="polos3">${pol}</div>${tss}</div>`;}
+  $("monRows").innerHTML=h||`<div class="empty">Suba a carteira para ver o acompanhamento.</div>`;}
+const n24=(ca,hh)=>ca.filter(r=>r.h>=0&&r.h<=hh).length;
+$("monRows").addEventListener("click",e=>{if(e.target.closest("[data-go]"))return;const r=e.target.closest(".sv3[data-mg]");if(!r)return;const g=r.dataset.mg;monAberto.has(g)?monAberto.delete(g):monAberto.add(g);renderMon();});
 $("monTela").onclick=()=>{const m=$("mon");if(document.fullscreenElement)document.exitFullscreen();else if(m.requestFullscreen)m.requestFullscreen();};
 setInterval(()=>{if(abaAtual==="mon"&&!document.hidden)renderMon();},30000);
 
