@@ -1,0 +1,1421 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Painel da Carteira de Serviços</title>
+<style>
+/* Layout: barra de topo azul-escura com marca, abas e ações; abaixo, conteúdo em cartões sobre fundo cinza-azulado */
+:root{
+  --navy:#0B2540; --navy-2:#123456; --bg:#EDF1F5; --surface:#FFFFFF; --sunk:#F3F6F9; --ink:#14212B; --muted:#5E6E7B; --line:#DFE6EC; --line-2:#EAEFF3;
+  --accent:#0B6E99; --accent-2:#0E86B8; --accent-ink:#FFFFFF; --accent-soft:#E2F1F8;
+  --red:#C2362B; --red-soft:#FCE4E1; --orange:#D9711C; --orange-soft:#FDEBDB; --amber:#A66B00; --amber-soft:#FFF1CC; --green:#23824F; --green-soft:#DDF3E6; --violet:#7A4FD6; --violet-soft:#EEE7FC;
+  --shadow:0 1px 2px rgba(11,37,64,.06),0 6px 18px rgba(11,37,64,.05);
+  --f-display:"Bahnschrift","Segoe UI Semibold","Segoe UI",system-ui,sans-serif;
+  --f-body:"Segoe UI","Segoe UI Variable Text",system-ui,-apple-system,Roboto,Arial,sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:14px;line-height:1.45}
+[hidden]{display:none!important}
+/* ---- barra de topo ---- */
+.appbar{background:linear-gradient(180deg,var(--navy) 0%,var(--navy-2) 100%);color:#fff;box-shadow:0 2px 10px rgba(11,37,64,.25);position:sticky;top:0;z-index:20}
+.appbar-in{max-width:1400px;margin:0 auto;padding:12px 24px 0;display:grid;grid-template-columns:auto 1fr auto;gap:8px 24px;align-items:center}
+.brand{display:flex;align-items:center;gap:12px;padding-bottom:12px;min-width:0}
+.logo{width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,#1C9BD1,#0B6E99);display:grid;place-items:center;flex:none;box-shadow:inset 0 0 0 1px rgba(255,255,255,.15)}
+.brand-t{font-family:var(--f-display);font-size:20px;font-weight:600;letter-spacing:.01em;line-height:1.1}
+.brand-s{font-size:12.5px;color:#A9BCCD;margin-top:2px}
+.brand-s b{color:#fff;font-weight:600}
+.tabs{display:flex;gap:2px;align-self:end;justify-self:center}
+.tab{border:0;background:none;color:#A9BCCD;font:600 14px var(--f-body);padding:12px 18px 13px;border-radius:8px 8px 0 0;cursor:pointer;display:flex;gap:8px;align-items:center}
+.tab:hover{color:#fff;background:rgba(255,255,255,.06)}
+.tab[aria-selected="true"]{background:var(--bg);color:var(--ink)}
+.tab svg{opacity:.85}
+.actions{display:flex;gap:8px;align-items:center;padding-bottom:12px}
+button,.btn{font:600 13.5px/1 var(--f-body);border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:10px 14px;cursor:pointer;display:inline-flex;align-items:center;gap:8px;position:relative;transition:background .15s,border-color .15s,box-shadow .15s}
+button:hover,.btn:hover{border-color:var(--accent);box-shadow:0 1px 4px rgba(11,110,153,.15)}
+.primary{background:linear-gradient(180deg,var(--accent-2),var(--accent))!important;color:#fff!important;border-color:var(--accent)!important}
+.appbar .ghost{background:rgba(255,255,255,.08);color:#fff;border-color:rgba(255,255,255,.22)}
+.appbar .ghost:hover{background:rgba(255,255,255,.16);border-color:rgba(255,255,255,.4)}
+.appbar .primary{background:linear-gradient(180deg,#22A7DE,#1287BC)!important;border-color:#22A7DE!important}
+button:disabled{opacity:.5;cursor:default}
+button:focus-visible,input:focus-visible,.btn:focus-within{outline:2px solid var(--accent-2);outline-offset:2px}
+.btn input{position:absolute;width:1px;height:1px;opacity:0}
+/* ---- conteúdo ---- */
+.wrap{max-width:1400px;margin:0 auto;padding:18px 24px 48px;display:flex;flex-direction:column;gap:16px}
+h2{font-family:var(--f-display);margin:0;font-size:17px;font-weight:600;letter-spacing:.01em;display:flex;align-items:center;gap:8px}
+h2 .ico{width:28px;height:28px;border-radius:8px;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center}
+.lbl{font-size:11.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.num{font-variant-numeric:tabular-nums}
+.conn{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 14px;box-shadow:var(--shadow)}
+.dot{width:10px;height:10px;border-radius:50%;background:var(--muted);flex:none;box-shadow:0 0 0 3px rgba(94,110,123,.15)}
+.dot.on{background:var(--green);box-shadow:0 0 0 3px rgba(35,130,79,.18)} .dot.warn{background:var(--amber);box-shadow:0 0 0 3px rgba(166,107,0,.18)} .dot.off{background:var(--red);box-shadow:0 0 0 3px rgba(194,54,43,.18)}
+.conn .txt{flex:1 1 320px;min-width:0;font-size:13px}
+.conn input{width:150px}
+.conn button{padding:8px 12px;font-size:13px}
+.status{font-size:13px;color:var(--accent);min-height:0;font-weight:600}
+.status:empty{display:none}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px 20px;display:flex;flex-direction:column;gap:14px;min-width:0;box-shadow:var(--shadow)}
+.panel-h{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.intro{border-left:4px solid var(--accent)}
+.intro ol{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px;max-width:80ch}
+.view{display:flex;flex-direction:column;gap:16px}
+/* ---- KPIs ---- */
+.kpis{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px}
+.kpi{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px 16px 13px;display:flex;flex-direction:column;gap:6px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+.kpi::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--tone,var(--line))}
+.kpi .top{display:flex;justify-content:space-between;align-items:center}
+.kpi .ic{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;background:var(--tone-soft,var(--sunk));color:var(--tone,var(--muted))}
+.kpi b{font-family:var(--f-display);font-size:34px;font-weight:600;line-height:1;font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+.kpi small{color:var(--muted);font-size:12px}
+.kpi.hl{background:linear-gradient(135deg,#0E86B8,#0B5F86);border-color:transparent;color:#fff}
+.kpi.hl::before{display:none}
+.kpi.hl .lbl,.kpi.hl small{color:rgba(255,255,255,.82)}
+.kpi.hl .ic{background:rgba(255,255,255,.16);color:#fff}
+.delta{display:inline-flex;align-items:center;gap:3px;font-size:11.5px;font-weight:700;border-radius:999px;padding:2px 7px;background:var(--sunk);color:var(--muted)}
+.delta.up{background:var(--red-soft);color:var(--red)} .delta.down{background:var(--green-soft);color:var(--green)}
+/* ---- tabelas ---- */
+.grid2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.45fr);gap:16px}
+.scroll{overflow-x:auto;min-width:0}
+table{border-collapse:separate;border-spacing:0;width:100%}
+th,td{padding:9px 12px;text-align:left;border-bottom:1px solid var(--line-2);vertical-align:middle}
+th{font-size:11.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);white-space:nowrap;background:var(--sunk)}
+th:first-child{border-top-left-radius:8px} th:last-child{border-top-right-radius:8px}
+tbody tr:hover td{background:#F7FAFC}
+td.r,th.r{text-align:right;font-variant-numeric:tabular-nums}
+tr.total td{font-weight:700;border-top:2px solid var(--ink);border-bottom:0;background:var(--surface)}
+.up{color:var(--red)} .down{color:var(--green)}
+.bar{height:8px;border-radius:999px;background:var(--line-2);overflow:hidden;min-width:60px;flex:1}
+.bar i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,var(--accent-2),var(--accent))}
+.cdot{display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:8px;background:var(--c,var(--muted));vertical-align:0}
+/* ---- importação ---- */
+.imp{border:2px solid var(--accent-2)}
+.slots{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.slot{display:flex;gap:14px;align-items:flex-start;border:2px dashed #BFD3DF;border-radius:12px;padding:16px;cursor:pointer;background:var(--sunk);position:relative;transition:border-color .15s,background .15s}
+.slot:hover{border-color:var(--accent-2);background:#F2F8FB}
+.slot.ok{border-style:solid;border-color:var(--green);background:var(--green-soft)}
+.slot input{position:absolute;width:1px;height:1px;opacity:0}
+.sn1{width:32px;height:32px;border-radius:50%;background:var(--navy);color:#fff;display:grid;place-items:center;font-weight:700;flex:none}
+.slot.ok .sn1{background:var(--green)}
+.st1{display:flex;flex-direction:column;gap:3px;min-width:0}
+.st1 small{color:var(--muted);font-size:12.5px}
+.st1 em{font-style:normal;font-weight:600;color:var(--accent);font-size:13px;margin-top:4px;word-break:break-all}
+.slot.ok .st1 em{color:var(--green)}
+.cruz{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.ctile{border:1px solid var(--line);border-radius:12px;padding:14px 16px;display:flex;flex-direction:column;gap:4px;background:#fff;border-top:4px solid var(--c)}
+.ctile b{font-family:var(--f-display);font-size:30px;font-weight:600;line-height:1.1;color:var(--c);font-variant-numeric:tabular-nums}
+.ctile .t{font-weight:700;font-size:13.5px}
+.ctile small{color:var(--muted);font-size:12px}
+.tag.rede{background:var(--green-soft);color:var(--green)}
+@media (max-width:900px){.slots,.cruz{grid-template-columns:minmax(0,1fr)}}
+/* ---- apresentação do painel ---- */
+.polos{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.pcard{border:1px solid var(--line);border-radius:12px;padding:14px 16px;display:flex;flex-direction:column;gap:10px;background:linear-gradient(180deg,#FBFDFE,#fff)}
+.pcard .ph{display:flex;justify-content:space-between;align-items:center}
+.pcard .pn{font-family:var(--f-display);font-size:17px;font-weight:600}
+.pcard .atc{font-size:11px;font-weight:700;color:var(--muted);background:var(--sunk);border-radius:999px;padding:2px 8px}
+.pcard .pv{display:flex;align-items:baseline;gap:10px}
+.pcard .pv b{font-family:var(--f-display);font-size:32px;font-weight:600;line-height:1;font-variant-numeric:tabular-nums}
+.pcard .meta{display:flex;justify-content:space-between;font-size:12px;color:var(--muted)}
+.prog{height:8px;border-radius:999px;background:var(--line-2);overflow:hidden}
+.prog i{display:block;height:100%;background:linear-gradient(90deg,#2FA36B,#23824F);border-radius:999px}
+.seg{display:flex;height:10px;border-radius:999px;overflow:hidden;background:var(--line-2);gap:2px}
+.seg i{display:block;height:100%}
+.seg.big{height:16px;border-radius:8px}
+.segleg{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12px;color:var(--muted)}
+.segleg span::before{content:"";display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:5px;background:var(--c)}
+.frows{display:flex;flex-direction:column;gap:2px}
+.frow{display:grid;grid-template-columns:110px minmax(0,1fr) 54px 92px;gap:12px;align-items:center;padding:10px 4px;border-bottom:1px solid var(--line-2)}
+.frow:last-child{border-bottom:0}
+.frow .fb{height:12px;border-radius:999px;background:var(--line-2);overflow:hidden}
+.frow .fb i{display:block;height:100%;border-radius:999px}
+.frow .fv{font-family:var(--f-display);font-size:19px;font-weight:600;text-align:right;font-variant-numeric:tabular-nums}
+.frow .fd{text-align:right;font-size:12px;color:var(--muted);display:flex;flex-direction:column;align-items:flex-end;gap:2px}
+.srow{display:grid;grid-template-columns:130px minmax(0,1fr) 50px 70px 46px;gap:12px;align-items:center;padding:9px 4px;border-bottom:1px solid var(--line-2)}
+.srow .sn{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.srow .sb{display:flex;height:14px;border-radius:5px;overflow:hidden;background:transparent}
+.srow .sb i{display:block;height:100%}
+.srow .sv{font-family:var(--f-display);font-size:18px;font-weight:600;text-align:right;font-variant-numeric:tabular-nums}
+.srow .sp{text-align:right;font-weight:700;font-size:12.5px;color:var(--green)}
+.vbox{margin-top:12px;background:var(--sunk);border-radius:10px;padding:12px 14px}
+.vrow{display:flex;gap:12px;align-items:center;padding:6px 0;border-bottom:1px solid var(--line)}
+.vrow:last-child{border-bottom:0}
+.vd{font-family:var(--f-display);font-size:18px;font-weight:600;color:var(--red);min-width:58px;text-align:right}
+.vd small{font-size:11px;color:var(--muted);font-weight:400;margin-left:3px}
+.va{display:flex;flex-direction:column;min-width:0}
+.va b{font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.va small{font-size:11.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.srow.head span{white-space:nowrap}
+.srow.head{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding-top:0}
+.srow.tot{border-bottom:0;border-top:2px solid var(--ink);margin-top:2px}
+.callout{display:flex;justify-content:space-between;align-items:center;gap:10px;background:var(--accent-soft);border:1px solid #C5E3F0;border-radius:10px;padding:10px 14px;margin-top:10px;color:var(--accent);font-weight:600}
+.callout b{font-family:var(--f-display);font-size:20px}
+details.hist summary{cursor:pointer;color:var(--accent);font-weight:600;font-size:13px;padding:4px 0}
+details.hist[open] summary{margin-bottom:8px}
+@media (max-width:900px){.polos{grid-template-columns:minmax(0,1fr)}.srow{grid-template-columns:110px minmax(0,1fr) 44px 64px}.srow .sp{display:none}}
+/* ---- lista de OS ---- */
+.toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px 14px;box-shadow:var(--shadow)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border-radius:999px;padding:7px 12px;font-size:13px;font-weight:600;background:var(--surface);border:1px solid var(--line)}
+.chip .c{font-variant-numeric:tabular-nums;background:var(--sunk);color:var(--muted);border-radius:999px;padding:1px 7px;font-size:11.5px;font-weight:700;margin-left:2px}
+.chip[aria-pressed="true"]{background:var(--navy);color:#fff;border-color:var(--navy)}
+.chip[aria-pressed="true"] .c{background:rgba(255,255,255,.18);color:#fff}
+.chip.warn{border-color:var(--red);color:var(--red)}
+.chip.warn .c{background:var(--red-soft);color:var(--red)}
+.chip.warn[aria-pressed="true"]{color:#fff}
+.filters{display:flex;flex-wrap:wrap;gap:10px;align-items:center;width:100%}
+.filters select{font:600 13.5px var(--f-body);padding:9px 10px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--ink)}
+.ativos{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:13px;color:var(--muted)}
+.ativos .fa{background:var(--navy);color:#fff;border-radius:999px;padding:4px 10px;font-weight:600;font-size:12.5px}
+.ativos button{padding:5px 10px;font-size:12.5px}
+tr.dupE td{background:#F3EEFF!important} tr.dupE td:first-child{box-shadow:inset 4px 0 0 #8B5CF6}
+.tag.de{background:#8B5CF6;color:#fff}
+tr.grp td{background:var(--navy)!important;color:#fff;font-size:12.5px;padding:8px 12px;position:sticky;top:37px;z-index:1}
+tr.grp td b{font-family:var(--f-display);font-size:14px;margin-right:6px}
+tr.grp .gm{opacity:.85}
+/* ---- itens clicáveis do painel ---- */
+#v-painel [data-go]{cursor:pointer;transition:background .12s,box-shadow .12s,transform .12s}
+#v-painel .kpi[data-go]:hover{transform:translateY(-2px);box-shadow:0 8px 22px rgba(11,37,64,.12)}
+#v-painel .pcard:hover{border-color:var(--accent-2);box-shadow:0 0 0 3px var(--accent-soft)}
+#v-painel .frow[data-go]:hover,#v-painel .srow[data-go]:hover,#v-painel .vrow[data-go]:hover{background:#F2F8FB;border-radius:8px}
+#v-painel .seg i[data-go]:hover{filter:brightness(1.12)}
+#v-painel .callout[data-go]:hover{background:#D3EAF4}
+.go{font-size:11.5px;color:var(--accent);font-weight:700;white-space:nowrap}
+.dica{font-size:12px;color:var(--accent);font-weight:600}
+.search{flex:1 1 280px;position:relative;min-width:0}
+.search svg{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--muted)}
+input[type=search],input[type=date],input[type=text],input[type=password],input.trat{font:14px var(--f-body);color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:9px 11px}
+input[type=search]{width:100%;padding-left:34px;background:var(--sunk)}
+input[type=search]:focus{background:var(--surface)}
+label.ck{display:flex;gap:6px;align-items:center;color:var(--muted);font-weight:600;font-size:13px}
+.list{max-height:68vh;overflow:auto;border:1px solid var(--line);border-radius:14px;background:var(--surface);box-shadow:var(--shadow)}
+.list table{min-width:1040px;width:100%}
+.list td.tss{min-width:140px;max-width:200px}
+.list td.mne{min-width:120px;max-width:170px;color:#3E4D59;font-size:12px}
+.list th,.list td{padding-left:10px;padding-right:10px}
+.list td.sit{white-space:nowrap}
+.list thead th{position:sticky;top:0;z-index:1;border-radius:0}
+.list td{font-size:13px;vertical-align:top;padding-top:10px;padding-bottom:10px}
+.list td.addr{min-width:200px;max-width:280px;font-weight:600}
+.list td.addr small{display:block;font-weight:400;color:var(--muted);font-size:12px;margin-top:2px}
+.list td.mono{font-variant-numeric:tabular-nums;white-space:nowrap;color:#33424E}
+.list td.os{font-family:Consolas,"Cascadia Mono",monospace;font-size:12px;color:var(--muted)}
+.dias{font-family:var(--f-display);font-size:16px;font-weight:600}
+input.trat{width:210px;padding:7px 9px;font-size:13px;border-color:#C9D5DE}
+input.trat.vazio{background:#FFFBEB;border:1px dashed #E2C77A}
+input.trat.vazio::placeholder{color:#A88A3A}
+input.trat.ok{border-color:var(--green);box-shadow:0 0 0 3px var(--green-soft)}
+tr.dupOS td{background:var(--red-soft)!important} tr.dupOS td:first-child{box-shadow:inset 4px 0 0 var(--red)}
+tr.dupF td{background:#FFF6DD!important} tr.dupF td:first-child{box-shadow:inset 4px 0 0 #E0A500}
+.tag{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;letter-spacing:.03em;padding:2px 7px;border-radius:999px;margin:5px 4px 0 0;white-space:nowrap}
+.tag.nova{background:var(--accent-soft);color:var(--accent)}
+.tag.dos{background:var(--red);color:#fff}
+.tag.df{background:#E0A500;color:#fff}
+.tag.pol{background:#EEF1F4;color:#3E4D59}
+.tag.cat{background:var(--sunk);color:#3E4D59;border:1px solid var(--line)}
+.tag.cat::before{content:"";width:7px;height:7px;border-radius:2px;background:var(--c,var(--muted))}
+.pill{display:inline-block;font-size:11.5px;font-weight:700;padding:3px 8px;border-radius:999px;white-space:nowrap;background:var(--sunk);color:var(--muted)}
+.pill.f31{background:var(--red-soft);color:var(--red)} .pill.f15{background:var(--orange-soft);color:var(--orange)} .pill.f7{background:var(--amber-soft);color:var(--amber)} .pill.f0{background:var(--green-soft);color:var(--green)}
+.pill.s-nok{background:var(--orange-soft);color:var(--orange)} .pill.s-can{background:#ECEFF2;color:#5E6E7B} .pill.s-cur{background:var(--accent-soft);color:var(--accent)} .pill.s-nao{background:var(--red-soft);color:var(--red)} .pill.s-ok{background:var(--green-soft);color:var(--green)} .pill.s-sus{background:var(--violet-soft);color:var(--violet)}
+.more{border:0;background:var(--sunk);padding:4px 7px;color:var(--accent);font-size:11px;border-radius:6px}
+tr.det td{background:#F6F9FB!important;font-size:12.5px}
+tr.det dl{display:grid;grid-template-columns:130px 1fr;gap:6px 14px;margin:0;max-width:950px}
+tr.det dt{color:var(--muted);font-weight:600} tr.det dd{margin:0}
+.legend{display:flex;flex-wrap:wrap;gap:16px;font-size:12px;color:var(--muted)}
+.legend span::before{content:"";display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:-1px;background:var(--c)}
+/* ---- upload ---- */
+.upload{border:2px solid var(--accent-2)}
+.checks{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+.check{border-radius:10px;padding:12px 14px;background:var(--sunk);display:flex;flex-direction:column;gap:2px;border:1px solid var(--line-2)}
+.check b{font-family:var(--f-display);font-size:24px;font-weight:600;font-variant-numeric:tabular-nums}
+.check.bad{background:var(--red-soft);border-color:#F4C3BD} .check.bad b{color:var(--red)}
+.check.warn{background:var(--amber-soft);border-color:#F1D894} .check.warn b{color:var(--amber)}
+.check.good{background:var(--green-soft);border-color:#B9E2CA} .check.good b{color:var(--green)}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.chart svg{width:100%;height:auto;display:block}
+.empty{padding:36px;text-align:center;color:var(--muted)}
+.note{font-size:12.5px;color:var(--muted)}
+.foot{text-align:center;font-size:12px;color:var(--muted);padding-top:8px}
+@media (max-width:1150px){.appbar-in{grid-template-columns:1fr auto}.tabs{grid-column:1/-1;justify-self:start;order:3}.kpis{grid-template-columns:repeat(3,minmax(0,1fr))}.grid2{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:560px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.kpi b{font-size:28px}.appbar-in,.wrap{padding-left:14px;padding-right:14px}}
+
+/* ===== visual executivo ===== */
+body{font-size:15px}
+.wrap{gap:14px;padding-top:14px}
+:root{--bg:#F3F5F8;--line:#E2E8EE;--line-2:#EDF1F5;--f-display:"Segoe UI Semibold","Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;--shadow:0 1px 2px rgba(16,32,48,.05),0 4px 14px rgba(16,32,48,.04)}
+.kpis{grid-template-columns:repeat(6,minmax(0,1fr));gap:14px}
+.kpi{border-radius:14px;padding:16px 18px;gap:8px;border:1px solid var(--line)}
+.kpi::before{display:none}
+.kpi .lbl{font-size:12px;letter-spacing:.07em}
+.kpi .ic{width:30px;height:30px;border-radius:50%}
+.kpi b{font-family:var(--f-display);font-size:38px;font-weight:600;letter-spacing:-.02em}
+.kpi small{font-size:13px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.kpi.hl{background:linear-gradient(140deg,#0E2C4A 0%,#0B5F86 100%)}
+.dash{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:14px}
+.s4{grid-column:span 4}.s8{grid-column:span 8}.s12{grid-column:span 12}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px 18px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:14px;min-width:0}
+.ch{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;padding-bottom:10px;border-bottom:1px solid var(--line-2)}
+.ch h3{margin:0;font-family:var(--f-display);font-size:18px;font-weight:600;color:var(--ink);letter-spacing:.005em}
+.ch p{margin:2px 0 0;font-size:13px;color:var(--muted)}
+.leg2{display:flex;gap:14px;font-size:12px;color:var(--muted)}
+.leg2 span::before{content:"";display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:-1px;background:var(--c)}
+/* serviços */
+.sv2{display:flex;flex-direction:column}
+.sv2 .r{display:grid;grid-template-columns:160px minmax(0,1fr) 60px 70px 56px;gap:14px;align-items:center;padding:9px 8px;border-radius:10px}
+.sv2 .r+.r{border-top:1px solid var(--line-2)}
+.sv2 .hd{font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding-top:0;padding-bottom:6px}
+.sv2 .hd span:nth-child(n+3){text-align:right}
+.sv2 .nm{font-weight:600;font-size:15.5px;display:flex;align-items:center;gap:9px;min-width:0}
+.sv2 .nm i{width:10px;height:10px;border-radius:3px;background:var(--c);flex:none}
+.sv2 .br{height:14px;border-radius:999px;background:var(--line-2);display:flex;overflow:hidden}
+.sv2 .br i{display:block;height:100%}
+.sv2 .n{font-family:var(--f-display);font-size:22px;font-weight:600;text-align:right;font-variant-numeric:tabular-nums}
+.sv2 .d,.sv2 .p{text-align:right}
+.sv2 .p{font-weight:700;font-size:14px;color:var(--green)}
+.sv2 .tt{border-top:2px solid var(--ink)!important;margin-top:4px;border-radius:0}
+.sv2 .tt .nm{font-weight:700}
+/* rosca de atraso */
+.donut{display:grid;place-items:center;position:relative;padding:4px 0 6px}
+.donut svg{width:190px;height:190px;transform:rotate(-90deg)}
+.donut circle[data-go]:hover{stroke-width:26}
+.donut .ctr{position:absolute;inset:0;display:grid;place-items:center;text-align:center;pointer-events:none}
+.donut .ctr b{display:block;font-family:var(--f-display);font-size:30px;font-weight:600;line-height:1}
+.donut .ctr small{font-size:11.5px;color:var(--muted)}
+.fl{display:flex;flex-direction:column}
+.fl .r{display:grid;grid-template-columns:14px minmax(0,1fr) 48px 44px 64px;gap:10px;align-items:center;padding:9px 6px;border-radius:9px}
+.fl .r+.r{border-top:1px solid var(--line-2)}
+.fl .r i{width:12px;height:12px;border-radius:4px;background:var(--c)}
+.fl .r .l{font-weight:600}
+.fl .r .n{font-family:var(--f-display);font-weight:600;font-size:16px;text-align:right}
+.fl .r .pc{color:var(--muted);font-size:12px;text-align:right}
+.fl .r .d{text-align:right}
+/* faixas em barras */
+.frs{display:flex;flex-direction:column;gap:4px;margin-top:6px}
+.fr2{padding:10px 8px;border-radius:10px}
+.fr2+.fr2{border-top:1px solid var(--line-2)}
+.fh{display:flex;justify-content:space-between;align-items:baseline}
+.fl2{font-weight:600;font-size:15.5px;display:flex;align-items:center;gap:8px}
+.fl2 i{width:12px;height:12px;border-radius:4px;background:var(--c)}
+.fn{font-family:var(--f-display);font-size:24px;font-weight:600;font-variant-numeric:tabular-nums}
+.fbar{height:12px;border-radius:999px;background:var(--line-2);overflow:hidden;margin:6px 0}
+.fbar i{display:block;height:100%;border-radius:999px}
+.fm{display:flex;justify-content:space-between;align-items:center;font-size:12.5px;color:var(--muted)}
+#v-painel .fr2[data-go]:hover{background:#F2F8FB}
+/* polos */
+.polos{gap:16px}
+.pcard{border-radius:14px;padding:16px 18px;background:#FAFCFD}
+.pcard .pv b{font-size:40px}
+.pcard .pn{font-size:19px}
+.pcard .meta{font-size:13px}
+/* atenção */
+.at{display:flex;flex-direction:column;gap:10px}
+.ai{display:flex;justify-content:space-between;align-items:center;gap:10px;border:1px solid var(--line);border-left:4px solid var(--c);border-radius:12px;padding:12px 14px;background:#fff}
+.ai .t{font-weight:600;font-size:15px}
+.ai .t small{display:block;font-weight:400;color:var(--muted);font-size:12px;margin-top:2px}
+.ai b{font-family:var(--f-display);font-size:28px;font-weight:600;color:var(--c);white-space:nowrap}
+.at .lbl{margin-top:4px}
+.vrow{padding:8px 4px}
+#v-painel .ai[data-go]:hover{background:#F6FAFC;box-shadow:0 2px 10px rgba(16,32,48,.06)}
+#v-painel .sv2 .r[data-go]:hover,#v-painel .fl .r[data-go]:hover{background:#F2F8FB}
+.chart svg text{font-family:var(--f-body)}
+@media (max-width:1150px){.s4,.s8{grid-column:span 12}.kpis{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (max-width:640px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.sv2 .r{grid-template-columns:110px minmax(0,1fr) 44px 60px}.sv2 .p,.sv2 .hd span:last-child{display:none}}
+
+/* ===== carteira de serviços ===== */
+.kpis.k5{grid-template-columns:repeat(5,minmax(0,1fr))}
+.s6{grid-column:span 6}
+.slots.s3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.polos.p2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.fbar2{display:flex;flex-wrap:wrap;gap:12px 22px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px 16px;box-shadow:var(--shadow)}
+.fgrp{display:flex;align-items:center;gap:10px;flex-wrap:wrap;min-width:0}
+.fdata{margin-left:auto}
+.fdata b{font-family:var(--f-display);font-size:16px}
+.seg2{display:flex;flex-wrap:wrap;gap:4px;background:var(--sunk);border:1px solid var(--line);border-radius:10px;padding:3px}
+.seg2 button{border:0;background:none;padding:7px 12px;border-radius:7px;font-size:13px;color:var(--muted);box-shadow:none;display:flex;flex-direction:column;align-items:center;gap:1px;line-height:1.1}
+.seg2 button small{font-size:10.5px;font-weight:600;opacity:.8;text-transform:uppercase;letter-spacing:.04em}
+.seg2 button:hover{color:var(--ink);background:#fff;box-shadow:none}
+.seg2 button[aria-pressed="true"]{background:var(--navy);color:#fff}
+table.tg td,table.tg th{padding:11px 12px}
+table.tg td{font-size:15px}
+table.tg td.r{font-family:var(--f-display);font-size:17px;font-weight:600}
+table.tg td.g{font-weight:600;white-space:nowrap}
+table.tg td.g i{display:inline-block;width:10px;height:10px;border-radius:3px;background:var(--c);margin-right:9px}
+table.tg tbody tr[data-go]{cursor:pointer}
+table.tg td[data-go]{cursor:pointer}
+table.tg td[data-go]:hover{background:var(--accent-soft)!important;color:var(--accent)}
+table.tg tr.total td{font-size:16px}
+table.tg th.grp{text-align:center;background:var(--navy);color:#fff;border-radius:0}
+table.tg th.sep,table.tg td.sep{border-left:2px solid var(--line)}
+table.tss td:first-child{font-size:13.5px;font-weight:600;min-width:260px}
+.pp{display:inline-flex;align-items:center;gap:6px;font-weight:700;font-size:13px;border-radius:999px;padding:3px 9px}
+.pp.ok{background:var(--green-soft);color:var(--green)} .pp.mid{background:var(--amber-soft);color:var(--amber)} .pp.bad{background:var(--red-soft);color:var(--red)}
+.dd{display:flex;flex-direction:column}
+.dd .r{display:grid;grid-template-columns:78px minmax(0,1fr) 62px;gap:12px;align-items:center;padding:9px 8px;border-radius:10px;cursor:pointer}
+.dd .r+.r{border-top:1px solid var(--line-2)}
+.dd .r:hover{background:#F2F8FB}
+.dd .r.sel{background:var(--accent-soft)}
+.dd .dl b{display:block;font-family:var(--f-display);font-size:16px}
+.dd .dl small{color:var(--muted);font-size:11.5px;text-transform:uppercase;font-weight:700;letter-spacing:.05em}
+.dd .bb{display:flex;flex-direction:column;gap:4px}
+.dd .bl{display:flex;align-items:center;gap:8px;font-size:12.5px}
+.dd .bl span{height:10px;border-radius:999px;background:var(--c);min-width:2px}
+.dd .bl em{font-style:normal;font-weight:700;font-variant-numeric:tabular-nums}
+.dd .sd{text-align:right;font-family:var(--f-display);font-weight:600;font-size:16px}
+.dd .sd small{display:block;font-size:10.5px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.05em}
+.dd .tt{border-top:2px solid var(--ink)!important;border-radius:0;cursor:default}
+.dd .tt:hover{background:none}
+.cg{display:flex;flex-direction:column}
+.cg .r{display:grid;grid-template-columns:172px minmax(0,1fr) 54px 60px;gap:12px;align-items:center;padding:9px 6px;border-radius:9px}
+.cg .r+.r{border-top:1px solid var(--line-2)}
+.cg .r[data-go]{cursor:pointer}
+.cg .r[data-go]:hover{background:#F2F8FB}
+.cg .nm{font-weight:600;display:flex;align-items:center;gap:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cg .nm i{width:10px;height:10px;border-radius:3px;background:var(--c);flex:none}
+.cg .br{display:flex;height:16px;border-radius:6px;overflow:hidden;background:var(--line-2)}
+.cg .br i{display:block;height:100%;color:#fff;font-size:10.5px;font-weight:700;font-style:normal;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.cg .n{font-family:var(--f-display);font-size:19px;font-weight:600;text-align:right}
+.pcard .lin{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.pcard .lin div{background:#fff;border:1px solid var(--line-2);border-radius:10px;padding:8px 10px;cursor:pointer}
+.pcard .lin div:hover{border-color:var(--accent-2)}
+.pcard .lin small{display:block;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.pcard .lin b{font-family:var(--f-display);font-size:22px;font-weight:600}
+#v-painel [data-go],#v-serv [data-go]{cursor:pointer}
+#v-serv .kpi[data-go]:hover{transform:translateY(-2px);box-shadow:0 8px 22px rgba(11,37,64,.12)}
+.list table{min-width:1100px}
+.pill.fora{background:var(--red-soft);color:var(--red)} .pill.no{background:var(--green-soft);color:var(--green)} .pill.nc{background:#ECEFF2;color:#5E6E7B}
+.chart{overflow-x:auto}
+.chart svg{min-width:640px}
+@media (max-width:1150px){.kpis.k5{grid-template-columns:repeat(3,minmax(0,1fr))}.s6{grid-column:span 12}.fdata{margin-left:0}}
+@media (max-width:900px){.slots.s3,.polos.p2{grid-template-columns:minmax(0,1fr)}.pcard .lin{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:640px){.kpis.k5{grid-template-columns:repeat(2,minmax(0,1fr))}.cg .r{grid-template-columns:110px minmax(0,1fr) 44px}.cg .r .p{display:none}}
+
+.chart svg{max-height:300px}
+.polos.p2 .pcard .lin b{font-size:20px}
+@media (max-width:640px){.appbar-in{grid-template-columns:minmax(0,1fr)}.actions{flex-wrap:wrap;padding-bottom:4px}.actions button{flex:1 1 auto;justify-content:center}.brand{padding-bottom:4px}.brand-t{font-size:18px}}
+
+.fx{display:flex;flex-direction:column;gap:2px}
+.fx .r{display:grid;grid-template-columns:minmax(0,1fr) 46px 46px 50px;gap:10px;align-items:center;padding:9px 6px;border-radius:9px}
+.fx .r+.r{border-top:1px solid var(--line-2)}
+.fx .r[data-go]:hover{background:#F2F8FB}
+.fx .hd{font-size:10.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);padding-top:0}
+.fx .hd span:nth-child(n+2){text-align:right}
+.fx .l{font-weight:600;display:flex;align-items:center;gap:8px}
+.fx .l i{width:11px;height:11px;border-radius:4px;background:var(--c);flex:none}
+.fx .n{font-family:var(--f-display);font-weight:600;font-size:17px;text-align:right}
+.fx .tt{border-top:2px solid var(--ink)!important;border-radius:0}
+.nc{display:flex;flex-direction:column;gap:8px}
+.nc .ai b{font-size:24px}
+#v-lig [data-go]{cursor:pointer}#v-lig .kpi[data-go]:hover{transform:translateY(-2px);box-shadow:0 8px 22px rgba(11,37,64,.12)}#v-lig .ai[data-go]:hover,#v-lig .fx .r[data-go]:hover{background:#F2F8FB}
+
+/* ===== resumo para print ===== */
+.rescard{background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);overflow:hidden}
+.rhead{background:linear-gradient(135deg,#0B2540,#0B5F86);color:#fff;padding:16px 22px;display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap}
+.rhead h2{font-family:var(--f-display);font-size:22px;font-weight:600;margin:0;color:#fff;display:block}
+.rhead p{margin:4px 0 0;color:#BFD3E4;font-size:13.5px}
+.rhead .rdt{text-align:right;font-size:12px;color:#BFD3E4;text-transform:uppercase;letter-spacing:.06em;font-weight:700}
+.rhead .rdt b{display:block;font-family:var(--f-display);font-size:20px;color:#fff;text-transform:none;letter-spacing:0}
+.rk{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));border-bottom:1px solid var(--line)}
+.rk div{padding:12px 18px;border-right:1px solid var(--line-2)}
+.rk div:last-child{border-right:0}
+.rk small{display:block;font-size:10.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+.rk b{font-family:var(--f-display);font-size:28px;font-weight:600;line-height:1.15;font-variant-numeric:tabular-nums}
+.rk em{font-style:normal;font-size:12px;color:var(--muted);display:block}
+.rbody{padding:12px 16px 16px;overflow-x:auto}
+table.rt{border-collapse:separate;border-spacing:0;width:100%;min-width:900px}
+table.rt th,table.rt td{padding:8px 8px;text-align:center;border-bottom:1px solid var(--line-2);font-variant-numeric:tabular-nums;white-space:nowrap}
+table.rt thead th{background:#fff;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);border-radius:0}
+table.rt thead tr.d th{font-size:13px;letter-spacing:0;text-transform:none;color:#fff;background:#0B2540;font-weight:700;border-left:3px solid #fff}
+table.rt thead tr.d th small{display:block;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#9FB7CC}
+table.rt thead tr.d th.tp{background:#33475B}
+table.rt thead tr.d th.ct{background:#0B5F86}
+table.rt thead tr.d th.blank{background:#fff;border-left:0}
+table.rt td{font-size:15px;font-weight:600;font-family:var(--f-display)}
+table.rt td.s{text-align:left;font-family:var(--f-body);font-size:14px;font-weight:600}
+table.rt td.s i{display:inline-block;width:10px;height:10px;border-radius:3px;background:var(--c);margin-right:8px}
+table.rt .bl{border-left:3px solid #fff;box-shadow:inset 1px 0 0 var(--line)}
+table.rt td.e{color:#B9650F}
+table.rt td.x{color:#1C7444}
+table.rt td.sd.up{color:var(--red)} table.rt td.sd.down{color:var(--green)}
+table.rt tbody tr:nth-child(even) td{background:#FAFBFC}
+table.rt tr.tot td{background:#EEF2F6!important;border-top:2px solid var(--ink);font-weight:700}
+table.rt thead tr.h th.e{color:#B9650F} table.rt thead tr.h th.x{color:#1C7444}
+.rfoot{display:flex;justify-content:space-between;gap:12px;padding:8px 18px 12px;font-size:11.5px;color:var(--muted);flex-wrap:wrap}
+.rpolo{padding:0 16px 14px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.rpolo .pb{border:1px solid var(--line);border-radius:12px;padding:10px 14px;display:grid;grid-template-columns:auto repeat(5,minmax(0,1fr));gap:4px 12px;align-items:center}
+.rpolo .pb b.pn{font-family:var(--f-display);font-size:16px;grid-row:span 2;padding-right:6px}
+.rpolo .pb small{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.rpolo .pb span{font-family:var(--f-display);font-size:18px;font-weight:600}
+.resbar{justify-content:space-between}
+body.printmode .appbar,body.printmode .conn,body.printmode #msg,body.printmode #filtros,body.printmode .resbar,body.printmode .foot,body.printmode #imp,body.printmode #intro{display:none!important}
+body.printmode .wrap{max-width:none;padding:10px}
+body.printmode{background:#fff}
+.sairprint{position:fixed;right:14px;bottom:14px;z-index:50;display:none}
+body.printmode .sairprint{display:inline-flex}
+@media (max-width:900px){.rk{grid-template-columns:repeat(3,minmax(0,1fr))}.rpolo{grid-template-columns:minmax(0,1fr)}}
+.sairprint{opacity:.35}.sairprint:hover{opacity:1}
+
+table.tg.multi td,table.tg.multi th{padding:9px 8px}
+table.tg.multi td.r{font-size:15.5px}
+table.tg.multi td.e{color:#B9650F} table.tg.multi td.x{color:#1C7444}
+table.tg.multi th.e{color:#B9650F} table.tg.multi th.x{color:#1C7444}
+table.tg.multi tr.dh th{font-size:13px;letter-spacing:0;text-transform:none;border-left:3px solid #fff}
+table.tg.multi tr.dh th small{display:block;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#9FB7CC}
+table.tg.multi tr.dh th.blank{background:none}
+table.tg.multi tr.dh th.tp{background:#33475B}
+table.tg.multi th.dday{cursor:pointer}
+table.tg.multi th.dday:hover{background:#0B5F86}
+
+.side{display:flex;flex-direction:column;gap:14px;min-width:0}
+.side .card{gap:10px}
+.side .dd .r{padding:6px 6px;grid-template-columns:62px minmax(0,1fr) 54px}
+.side .dd .dl b{font-size:15px}
+.pz{display:flex;flex-direction:column}
+.pz .r{display:grid;grid-template-columns:84px minmax(0,1fr) 58px;gap:10px;align-items:center;padding:8px 4px;border-radius:9px;cursor:pointer}
+.pz .r+.r{border-top:1px solid var(--line-2)}
+.pz .r:hover{background:#F2F8FB}
+.pz .nm{font-weight:700;font-size:14px}
+.pz .nm small{display:block;font-weight:500;color:var(--muted);font-size:11.5px}
+.pz .br{display:flex;height:20px;border-radius:6px;overflow:hidden;background:var(--line-2)}
+.pz .br i{display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:700;font-style:normal;overflow:hidden}
+.pz .tt{border-top:2px solid var(--ink)!important;border-radius:0}
+table.tg.multi{font-size:14px}
+table.tg.multi td,table.tg.multi th{padding:8px 6px}
+table.tg.multi td.r{font-size:14.5px}
+table.tg.multi td.g{font-size:14px}
+table.tg.multi td.g i{margin-right:6px}
+table.tg.multi th{font-size:10.5px;letter-spacing:.04em}
+.dfv{display:block;font-size:10.5px;font-family:var(--f-body);font-weight:700;line-height:1.1}
+@media (max-width:1150px){.side{grid-column:span 12}}
+
+.s9{grid-column:span 9}.s3{grid-column:span 3}
+.side .dd .r{grid-template-columns:52px minmax(0,1fr) 46px;gap:8px}
+.side .leg2{gap:8px;font-size:11px}
+.side .ch{flex-direction:column;gap:6px}
+table.tg.multi .pp{padding:2px 6px;font-size:12px}
+@media (max-width:1150px){.s9,.s3{grid-column:span 12}}
+
+.rgrid{display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:4px;align-items:start}
+.rgrid .rbody{min-width:0}
+.rgrid table.rt{min-width:0}
+.rgraf{display:flex;flex-direction:column;gap:10px;padding:12px 16px 12px 0}
+.rg{border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+.rgt{font-weight:700;font-size:13px;display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:4px}
+.rgt .leg2{font-size:10.5px;font-weight:600;gap:8px}
+svg.mini{width:100%;height:auto;display:block}
+.hb{display:flex;flex-direction:column;gap:7px;padding:4px 0}
+.hb .hr{display:grid;grid-template-columns:118px minmax(0,1fr) 34px;gap:8px;align-items:center;font-size:12px}
+.hb .hr span{font-weight:600}
+.hb .hr>div{height:14px;border-radius:5px;background:var(--line-2);overflow:hidden}
+.hb .hr>div i{display:block;height:100%;border-radius:5px}
+.hb .hr b{font-family:var(--f-display);text-align:right;font-size:14px}
+.hb.pzb .hr{grid-template-columns:120px minmax(0,1fr);gap:10px}
+.hb.pzb .hr span small{display:block;font-weight:500;color:var(--muted);font-size:10.5px}
+.hb.pzb .st{display:flex;height:22px!important;border-radius:6px}
+.hb.pzb .st i{display:flex!important;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:700;font-style:normal;border-radius:0!important;overflow:hidden}
+.rsec{border-top:6px solid #EEF2F6;margin-top:4px}
+.rsech{display:flex;align-items:center;gap:10px;padding:12px 18px;font-family:var(--f-display);font-size:18px;font-weight:600;background:#FFF7EF;border-bottom:1px solid var(--line)}
+.rsech small{font-family:var(--f-body);font-size:12.5px;font-weight:500;color:var(--muted)}
+.rdot{width:12px;height:12px;border-radius:4px;background:var(--c)}
+.rk.rk5{grid-template-columns:repeat(5,minmax(0,1fr))}
+table.rt.rtss{margin-top:10px}
+table.rt.rtss td,table.rt.rtss th{font-size:12.5px;padding:6px 8px}
+table.rt.rtss td.s{font-size:12px;white-space:normal}
+table.rt.rtss .e{color:#B9650F;font-weight:700} table.rt.rtss .x{color:#1C7444;font-weight:700}
+table.rt.rtss thead th{text-transform:none;letter-spacing:0;font-size:12px}
+@media (max-width:1100px){.rgrid{grid-template-columns:minmax(0,1fr)}.rgraf{padding:0 16px 12px}}
+.sairprint{opacity:0;top:10px;bottom:auto}.sairprint:hover,.sairprint:focus{opacity:1}
+
+/* ===== tela inicial com senha ===== */
+.tl{position:fixed;inset:0;z-index:100;display:grid;place-items:center;padding:20px;background:radial-gradient(1200px 600px at 20% 10%,#14507A 0%,#0B2540 55%,#081A2E 100%)}
+.tlbox{width:min(420px,100%);background:#fff;border-radius:18px;padding:30px 28px 22px;box-shadow:0 20px 60px rgba(0,0,0,.35);display:flex;flex-direction:column;gap:10px;align-items:stretch;text-align:center}
+.tllogo{width:56px;height:56px;border-radius:14px;margin:0 auto 4px}
+.tlsis{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.tlbox h1{margin:0;font-family:var(--f-display);font-size:28px;font-weight:600;color:var(--ink)}
+.tlbox p{margin:0 0 6px;color:var(--muted);font-size:14px}
+#fTl{display:flex;flex-direction:column;gap:10px}
+#fTl input{font:16px var(--f-body);padding:12px 14px;border:1px solid var(--line);border-radius:10px;width:100%;text-align:center}
+#fTl input:focus{outline:2px solid var(--accent-2);border-color:transparent}
+#fTl button{justify-content:center;padding:13px;font-size:15px}
+.tlmsg{min-height:18px;font-size:13px;font-weight:600;color:var(--red)}
+.tlesq{border:0;background:none;color:var(--muted);font-size:12.5px;padding:4px;box-shadow:none;justify-content:center;text-decoration:underline}
+.tlesq:hover{box-shadow:none;color:var(--ink)}
+.tlreset{font-size:12.5px;color:var(--muted);background:var(--sunk);border-radius:10px;padding:10px 12px;display:flex;flex-direction:column;gap:8px;text-align:left}
+.tlreset button{background:var(--red-soft);color:var(--red);border-color:#F4C3BD;justify-content:center}
+body.trancado{overflow:hidden}
+body.trancado>.appbar,body.trancado>.wrap{filter:blur(6px);pointer-events:none;user-select:none}
+
+</style>
+</head>
+<body>
+<div id="telaLogin" class="tl" hidden>
+  <div class="tlbox">
+    <span class="logo tllogo"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2.5c-3.6 4.4-6.5 8-6.5 11.6a6.5 6.5 0 0 0 13 0C18.5 10.5 15.6 6.9 12 2.5Z" fill="#fff" fill-opacity=".95"/><path d="M9 14.5a3 3 0 0 0 3 3" stroke="#0B6E99" stroke-width="1.8" stroke-linecap="round"/></svg></span>
+    <div class="tlsis">Painel da Carteira de Serviços</div>
+    <h1>Olá, Fernanda</h1>
+    <p id="tlTxt">Digite sua senha para abrir o painel.</p>
+    <form id="fTl">
+      <input type="password" id="tlS1" placeholder="Senha" autocomplete="current-password">
+      <input type="password" id="tlS2" placeholder="Repita a senha" autocomplete="new-password" hidden>
+      <button class="primary" type="submit" id="tlBtn">Entrar</button>
+    </form>
+    <div class="tlmsg" id="tlMsg"></div>
+    <button type="button" class="tlesq" id="tlEsq">Esqueci a senha</button>
+    <div class="tlreset" id="tlReset" hidden>Para criar outra senha, o painel apaga os dados guardados neste computador (o histórico e os arquivos do dia). Depois é só subir os arquivos de novo.<button type="button" id="tlApagar">Apagar dados e criar nova senha</button></div>
+  </div>
+</div>
+<header class="appbar"><div class="appbar-in">
+  <div class="brand"><span class="logo"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2.5c-3.6 4.4-6.5 8-6.5 11.6a6.5 6.5 0 0 0 13 0C18.5 10.5 15.6 6.9 12 2.5Z" fill="#fff" fill-opacity=".95"/><path d="M9 14.5a3 3 0 0 0 3 3" stroke="#0B6E99" stroke-width="1.8" stroke-linecap="round"/></svg></span><div style="min-width:0"><div class="brand-t">Painel da Carteira de Serviços</div><div class="brand-s" id="sub">Interlagos · Grajaú</div></div></div>
+  <nav class="tabs" role="tablist">
+    <button class="tab" role="tab" id="t-painel" aria-selected="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg> Painel</button>
+    <button class="tab" role="tab" id="t-res" aria-selected="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="12" cy="12" r="3"/><path d="M8 5l1.5-2h5L16 5"/></svg> Resumo p/ print</button>
+    <button class="tab" role="tab" id="t-lig" aria-selected="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9h7a3 3 0 0 1 3 3v9"/><path d="M3 6v6M18 4c-1.6 2-3 3.7-3 5.3a3 3 0 0 0 6 0C21 7.7 19.6 6 18 4Z"/></svg> Ligação de água</button>
+    <button class="tab" role="tab" id="t-serv" aria-selected="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg> Outros serviços</button>
+    <button class="tab" role="tab" id="t-os" aria-selected="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M9 6h12M9 12h12M9 18h12M4 6h.01M4 12h.01M4 18h.01"/></svg> OS</button>
+  </nav>
+  <div class="actions">
+    <button type="button" class="primary" id="btnSubir"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V4M6 10l6-6 6 6M4 20h16"/></svg> Atualizar com os arquivos do dia</button>
+    <button id="baixar" type="button" class="ghost"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v12M6 10l6 6 6-6M4 20h16"/></svg> Baixar Excel</button>
+  </div>
+</div></header>
+<div class="wrap">
+  <div class="conn">
+    <span class="dot" id="connDot"></span>
+    <div class="txt"><b id="connTit">Carregando…</b> <span class="note" id="connSub"></span></div>
+    <button type="button" id="btnAjuda">Como usar</button>
+    <button type="button" id="btnBackup" title="Baixa um arquivo com o histórico, para levar a outro computador">Cópia de segurança</button>
+  </div>
+  <div class="status" id="msg" role="status" aria-live="polite"></div>
+
+  <section class="panel intro" id="intro" hidden>
+    <div class="panel-h"><h2>Como usar todo dia</h2><button type="button" id="btnFecharAjuda">Fechar</button></div>
+    <ol>
+      <li>Baixe do sistema as planilhas de <b>Acatados</b>, <b>Executados</b> e <b>Carteira</b>, de Interlagos e de Embu, como sempre. Na segunda, pode baixar já de sexta, sábado e domingo juntos.</li>
+      <li>Clique em <b>Atualizar com os arquivos do dia</b> e coloque cada arquivo no seu campo. Cada campo aceita mais de um arquivo, então escolha os dois (Interlagos e Embu) de uma vez.</li>
+      <li>Clique em <b>Montar o painel</b>. O painel separa as entradas e as execuções de cada dia e guarda a carteira de hoje no histórico.</li>
+      <li>Escolha o dia no alto do painel para ver as entradas e execuções de cada um. Clique em qualquer número para ver as OS.</li>
+      <li>Clique em <b>Baixar Excel</b> para ter o PAINEL, a Ligação de água, o Serviço por dia, o Histórico e as bases, no formato da sua planilha.</li>
+    </ol>
+    <div class="note">As regras são as mesmas da sua planilha: ATC 923 é Interlagos; 929 e 299 são Grajaú. Os vazamentos de água são separados pelo TSS, os outros serviços pela família. Ligação de água e de esgoto contam só o Contrato Global. Só conta como executada a baixa em que o resultado é o próprio serviço: fim do dia, imóvel fechado, trata-se de outro serviço, duplicidade, continua, nada consta e parecidos não contam, em nenhum serviço. Meta: 80% no prazo.</div>
+    <div class="note">Os dados ficam guardados neste computador, no próprio navegador. Para usar em outro computador, leve a <b>Cópia de segurança</b>.</div>
+  </section>
+
+  <section class="panel imp" id="imp" hidden>
+    <div class="panel-h"><h2>Arquivos do dia</h2><button type="button" id="impFechar">Fechar</button></div>
+    <div class="slots s3">
+      <label class="slot" for="fAc"><span class="sn1">1</span><span class="st1"><b>Acatados</b><small>do sistema · Interlagos e Embu (pode escolher os 2 juntos)</small><em id="nAc">Clique para escolher</em></span><input type="file" id="fAc" accept=".xlsx,.csv" multiple></label>
+      <label class="slot" for="fEx"><span class="sn1">2</span><span class="st1"><b>Executados</b><small>do sistema · Interlagos e Embu (pode escolher os 2 juntos)</small><em id="nEx">Clique para escolher</em></span><input type="file" id="fEx" accept=".xlsx,.csv" multiple></label>
+      <label class="slot" for="fCa"><span class="sn1">3</span><span class="st1"><b>Carteira</b><small>do sistema · Interlagos e Embu (pode escolher os 2 juntos)</small><em id="nCa">Clique para escolher</em></span><input type="file" id="fCa" accept=".xlsx,.csv" multiple></label>
+    </div>
+    <div class="row">
+      <label for="dCart" class="lbl">Data da carteira</label><input type="date" id="dCart">
+      <button type="button" class="primary" id="impOk" disabled>Montar o painel</button>
+      <span class="note" id="impNota">Pode subir só o que tiver; o que faltar continua o que já estava.</span>
+    </div>
+    <div class="checks" id="impChecks"></div>
+    <div class="row" style="gap:6px"><span class="note">Outros arquivos:</span><button type="button" id="btnRestaurar" style="padding:6px 10px;font-size:12.5px">Restaurar cópia de segurança</button><button type="button" id="btnHist" style="padding:6px 10px;font-size:12.5px" title="Lê a aba HISTÓRICO da sua planilha CARTEIRA DE SERVIÇOS">Trazer histórico da planilha antiga</button><input type="file" id="fRest" accept=".json" hidden><input type="file" id="fHist" accept=".xlsx" hidden></div>
+  </section>
+
+  <div class="fbar2" id="filtros">
+    <div class="fgrp"><span class="lbl">Polo</span><div class="seg2" id="segPolo"></div></div>
+    <div class="fgrp"><span class="lbl">Entradas e execuções de</span><div class="seg2" id="segDia"></div></div>
+    <div class="fgrp fdata"><span class="lbl">Carteira de</span><b id="dataCart">–</b></div>
+  </div>
+
+  <section id="v-painel" class="view">
+    <div class="kpis k5" id="kpis"></div>
+    <div class="dash">
+      <article class="card s9"><header class="ch"><div><h3>Situação por grupo</h3><p id="sitNota">carteira de hoje e o movimento do dia</p></div><span class="dica">Clique numa linha para ver as OS</span></header><div class="scroll"><table class="tg" id="tbGrupo"></table></div></article>
+      <div class="side s3">
+      <article class="card"><header class="ch"><div><h3>Dia a dia</h3><p>entradas × execuções de cada dia</p></div><div class="leg2"><span style="--c:#F0A23B">Entradas</span><span style="--c:#23824F">Execuções</span></div></header><div id="diaDia"></div></article>
+      <article class="card"><header class="ch"><div><h3>Prazo da carteira</h3><p>no prazo × fora do prazo por polo</p></div><div class="leg2"><span style="--c:#2FA36B">No prazo</span><span style="--c:#D9534A">Fora</span></div></header><div id="prazoPolo"></div></article>
+      </div>
+      <article class="card s12"><header class="ch"><div><h3>Por polo</h3><p>carteira, prazo e movimento</p></div></header><div class="polos p2" id="poloCards"></div></article>
+      <article class="card s6"><header class="ch"><div><h3>Carteira por grupo · Interlagos</h3><p>no prazo × fora do prazo</p></div><div class="leg2"><span style="--c:#2FA36B">No prazo</span><span style="--c:#D9534A">Fora do prazo</span></div></header><div id="cgInt"></div></article>
+      <article class="card s6"><header class="ch"><div><h3>Carteira por grupo · Grajaú</h3><p>no prazo × fora do prazo</p></div><div class="leg2"><span style="--c:#2FA36B">No prazo</span><span style="--c:#D9534A">Fora do prazo</span></div></header><div id="cgGra"></div></article>
+      <article class="card s12"><header class="ch"><div><h3>Evolução da carteira</h3><p id="evoNota"></p></div><div class="row" style="gap:8px"><select id="selGrupoEvo" aria-label="Grupo"></select><select id="selMes" aria-label="Mês"></select></div></header><div class="leg2"><span style="--c:#2FA36B">No prazo</span><span style="--c:#D9534A">Fora do prazo</span></div><div class="chart" id="chartEvo"></div>
+        <div class="leg2" style="margin-top:6px"><span style="--c:#F0A23B">Entradas</span><span style="--c:#23824F">Execuções</span></div><div class="chart" id="chartMov"></div>
+        <details class="hist"><summary>Ver tabela do histórico</summary><div class="scroll"><table id="tbHist"></table></div></details></article>
+    </div>
+  </section>
+
+  <section id="v-res" class="view" hidden>
+    <div class="row resbar"><span class="note">Mostra todos os dias juntos, por serviço. Clique em <b>Modo print</b> para deixar só o quadro na tela e tirar o print.</span><button type="button" class="primary" id="btnPrint"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9V5h4M20 9V5h-4M4 15v4h4M20 15v4h-4"/></svg> Modo print</button></div>
+    <div class="rescard" id="resCard"></div>
+  </section>
+
+  <section id="v-lig" class="view" hidden>
+    <div class="kpis k5" id="kpisLig"></div>
+    <div class="dash">
+      <article class="card s8"><header class="ch"><div><h3>Por polo</h3><p id="ligNota"></p></div><span class="dica">Clique num número para ver as OS</span></header><div class="scroll"><table class="tg" id="tbLigPolo"></table></div></article>
+      <article class="card s4"><header class="ch"><div><h3>Prazo da carteira</h3><p>quanto falta para vencer</p></div></header><div id="ligFaixa"></div></article>
+      <article class="card s12"><header class="ch"><div><h3>Por tipo de ligação (TSS)</h3><p>entradas, executadas, carteira e fora do prazo por polo</p></div></header><div class="scroll"><table class="tg tss" id="tbLigTss"></table></div></article>
+      <article class="card s8"><header class="ch"><div><h3>Dia a dia</h3><p>entradas × executadas de ligação de água por polo</p></div></header><div class="scroll"><table class="tg" id="tbLigDia"></table></div></article>
+      <article class="card s4"><header class="ch"><div><h3>Baixas que não contam</h3><p>resultados que não são o serviço executado</p></div></header><div id="ligNc"></div></article>
+      <article class="card s12"><header class="ch"><div><h3>Evolução da carteira de ligação de água</h3><p id="ligEvoNota"></p></div><div class="leg2"><span style="--c:#2FA36B">No prazo</span><span style="--c:#D9534A">Fora do prazo</span></div></header><div class="chart" id="ligEvo"></div>
+        <div class="leg2"><span style="--c:#F0A23B">Entradas</span><span style="--c:#23824F">Executadas</span></div><div class="chart" id="ligMov"></div></article>
+    </div>
+  </section>
+
+  <section id="v-serv" class="view" hidden>
+    <div class="toolbar"><div class="chips" id="chipsServ"></div></div>
+    <div class="kpis k5" id="kpisServ"></div>
+    <div class="dash">
+      <article class="card s12"><header class="ch"><div><h3>Por polo</h3><p id="servNota"></p></div></header><div class="scroll"><table class="tg" id="tbServPolo"></table></div></article>
+      <article class="card s12"><header class="ch"><div><h3>Por tipo (TSS)</h3><p>entradas, executadas, carteira e fora do prazo por polo</p></div><span class="dica">Clique num número para ver as OS</span></header><div class="scroll"><table class="tg tss" id="tbTss"></table></div></article>
+    </div>
+  </section>
+
+  <section id="v-os" class="view" hidden>
+    <div class="toolbar">
+      <div class="chips" id="chipsModo"></div>
+      <div class="filters">
+        <div class="search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input type="search" id="busca" placeholder="Buscar OS, endereço, bairro, TSS ou equipe"></div>
+        <select id="fGrupo" aria-label="Grupo"></select>
+        <select id="fTss" aria-label="TSS"><option value="">Todos os TSS</option></select>
+        <select id="fPrazo" aria-label="Prazo"><option value="">No prazo e fora</option><option value="fora">Só fora do prazo</option><option value="no">Só no prazo</option></select>
+      </div>
+      <div class="ativos" id="ativos" hidden></div>
+    </div>
+    <div class="list" id="lista"></div>
+    <div class="note" id="rodape"></div>
+  </section>
+  <div class="foot">Painel da Carteira de Serviços · os dados ficam guardados só neste computador</div>
+</div>
+
+<script>
+(function(){
+"use strict";
+/* ================= XLSX: leitura (zip + XML) ================= */
+async function inflateRaw(bytes){
+  const ds=new DecompressionStream("deflate-raw");
+  const out=await new Response(new Blob([bytes]).stream().pipeThrough(ds)).arrayBuffer();
+  return new Uint8Array(out);
+}
+async function unzip(buf){
+  const u=new Uint8Array(buf),v=new DataView(buf);let e=-1;
+  for(let i=u.length-22;i>=Math.max(0,u.length-70000);i--){if(v.getUint32(i,true)===0x06054b50){e=i;break;}}
+  if(e<0)throw new Error("zip");
+  const n=v.getUint16(e+10,true);let p=v.getUint32(e+16,true);const files={};const td=new TextDecoder();
+  for(let k=0;k<n;k++){
+    const method=v.getUint16(p+10,true),csize=v.getUint32(p+20,true),nl=v.getUint16(p+28,true),xl=v.getUint16(p+30,true),cl=v.getUint16(p+32,true),off=v.getUint32(p+42,true);
+    const name=td.decode(u.subarray(p+46,p+46+nl));files[name]={method,csize,off};p+=46+nl+xl+cl;
+  }
+  return async name=>{const f=files[name];if(!f)return null;const ln=v.getUint16(f.off+26,true),lx=v.getUint16(f.off+28,true);
+    const data=u.subarray(f.off+30+ln+lx,f.off+30+ln+lx+f.csize);const raw=f.method===8?await inflateRaw(data):data;return td.decode(raw);};
+}
+const xmlp=s=>new DOMParser().parseFromString(s,"application/xml");
+const tags=(n,t)=>Array.from(n.getElementsByTagNameNS("*",t));
+function colIdx(ref){let c=0;for(const ch of ref){const k=ch.charCodeAt(0);if(k<65||k>90)break;c=c*26+(k-64);}return c-1;}
+async function abrirXlsx(buf){
+  const get=await unzip(buf);
+  const wb=xmlp(await get("xl/workbook.xml"));
+  const rels=xmlp(await get("xl/_rels/workbook.xml.rels"));const alvo={};
+  for(const r of tags(rels,"Relationship"))alvo[r.getAttribute("Id")]=r.getAttribute("Target");
+  const abas=tags(wb,"sheet").map(sh=>{const rid=sh.getAttribute("r:id")||sh.getAttributeNS("http://schemas.openxmlformats.org/officeDocument/2006/relationships","id");
+    let t=alvo[rid]||"worksheets/sheet1.xml";t=t.replace(/^\/?xl\//,"").replace(/^\//,"");return {nome:sh.getAttribute("name"),t};});
+  let ss=null;
+  async function strings(){if(ss)return ss;ss=[];const x=await get("xl/sharedStrings.xml");if(x)for(const si of tags(xmlp(x),"si"))ss.push(tags(si,"t").map(t=>t.textContent).join(""));return ss;}
+  async function ler(nome){
+    const a=abas.find(x=>x.nome===nome)||abas.find(x=>U(x.nome).trim()===U(nome).trim());if(!a)return null;
+    const sst=await strings();const doc=xmlp(await get("xl/"+a.t));const aoa=[];
+    for(const row of tags(doc,"row")){const r=[];const rn=Number(row.getAttribute("r"))||aoa.length+1;
+      for(const c of tags(row,"c")){const ref=c.getAttribute("r");const ci=ref?colIdx(ref):r.length;const t=c.getAttribute("t");
+        const vEl=tags(c,"v")[0];let val="";
+        if(t==="s")val=vEl?sst[Number(vEl.textContent)]??"":"";
+        else if(t==="inlineStr")val=tags(c,"t").map(x=>x.textContent).join("");
+        else if(vEl){val=vEl.textContent;if(t!=="str"&&t!=="b"&&t!=="e"&&val!==""&&!isNaN(val))val=Number(val);}
+        r[ci]=val;}
+      for(let i=0;i<r.length;i++)if(r[i]===undefined)r[i]="";
+      while(aoa.length<rn-1)aoa.push([]);
+      aoa.push(r);}
+    return aoa;}
+  return {nomes:abas.map(a=>a.nome),ler};
+}
+async function lerXlsx(buf){const w=await abrirXlsx(buf);return w.ler(w.nomes[0]);}
+function lerCsv(txt){const sep=(txt.split("\n")[0].match(/;/g)||[]).length>(txt.split("\n")[0].match(/,/g)||[]).length?";":",";
+  const rows=[];let row=[],cur="",q=false;
+  for(let i=0;i<txt.length;i++){const ch=txt[i];
+    if(q){if(ch==='"'){if(txt[i+1]==='"'){cur+='"';i++;}else q=false;}else cur+=ch;}
+    else if(ch==='"')q=true;else if(ch===sep){row.push(cur);cur="";}else if(ch==="\n"){row.push(cur.replace(/\r$/,""));rows.push(row);row=[];cur="";}else cur+=ch;}
+  if(cur||row.length){row.push(cur);rows.push(row);}return rows;}
+
+/* ================= XLSX: escrita (zip sem compressão) ================= */
+const CRC=(()=>{const t=new Uint32Array(256);for(let n=0;n<256;n++){let c=n;for(let k=0;k<8;k++)c=c&1?0xEDB88320^(c>>>1):c>>>1;t[n]=c>>>0;}return t;})();
+function crc32(u){let c=0xFFFFFFFF;for(let i=0;i<u.length;i++)c=CRC[(c^u[i])&0xFF]^(c>>>8);return (c^0xFFFFFFFF)>>>0;}
+function zipStore(files){const te=new TextEncoder();const parts=[],cent=[];let off=0;
+  for(const [name,str] of files){const nb=te.encode(name),data=te.encode(str),crc=crc32(data);
+    const h=new DataView(new ArrayBuffer(30));h.setUint32(0,0x04034b50,true);h.setUint16(4,20,true);h.setUint16(6,0x0800,true);h.setUint16(8,0,true);
+    h.setUint32(14,crc,true);h.setUint32(18,data.length,true);h.setUint32(22,data.length,true);h.setUint16(26,nb.length,true);
+    parts.push(new Uint8Array(h.buffer),nb,data);
+    const c=new DataView(new ArrayBuffer(46));c.setUint32(0,0x02014b50,true);c.setUint16(4,20,true);c.setUint16(6,20,true);c.setUint16(8,0x0800,true);
+    c.setUint32(16,crc,true);c.setUint32(20,data.length,true);c.setUint32(24,data.length,true);c.setUint16(28,nb.length,true);c.setUint32(42,off,true);
+    cent.push(new Uint8Array(c.buffer),nb);off+=30+nb.length+data.length;}
+  const csize=cent.reduce((a,b)=>a+b.length,0);const e=new DataView(new ArrayBuffer(22));
+  e.setUint32(0,0x06054b50,true);e.setUint16(8,files.length,true);e.setUint16(10,files.length,true);e.setUint32(12,csize,true);e.setUint32(16,off,true);
+  return new Blob(parts.concat(cent,[new Uint8Array(e.buffer)]),{type:"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"});}
+const xe=s=>String(s??"").replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F]/g,"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+function colName(i){let s="";i++;while(i>0){const m=(i-1)%26;s=String.fromCharCode(65+m)+s;i=Math.floor((i-1)/26);}return s;}
+function serial(d){return (Date.UTC(d.getFullYear(),d.getMonth(),d.getDate())-Date.UTC(1899,11,30))/86400000;}
+/* gerador de .xlsx com estilos (fonte, preenchimento, alinhamento, borda, formato) */
+function novoLivro(){
+  const fonts=['<font><sz val="11"/><name val="Calibri"/></font>'],fills=['<fill><patternFill patternType="none"/></fill>','<fill><patternFill patternType="gray125"/></fill>'],
+        borders=['<border><left/><right/><top/><bottom/><diagonal/></border>'],fmts=[],xfs=['<xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/>'],cache={"":0};
+  const idx=(arr,x)=>{let i=arr.indexOf(x);if(i<0){arr.push(x);i=arr.length-1;}return i;};
+  function st(o){if(!o)return 0;const k=JSON.stringify(o);if(k in cache)return cache[k];
+    const f=o.f||{};const font=`<font>${f.b?"<b/>":""}${f.i?"<i/>":""}<sz val="${f.sz||11}"/><color rgb="FF${f.c||"000000"}"/><name val="${f.n||"Calibri"}"/></font>`;
+    const fi=idx(fonts,font);
+    const fl=o.fill?idx(fills,`<fill><patternFill patternType="solid"><fgColor rgb="FF${o.fill}"/><bgColor indexed="64"/></patternFill></fill>`):0;
+    const bd=o.bd?idx(borders,`<border><left style="thin"><color rgb="FF${o.bd}"/></left><right style="thin"><color rgb="FF${o.bd}"/></right><top style="thin"><color rgb="FF${o.bd}"/></top><bottom style="thin"><color rgb="FF${o.bd}"/></bottom><diagonal/></border>`):(o.bt?idx(borders,`<border><left/><right/><top style="medium"><color rgb="FF${o.bt}"/></top><bottom/><diagonal/></border>`):0);
+    let nf=0;if(o.nf){const builtin={"0%":9,"0":1,"#,##0":3};nf=builtin[o.nf]||(164+idx(fmts,o.nf));}
+    const al=(o.h||o.v||o.wrap)?`<alignment${o.h?` horizontal="${o.h}"`:""}${o.v?` vertical="${o.v}"`:""}${o.wrap?' wrapText="1"':""}/>`:"";
+    xfs.push(`<xf numFmtId="${nf}" fontId="${fi}" fillId="${fl}" borderId="${bd}" xfId="0"${nf?' applyNumberFormat="1"':""} applyFont="1"${fl?' applyFill="1"':""}${bd?' applyBorder="1"':""}${al?' applyAlignment="1">'+al+"</xf>":"/>"}`);
+    return cache[k]=xfs.length-1;}
+  function styles(){return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">${fmts.length?`<numFmts count="${fmts.length}">${fmts.map((f,i)=>`<numFmt numFmtId="${164+i}" formatCode="${xe(f)}"/>`).join("")}</numFmts>`:""}<fonts count="${fonts.length}">${fonts.join("")}</fonts><fills count="${fills.length}">${fills.join("")}</fills><borders count="${borders.length}">${borders.join("")}</borders><cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs><cellXfs count="${xfs.length}">${xfs.join("")}</cellXfs><cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles></styleSheet>`;}
+  return {st,styles};
+}
+/* sheets: [{name, cells:Map "r,c"->{v,s}, widths:[], heights:{}, merges:[], freeze:"A2", filter:"A1:T10", grid:false, tab:"16365C"}] */
+function gerarXlsx(livro,sheets){
+  const files=[];const used=new Set();
+  const nomes=sheets.map(s=>{let n=s.name.replace(/[\[\]:*?\/\\]/g,"").slice(0,31)||"Aba";let b=n,k=2;while(used.has(n.toLowerCase()))n=b.slice(0,28)+" "+k++;used.add(n.toLowerCase());return n;});
+  sheets.forEach((s,si)=>{
+    const rowsMap=new Map();
+    for(const [k,cell] of s.cells){const [r,c]=k.split(",").map(Number);if(!rowsMap.has(r))rowsMap.set(r,[]);rowsMap.get(r).push([c,cell]);}
+    let rows="";
+    for(const r of [...rowsMap.keys()].sort((a,b)=>a-b)){const cs=rowsMap.get(r).sort((a,b)=>a[0]-b[0]);let cells="";
+      for(const [c,{v,s:sty}] of cs){const ref=colName(c)+(r+1);const sa=sty?` s="${sty}"`:"";
+        if(v===""||v==null){if(sty)cells+=`<c r="${ref}"${sa}/>`;continue;}
+        if(v instanceof Date)cells+=`<c r="${ref}"${sa}><v>${serial(v)}</v></c>`;
+        else if(typeof v==="number"&&isFinite(v))cells+=`<c r="${ref}"${sa}><v>${v}</v></c>`;
+        else cells+=`<c r="${ref}" t="inlineStr"${sa}><is><t xml:space="preserve">${xe(v)}</t></is></c>`;}
+      const h=s.heights&&s.heights[r]?` ht="${s.heights[r]}" customHeight="1"`:"";
+      rows+=`<row r="${r+1}"${h}>${cells}</row>`;}
+    const cols=s.widths?`<cols>${s.widths.map((w,i)=>w==null?"":`<col min="${i+1}" max="${i+1}" width="${w}" customWidth="1"/>`).join("")}</cols>`:"";
+    const pane=s.freeze?`<pane ySplit="${Number(s.freeze.replace(/\D/g,""))-1}" topLeftCell="${s.freeze}" activePane="bottomLeft" state="frozen"/>`:"";
+    const sv=`<sheetViews><sheetView workbookViewId="0"${s.grid===false?' showGridLines="0"':""}${si===0?' tabSelected="1"':""}>${pane}</sheetView></sheetViews>`;
+    const pr=s.tab?`<sheetPr><tabColor rgb="FF${s.tab}"/></sheetPr>`:"";
+    const af=s.filter?`<autoFilter ref="${s.filter}"/>`:"";
+    const mg=s.merges&&s.merges.length?`<mergeCells count="${s.merges.length}">${s.merges.map(m=>`<mergeCell ref="${m}"/>`).join("")}</mergeCells>`:"";
+    files.push([`xl/worksheets/sheet${si+1}.xml`,`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">${pr}${sv}<sheetFormatPr defaultRowHeight="15"/>${cols}<sheetData>${rows}</sheetData>${af}${mg}</worksheet>`]);});
+  const dn=sheets.map((s,i)=>s.filter?`<definedName name="_xlnm._FilterDatabase" localSheetId="${i}" hidden="1">'${xe(nomes[i]).replace(/'/g,"''")}'!${s.filter.replace(/([A-Z]+)(\d+)/g,"$$$1$$$2")}</definedName>`:"").join("");
+  const wbx=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><bookViews><workbookView activeTab="0"/></bookViews><sheets>${nomes.map((n,i)=>`<sheet name="${xe(n)}" sheetId="${i+1}" r:id="rId${i+1}"/>`).join("")}</sheets>${dn?`<definedNames>${dn}</definedNames>`:""}</workbook>`;
+  const rels=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">${sheets.map((s,i)=>`<Relationship Id="rId${i+1}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet${i+1}.xml"/>`).join("")}<Relationship Id="rId${sheets.length+1}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>`;
+  const ct=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/>${sheets.map((s,i)=>`<Override PartName="/xl/worksheets/sheet${i+1}.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>`).join("")}</Types>`;
+  const root=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>`;
+  return zipStore([["[Content_Types].xml",ct],["_rels/.rels",root],["xl/workbook.xml",wbx],["xl/_rels/workbook.xml.rels",rels],["xl/styles.xml",livro.styles()]].concat(files));
+}
+function baixarBlob(blob,nome){const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=nome;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},2000);}
+function cellRef(ref){const m=ref.match(/^([A-Z]+)(\d+)$/);let c=0;for(const ch of m[1])c=c*26+ch.charCodeAt(0)-64;return [Number(m[2])-1,c-1];}
+function folha(name,o){const cells=new Map();const put=(ref,v,s)=>{const [r,c]=cellRef(ref);cells.set(r+","+c,{v,s});};return Object.assign({name,cells,put,heights:{},merges:[]},o||{});}
+
+/* ================= utilidades ================= */
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const U=s=>String(s??"").normalize("NFD").replace(/[̀-ͯ]/g,"").toUpperCase();
+const clean=s=>String(s??"").replace(/ /g," ").replace(/_x000d_/g,"").replace(/\s+/g," ").trim();
+const nf=n=>Number(n||0).toLocaleString("pt-BR");
+const msg=t=>{$("msg").textContent=t||"";};
+const pctTxt=(a,b)=>b?Math.round(a*1000/b)/10+"%":"–";
+const pctN=(a,b)=>b?a/b:null;
+const dmy=iso=>iso?iso.slice(8,10)+"/"+iso.slice(5,7)+"/"+iso.slice(0,4):"–";
+const dm=iso=>iso?iso.slice(8,10)+"/"+iso.slice(5,7):"–";
+const SEM=["dom","seg","ter","qua","qui","sex","sáb"];
+const wd=iso=>SEM[new Date(iso+"T12:00:00").getDay()];
+const MESES=["janeiro","fevereiro","março","abril","maio","junho","julho","agosto","setembro","outubro","novembro","dezembro"];
+function hojeLocal(){const d=new Date();return new Date(d.getTime()-d.getTimezoneOffset()*60000).toISOString().slice(0,10);}
+function keyOS(v){const s=String(v??"").trim();return s.split(".")[0].replace(/^0+/,"");}
+function dataIso(v){
+  if(typeof v==="number"&&v>20000&&v<80000){const d=new Date(Date.UTC(1899,11,30)+Math.floor(v+1e-9)*864e5);return d.toISOString().slice(0,10);}
+  const s=String(v??"").trim();let m=s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/);if(m)return `${m[3]}-${m[2].padStart(2,"0")}-${m[1].padStart(2,"0")}`;
+  m=s.match(/^(\d{4})-(\d{2})-(\d{2})/);return m?m[0]:"";}
+function txtData(v){
+  if(typeof v==="number"&&v>20000&&v<80000){const ms=Date.UTC(1899,11,30)+Math.round(v*1440)*60000;const d=new Date(ms);const p=n=>String(n).padStart(2,"0");
+    return `${p(d.getUTCDate())}/${p(d.getUTCMonth()+1)}/${d.getUTCFullYear()}`+((v%1)?` ${p(d.getUTCHours())}:${p(d.getUTCMinutes())}`:"");}
+  return clean(v);}
+function minutosResid(s){const t=String(s||"").trim();const neg=t.startsWith("-");const g=k=>{const m=t.match(new RegExp("(\\d+)"+k));return m?Number(m[1]):0;};
+  const v=g("d")*1440+g("h")*60+g("m");return neg?-v:v;}
+
+/* ================= regras (as mesmas da aba CONFIG) ================= */
+const POLOS=["Grajaú","Interlagos"];
+const ATC_POLO={"923":"Interlagos","929":"Grajaú","299":"Grajaú"};
+const GRUPOS=["Vazamento de água","Religação","Ligação de água","Ligação de esgoto","Vazamento de esgoto"];
+const COR={"Vazamento de água":"#2A7FD4","Religação":"#0F9D8A","Ligação de água":"#E07B24","Ligação de esgoto":"#7A4FD6","Vazamento de esgoto":"#C2417A"};
+const COR_XL={"Vazamento de água":"DCEBFA","Religação":"D5F2EE","Ligação de água":"FCE6D2","Ligação de esgoto":"E9E1FA","Vazamento de esgoto":"F8DDE8"};
+const VAZ=new Set(["CAVALETE QUEBRADO","CAVALETE VAZANDO","REGISTRO DO CAVALETE QUEBRADO","REGISTRO DO CAVALETE VAZANDO","TROCAR RAMAL DE ÁGUA","TROCAR RAMAL DE ÁGUA - VAZ NÃO VISIVEL","TROCAR RAMAL DE ÁGUA - VAZ NÃO VISÍVEL","VAZAMENTO DE ÁGUA COM INFILTRAÇÃO","VAZAMENTO DE ÁGUA LEITO PAVIMENTADO","VAZAMENTO DE ÁGUA NO PASSEIO","VAZAMENTO DE ÁGUA LEITO TERRA","ARREBENTADO DE REDE DE ÁGUA","VAZAMENTO DE ÁGUA NÃO VISÍVEL REDE","VAZAMENTO DE ÁGUA NÃO VISÍVEL RAMAL","VAZAMENTO DE ÁGUA NÃO VISÍVEL CAVALETE","VAZAMENTO DE ÁGUA EM RAMAL ABANDONADO","VAZAMENTO DE ÁGUA NA VÁLVULA","PESQUISAR VAZAMENTO"].map(U));
+const FAM={[U("REATIV/RELIG/RESTAB")]:["Religação",false],[U("LIGAÇÃO DE ÁGUA")]:["Ligação de água",true],[U("LIGAÇÃO DE ESGOTO")]:["Ligação de esgoto",true],[U("DESOBSTRUÇÃO")]:["Vazamento de esgoto",false]};
+const CG=U("EMPRESA CONSORCIO GLOBAL INTERLAGOS/04576-050 SÃO PAULO");
+// Executado de verdade = o resultado é o próprio serviço (códigos de serviço, abaixo de 900000).
+// Fim do dia (FJL), imóvel fechado, trata-se de outro serviço, duplicidade, continua, nada consta etc. (900000 em diante) não contam.
+const RES_NAO=/FIM DO DIA|IMOVEL FECHADO|OUTRO SERVICO|DUPLICIDADE|CONTINUA|NADA CONSTA|EXECUTADO ANTERIORMENTE|CANCELAD|DEFEITO INTERNO|NAO EXECUTAD|REPROGRAMAR/;
+function executadoDeFato(cod,res){const c=String(cod||"").trim();if(/^\d+$/.test(c))return Number(c)<900000;if(c)return false;return !!clean(res)&&!RES_NAO.test(U(res));}
+const META=0.8;
+function grupoDe(tss,fam,forn){
+  if(VAZ.has(U(clean(tss))))return "Vazamento de água";
+  const f=FAM[U(clean(fam))];if(!f)return "";
+  if(f[1]&&U(clean(forn))!==CG)return "";
+  return f[0];}
+const poloDe=atc=>ATC_POLO[keyOS(atc)]||"Outro";
+
+/* ================= guardar ================= */
+const SEMENTE={"versao":1,"hist":{"2026-10-02|Grajaú|Vazamento de água":[15,14,28,63],"2026-10-02|Grajaú|Religação":[0,16,17,0],"2026-10-02|Grajaú|Ligação de água":[3,5,18,0],"2026-10-02|Grajaú|Ligação de esgoto":[3,2,13,6],"2026-10-02|Grajaú|Vazamento de esgoto":[0,5,3,1],"2026-10-02|Interlagos|Vazamento de água":[8,25,30,54],"2026-10-02|Interlagos|Religação":[0,17,17,0],"2026-10-02|Interlagos|Ligação de água":[4,4,131,0],"2026-10-02|Interlagos|Ligação de esgoto":[2,1,19,5],"2026-10-02|Interlagos|Vazamento de esgoto":[0,6,13,1],"2026-10-03|Grajaú|Vazamento de água":[2,8,null,null],"2026-10-03|Grajaú|Religação":[0,10,null,null],"2026-10-03|Grajaú|Ligação de água":[1,0,null,null],"2026-10-03|Grajaú|Ligação de esgoto":[13,1,null,null],"2026-10-03|Grajaú|Vazamento de esgoto":[0,4,null,null],"2026-10-03|Interlagos|Vazamento de água":[7,16,null,null],"2026-10-03|Interlagos|Religação":[0,16,null,null],"2026-10-03|Interlagos|Ligação de água":[1,4,null,null],"2026-10-03|Interlagos|Ligação de esgoto":[0,0,null,null],"2026-10-03|Interlagos|Vazamento de esgoto":[0,3,null,null],"2026-10-04|Grajaú|Vazamento de água":[0,9,null,null],"2026-10-04|Grajaú|Religação":[0,1,null,null],"2026-10-04|Grajaú|Ligação de água":[0,0,null,null],"2026-10-04|Grajaú|Ligação de esgoto":[0,0,null,null],"2026-10-04|Grajaú|Vazamento de esgoto":[0,4,null,null],"2026-10-04|Interlagos|Vazamento de água":[10,5,null,null],"2026-10-04|Interlagos|Religação":[0,12,null,null],"2026-10-04|Interlagos|Ligação de água":[0,0,null,null],"2026-10-04|Interlagos|Ligação de esgoto":[0,0,null,null],"2026-10-04|Interlagos|Vazamento de esgoto":[0,1,null,null],"2026-10-05|Grajaú|Vazamento de água":[28,8,null,null],"2026-10-05|Grajaú|Religação":[7,5,null,null],"2026-10-05|Grajaú|Ligação de água":[5,7,null,null],"2026-10-05|Grajaú|Ligação de esgoto":[2,4,null,null],"2026-10-05|Grajaú|Vazamento de esgoto":[6,4,null,null],"2026-10-05|Interlagos|Vazamento de água":[40,21,null,null],"2026-10-05|Interlagos|Religação":[14,9,null,null],"2026-10-05|Interlagos|Ligação de água":[3,21,null,null],"2026-10-05|Interlagos|Ligação de esgoto":[0,2,null,null],"2026-10-05|Interlagos|Vazamento de esgoto":[4,8,null,null],"2026-10-06|Grajaú|Vazamento de água":[null,null,30,59],"2026-10-06|Grajaú|Religação":[null,null,10,0],"2026-10-06|Grajaú|Ligação de água":[null,null,16,0],"2026-10-06|Grajaú|Ligação de esgoto":[null,null,21,4],"2026-10-06|Grajaú|Vazamento de esgoto":[null,null,7,0],"2026-10-06|Interlagos|Vazamento de água":[null,null,46,52],"2026-10-06|Interlagos|Religação":[null,null,16,0],"2026-10-06|Interlagos|Ligação de água":[null,null,113,0],"2026-10-06|Interlagos|Ligação de esgoto":[null,null,13,5],"2026-10-06|Interlagos|Vazamento de esgoto":[null,null,7,1],"2026-06-01|Grajaú|Vazamento de água":[null,null,14,51],"2026-06-01|Grajaú|Ligação de água":[null,null,111,147],"2026-06-01|Interlagos|Vazamento de água":[null,null,24,59],"2026-06-01|Interlagos|Ligação de água":[null,null,23,76],"2026-06-02|Grajaú|Vazamento de água":[null,null,31,48],"2026-06-02|Grajaú|Ligação de água":[null,null,101,147],"2026-06-02|Interlagos|Vazamento de água":[null,null,52,57],"2026-06-02|Interlagos|Ligação de água":[null,null,14,71],"2026-06-03|Grajaú|Vazamento de água":[null,null,37,46],"2026-06-03|Grajaú|Ligação de água":[null,null,87,147],"2026-06-03|Interlagos|Vazamento de água":[null,null,54,66],"2026-06-03|Interlagos|Ligação de água":[null,null,25,60],"2026-06-08|Grajaú|Vazamento de água":[null,null,6,56],"2026-06-08|Grajaú|Ligação de água":[null,null,94,129],"2026-06-08|Interlagos|Vazamento de água":[null,null,21,125],"2026-06-08|Interlagos|Ligação de água":[null,null,22,45],"2026-06-09|Grajaú|Vazamento de água":[null,null,30,48],"2026-06-09|Grajaú|Ligação de água":[null,null,84,140],"2026-06-09|Interlagos|Vazamento de água":[null,null,43,109],"2026-06-09|Interlagos|Ligação de água":[null,null,28,43],"2026-06-10|Grajaú|Vazamento de água":[null,null,30,43],"2026-06-10|Grajaú|Ligação de água":[null,null,77,151],"2026-06-10|Interlagos|Vazamento de água":[null,null,52,102],"2026-06-10|Interlagos|Ligação de água":[null,null,24,44],"2026-06-11|Grajaú|Vazamento de água":[null,null,33,40],"2026-06-11|Grajaú|Ligação de água":[null,null,50,178],"2026-06-11|Interlagos|Vazamento de água":[null,null,37,111],"2026-06-11|Interlagos|Ligação de água":[null,null,27,39],"2026-06-12|Grajaú|Vazamento de água":[null,null,30,52],"2026-06-12|Grajaú|Ligação de água":[null,null,55,178],"2026-06-12|Interlagos|Vazamento de água":[null,null,44,96],"2026-06-12|Interlagos|Ligação de água":[null,null,23,42],"2026-06-13|Grajaú|Vazamento de água":[null,null,17,52],"2026-06-13|Grajaú|Ligação de água":[null,null,71,178],"2026-06-13|Interlagos|Vazamento de água":[null,null,39,96],"2026-06-13|Interlagos|Ligação de água":[null,null,28,41],"2026-06-14|Grajaú|Vazamento de água":[null,null,14,51],"2026-06-14|Grajaú|Ligação de água":[null,null,77,178],"2026-06-14|Interlagos|Vazamento de água":[null,null,26,95],"2026-06-14|Interlagos|Ligação de água":[null,null,29,41],"2026-06-15|Grajaú|Vazamento de água":[null,null,16,53],"2026-06-15|Grajaú|Ligação de água":[null,null,77,178],"2026-06-15|Interlagos|Vazamento de água":[null,null,30,92],"2026-06-15|Interlagos|Ligação de água":[null,null,29,41],"2026-06-16|Grajaú|Vazamento de água":[null,null,18,47],"2026-06-16|Grajaú|Ligação de água":[null,null,64,186],"2026-06-16|Interlagos|Vazamento de água":[null,null,37,80],"2026-06-16|Interlagos|Ligação de água":[null,null,32,41],"2026-06-17|Grajaú|Vazamento de água":[null,null,23,46],"2026-06-17|Grajaú|Ligação de água":[null,null,71,184],"2026-06-17|Interlagos|Vazamento de água":[null,null,36,72],"2026-06-17|Interlagos|Ligação de água":[null,null,36,40],"2026-06-18|Grajaú|Vazamento de água":[null,null,21,57],"2026-06-18|Grajaú|Ligação de água":[null,null,70,182],"2026-06-18|Interlagos|Vazamento de água":[null,null,39,61],"2026-06-18|Interlagos|Ligação de água":[null,null,34,41],"2026-06-19|Grajaú|Vazamento de água":[null,null,31,47],"2026-06-19|Grajaú|Ligação de água":[null,null,46,174],"2026-06-19|Interlagos|Vazamento de água":[null,null,50,66],"2026-06-19|Interlagos|Ligação de água":[null,null,35,39],"2026-06-22|Grajaú|Vazamento de água":[null,null,8,45],"2026-06-22|Grajaú|Ligação de água":[null,null,30,146],"2026-06-22|Interlagos|Vazamento de água":[null,null,39,96],"2026-06-22|Interlagos|Ligação de água":[null,null,30,31],"2026-06-23|Grajaú|Vazamento de água":[null,null,24,44],"2026-06-23|Grajaú|Ligação de água":[null,null,30,143],"2026-06-23|Interlagos|Vazamento de água":[null,null,55,96],"2026-06-23|Interlagos|Ligação de água":[null,null,37,37],"2026-06-24|Grajaú|Vazamento de água":[null,null,23,48],"2026-06-24|Grajaú|Ligação de água":[null,null,23,145],"2026-06-24|Interlagos|Vazamento de água":[null,null,30,115],"2026-06-24|Interlagos|Ligação de água":[null,null,35,42],"2026-06-25|Grajaú|Vazamento de água":[null,null,19,51],"2026-06-25|Grajaú|Ligação de água":[null,null,23,149],"2026-06-25|Interlagos|Vazamento de água":[null,null,24,103],"2026-06-25|Interlagos|Ligação de água":[null,null,33,45],"2026-06-26|Grajaú|Vazamento de água":[null,null,19,49],"2026-06-26|Grajaú|Ligação de água":[null,null,27,154],"2026-06-26|Interlagos|Vazamento de água":[null,null,35,91],"2026-06-26|Interlagos|Ligação de água":[null,null,27,58],"2026-06-29|Grajaú|Vazamento de água":[null,null,10,44],"2026-06-29|Grajaú|Ligação de água":[null,null,28,148],"2026-06-29|Interlagos|Vazamento de água":[null,null,28,88],"2026-06-29|Interlagos|Ligação de água":[null,null,14,53],"2026-06-30|Grajaú|Vazamento de água":[null,null,20,41],"2026-06-30|Grajaú|Ligação de água":[null,null,30,145],"2026-06-30|Interlagos|Vazamento de água":[null,null,31,76],"2026-06-30|Interlagos|Ligação de água":[null,null,15,55],"2026-07-01|Grajaú|Vazamento de água":[null,null,29,34],"2026-07-01|Grajaú|Ligação de água":[null,null,28,147],"2026-07-01|Interlagos|Vazamento de água":[null,null,42,49],"2026-07-01|Interlagos|Ligação de água":[null,null,17,56],"2026-07-02|Grajaú|Vazamento de água":[null,null,21,29],"2026-07-02|Grajaú|Ligação de água":[null,null,48,135],"2026-07-02|Interlagos|Vazamento de água":[null,null,28,40],"2026-07-02|Interlagos|Ligação de água":[null,null,34,48],"2026-07-03|Grajaú|Vazamento de água":[null,null,31,20],"2026-07-03|Grajaú|Ligação de água":[null,null,51,132],"2026-07-03|Interlagos|Vazamento de água":[null,null,41,36],"2026-07-03|Interlagos|Ligação de água":[null,null,30,48],"2026-07-06|Grajaú|Vazamento de água":[null,null,21,20],"2026-07-06|Grajaú|Ligação de água":[null,null,71,130],"2026-07-06|Interlagos|Vazamento de água":[null,null,13,56],"2026-07-06|Interlagos|Ligação de água":[null,null,37,46],"2026-07-07|Grajaú|Vazamento de água":[null,null,35,14],"2026-07-07|Grajaú|Ligação de água":[null,null,71,129],"2026-07-07|Interlagos|Vazamento de água":[null,null,39,44],"2026-07-07|Interlagos|Ligação de água":[null,null,40,45],"2026-07-08|Grajaú|Vazamento de água":[null,null,23,25],"2026-07-08|Grajaú|Ligação de água":[null,null,62,128],"2026-07-08|Interlagos|Vazamento de água":[null,null,37,53],"2026-07-08|Interlagos|Ligação de água":[null,null,38,48],"2026-07-13|Grajaú|Vazamento de água":[null,null,6,52],"2026-07-13|Grajaú|Ligação de água":[null,null,65,113],"2026-07-13|Interlagos|Vazamento de água":[null,null,9,57],"2026-07-13|Interlagos|Ligação de água":[null,null,43,55],"2026-07-14|Grajaú|Vazamento de água":[null,null,25,42],"2026-07-14|Grajaú|Ligação de água":[null,null,52,91],"2026-07-14|Interlagos|Vazamento de água":[null,null,34,47],"2026-07-14|Interlagos|Ligação de água":[null,null,45,61],"2026-07-15|Grajaú|Vazamento de água":[null,null,19,35],"2026-07-15|Grajaú|Ligação de água":[null,null,43,84],"2026-07-15|Interlagos|Vazamento de água":[null,null,43,84],"2026-07-15|Interlagos|Ligação de água":[null,null,40,58],"2026-07-16|Grajaú|Vazamento de água":[null,null,25,37],"2026-07-16|Grajaú|Ligação de água":[null,null,43,81],"2026-07-16|Interlagos|Vazamento de água":[null,null,31,49],"2026-07-16|Interlagos|Ligação de água":[null,null,35,49],"2026-07-17|Grajaú|Vazamento de água":[null,null,36,37],"2026-07-17|Grajaú|Ligação de água":[null,null,44,78],"2026-07-17|Interlagos|Vazamento de água":[null,null,39,44],"2026-07-17|Interlagos|Ligação de água":[null,null,31,52],"2026-07-20|Grajaú|Vazamento de água":[null,null,9,33],"2026-07-20|Grajaú|Ligação de água":[null,null,52,85],"2026-07-20|Interlagos|Vazamento de água":[null,null,17,38],"2026-07-20|Interlagos|Ligação de água":[null,null,43,55],"2026-07-21|Grajaú|Vazamento de água":[null,null,23,24],"2026-07-21|Grajaú|Ligação de água":[null,null,51,92],"2026-07-21|Interlagos|Vazamento de água":[null,null,27,14],"2026-07-21|Interlagos|Ligação de água":[null,null,45,53],"2026-07-22|Grajaú|Vazamento de água":[null,null,29,20],"2026-07-22|Grajaú|Ligação de água":[null,null,60,94],"2026-07-22|Interlagos|Vazamento de água":[null,null,25,13],"2026-07-22|Interlagos|Ligação de água":[null,null,33,52],"2026-07-23|Grajaú|Vazamento de água":[null,null,16,24],"2026-07-23|Grajaú|Ligação de água":[null,null,63,96],"2026-07-23|Interlagos|Vazamento de água":[null,null,35,14],"2026-07-23|Interlagos|Ligação de água":[null,null,34,55],"2026-07-24|Grajaú|Vazamento de água":[null,null,14,13],"2026-07-24|Grajaú|Ligação de água":[null,null,63,96],"2026-07-24|Interlagos|Vazamento de água":[null,null,46,28],"2026-07-24|Interlagos|Ligação de água":[null,null,35,55],"2026-07-28|Grajaú|Vazamento de água":[null,null,16,14],"2026-07-28|Grajaú|Ligação de água":[null,null,58,101],"2026-07-28|Interlagos|Vazamento de água":[null,null,48,36],"2026-07-28|Interlagos|Ligação de água":[null,null,36,49],"2026-07-29|Grajaú|Vazamento de água":[null,null,23,18],"2026-07-29|Grajaú|Ligação de água":[null,null,44,116],"2026-07-29|Interlagos|Vazamento de água":[null,null,37,39],"2026-07-29|Interlagos|Ligação de água":[null,null,23,54],"2026-07-30|Grajaú|Vazamento de água":[null,null,27,14],"2026-07-30|Grajaú|Ligação de água":[null,null,41,107],"2026-07-30|Interlagos|Vazamento de água":[null,null,26,32],"2026-07-30|Interlagos|Ligação de água":[null,null,25,54],"2026-07-31|Grajaú|Vazamento de água":[null,null,19,21],"2026-07-31|Grajaú|Ligação de água":[null,null,29,113],"2026-07-31|Interlagos|Vazamento de água":[null,null,26,28],"2026-07-31|Interlagos|Ligação de água":[null,null,21,45],"2026-08-03|Grajaú|Vazamento de água":[null,null,3,17],"2026-08-03|Grajaú|Ligação de água":[null,null,53,114],"2026-08-03|Interlagos|Vazamento de água":[null,null,12,37],"2026-08-03|Interlagos|Ligação de água":[null,null,24,34],"2026-08-04|Grajaú|Vazamento de água":[null,null,27,15],"2026-08-04|Grajaú|Ligação de água":[null,null,68,119],"2026-08-04|Interlagos|Vazamento de água":[null,null,36,30],"2026-08-04|Interlagos|Ligação de água":[null,null,42,28],"2026-08-05|Grajaú|Vazamento de água":[null,null,32,23],"2026-08-05|Grajaú|Ligação de água":[null,null,68,126],"2026-08-05|Interlagos|Vazamento de água":[null,null,30,34],"2026-08-05|Interlagos|Ligação de água":[null,null,31,32],"2026-08-06|Grajaú|Vazamento de água":[null,null,21,25],"2026-08-06|Grajaú|Ligação de água":[null,null,59,121],"2026-08-06|Interlagos|Vazamento de água":[null,null,26,43],"2026-08-06|Interlagos|Ligação de água":[null,null,31,32],"2026-08-07|Grajaú|Vazamento de água":[null,null,33,32],"2026-08-07|Grajaú|Ligação de água":[null,null,56,111],"2026-08-07|Interlagos|Vazamento de água":[null,null,27,44],"2026-08-07|Interlagos|Ligação de água":[null,null,27,32],"2026-08-10|Grajaú|Vazamento de água":[null,null,5,39],"2026-08-10|Grajaú|Ligação de água":[null,null,55,107],"2026-08-10|Interlagos|Vazamento de água":[null,null,11,47],"2026-08-10|Interlagos|Ligação de água":[null,null,23,33],"2026-08-11|Grajaú|Vazamento de água":[null,null,19,33],"2026-08-11|Grajaú|Ligação de água":[null,null,44,94],"2026-08-11|Interlagos|Vazamento de água":[null,null,31,35],"2026-08-11|Interlagos|Ligação de água":[null,null,20,31],"2026-08-12|Grajaú|Vazamento de água":[null,null,23,36],"2026-08-12|Grajaú|Ligação de água":[null,null,37,84],"2026-08-12|Interlagos|Vazamento de água":[null,null,28,33],"2026-08-12|Interlagos|Ligação de água":[null,null,8,24],"2026-08-13|Grajaú|Vazamento de água":[null,null,25,24],"2026-08-13|Grajaú|Ligação de água":[null,null,43,76],"2026-08-13|Interlagos|Vazamento de água":[null,null,30,39],"2026-08-13|Interlagos|Ligação de água":[null,null,14,23],"2026-08-14|Grajaú|Vazamento de água":[null,null,26,18],"2026-08-14|Grajaú|Ligação de água":[null,null,29,73],"2026-08-14|Interlagos|Vazamento de água":[null,null,23,48],"2026-08-14|Interlagos|Ligação de água":[null,null,10,23],"2026-08-17|Grajaú|Vazamento de água":[null,null,6,18],"2026-08-17|Grajaú|Ligação de água":[null,null,41,69],"2026-08-17|Interlagos|Vazamento de água":[null,null,10,50],"2026-08-17|Interlagos|Ligação de água":[null,null,17,21],"2026-08-18|Grajaú|Vazamento de água":[null,null,19,16],"2026-08-18|Grajaú|Ligação de água":[null,null,54,64],"2026-08-18|Interlagos|Vazamento de água":[null,null,43,44],"2026-08-18|Interlagos|Ligação de água":[null,null,24,18],"2026-08-19|Grajaú|Vazamento de água":[null,null,12,22],"2026-08-19|Grajaú|Ligação de água":[null,null,43,65],"2026-08-19|Interlagos|Vazamento de água":[null,null,44,45],"2026-08-19|Interlagos|Ligação de água":[null,null,17,14],"2026-08-20|Grajaú|Vazamento de água":[null,null,20,20],"2026-08-20|Grajaú|Ligação de água":[null,null,69,63],"2026-08-20|Interlagos|Vazamento de água":[null,null,30,47],"2026-08-20|Interlagos|Ligação de água":[null,null,32,16],"2026-08-21|Grajaú|Vazamento de água":[null,null,29,23],"2026-08-21|Grajaú|Ligação de água":[null,null,60,66],"2026-08-21|Interlagos|Vazamento de água":[null,null,28,43],"2026-08-21|Interlagos|Ligação de água":[null,null,35,17],"2026-08-24|Grajaú|Vazamento de água":[null,null,11,38],"2026-08-24|Grajaú|Ligação de água":[null,null,70,65],"2026-08-24|Interlagos|Vazamento de água":[null,null,16,62],"2026-08-24|Interlagos|Ligação de água":[null,null,35,14],"2026-08-25|Grajaú|Vazamento de água":[null,null,31,33],"2026-08-25|Grajaú|Ligação de água":[null,null,57,62],"2026-08-25|Interlagos|Vazamento de água":[null,null,40,47],"2026-08-25|Interlagos|Ligação de água":[null,null,26,15],"2026-08-26|Grajaú|Vazamento de água":[null,null,38,35],"2026-08-26|Grajaú|Ligação de água":[null,null,46,64],"2026-08-26|Interlagos|Vazamento de água":[null,null,35,52],"2026-08-26|Interlagos|Ligação de água":[null,null,19,11],"2026-08-27|Grajaú|Vazamento de água":[null,null,37,44],"2026-08-27|Grajaú|Ligação de água":[null,null,52,53],"2026-08-27|Interlagos|Vazamento de água":[null,null,39,55],"2026-08-27|Interlagos|Ligação de água":[null,null,27,10],"2026-09-01|Grajaú|Vazamento de água":[11,30,null,null],"2026-09-01|Grajaú|Religação":[8,21,null,null],"2026-09-01|Grajaú|Ligação de água":[16,17,null,null],"2026-09-01|Grajaú|Ligação de esgoto":[3,5,null,null],"2026-09-01|Grajaú|Vazamento de esgoto":[10,22,null,null],"2026-09-01|Interlagos|Vazamento de água":[23,33,null,null],"2026-09-01|Interlagos|Religação":[11,34,null,null],"2026-09-01|Interlagos|Ligação de água":[13,2,null,null],"2026-09-01|Interlagos|Ligação de esgoto":[1,6,null,null],"2026-09-01|Interlagos|Vazamento de esgoto":[2,17,null,null],"2026-09-02|Grajaú|Vazamento de água":[24,28,19,36],"2026-09-02|Grajaú|Religação":[17,27,null,null],"2026-09-02|Grajaú|Ligação de água":[8,22,48,58],"2026-09-02|Grajaú|Ligação de esgoto":[5,2,null,null],"2026-09-02|Grajaú|Vazamento de esgoto":[13,28,null,null],"2026-09-02|Interlagos|Vazamento de água":[44,45,32,75],"2026-09-02|Interlagos|Religação":[22,36,null,null],"2026-09-02|Interlagos|Ligação de água":[24,4,36,10],"2026-09-02|Interlagos|Ligação de esgoto":[3,3,null,null],"2026-09-02|Interlagos|Vazamento de esgoto":[5,21,null,null],"2026-09-03|Grajaú|Vazamento de água":[27,21,23,32],"2026-09-03|Grajaú|Religação":[15,25,null,null],"2026-09-03|Grajaú|Ligação de água":[15,23,38,60],"2026-09-03|Grajaú|Ligação de esgoto":[4,1,null,null],"2026-09-03|Grajaú|Vazamento de esgoto":[2,18,null,null],"2026-09-03|Interlagos|Vazamento de água":[21,47,39,72],"2026-09-03|Interlagos|Religação":[13,28,null,null],"2026-09-03|Interlagos|Ligação de água":[8,19,54,10],"2026-09-03|Interlagos|Ligação de esgoto":[6,5,null,null],"2026-09-03|Interlagos|Vazamento de esgoto":[4,12,null,null],"2026-09-04|Grajaú|Vazamento de água":[9,22,29,39],"2026-09-04|Grajaú|Religação":[0,30,null,null],"2026-09-04|Grajaú|Ligação de água":[4,45,47,44],"2026-09-04|Grajaú|Ligação de esgoto":[6,12,null,null],"2026-09-04|Grajaú|Vazamento de esgoto":[0,17,null,null],"2026-09-04|Interlagos|Vazamento de água":[17,29,28,75],"2026-09-04|Interlagos|Religação":[0,36,null,null],"2026-09-04|Interlagos|Ligação de água":[3,9,47,10],"2026-09-04|Interlagos|Ligação de esgoto":[1,6,null,null],"2026-09-04|Interlagos|Vazamento de esgoto":[0,26,null,null],"2026-09-05|Grajaú|Vazamento de água":[2,19,null,null],"2026-09-05|Grajaú|Religação":[0,24,null,null],"2026-09-05|Grajaú|Ligação de água":[5,17,null,null],"2026-09-05|Grajaú|Ligação de esgoto":[1,4,null,null],"2026-09-05|Grajaú|Vazamento de esgoto":[0,25,null,null],"2026-09-05|Interlagos|Vazamento de água":[3,23,null,null],"2026-09-05|Interlagos|Religação":[0,43,null,null],"2026-09-05|Interlagos|Ligação de água":[5,1,null,null],"2026-09-05|Interlagos|Ligação de esgoto":[0,3,null,null],"2026-09-05|Interlagos|Vazamento de esgoto":[0,40,null,null],"2026-09-06|Grajaú|Vazamento de água":[2,28,null,null],"2026-09-06|Grajaú|Religação":[0,9,null,null],"2026-09-06|Grajaú|Ligação de água":[4,10,null,null],"2026-09-06|Grajaú|Ligação de esgoto":[8,1,null,null],"2026-09-06|Grajaú|Vazamento de esgoto":[0,12,null,null],"2026-09-06|Interlagos|Vazamento de água":[6,20,null,null],"2026-09-06|Interlagos|Religação":[1,19,null,null],"2026-09-06|Interlagos|Ligação de água":[2,2,null,null],"2026-09-06|Interlagos|Ligação de esgoto":[1,0,null,null],"2026-09-06|Interlagos|Vazamento de esgoto":[0,10,null,null],"2026-09-07|Grajaú|Vazamento de água":[9,19,null,null],"2026-09-07|Grajaú|Religação":[4,3,null,null],"2026-09-07|Grajaú|Ligação de água":[3,16,null,null],"2026-09-07|Grajaú|Ligação de esgoto":[1,15,null,null],"2026-09-07|Grajaú|Vazamento de esgoto":[6,6,null,null],"2026-09-07|Interlagos|Vazamento de água":[12,23,null,null],"2026-09-07|Interlagos|Religação":[6,5,null,null],"2026-09-07|Interlagos|Ligação de água":[3,3,null,null],"2026-09-07|Interlagos|Ligação de esgoto":[0,9,null,null],"2026-09-07|Interlagos|Vazamento de esgoto":[4,4,null,null],"2026-09-08|Grajaú|Vazamento de água":[31,26,9,45],"2026-09-08|Grajaú|Religação":[10,6,null,null],"2026-09-08|Grajaú|Ligação de água":[17,8,50,4],"2026-09-08|Grajaú|Ligação de esgoto":[3,7,null,null],"2026-09-08|Grajaú|Vazamento de esgoto":[7,17,null,null],"2026-09-08|Interlagos|Vazamento de água":[46,50,13,93],"2026-09-08|Interlagos|Religação":[6,17,null,null],"2026-09-08|Interlagos|Ligação de água":[8,15,55,3],"2026-09-08|Interlagos|Ligação de esgoto":[1,2,null,null],"2026-09-08|Interlagos|Vazamento de esgoto":[4,15,null,null],"2026-09-09|Grajaú|Vazamento de água":[18,27,30,38],"2026-09-09|Grajaú|Religação":[12,15,null,null],"2026-09-09|Grajaú|Ligação de água":[10,14,63,1],"2026-09-09|Grajaú|Ligação de esgoto":[3,6,null,null],"2026-09-09|Grajaú|Vazamento de esgoto":[7,15,null,null],"2026-09-09|Interlagos|Vazamento de água":[29,63,40,72],"2026-09-09|Interlagos|Religação":[20,12,null,null],"2026-09-09|Interlagos|Ligação de água":[8,13,51,0],"2026-09-09|Interlagos|Ligação de esgoto":[1,1,null,null],"2026-09-09|Interlagos|Vazamento de esgoto":[8,10,null,null],"2026-09-10|Grajaú|Vazamento de água":[null,null,19,43],"2026-09-10|Grajaú|Ligação de água":[null,null,58,2],"2026-09-10|Interlagos|Vazamento de água":[null,null,29,73],"2026-09-10|Interlagos|Ligação de água":[null,null,48,0],"2026-09-11|Grajaú|Vazamento de água":[13,14,null,null],"2026-09-11|Grajaú|Religação":[0,21,null,null],"2026-09-11|Grajaú|Ligação de água":[16,15,null,null],"2026-09-11|Grajaú|Ligação de esgoto":[2,3,null,null],"2026-09-11|Grajaú|Vazamento de esgoto":[0,35,null,null],"2026-09-11|Interlagos|Vazamento de água":[12,31,null,null],"2026-09-11|Interlagos|Religação":[0,40,null,null],"2026-09-11|Interlagos|Ligação de água":[13,13,null,null],"2026-09-11|Interlagos|Ligação de esgoto":[1,0,null,null],"2026-09-11|Interlagos|Vazamento de esgoto":[0,37,null,null],"2026-09-12|Grajaú|Vazamento de água":[9,6,null,null],"2026-09-12|Grajaú|Religação":[0,17,null,null],"2026-09-12|Grajaú|Ligação de água":[21,6,null,null],"2026-09-12|Grajaú|Ligação de esgoto":[0,2,null,null],"2026-09-12|Grajaú|Vazamento de esgoto":[4,23,null,null],"2026-09-12|Interlagos|Vazamento de água":[12,17,null,null],"2026-09-12|Interlagos|Religação":[0,31,null,null],"2026-09-12|Interlagos|Ligação de água":[10,4,null,null],"2026-09-12|Interlagos|Ligação de esgoto":[2,1,null,null],"2026-09-12|Interlagos|Vazamento de esgoto":[4,18,null,null],"2026-09-13|Grajaú|Vazamento de água":[4,7,null,null],"2026-09-13|Grajaú|Religação":[2,3,null,null],"2026-09-13|Grajaú|Ligação de água":[3,0,null,null],"2026-09-13|Grajaú|Ligação de esgoto":[1,0,null,null],"2026-09-13|Grajaú|Vazamento de esgoto":[5,25,null,null],"2026-09-13|Interlagos|Vazamento de água":[13,28,null,null],"2026-09-13|Interlagos|Religação":[4,9,null,null],"2026-09-13|Interlagos|Ligação de água":[2,0,null,null],"2026-09-13|Interlagos|Ligação de esgoto":[1,1,null,null],"2026-09-13|Interlagos|Vazamento de esgoto":[0,14,null,null],"2026-09-14|Grajaú|Vazamento de água":[null,null,4,63],"2026-09-14|Grajaú|Ligação de água":[null,null,89,1],"2026-09-14|Interlagos|Vazamento de água":[null,null,10,99],"2026-09-14|Interlagos|Ligação de água":[null,null,49,0],"2026-09-15|Grajaú|Vazamento de água":[15,17,10,54],"2026-09-15|Grajaú|Religação":[18,11,null,null],"2026-09-15|Grajaú|Ligação de água":[16,21,66,0],"2026-09-15|Grajaú|Ligação de esgoto":[2,2,null,null],"2026-09-15|Grajaú|Vazamento de esgoto":[5,13,null,null],"2026-09-15|Interlagos|Vazamento de água":[21,33,29,84],"2026-09-15|Interlagos|Religação":[14,11,null,null],"2026-09-15|Interlagos|Ligação de água":[19,20,45,1],"2026-09-15|Interlagos|Ligação de esgoto":[2,2,null,null],"2026-09-15|Interlagos|Vazamento de esgoto":[8,18,null,null],"2026-09-16|Grajaú|Vazamento de água":[22,21,18,53],"2026-09-16|Grajaú|Religação":[6,28,null,null],"2026-09-16|Grajaú|Ligação de água":[19,28,59,1],"2026-09-16|Grajaú|Ligação de esgoto":[5,0,null,null],"2026-09-16|Grajaú|Vazamento de esgoto":[8,15,null,null],"2026-09-16|Interlagos|Vazamento de água":[29,45,25,93],"2026-09-16|Interlagos|Religação":[18,21,null,null],"2026-09-16|Interlagos|Ligação de água":[3,21,45,1],"2026-09-16|Interlagos|Ligação de esgoto":[1,1,null,null],"2026-09-16|Interlagos|Vazamento de esgoto":[5,24,null,null],"2026-09-17|Grajaú|Vazamento de água":[19,18,19,55],"2026-09-17|Grajaú|Religação":[13,7,null,null],"2026-09-17|Grajaú|Ligação de água":[4,18,50,1],"2026-09-17|Grajaú|Ligação de esgoto":[1,1,null,null],"2026-09-17|Grajaú|Vazamento de esgoto":[5,18,null,null],"2026-09-17|Interlagos|Vazamento de água":[43,35,29,85],"2026-09-17|Interlagos|Religação":[22,22,null,null],"2026-09-17|Interlagos|Ligação de água":[1,9,27,0],"2026-09-17|Interlagos|Ligação de esgoto":[0,0,null,null],"2026-09-17|Interlagos|Vazamento de esgoto":[4,19,null,null],"2026-09-18|Grajaú|Vazamento de água":[3,20,24,58],"2026-09-18|Grajaú|Religação":[0,21,null,null],"2026-09-18|Grajaú|Ligação de água":[6,14,36,1],"2026-09-18|Grajaú|Ligação de esgoto":[4,2,null,null],"2026-09-18|Grajaú|Vazamento de esgoto":[1,10,null,null],"2026-09-18|Interlagos|Vazamento de água":[12,48,44,86],"2026-09-18|Interlagos|Religação":[0,39,null,null],"2026-09-18|Interlagos|Ligação de água":[6,14,19,0],"2026-09-18|Interlagos|Ligação de esgoto":[2,1,null,null],"2026-09-18|Interlagos|Vazamento de esgoto":[0,13,null,null],"2026-09-19|Grajaú|Vazamento de água":[6,26,null,null],"2026-09-19|Grajaú|Religação":[1,12,null,null],"2026-09-19|Grajaú|Ligação de água":[0,12,null,null],"2026-09-19|Grajaú|Ligação de esgoto":[0,1,null,null],"2026-09-19|Grajaú|Vazamento de esgoto":[0,13,null,null],"2026-09-19|Interlagos|Vazamento de água":[4,31,null,null],"2026-09-19|Interlagos|Religação":[2,27,null,null],"2026-09-19|Interlagos|Ligação de água":[0,0,null,null],"2026-09-19|Interlagos|Ligação de esgoto":[2,0,null,null],"2026-09-19|Interlagos|Vazamento de esgoto":[0,15,null,null],"2026-09-20|Grajaú|Vazamento de água":[8,19,null,null],"2026-09-20|Grajaú|Religação":[3,9,null,null],"2026-09-20|Grajaú|Ligação de água":[0,7,null,null],"2026-09-20|Grajaú|Ligação de esgoto":[0,2,null,null],"2026-09-20|Grajaú|Vazamento de esgoto":[2,18,null,null],"2026-09-20|Interlagos|Vazamento de água":[5,18,null,null],"2026-09-20|Interlagos|Religação":[11,5,null,null],"2026-09-20|Interlagos|Ligação de água":[0,3,null,null],"2026-09-20|Interlagos|Ligação de esgoto":[0,1,null,null],"2026-09-20|Interlagos|Vazamento de esgoto":[4,13,null,null],"2026-09-24|Grajaú|Vazamento de água":[18,32,null,null],"2026-09-24|Grajaú|Religação":[21,19,null,null],"2026-09-24|Grajaú|Ligação de água":[12,7,null,null],"2026-09-24|Grajaú|Ligação de esgoto":[8,4,null,null],"2026-09-24|Grajaú|Vazamento de esgoto":[9,22,null,null],"2026-09-24|Interlagos|Vazamento de água":[37,62,null,null],"2026-09-24|Interlagos|Religação":[28,35,null,null],"2026-09-24|Interlagos|Ligação de água":[9,5,null,null],"2026-09-24|Interlagos|Ligação de esgoto":[2,3,null,null],"2026-09-24|Interlagos|Vazamento de esgoto":[6,14,null,null],"2026-09-25|Grajaú|Vazamento de água":[7,20,19,46],"2026-09-25|Grajaú|Religação":[0,26,21,0],"2026-09-25|Grajaú|Ligação de água":[3,14,34,0],"2026-09-25|Grajaú|Ligação de esgoto":[1,6,17,10],"2026-09-25|Grajaú|Vazamento de esgoto":[0,20,10,0],"2026-09-25|Interlagos|Vazamento de água":[4,55,37,62],"2026-09-25|Interlagos|Religação":[0,35,29,0],"2026-09-25|Interlagos|Ligação de água":[1,20,33,0],"2026-09-25|Interlagos|Ligação de esgoto":[1,0,8,3],"2026-09-25|Interlagos|Vazamento de esgoto":[0,18,6,1],"2026-09-26|Grajaú|Vazamento de água":[3,21,null,null],"2026-09-26|Grajaú|Religação":[0,8,null,null],"2026-09-26|Grajaú|Ligação de água":[0,3,null,null],"2026-09-26|Grajaú|Ligação de esgoto":[0,7,null,null],"2026-09-26|Grajaú|Vazamento de esgoto":[0,13,null,null],"2026-09-26|Interlagos|Vazamento de água":[5,24,null,null],"2026-09-26|Interlagos|Religação":[0,22,null,null],"2026-09-26|Interlagos|Ligação de água":[1,0,null,null],"2026-09-26|Interlagos|Ligação de esgoto":[0,0,null,null],"2026-09-26|Interlagos|Vazamento de esgoto":[0,14,null,null],"2026-09-27|Grajaú|Vazamento de água":[1,10,null,null],"2026-09-27|Grajaú|Religação":[0,2,null,null],"2026-09-27|Grajaú|Ligação de água":[0,2,null,null],"2026-09-27|Grajaú|Ligação de esgoto":[0,1,null,null],"2026-09-27|Grajaú|Vazamento de esgoto":[0,11,null,null],"2026-09-27|Interlagos|Vazamento de água":[3,9,null,null],"2026-09-27|Interlagos|Religação":[1,12,null,null],"2026-09-27|Interlagos|Ligação de água":[0,9,null,null],"2026-09-27|Interlagos|Ligação de esgoto":[0,0,null,null],"2026-09-27|Interlagos|Vazamento de esgoto":[0,8,null,null],"2026-09-28|Grajaú|Vazamento de água":[21,19,null,null],"2026-09-28|Grajaú|Religação":[15,11,null,null],"2026-09-28|Grajaú|Ligação de água":[1,12,null,null],"2026-09-28|Grajaú|Ligação de esgoto":[2,4,null,null],"2026-09-28|Grajaú|Vazamento de esgoto":[12,14,null,null],"2026-09-28|Interlagos|Vazamento de água":[35,47,null,null],"2026-09-28|Interlagos|Religação":[16,15,null,null],"2026-09-28|Interlagos|Ligação de água":[11,15,null,null],"2026-09-28|Interlagos|Ligação de esgoto":[4,0,null,null],"2026-09-28|Interlagos|Vazamento de esgoto":[14,19,null,null],"2026-09-29|Grajaú|Vazamento de água":[null,null,24,52],"2026-09-29|Grajaú|Religação":[null,null,17,0],"2026-09-29|Grajaú|Ligação de água":[null,null,14,0],"2026-09-29|Grajaú|Ligação de esgoto":[null,null,14,5],"2026-09-29|Grajaú|Vazamento de esgoto":[null,null,13,0],"2026-09-29|Interlagos|Vazamento de água":[null,null,40,56],"2026-09-29|Interlagos|Religação":[null,null,20,0],"2026-09-29|Interlagos|Ligação de água":[null,null,20,0],"2026-09-29|Interlagos|Ligação de esgoto":[null,null,12,4],"2026-09-29|Interlagos|Vazamento de esgoto":[null,null,15,0],"2026-09-30|Grajaú|Vazamento de água":[18,26,22,57],"2026-09-30|Grajaú|Religação":[13,24,15,0],"2026-09-30|Grajaú|Ligação de água":[14,5,16,0],"2026-09-30|Grajaú|Ligação de esgoto":[2,2,12,5],"2026-09-30|Grajaú|Vazamento de esgoto":[7,25,8,1],"2026-09-30|Interlagos|Vazamento de água":[32,51,32,63],"2026-09-30|Interlagos|Religação":[23,24,27,0],"2026-09-30|Interlagos|Ligação de água":[105,8,111,0],"2026-09-30|Interlagos|Ligação de esgoto":[7,0,18,5],"2026-09-30|Interlagos|Vazamento de esgoto":[7,33,7,2],"2026-10-01|Grajaú|Vazamento de água":[18,26,22,57],"2026-10-01|Grajaú|Religação":[13,24,15,0],"2026-10-01|Grajaú|Ligação de água":[14,5,16,0],"2026-10-01|Grajaú|Ligação de esgoto":[2,2,12,5],"2026-10-01|Grajaú|Vazamento de esgoto":[7,25,8,1],"2026-10-01|Interlagos|Vazamento de água":[32,51,32,63],"2026-10-01|Interlagos|Religação":[23,24,27,0],"2026-10-01|Interlagos|Ligação de água":[105,8,111,0],"2026-10-01|Interlagos|Ligação de esgoto":[7,0,18,5],"2026-10-01|Interlagos|Vazamento de esgoto":[7,33,7,2]},"ult":{"dc":"","em":0,"arq":{"ac":[],"ex":[],"ca":[]},"ac":[],"ex":[],"ca":[],"dias":[]}};
+const vazio=()=>({versao:1,hist:{},ult:{dc:"",em:0,arq:{ac:[],ex:[],ca:[]},ac:[],ex:[],ca:[],dias:[]}});
+let S=null,RAW=null,timerSalvar=null;
+function idb(){return new Promise((res,rej)=>{try{const r=indexedDB.open("painel-carteira-servicos",1);r.onupgradeneeded=()=>r.result.createObjectStore("d");r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error);}catch(e){rej(e);}});}
+async function idbGet(k){const d=await idb();return await new Promise((res,rej)=>{const q=d.transaction("d").objectStore("d").get(k);q.onsuccess=()=>res(q.result??null);q.onerror=()=>rej(q.error);});}
+async function idbSet(k,v){const d=await idb();return await new Promise((res,rej)=>{const t=d.transaction("d","readwrite");t.objectStore("d").put(v,k);t.oncomplete=()=>res();t.onerror=()=>rej(t.error);});}
+function normalizar(o){const s=Object.assign(vazio(),o||{});s.hist=s.hist||{};s.ult=Object.assign(vazio().ult,s.ult||{});s.ult.arq=Object.assign({ac:[],ex:[],ca:[]},s.ult.arq||{});return s;}
+function setConn(estado,tit,sub){$("connDot").className="dot "+estado;$("connTit").textContent=tit;$("connSub").textContent=sub||"";}
+function statusGuardado(){setConn("on","Dados guardados neste computador",(S.ult.dc?"carteira de "+dmy(S.ult.dc)+" · ":"")+"salvo às "+new Date().toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"}));}
+async function salvar(){
+  try{await idbSet("estado",JSON.parse(JSON.stringify(S)));if(RAW)await idbSet("raw",RAW);statusGuardado();}
+  catch(e){try{localStorage.setItem("painel-carteira-estado",JSON.stringify(S));statusGuardado();}
+    catch(_){setConn("off","Não consegui guardar os dados neste computador","baixe o Excel e a cópia de segurança antes de fechar");}}}
+async function carregarLocal(){
+  let o=null;try{o=await idbGet("estado");RAW=await idbGet("raw");}catch(e){}
+  if(!o){try{o=JSON.parse(localStorage.getItem("painel-carteira-estado")||"null");}catch(e){}}
+  S=normalizar(o||(SEMENTE?JSON.parse(JSON.stringify(SEMENTE)):null));
+  if(!o)setConn("warn","Primeiro uso neste computador",SEMENTE?"já vem com o histórico desde junho; é só subir os arquivos do dia":"suba os arquivos do dia");
+  else statusGuardado();}
+
+/* ================= histórico ================= */
+const hk=(d,p,g)=>d+"|"+p+"|"+g;
+function hset(d,p,g,i,v){const k=hk(d,p,g);const a=S.hist[k]||[null,null,null,null];a[i]=v;S.hist[k]=a;}
+function datasHist(){return [...new Set(Object.keys(S.hist).map(k=>k.slice(0,10)))].sort();}
+function somaHist(d,i,f){let t=null;for(const p of POLOS)for(const g of GRUPOS){if(f&&!f(p,g))continue;const a=S.hist[hk(d,p,g)];if(a&&a[i]!=null)t=(t||0)+a[i];}return t;}
+function diaAnterior(){const dc=S.ult.dc;const ds=datasHist().filter(d=>d<dc&&somaHist(d,3)!=null);return ds[ds.length-1]||"";}
+
+/* ================= leitura dos arquivos ================= */
+const CAMPOS_AC={os:"NUMERO OS",atc:"ATC",tss:"TSS",fam:"FAMILIA",forn:"FORNECEDOR",ins:"DATA INSERCAO",pf:"PRAZO DE EXECUCAO - FIM",tr:"TEMPO RESIDUAL",st:"STATUS DA OPERACAO",end:"ENDERECO",num:"NUMERO",bai:"BAIRRO",mun:"MUNICIPIO",ag:"DATA AGENDADA"};
+const CAMPOS_EX={os:"NUMERO OS",atc:"ATC",tss:"DESCRICAO TSS",fam:"FAMILIA",forn:"DESCRICAO CONTRATO",cod:"CODIGO RESULTADO",res:"RESULTADO",ini:"DATA INICIO EXECUCAO",fim:"DATA FIM EXECUCAO",eq:"EQUIPE",end:"ENDERECO",num:"NUMERO",bai:"BAIRRO",mun:"MUNICIPIO"};
+function acharCab(aoa){for(let i=0;i<Math.min(aoa.length,30);i++){const r=aoa[i]||[];if(r.some(c=>U(clean(c))==="NUMERO OS"))return i;}return -1;}
+function tipoCab(h){const u=h.map(c=>U(clean(c)));if(u.includes("CODIGO RESULTADO")||u.includes("DATA INICIO EXECUCAO"))return "ex";if(u.includes("TEMPO RESIDUAL"))return "acca";return "";}
+const ABA_TIPO={ac:"ACATADOS",ex:"EXECUTADOS",ca:"CARTEIRA"};
+async function lerTabela(file,tipo){
+  const nome=file.name;let aoa=null;
+  if(/\.csv$/i.test(nome))aoa=lerCsv(await file.text());
+  else{const w=await abrirXlsx(await file.arrayBuffer());
+    let alvo=w.nomes.find(n=>U(n).trim()===ABA_TIPO[tipo]);
+    if(alvo)aoa=await w.ler(alvo);
+    else{for(const n of w.nomes){const a=await w.ler(n);if(a&&acharCab(a)>=0){aoa=a;break;}}}}
+  if(!aoa)throw new Error(`Não achei a coluna "Número OS" em ${nome}.`);
+  const hi=acharCab(aoa);if(hi<0)throw new Error(`Não achei a coluna "Número OS" em ${nome}.`);
+  const h=aoa[hi].map(c=>clean(c));const rows=aoa.slice(hi+1).filter(r=>r&&r.some(c=>String(c??"").trim()!==""));
+  return {nome,h,rows,tipoArq:tipoCab(h)};}
+function indices(h,campos){const u=h.map(c=>U(clean(c)));const ix={};for(const [k,n] of Object.entries(campos))ix[k]=u.indexOf(n);return ix;}
+function unirTabelas(tabs,tipo){
+  // junta os arquivos (Interlagos + Embu) e tira linhas idênticas repetidas entre eles
+  const h=tabs[0].h;const out=[];const visto=new Set();let rep=0;
+  for(const t of tabs){const ix=indices(t.h,tipo==="ex"?CAMPOS_EX:CAMPOS_AC);const map=h.map(n=>t.h.findIndex(x=>U(x)===U(n)));
+    for(const r of t.rows){const os=keyOS(r[ix.os]);if(!os)continue;const k=JSON.stringify(map.map(i=>i<0?"":String(r[i]??"").trim()));
+      if(visto.has(k)){rep++;continue;}visto.add(k);out.push(map.map(i=>i<0?"":r[i]));}}
+  return {h,rows:out,rep};}
+function registros(raw,tipo){
+  const ix=indices(raw.h,tipo==="ex"?CAMPOS_EX:CAMPOS_AC);const g=(r,k)=>ix[k]>=0?r[ix[k]]:"";const out=[];const dias=new Set();
+  for(const r of raw.rows){
+    const o={os:keyOS(g(r,"os")),p:poloDe(g(r,"atc")),tss:clean(g(r,"tss")),fam:clean(g(r,"fam")),end:clean([clean(g(r,"end")),clean(g(r,"num"))].filter(Boolean).join(", ")),bai:clean(g(r,"bai")),mun:clean(g(r,"mun"))};
+    o.g=grupoDe(o.tss,o.fam,g(r,"forn"));
+    if(tipo==="ex"){o.dt=dataIso(g(r,"ini"));o.ini=txtData(g(r,"ini"));o.fim=txtData(g(r,"fim"));o.cod=clean(g(r,"cod")).split(".")[0];o.res=clean(g(r,"res"));o.eq=clean(g(r,"eq"));
+      o.conta=executadoDeFato(o.cod,o.res);if(!o.tss)continue;}
+    else{o.dt=dataIso(g(r,"ins"));o.ins=txtData(g(r,"ins"));o.pf=txtData(g(r,"pf"));o.tr=clean(g(r,"tr"));o.fora=o.tr.startsWith("-");o.st=clean(g(r,"st"));if(!o.tss)continue;}
+    if(o.dt)dias.add(o.dt);
+    if(o.g&&o.p!=="Outro")out.push(o);}
+  return {recs:out,dias:[...dias].sort()};}
+
+/* ================= tela de importação ================= */
+const impArq={ac:[],ex:[],ca:[]};
+const SLOT={ac:["fAc","nAc"],ex:["fEx","nEx"],ca:["fCa","nCa"]};
+function marcaSlot(t){const [i,n]=SLOT[t];const f=impArq[t];$(i).closest(".slot").classList.toggle("ok",f.length>0);
+  $(n).textContent=f.length?"✔ "+f.map(x=>x.name).join(" + "):"Clique para escolher";
+  $("impOk").disabled=!(impArq.ac.length||impArq.ex.length||impArq.ca.length);}
+for(const t of ["ac","ex","ca"]){$(SLOT[t][0]).addEventListener("change",e=>{impArq[t]=[...e.target.files];marcaSlot(t);$("impChecks").innerHTML="";});}
+$("btnSubir").onclick=()=>{$("imp").hidden=false;$("dCart").value=hojeLocal();$("imp").scrollIntoView({behavior:"smooth",block:"start"});};
+$("impFechar").onclick=()=>{$("imp").hidden=true;};
+function check(cls,num,t,sub){return `<div class="check ${cls}"><span class="lbl">${esc(t)}</span><b>${num}</b><small class="note">${esc(sub||"")}</small></div>`;}
+$("impOk").onclick=async()=>{
+  const bt=$("impOk");bt.disabled=true;msg("Lendo os arquivos…");const avisos=[];const checks=[];
+  try{
+    const tabs={ac:[],ex:[],ca:[]};
+    for(const t of ["ac","ex","ca"])for(const f of impArq[t]){const tb=await lerTabela(f,t);
+      let destino=t;
+      if(tb.tipoArq==="ex"&&t!=="ex"){destino="ex";avisos.push(`${f.name} é de Executados; usei como Executados.`);}
+      else if(tb.tipoArq==="acca"&&t==="ex"){throw new Error(`${f.name} não parece ser de Executados (não tem "Data Início Execução"). Confira o campo 2.`);}
+      tabs[destino].push(tb);}
+    const dc=$("dCart").value||hojeLocal();
+    const novoRaw=Object.assign({},RAW||{});const res={};
+    for(const t of ["ac","ex","ca"]){if(!tabs[t].length)continue;const u=unirTabelas(tabs[t],t);u.arq=tabs[t].map(x=>x.nome);novoRaw[t]=u;
+      const r=registros(u,t);res[t]={...r,raw:u};}
+    if(res.ca&&!res.ca.recs.length)throw new Error("A Carteira não tem nenhuma OS dos grupos do painel (ATC 923, 929 ou 299). Confira o arquivo do campo 3.");
+    // grava no histórico
+    if(res.ac){for(const d of res.ac.dias)for(const p of POLOS)for(const g of GRUPOS)hset(d,p,g,0,res.ac.recs.filter(r=>r.dt===d&&r.p===p&&r.g===g).length);}
+    if(res.ex){for(const d of res.ex.dias)for(const p of POLOS)for(const g of GRUPOS)hset(d,p,g,1,res.ex.recs.filter(r=>r.dt===d&&r.p===p&&r.g===g&&r.conta).length);}
+    if(res.ca){for(const p of POLOS)for(const g of GRUPOS){const c=res.ca.recs.filter(r=>r.p===p&&r.g===g);hset(dc,p,g,2,c.filter(r=>!r.fora).length);hset(dc,p,g,3,c.filter(r=>r.fora).length);}}
+    const U2=S.ult;
+    for(const t of ["ac","ex","ca"])if(res[t]){U2[t]=res[t].recs;U2.arq[t]=novoRaw[t].arq;}
+    if(res.ca)U2.dc=dc;
+    U2.em=Date.now();
+    U2.dias=[...new Set(U2.ac.map(r=>r.dt).concat(U2.ex.map(r=>r.dt)))].filter(d=>(res.ac?res.ac.dias:[]).concat(res.ex?res.ex.dias:[]).includes(d)||!res.ac&&!res.ex).sort();
+    if(!U2.dias.length)U2.dias=[...new Set(U2.ac.map(r=>r.dt).concat(U2.ex.map(r=>r.dt)))].sort();
+    RAW=novoRaw;
+    if(res.ac)checks.push(check("good",nf(res.ac.recs.length),"Entradas (acatados)",`${res.ac.dias.map(d=>wd(d)+" "+dm(d)).join(" · ")}${res.ac.raw.rep?` · ${res.ac.raw.rep} repetidas tiradas`:""}`));
+    if(res.ex)checks.push(check("good",nf(res.ex.recs.filter(r=>r.conta).length),"Execuções",`${res.ex.dias.map(d=>wd(d)+" "+dm(d)).join(" · ")}${res.ex.raw.rep?` · ${res.ex.raw.rep} repetidas tiradas`:""}`));
+    if(res.ca)checks.push(check("good",nf(res.ca.recs.length),"Carteira de "+dm(dc),`${res.ca.recs.filter(r=>r.fora).length} fora do prazo`));
+    const lidas=t=>res[t]?res[t].raw.rows.length-res[t].recs.length:0;
+    const fora=lidas("ac")+lidas("ca");if(fora)checks.push(check("warn",nf(fora),"Linhas fora do painel","outros serviços, outros ATC ou fora do Contrato Global"));
+    $("impChecks").innerHTML=checks.join("");
+    diaSel="todos";await salvar();renderTudo();
+    msg((avisos.length?avisos.join(" ")+" ":"")+"Painel montado com os arquivos do dia.");
+    setTimeout(()=>{$("imp").hidden=true;for(const t of ["ac","ex","ca"]){impArq[t]=[];$(SLOT[t][0]).value="";marcaSlot(t);}},1600);
+  }catch(e){console.error(e);msg("Não consegui montar: "+(e.message||e));}
+  finally{bt.disabled=!(impArq.ac.length||impArq.ex.length||impArq.ca.length);}
+};
+/* histórico da planilha antiga */
+$("btnHist").onclick=()=>$("fHist").click();
+$("fHist").onchange=async e=>{const f=e.target.files[0];if(!f)return;
+  try{const w=await abrirXlsx(await f.arrayBuffer());const n=w.nomes.find(x=>U(x).trim()==="HISTORICO");if(!n)throw new Error("o arquivo não tem a aba HISTÓRICO");
+    const a=await w.ler(n);let hi=-1;a.forEach((r,i)=>{const u=(r||[]).map(c=>U(clean(c)));if(u.includes("DATA")&&u.includes("POLO")&&u.includes("GRUPO"))hi=i;});
+    if(hi<0)throw new Error("não achei o cabeçalho Data / Polo / Grupo");
+    const u=a[hi].map(c=>U(clean(c)));const c={d:u.indexOf("DATA"),p:u.indexOf("POLO"),g:u.indexOf("GRUPO"),ac:u.indexOf("ACATADOS"),ex:u.indexOf("EXECUTADOS"),np:u.findIndex(x=>x.startsWith("CARTEIRA NO")),fp:u.findIndex(x=>x.startsWith("CARTEIRA FORA"))};
+    let n2=0;const num=v=>v===""||v==null||isNaN(Number(v))?null:Number(v);
+    for(const r of a.slice(hi+1)){const d=dataIso(r[c.d]);const p=POLOS.find(x=>U(x)===U(clean(r[c.p])));const g=GRUPOS.find(x=>U(x)===U(clean(r[c.g])));if(!d||!p||!g)continue;
+      const k=hk(d,p,g);const cur=S.hist[k]||[null,null,null,null];const nv=[num(r[c.ac]),num(r[c.ex]),num(r[c.np]),num(r[c.fp])];
+      S.hist[k]=cur.map((x,i)=>x==null?nv[i]:x);n2++;}
+    await salvar();renderTudo();msg(`Histórico trazido: ${nf(n2)} linhas (o que já estava no painel foi mantido).`);
+  }catch(err){msg("Não consegui ler o histórico: "+err.message);}e.target.value="";};
+/* cópia de segurança */
+$("btnBackup").onclick=()=>{baixarBlob(new Blob([JSON.stringify(S)],{type:"application/json"}),`carteira-servicos-copia-${hojeLocal()}.json`);msg("Cópia de segurança baixada. Para usar em outro computador: Atualizar → Restaurar cópia de segurança.");};
+$("btnRestaurar").onclick=()=>$("fRest").click();
+$("fRest").onchange=async e=>{const f=e.target.files[0];if(!f)return;try{const o=JSON.parse(await f.text());if(!o.hist)throw new Error("arquivo inválido");S=normalizar(o);RAW=null;await idbSet("raw",null).catch(()=>{});await salvar();renderTudo();msg("Cópia de segurança restaurada.");}catch(err){msg("Não consegui restaurar: "+err.message);}e.target.value="";};
+$("btnAjuda").onclick=()=>{$("intro").hidden=!$("intro").hidden;};$("btnFecharAjuda").onclick=()=>{$("intro").hidden=true;};
+
+/* ================= filtros e contas ================= */
+let poloSel="Todos",diaSel="todos",abaAtual="painel",servSel="Vazamento de água",grupoEvo="Todos",mesSel="";
+const osF={modo:"carteira",g:"",tss:"",prazo:"",nc:"",fx:""};
+const fp=r=>poloSel==="Todos"||r.p===poloSel;
+const diasSel=()=>diaSel==="todos"?S.ult.dias:[diaSel];
+const noDia=r=>diasSel().includes(r.dt);
+function conta(o){const u=S.ult;const g=o.g,p=o.p||null;const fpol=r=>p?r.p===p:fp(r);
+  const ca=u.ca.filter(r=>(!g||r.g===g)&&fpol(r));const fora=ca.filter(r=>r.fora).length;
+  const ent=u.ac.filter(r=>(!g||r.g===g)&&fpol(r)&&noDia(r)).length;
+  const exe=u.ex.filter(r=>(!g||r.g===g)&&fpol(r)&&noDia(r)&&r.conta).length;
+  const da=diaAnterior();let ant=null;
+  if(da){ant=somaHist(da,3,(pp,gg)=>(!g||gg===g)&&(p?pp===p:(poloSel==="Todos"||pp===poloSel)));}
+  return {cart:ca.length,fora,no:ca.length-fora,ent,exe,saldo:ent-exe,dFora:ant==null?null:fora-ant,da};}
+function rotDias(){const d=diasSel();if(!d.length)return "sem entradas e execuções";if(d.length===1)return wd(d[0])+" "+dmy(d[0]);return `${wd(d[0])} ${dm(d[0])} a ${wd(d[d.length-1])} ${dm(d[d.length-1])} (${d.length} dias)`;}
+const ppCls=v=>v==null?"":v>=META?"ok":v>=META-0.15?"mid":"bad";
+const pp=v=>v==null?"–":`<span class="pp ${ppCls(v)}">${(Math.round(v*1000)/10).toLocaleString("pt-BR")}%</span>`;
+const sgn=n=>n==null?"–":(n>0?"+":"")+nf(n);
+const go=o=>` data-go='${esc(JSON.stringify(o))}'`;
+
+/* ================= desenho ================= */
+const IC={
+  cart:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M8 15h4"/></svg>',
+  fora:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>',
+  pct:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M5 19 19 5"/><circle cx="7" cy="7" r="2.5"/><circle cx="17" cy="17" r="2.5"/></svg>',
+  mov:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4v16M3 8l4-4 4 4M17 20V4M13 16l4 4 4-4"/></svg>',
+  saldo:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/></svg>',
+  ent:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v12M6 10l6 6 6-6M4 20h16"/></svg>',
+  exe:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"/></svg>'};
+function kpi(o){return `<div class="kpi${o.hl?" hl":""}"${o.go?go(o.go):""} style="--tone:${o.tone||"var(--accent)"};--tone-soft:${o.soft||"var(--accent-soft)"}"><div class="top"><span class="lbl">${o.l}</span><span class="ic">${o.ic}</span></div><b>${o.v}</b><small>${o.s||""}</small></div>`;}
+function renderFiltros(){
+  $("segPolo").innerHTML=["Todos"].concat(POLOS.slice().reverse()).map(p=>`<button type="button" data-polo="${p}" aria-pressed="${p===poloSel}">${p==="Todos"?"Todos":p}</button>`).join("");
+  const ds=S.ult.dias;
+  $("segDia").innerHTML=`<button type="button" data-dia="todos" aria-pressed="${diaSel==="todos"}"><small>${ds.length>1?ds.length+" dias":"período"}</small>Todos</button>`+ds.map(d=>`<button type="button" data-dia="${d}" aria-pressed="${diaSel===d}"><small>${wd(d)}</small>${dm(d)}</button>`).join("");
+  $("dataCart").textContent=S.ult.dc?wd(S.ult.dc)+" "+dmy(S.ult.dc):"–";
+  $("segPolo").closest(".fgrp").hidden=abaAtual==="serv"||abaAtual==="lig";$("segDia").closest(".fgrp").hidden=abaAtual==="res";}
+$("segPolo").onclick=e=>{const b=e.target.closest("button");if(!b)return;poloSel=b.dataset.polo;renderTudo();};
+$("segDia").onclick=e=>{const b=e.target.closest("button");if(!b)return;diaSel=b.dataset.dia;renderTudo();};
+
+function render(){
+  const u=S.ult;const T=conta({});const da=T.da;
+  $("sub").innerHTML=`Interlagos · Grajaú${u.dc?` · carteira de <b>${dmy(u.dc)}</b>`:""}`;
+  const tend=T.ent>T.exe?"carteira tende a subir":T.ent<T.exe?"carteira tende a cair":"equilibrado";
+  $("kpis").innerHTML=[
+    kpi({hl:1,l:"Carteira",v:nf(T.cart),s:`${nf(T.no)} no prazo`,ic:IC.cart,go:{modo:"carteira"}}),
+    kpi({l:"Fora do prazo",v:nf(T.fora),s:T.dFora==null?"sem dia anterior salvo":`<span class="delta ${T.dFora>0?"up":T.dFora<0?"down":""}">${T.dFora>0?"▲ "+nf(T.dFora):T.dFora<0?"▼ "+nf(-T.dFora):"= 0"}</span> vs ${dm(da)}`,ic:IC.fora,tone:"var(--red)",soft:"var(--red-soft)",go:{modo:"carteira",prazo:"fora"}}),
+    kpi({l:"% no prazo",v:T.cart?(Math.round(T.no*1000/T.cart)/10).toLocaleString("pt-BR")+"%":"–",s:`meta ${Math.round(META*100)}% ${T.cart?(T.no/T.cart>=META?'<span class="delta down">dentro da meta</span>':'<span class="delta up">abaixo da meta</span>'):""}`,ic:IC.pct,tone:"var(--green)",soft:"var(--green-soft)",go:{modo:"carteira",prazo:"no"}}),
+    kpi({l:"Entradas × execuções",v:`${nf(T.ent)} <span style="font-size:.6em;color:var(--muted)">×</span> ${nf(T.exe)}`,s:esc(rotDias()),ic:IC.mov,tone:"var(--orange)",soft:"var(--orange-soft)",go:{modo:"entradas"}}),
+    kpi({l:"Saldo",v:sgn(T.saldo),s:tend,ic:IC.saldo,tone:T.saldo>0?"var(--red)":"var(--green)",soft:T.saldo>0?"var(--red-soft)":"var(--green-soft)",go:{modo:"execucoes"}})].join("");
+  // situação por grupo
+  $("sitNota").textContent=`carteira de ${dmy(u.dc)} · entradas e execuções: ${rotDias()}${poloSel!=="Todos"?" · "+poloSel:""}`;
+  const dsv=diasSel();
+  if(dsv.length>1){
+    const E=(d,g)=>u.ac.filter(r=>r.dt===d&&(!g||r.g===g)&&fp(r)).length,X=(d,g)=>u.ex.filter(r=>r.dt===d&&r.conta&&(!g||r.g===g)&&fp(r)).length;
+    let h=`<thead><tr class="dh"><th colspan="4" class="blank"></th>${dsv.map(d=>`<th colspan="2" class="grp sep dday" data-dia="${d}"><small>${wd(d)}</small>${dm(d)}</th>`).join("")}<th colspan="3" class="grp sep tp"><small>${dsv.length} dias</small>Total</th></tr>
+      <tr><th>Grupo</th><th class="r">Carteira</th><th class="r" title="entre parênteses: diferença vs ${da?dm(da):"dia anterior"}">Fora</th><th class="r">% prazo</th>${dsv.map(()=>`<th class="r sep e">Entr.</th><th class="r x">Exec.</th>`).join("")}<th class="r sep e">Entr.</th><th class="r x">Exec.</th><th class="r">Saldo</th></tr></thead><tbody>`;
+    const lin=(g,tot)=>{const c=tot?T:conta({g});const gg=tot?"":g;let r=tot?`<tr class="total"><td>TOTAL</td>`:`<tr><td class="g"${go({modo:"carteira",g})}><i style="--c:${COR[g]}"></i>${g}</td>`;
+      r+=`<td class="r"${tot?"":go({modo:"carteira",g})}>${nf(c.cart)}</td><td class="r ${c.fora&&!tot?"up":""}"${tot?"":go({modo:"carteira",g,prazo:"fora"})}>${nf(c.fora)}${c.dFora==null?"":`<span class="dfv ${c.dFora>0?"up":c.dFora<0?"down":""}">${c.dFora>0?"▲":c.dFora<0?"▼":"="}${c.dFora?nf(Math.abs(c.dFora)):""}</span>`}</td><td class="r">${pp(pctN(c.no,c.cart))}</td>`;
+      let te=0,tx=0;for(const d of dsv){const e=E(d,gg),x=X(d,gg);te+=e;tx+=x;r+=`<td class="r sep e">${nf(e)}</td><td class="r x">${nf(x)}</td>`;}
+      return r+`<td class="r sep e"${tot?"":go({modo:"entradas",g})}>${nf(te)}</td><td class="r x"${tot?"":go({modo:"execucoes",g})}>${nf(tx)}</td><td class="r ${te-tx>0?"up":te-tx<0?"down":""}">${sgn(te-tx)}</td></tr>`;};
+    h+=GRUPOS.map(g=>lin(g)).join("")+lin("",true)+"</tbody>";
+    $("tbGrupo").className="tg multi";$("tbGrupo").innerHTML=h;
+  }else{
+  $("tbGrupo").className="tg";
+  let h=`<thead><tr><th>Grupo</th><th class="r">Carteira</th><th class="r">No prazo</th><th class="r">Fora do prazo</th><th class="r">% no prazo</th><th class="r">Fora vs ${da?dm(da):"dia anterior"}</th><th class="r sep">Entradas</th><th class="r">Execuções</th><th class="r">Saldo</th></tr></thead><tbody>`;
+  for(const g of GRUPOS){const c=conta({g});
+    h+=`<tr><td class="g"${go({modo:"carteira",g})}><i style="--c:${COR[g]}"></i>${g}</td><td class="r"${go({modo:"carteira",g})}>${nf(c.cart)}</td><td class="r"${go({modo:"carteira",g,prazo:"no"})}>${nf(c.no)}</td><td class="r ${c.fora?"up":""}"${go({modo:"carteira",g,prazo:"fora"})}>${nf(c.fora)}</td><td class="r">${pp(pctN(c.no,c.cart))}</td><td class="r ${c.dFora>0?"up":c.dFora<0?"down":""}">${sgn(c.dFora)}</td><td class="r sep"${go({modo:"entradas",g})}>${nf(c.ent)}</td><td class="r"${go({modo:"execucoes",g})}>${nf(c.exe)}</td><td class="r ${c.saldo>0?"up":c.saldo<0?"down":""}">${sgn(c.saldo)}</td></tr>`;}
+  h+=`<tr class="total"><td>TOTAL</td><td class="r">${nf(T.cart)}</td><td class="r">${nf(T.no)}</td><td class="r">${nf(T.fora)}</td><td class="r">${pp(pctN(T.no,T.cart))}</td><td class="r">${sgn(T.dFora)}</td><td class="r sep">${nf(T.ent)}</td><td class="r">${nf(T.exe)}</td><td class="r">${sgn(T.saldo)}</td></tr></tbody>`;
+  $("tbGrupo").innerHTML=h;
+  }
+  // dia a dia
+  const linhasDia=u.dias.map(d=>{const e=u.ac.filter(r=>r.dt===d&&fp(r)).length,x=u.ex.filter(r=>r.dt===d&&fp(r)&&r.conta).length;return {d,e,x};});
+  const mx=Math.max(1,...linhasDia.map(l=>Math.max(l.e,l.x)));
+  $("diaDia").innerHTML=linhasDia.length?`<div class="dd">${linhasDia.map(l=>`<div class="r${diaSel===l.d?" sel":""}" data-dia="${l.d}"><div class="dl"><small>${wd(l.d)}</small><b>${dm(l.d)}</b></div><div class="bb"><div class="bl"><span style="--c:#F0A23B;width:${(l.e*100/mx).toFixed(1)}%"></span><em>${nf(l.e)}</em></div><div class="bl"><span style="--c:#23824F;width:${(l.x*100/mx).toFixed(1)}%"></span><em>${nf(l.x)}</em></div></div><div class="sd ${l.e-l.x>0?"up":"down"}"><small>saldo</small>${sgn(l.e-l.x)}</div></div>`).join("")}
+    <div class="r tt"><div class="dl"><small>total</small><b>${linhasDia.length} dias</b></div><div class="bb"><div class="bl"><em>${nf(linhasDia.reduce((a,l)=>a+l.e,0))} entradas</em></div><div class="bl"><em>${nf(linhasDia.reduce((a,l)=>a+l.x,0))} execuções</em></div></div><div class="sd">${sgn(linhasDia.reduce((a,l)=>a+l.e-l.x,0))}</div></div></div><div class="note">Clique num dia para ver só ele no painel.</div>`:`<div class="empty">Sem entradas e execuções. Suba os arquivos de Acatados e Executados.</div>`;
+  // prazo da carteira por polo
+  {const rows=POLOS.slice().reverse().map(p=>({p,...conta({p})}));rows.push({p:"Total",...conta({p:null})});
+   const m=Math.max(1,...rows.map(r=>r.cart));
+   $("prazoPolo").innerHTML=`<div class="pz">${rows.map(r=>`<div class="r${r.p==="Total"?" tt":""}"${go({modo:"carteira",p:r.p==="Total"?"Todos":r.p})}><span class="nm">${r.p}<small>${nf(r.cart)} OS</small></span><div class="br" style="width:${Math.max(6,r.cart*100/m).toFixed(1)}%"><i style="width:${r.cart?r.no*100/r.cart:0}%;background:#2FA36B">${r.no||""}</i><i style="width:${r.cart?r.fora*100/r.cart:0}%;background:#D9534A">${r.fora||""}</i></div><span>${pp(pctN(r.no,r.cart))}</span></div>`).join("")}</div>`;}
+  // polos
+  $("poloCards").innerHTML=POLOS.slice().reverse().map(p=>{const c=conta({p});const v=pctN(c.no,c.cart);
+    return `<div class="pcard"><div class="ph"><span class="pn">${p}</span><span class="atc">${p==="Interlagos"?"ATC 923":"ATC 929 · 299"}</span></div>
+      <div class="pv"${go({modo:"carteira",p})}><b>${nf(c.cart)}</b><span class="note">na carteira</span>${pp(v)}</div>
+      <div class="prog"><i style="width:${v==null?0:(v*100).toFixed(1)}%"></i></div><div class="meta"><span>${nf(c.no)} no prazo</span><span>meta ${Math.round(META*100)}%</span></div>
+      <div class="lin"><div${go({modo:"carteira",p,prazo:"fora"})}><small>Fora do prazo</small><b class="${c.fora?"up":""}">${nf(c.fora)}</b></div><div${go({modo:"entradas",p})}><small>Entradas</small><b>${nf(c.ent)}</b></div><div${go({modo:"execucoes",p})}><small>Execuções</small><b>${nf(c.exe)}</b></div><div><small>Saldo</small><b class="${c.saldo>0?"up":"down"}">${sgn(c.saldo)}</b></div></div></div>`;}).join("");
+  // carteira por grupo em cada polo
+  const cg=p=>{const rs=GRUPOS.map(g=>({g,...conta({g,p})}));const m=Math.max(1,...rs.map(r=>r.cart));
+    return `<div class="cg">${rs.map(r=>`<div class="r"${go({modo:"carteira",g:r.g,p})}><span class="nm"><i style="--c:${COR[r.g]}"></i>${r.g}</span><div class="br" style="width:${Math.max(4,r.cart*100/m).toFixed(1)}%"><i style="width:${r.cart?(r.no*100/r.cart):0}%;background:#2FA36B">${r.no&&r.no/m>.08?r.no:""}</i><i style="width:${r.cart?(r.fora*100/r.cart):0}%;background:#D9534A">${r.fora&&r.fora/m>.08?r.fora:""}</i></div><span class="n">${nf(r.cart)}</span><span class="p">${pp(pctN(r.no,r.cart))}</span></div>`).join("")}</div>`;};
+  $("cgInt").innerHTML=cg("Interlagos");$("cgGra").innerHTML=cg("Grajaú");
+  renderEvo();}
+
+function barras(itens,o){
+  // itens: [{lab,sub,vals:[{v,c}]}]; o.empilhar
+  const n=itens.length;if(!n)return `<div class="empty">Sem dados neste mês.</div>`;
+  const bw=o.empilhar?30:15,gap=o.empilhar?18:16,grupoW=o.empilhar?bw:bw*itens[0].vals.length+3;
+  const W=Math.max(1000,n*(grupoW+gap)+60),H=o.h||230,top=22,bot=40,left=36,ch=H-top-bot;
+  const tot=it=>o.empilhar?it.vals.reduce((a,b)=>a+(b.v||0),0):Math.max(...it.vals.map(b=>b.v||0));
+  const mx=Math.max(1,...itens.map(tot));const passo=(W-left-10)/n;
+  let s=`<svg viewBox="0 0 ${W} ${H}" role="img">`;
+  for(let k=0;k<=4;k++){const y=top+ch-ch*k/4;s+=`<line x1="${left}" x2="${W-6}" y1="${y}" y2="${y}" stroke="#E6ECF1"/><text x="${left-6}" y="${y+4}" text-anchor="end" font-size="10.5" fill="#7A8995">${Math.round(mx*k/4)}</text>`;}
+  itens.forEach((it,i)=>{const cx=left+passo*i+passo/2;
+    if(o.empilhar){let y=top+ch;it.vals.forEach(b=>{const hh=(b.v||0)*ch/mx;y-=hh;if(hh>0)s+=`<rect x="${cx-bw/2}" y="${y}" width="${bw}" height="${hh}" fill="${b.c}" rx="2"><title>${it.lab}: ${b.v}</title></rect>`;});
+      s+=`<text x="${cx}" y="${y-5}" text-anchor="middle" font-size="11" font-weight="700" fill="#14212B">${tot(it)||""}</text>`;}
+    else{const w0=cx-grupoW/2;it.vals.forEach((b,j)=>{const hh=(b.v||0)*ch/mx;const x=w0+j*(bw+3);s+=`<rect x="${x}" y="${top+ch-hh}" width="${bw}" height="${hh}" fill="${b.c}" rx="2"><title>${it.lab}: ${b.v}</title></rect>`;if(b.v!=null)s+=`<text x="${x+bw/2}" y="${top+ch-hh-4}" text-anchor="middle" font-size="9.5" font-weight="700" fill="#33424E">${b.v}</text>`;});}
+    s+=`<text x="${cx}" y="${H-bot+16}" text-anchor="middle" font-size="11" font-weight="600" fill="#33424E">${it.lab}</text><text x="${cx}" y="${H-bot+29}" text-anchor="middle" font-size="9.5" fill="#7A8995">${it.sub||""}</text>`;});
+  return s+"</svg>";}
+function renderEvo(){
+  const ds=datasHist();const meses=[...new Set(ds.map(d=>d.slice(0,7)))].sort().reverse();
+  if(!mesSel||!meses.includes(mesSel))mesSel=(S.ult.dc||ds[ds.length-1]||"").slice(0,7)||meses[0]||"";
+  $("selMes").innerHTML=meses.map(m=>`<option value="${m}"${m===mesSel?" selected":""}>${MESES[Number(m.slice(5,7))-1]} ${m.slice(0,4)}</option>`).join("");
+  $("selGrupoEvo").innerHTML=["Todos"].concat(GRUPOS).map(g=>`<option value="${g}"${g===grupoEvo?" selected":""}>${g==="Todos"?"Todos os grupos":g}</option>`).join("");
+  const f=(p,g)=>(poloSel==="Todos"||p===poloSel)&&(grupoEvo==="Todos"||g===grupoEvo);
+  const dm2=ds.filter(d=>d.startsWith(mesSel));
+  const evo=dm2.filter(d=>somaHist(d,2,f)!=null||somaHist(d,3,f)!=null).map(d=>({lab:dm(d),sub:wd(d),vals:[{v:somaHist(d,2,f)||0,c:"#2FA36B"},{v:somaHist(d,3,f)||0,c:"#D9534A"}]}));
+  const mov=dm2.filter(d=>somaHist(d,0,f)!=null||somaHist(d,1,f)!=null).map(d=>({lab:dm(d),sub:wd(d),vals:[{v:somaHist(d,0,f),c:"#F0A23B"},{v:somaHist(d,1,f),c:"#23824F"}]}));
+  $("chartEvo").innerHTML=barras(evo,{empilhar:1});$("chartMov").innerHTML=barras(mov,{h:200});
+  const pri=evo[0],ult=evo[evo.length-1];const tt=it=>it.vals[0].v+it.vals[1].v;
+  $("evoNota").textContent=`${MESES[Number(mesSel.slice(5,7))-1]||""} · ${poloSel==="Todos"?"todos os polos":poloSel} · ${grupoEvo==="Todos"?"todos os grupos":grupoEvo}`+(pri&&ult&&pri!==ult?` · de ${nf(tt(pri))} (${pri.lab}) para ${nf(tt(ult))} (${ult.lab})`:"");
+  $("tbHist").innerHTML=`<thead><tr><th>Data</th><th class="r">Carteira</th><th class="r">No prazo</th><th class="r">Fora do prazo</th><th class="r">% no prazo</th><th class="r">Entradas</th><th class="r">Execuções</th></tr></thead><tbody>`+
+    ds.slice().reverse().filter(d=>d.startsWith(mesSel)).map(d=>{const np=somaHist(d,2,f),fo=somaHist(d,3,f),a=somaHist(d,0,f),x=somaHist(d,1,f);const c=(np||0)+(fo||0);
+      return `<tr><td>${wd(d)} ${dmy(d)}</td><td class="r">${np==null&&fo==null?"–":nf(c)}</td><td class="r">${np==null?"–":nf(np)}</td><td class="r">${fo==null?"–":nf(fo)}</td><td class="r">${np==null?"–":pctTxt(np,c)}</td><td class="r">${a==null?"–":nf(a)}</td><td class="r">${x==null?"–":nf(x)}</td></tr>`;}).join("")+"</tbody>";}
+$("selMes").onchange=e=>{mesSel=e.target.value;renderEvo();};
+$("selGrupoEvo").onchange=e=>{grupoEvo=e.target.value;renderEvo();};
+
+/* ================= por serviço ================= */
+function tssDoGrupo(g){const c={};const u=S.ult;for(const r of u.ca.concat(u.ac,u.ex))if(r.g===g)c[r.tss]=(c[r.tss]||0)+1;
+  const ca={};for(const r of u.ca)if(r.g===g)ca[r.tss]=(ca[r.tss]||0)+1;
+  return Object.keys(c).sort((a,b)=>(ca[b]||0)-(ca[a]||0)||c[b]-c[a]||a.localeCompare(b));}
+function contaTss(g,p,t){const u=S.ult;const m=r=>r.g===g&&r.p===p&&(!t||r.tss===t);
+  const ca=u.ca.filter(m);return {ent:u.ac.filter(r=>m(r)&&noDia(r)).length,exe:u.ex.filter(r=>m(r)&&noDia(r)&&r.conta).length,cart:ca.length,fora:ca.filter(r=>r.fora).length};}
+function renderServ(){
+  const g=servSel;
+  $("chipsServ").innerHTML=GRUPOS.map(x=>`<button type="button" class="chip" data-g="${x}" aria-pressed="${x===g}"><span class="cdot" style="--c:${COR[x]}"></span>${x}</button>`).join("");
+  const P=POLOS.map(p=>({p,...contaTss(g,p)}));const T=P.reduce((a,b)=>({ent:a.ent+b.ent,exe:a.exe+b.exe,cart:a.cart+b.cart,fora:a.fora+b.fora}),{ent:0,exe:0,cart:0,fora:0});
+  const por=k=>P.map(x=>`${nf(x[k])} ${x.p}`).join(" · ");const saldo=T.ent-T.exe;
+  $("kpisServ").innerHTML=[
+    kpi({l:"Entradas",v:nf(T.ent),s:por("ent"),ic:IC.ent,tone:"var(--orange)",soft:"var(--orange-soft)",go:{modo:"entradas",g,p:""}}),
+    kpi({l:"Executadas",v:nf(T.exe),s:por("exe"),ic:IC.exe,tone:"var(--green)",soft:"var(--green-soft)",go:{modo:"execucoes",g,p:""}}),
+    kpi({l:"Saldo do dia",v:sgn(saldo),s:saldo>0?"carteira sobe":saldo<0?"carteira desce":"equilibrado",ic:IC.saldo,tone:saldo>0?"var(--red)":"var(--green)",soft:saldo>0?"var(--red-soft)":"var(--green-soft)"}),
+    kpi({hl:1,l:"Carteira",v:nf(T.cart),s:`${nf(T.cart-T.fora)} no prazo`,ic:IC.cart,go:{modo:"carteira",g,p:""}}),
+    kpi({l:"Fora do prazo",v:nf(T.fora),s:T.cart?pctTxt(T.fora,T.cart)+" da carteira":"",ic:IC.fora,tone:"var(--red)",soft:"var(--red-soft)",go:{modo:"carteira",g,prazo:"fora",p:""}})].join("");
+  $("servNota").textContent=`${g} · entradas e execuções: ${rotDias()} · carteira de ${dmy(S.ult.dc)}`;
+  $("tbServPolo").innerHTML=`<thead><tr><th>Polo</th><th class="r">Entradas</th><th class="r">Executadas</th><th class="r">Saldo do dia</th><th class="r sep">Carteira</th><th class="r">No prazo</th><th class="r">Fora do prazo</th><th class="r">% no prazo</th></tr></thead><tbody>`+
+    P.map(x=>`<tr><td class="g">${x.p}</td><td class="r"${go({modo:"entradas",g,p:x.p})}>${nf(x.ent)}</td><td class="r"${go({modo:"execucoes",g,p:x.p})}>${nf(x.exe)}</td><td class="r ${x.ent-x.exe>0?"up":"down"}">${sgn(x.ent-x.exe)}</td><td class="r sep"${go({modo:"carteira",g,p:x.p})}>${nf(x.cart)}</td><td class="r"${go({modo:"carteira",g,p:x.p,prazo:"no"})}>${nf(x.cart-x.fora)}</td><td class="r ${x.fora?"up":""}"${go({modo:"carteira",g,p:x.p,prazo:"fora"})}>${nf(x.fora)}</td><td class="r">${pp(pctN(x.cart-x.fora,x.cart))}</td></tr>`).join("")+
+    `<tr class="total"><td>TOTAL</td><td class="r">${nf(T.ent)}</td><td class="r">${nf(T.exe)}</td><td class="r">${sgn(saldo)}</td><td class="r sep">${nf(T.cart)}</td><td class="r">${nf(T.cart-T.fora)}</td><td class="r">${nf(T.fora)}</td><td class="r">${pp(pctN(T.cart-T.fora,T.cart))}</td></tr></tbody>`;
+  const ts=tssDoGrupo(g);const cab=["Entradas","Executadas","Carteira","Fora prazo"];const ks=["ent","exe","cart","fora"];const md=["entradas","execucoes","carteira","carteira"];
+  let h=`<thead><tr><th rowspan="2">TSS</th>${POLOS.map(p=>`<th colspan="4" class="grp sep">${p}</th>`).join("")}</tr><tr>${POLOS.map(()=>cab.map((c,i)=>`<th class="r${i===0?" sep":""}">${c}</th>`).join("")).join("")}</tr></thead><tbody>`;
+  const tot=POLOS.map(()=>({ent:0,exe:0,cart:0,fora:0}));
+  for(const t of ts){h+=`<tr><td>${esc(t)}</td>`+POLOS.map((p,pi)=>{const c=contaTss(g,p,t);ks.forEach(k=>tot[pi][k]+=c[k]);return ks.map((k,i)=>`<td class="r${i===0?" sep":""}${k==="fora"&&c[k]?" up":""}"${c[k]?go({modo:md[i],g,p,tss:t,prazo:k==="fora"?"fora":""}):""}>${nf(c[k])}</td>`).join("");}).join("")+"</tr>";}
+  h+=`<tr class="total"><td>TOTAL</td>${tot.map(c=>ks.map((k,i)=>`<td class="r${i===0?" sep":""}">${nf(c[k])}</td>`).join("")).join("")}</tr></tbody>`;
+  $("tbTss").innerHTML=ts.length?h:`<tbody><tr><td class="empty">Nenhuma OS de ${esc(g)} nos arquivos.</td></tr></tbody>`;}
+$("chipsServ").onclick=e=>{const b=e.target.closest("button");if(!b)return;servSel=b.dataset.g;renderServ();};
+
+
+
+
+function miniBarras(itens,o){
+  const n=itens.length;if(!n)return `<div class="empty">Sem dados.</div>`;
+  const W=420,H=o.h||190,top=18,bot=34,left=8,ch=H-top-bot;const mx=Math.max(1,...itens.flatMap(i=>i.vals.map(v=>v.v||0)));
+  const passo=(W-left*2)/n,bw=Math.min(34,passo/2-8);let s=`<svg viewBox="0 0 ${W} ${H}" class="mini" role="img"><line x1="${left}" x2="${W-left}" y1="${top+ch}" y2="${top+ch}" stroke="#D6DEE5"/>`;
+  itens.forEach((it,i)=>{const cx=left+passo*i+passo/2;it.vals.forEach((b,j)=>{const hh=(b.v||0)*ch/mx;const x=cx-bw-2+j*(bw+4);
+    s+=`<rect x="${x}" y="${top+ch-hh}" width="${bw}" height="${Math.max(hh,1)}" fill="${b.c}" rx="3"/><text x="${x+bw/2}" y="${top+ch-hh-4}" text-anchor="middle" font-size="11.5" font-weight="700" fill="#33424E">${b.v}</text>`;});
+    s+=`<text x="${cx}" y="${H-bot+15}" text-anchor="middle" font-size="12" font-weight="700" fill="#14212B">${it.lab}</text><text x="${cx}" y="${H-bot+28}" text-anchor="middle" font-size="10" fill="#7A8995">${it.sub}</text>`;});
+  return s+"</svg>";}
+function pzBarras(rows){const m=Math.max(1,...rows.map(r=>r.cart));
+  return `<div class="hb pzb">${rows.map(r=>`<div class="hr"><span>${r.p}<small>${nf(r.cart)} OS · ${pctTxt(r.no,r.cart)} no prazo</small></span><div class="st" style="width:${Math.max(8,r.cart*100/m).toFixed(1)}%"><i style="width:${r.cart?r.no*100/r.cart:0}%;background:#2FA36B">${r.no||""}</i><i style="width:${r.cart?r.fora*100/r.cart:0}%;background:#D9534A">${r.fora||""}</i></div></div>`).join("")}</div>`;}
+/* ================= resumo para print ================= */
+function renderRes(){
+  const u=S.ult,ds=u.dias;const pol=poloSel;const fpp=r=>pol==="Todos"||r.p===pol;
+  const E=(d,g,p)=>u.ac.filter(r=>r.dt===d&&(!g||r.g===g)&&(p?r.p===p:fpp(r))).length;
+  const X=(d,g,p)=>u.ex.filter(r=>r.dt===d&&r.conta&&(!g||r.g===g)&&(p?r.p===p:fpp(r))).length;
+  const T=conta({});const se=ds.reduce((a,d)=>a+E(d),0),sx=ds.reduce((a,d)=>a+X(d),0);
+  const per=ds.length?(ds.length===1?`${wd(ds[0])} ${dmy(ds[0])}`:`${wd(ds[0])} ${dm(ds[0])} a ${wd(ds[ds.length-1])} ${dm(ds[ds.length-1])}`):"–";
+  let h=`<div class="rhead"><div><h2>Carteira de Serviços · ${pol==="Todos"?"Interlagos e Grajaú":esc(pol)}</h2><p>Entradas e execuções de ${per} · carteira de ${wd(u.dc)} ${dmy(u.dc)}</p></div><div class="rdt">Carteira de<b>${dmy(u.dc)}</b></div></div>`;
+  const pv=pctN(T.no,T.cart);
+  h+=`<div class="rk"><div><small>Carteira</small><b>${nf(T.cart)}</b><em>${nf(T.no)} no prazo</em></div><div><small>Fora do prazo</small><b class="${T.fora?"up":""}">${nf(T.fora)}</b><em>${T.dFora==null?"":(T.dFora>0?"▲ ":T.dFora<0?"▼ ":"= ")+nf(Math.abs(T.dFora))+" vs "+dm(T.da)}</em></div><div><small>% no prazo</small><b>${pv==null?"–":(Math.round(pv*1000)/10).toLocaleString("pt-BR")+"%"}</b><em>meta ${Math.round(META*100)}%</em></div><div><small>Entradas</small><b style="color:#B9650F">${nf(se)}</b><em>${ds.length} dia${ds.length>1?"s":""}</em></div><div><small>Execuções</small><b style="color:#1C7444">${nf(sx)}</b><em>${ds.length} dia${ds.length>1?"s":""}</em></div><div><small>Saldo</small><b class="${se-sx>0?"up":"down"}">${sgn(se-sx)}</b><em>${se>sx?"carteira sobe":se<sx?"carteira desce":"equilibrado"}</em></div></div>`;
+  h+=`<div class="rbody"><table class="rt"><thead><tr class="d"><th class="blank"></th>${ds.map(d=>`<th colspan="2"><small>${wd(d)}</small>${dm(d)}</th>`).join("")}<th colspan="3" class="tp"><small>período</small>Total</th><th colspan="3" class="ct"><small>${dm(u.dc)}</small>Carteira</th></tr>
+    <tr class="h"><th style="text-align:left">Serviço</th>${ds.map(()=>`<th class="e bl">Entr.</th><th class="x">Exec.</th>`).join("")}<th class="e bl">Entr.</th><th class="x">Exec.</th><th>Saldo</th><th class="bl">Total</th><th>Fora</th><th>% prazo</th></tr></thead><tbody>`;
+  const linha=(nome,g,cls)=>{let te=0,tx=0;let r=`<tr class="${cls||""}"><td class="s">${g?`<i style="--c:${COR[g]}"></i>`:""}${nome}</td>`;
+    for(const d of ds){const e=E(d,g),x=X(d,g);te+=e;tx+=x;r+=`<td class="e bl">${nf(e)}</td><td class="x">${nf(x)}</td>`;}
+    const c=conta({g});r+=`<td class="e bl">${nf(te)}</td><td class="x">${nf(tx)}</td><td class="sd ${te-tx>0?"up":te-tx<0?"down":""}">${sgn(te-tx)}</td><td class="bl">${nf(c.cart)}</td><td class="${c.fora?"up":""}">${nf(c.fora)}</td><td>${pp(pctN(c.no,c.cart))}</td></tr>`;return r;};
+  for(const g of GRUPOS)h+=linha(g,g);
+  h+=linha("TOTAL","","tot")+`</tbody></table></div>`;
+  // gráficos ao lado
+  const itD=ds.map(d=>({lab:dm(d),sub:wd(d),vals:[{v:E(d),c:"#F0A23B"},{v:X(d),c:"#23824F"}]}));
+  const pzRows=(pol==="Todos"?POLOS.slice().reverse():[pol]).map(p=>({p,...conta({p})}));
+  const graf=`<div class="rgraf"><div class="rg"><div class="rgt">Entradas × execuções por dia<span class="leg2"><span style="--c:#F0A23B">Entradas</span><span style="--c:#23824F">Execuções</span></span></div>${miniBarras(itD,{h:190})}</div>
+    <div class="rg"><div class="rgt">Prazo da carteira<span class="leg2"><span style="--c:#2FA36B">No prazo</span><span style="--c:#D9534A">Fora</span></span></div>${pzBarras(pzRows)}</div></div>`;
+  h=h.replace('<div class="rbody">','<div class="rgrid"><div class="rbody">')+graf+`</div>`;
+  if(pol==="Todos"){h+=`<div class="rpolo">`+POLOS.slice().reverse().map(p=>{const c=conta({p});let e=0,x=0;ds.forEach(d=>{e+=E(d,"",p);x+=X(d,"",p);});
+    return `<div class="pb"><b class="pn">${p}</b><small>Carteira</small><small>Fora</small><small>% prazo</small><small>Entradas</small><small>Execuções</small><span>${nf(c.cart)}</span><span class="${c.fora?"up":""}">${nf(c.fora)}</span><span>${pp(pctN(c.no,c.cart))}</span><span style="color:#B9650F">${nf(e)}</span><span style="color:#1C7444">${nf(x)}</span></div>`;}).join("")+`</div>`;}
+  // ---- ligação de água ----
+  {const g=LIG;const Pl=POLOS.slice().reverse();
+   const El=(d,p)=>u.ac.filter(r=>r.g===g&&r.dt===d&&(!p||r.p===p)).length,Xl=(d,p)=>u.ex.filter(r=>r.g===g&&r.dt===d&&r.conta&&(!p||r.p===p)).length;
+   const cl=p=>{const c=u.ca.filter(r=>r.g===g&&(!p||r.p===p));return {cart:c.length,fora:c.filter(r=>r.fora).length};};
+   const te=ds.reduce((a,d)=>a+El(d),0),tx=ds.reduce((a,d)=>a+Xl(d),0),ct=cl();
+   h+=`<div class="rsec"><div class="rsech"><span class="rdot" style="--c:${COR[g]}"></span>Ligação de água<small>só Contrato Global · ${per}</small></div>
+     <div class="rk rk5"><div><small>Entradas</small><b style="color:#B9650F">${nf(te)}</b><em>${Pl.map(p=>ds.reduce((a,d)=>a+El(d,p),0)+" "+p).join(" · ")}</em></div><div><small>Executadas</small><b style="color:#1C7444">${nf(tx)}</b><em>${Pl.map(p=>ds.reduce((a,d)=>a+Xl(d,p),0)+" "+p).join(" · ")}</em></div><div><small>Saldo</small><b class="${te-tx>0?"up":"down"}">${sgn(te-tx)}</b><em>${te>tx?"carteira sobe":te<tx?"carteira desce":"equilibrado"}</em></div><div><small>Carteira</small><b>${nf(ct.cart)}</b><em>${Pl.map(p=>cl(p).cart+" "+p).join(" · ")}</em></div><div><small>Fora do prazo</small><b class="${ct.fora?"up":""}">${nf(ct.fora)}</b><em>${ct.cart?pctTxt(ct.fora,ct.cart)+" da carteira":""}</em></div></div>
+     <div class="rgrid"><div class="rbody"><table class="rt"><thead><tr class="d"><th class="blank"></th>${ds.map(d=>`<th colspan="2"><small>${wd(d)}</small>${dm(d)}</th>`).join("")}<th colspan="3" class="tp"><small>período</small>Total</th><th colspan="2" class="ct"><small>${dm(u.dc)}</small>Carteira</th></tr>
+     <tr class="h"><th style="text-align:left">Polo</th>${ds.map(()=>`<th class="e bl">Entr.</th><th class="x">Exec.</th>`).join("")}<th class="e bl">Entr.</th><th class="x">Exec.</th><th>Saldo</th><th class="bl">Total</th><th>Fora</th></tr></thead><tbody>`+
+     Pl.concat([""]).map(p=>{let a=0,b=0;let r=`<tr class="${p?"":"tot"}"><td class="s">${p||"TOTAL"}</td>`;for(const d of ds){const e=El(d,p),x=Xl(d,p);a+=e;b+=x;r+=`<td class="e bl">${nf(e)}</td><td class="x">${nf(x)}</td>`;}const c=cl(p);
+       return r+`<td class="e bl">${nf(a)}</td><td class="x">${nf(b)}</td><td class="sd ${a-b>0?"up":a-b<0?"down":""}">${sgn(a-b)}</td><td class="bl">${nf(c.cart)}</td><td class="${c.fora?"up":""}">${nf(c.fora)}</td></tr>`;}).join("")+`</tbody></table>`;
+   // TSS da carteira
+   const ts=tssDoGrupo(g).filter(t=>u.ca.some(r=>r.g===g&&r.tss===t)||ds.some(d=>El(d)||Xl(d)));
+   h+=`<table class="rt rtss"><thead><tr class="h"><th style="text-align:left">Tipo de ligação (TSS)</th>${Pl.map(p=>`<th class="bl">${p}<br><span class="e">Entr.</span> · <span class="x">Exec.</span> · Cart.</th>`).join("")}</tr></thead><tbody>`+
+     ts.map(t=>`<tr><td class="s">${esc(t)}</td>${Pl.map(p=>{const m=r=>r.g===g&&r.p===p&&r.tss===t;const e=u.ac.filter(r=>m(r)&&ds.includes(r.dt)).length,x=u.ex.filter(r=>m(r)&&ds.includes(r.dt)&&r.conta).length,c=u.ca.filter(m).length;return `<td class="bl"><span class="e">${e}</span> · <span class="x">${x}</span> · <b>${c}</b></td>`;}).join("")}</tr>`).join("")+`</tbody></table></div>`;
+   const itL=ds.map(d=>({lab:dm(d),sub:wd(d),vals:[{v:El(d),c:"#F0A23B"},{v:Xl(d),c:"#23824F"}]}));
+   const ca=u.ca.filter(r=>r.g===g);
+   const fx=FX.map(([k,l,c])=>({l,c,n:ca.filter(r=>faixaDe(r)===k).length}));const mf=Math.max(1,...fx.map(f=>f.n));
+   h+=`<div class="rgraf"><div class="rg"><div class="rgt">Entradas × executadas por dia<span class="leg2"><span style="--c:#F0A23B">Entradas</span><span style="--c:#23824F">Executadas</span></span></div>${miniBarras(itL,{h:170})}</div>
+     <div class="rg"><div class="rgt">Prazo da carteira de ligação</div><div class="hb">${fx.map(f=>`<div class="hr"><span>${f.l}</span><div><i style="width:${(f.n*100/mf).toFixed(1)}%;background:${f.c}"></i></div><b>${nf(f.n)}</b></div>`).join("")}</div></div></div></div></div>`;}
+  h+=`<div class="rfoot"><span>Entradas = acatados pela data de inserção · Execuções = executados pela data de início só com resultado do próprio serviço; fim do dia, imóvel fechado, outro serviço, duplicidade etc. não contam${(()=>{const n=u.ex.filter(r=>ds.includes(r.dt)&&fpp(r)&&!r.conta).length;return n?` (${nf(n)} baixas fora da conta)`:""})()}</span><span>Gerado em ${new Date().toLocaleString("pt-BR",{dateStyle:"short",timeStyle:"short"})}</span></div>`;
+  $("resCard").innerHTML=ds.length||u.dc?h:`<div class="empty">Suba os arquivos do dia para montar o resumo.</div>`;}
+$("btnPrint").onclick=()=>{document.body.classList.add("printmode");window.scrollTo({top:0});};
+(()=>{const b=document.createElement("button");b.type="button";b.className="sairprint";b.textContent="Sair do modo print (Esc)";b.onclick=()=>document.body.classList.remove("printmode");document.body.appendChild(b);})();
+document.addEventListener("keydown",e=>{if(e.key==="Escape")document.body.classList.remove("printmode");});
+
+/* ================= ligação de água ================= */
+const LIG="Ligação de água";
+const FX=[["fora","Fora do prazo","#D9534A"],["d2","Vence em até 2 dias","#F0A23B"],["d7","Vence em 3 a 7 dias","#E8C547"],["d15","Vence em 8 a 15 dias","#7BC29A"],["mais","Mais de 15 dias","#2FA36B"]];
+function faixaDe(r){const m=minutosResid(r.tr);if(m<0||r.fora)return "fora";const d=m/1440;return d<=2?"d2":d<=7?"d7":d<=15?"d15":"mais";}
+function renderLig(){
+  const g=LIG,u=S.ult;
+  const P=POLOS.map(p=>({p,...contaTss(g,p)}));const T=P.reduce((a,b)=>({ent:a.ent+b.ent,exe:a.exe+b.exe,cart:a.cart+b.cart,fora:a.fora+b.fora}),{ent:0,exe:0,cart:0,fora:0});
+  const por=k=>P.map(x=>`${nf(x[k])} ${x.p}`).join(" · ");const saldo=T.ent-T.exe;
+  const ncTot=u.ex.filter(r=>r.g===g&&noDia(r)&&!r.conta).length;
+  $("kpisLig").innerHTML=[
+    kpi({l:"Entradas",v:nf(T.ent),s:por("ent"),ic:IC.ent,tone:"var(--orange)",soft:"var(--orange-soft)",go:{modo:"entradas",g,p:""}}),
+    kpi({l:"Executadas",v:nf(T.exe),s:por("exe")+(ncTot?` · ${ncTot} ${ncTot>1?"baixas não contam":"baixa não conta"}`:""),ic:IC.exe,tone:"var(--green)",soft:"var(--green-soft)",go:{modo:"execucoes",g,p:"",nc:"nao"}}),
+    kpi({l:"Saldo do dia",v:sgn(saldo),s:saldo>0?"carteira sobe":saldo<0?"carteira desce":"equilibrado",ic:IC.saldo,tone:saldo>0?"var(--red)":"var(--green)",soft:saldo>0?"var(--red-soft)":"var(--green-soft)"}),
+    kpi({hl:1,l:"Carteira",v:nf(T.cart),s:`${nf(T.cart-T.fora)} no prazo · ${por("cart")}`,ic:IC.cart,go:{modo:"carteira",g,p:""}}),
+    kpi({l:"Fora do prazo",v:nf(T.fora),s:T.cart?pctTxt(T.fora,T.cart)+" da carteira":"",ic:IC.fora,tone:"var(--red)",soft:"var(--red-soft)",go:{modo:"carteira",g,prazo:"fora",p:""}})].join("");
+  $("ligNota").textContent=`entradas e execuções: ${rotDias()} · carteira de ${dmy(u.dc)} · só Contrato Global`;
+  $("tbLigPolo").innerHTML=`<thead><tr><th>Polo</th><th class="r">Entradas</th><th class="r">Executadas</th><th class="r">Saldo do dia</th><th class="r sep">Carteira</th><th class="r">No prazo</th><th class="r">Fora do prazo</th><th class="r">% no prazo</th></tr></thead><tbody>`+
+    P.map(x=>`<tr><td class="g">${x.p}</td><td class="r"${go({modo:"entradas",g,p:x.p})}>${nf(x.ent)}</td><td class="r"${go({modo:"execucoes",g,p:x.p,nc:"nao"})}>${nf(x.exe)}</td><td class="r ${x.ent-x.exe>0?"up":"down"}">${sgn(x.ent-x.exe)}</td><td class="r sep"${go({modo:"carteira",g,p:x.p})}>${nf(x.cart)}</td><td class="r"${go({modo:"carteira",g,p:x.p,prazo:"no"})}>${nf(x.cart-x.fora)}</td><td class="r ${x.fora?"up":""}"${go({modo:"carteira",g,p:x.p,prazo:"fora"})}>${nf(x.fora)}</td><td class="r">${pp(pctN(x.cart-x.fora,x.cart))}</td></tr>`).join("")+
+    `<tr class="total"><td>TOTAL</td><td class="r">${nf(T.ent)}</td><td class="r">${nf(T.exe)}</td><td class="r">${sgn(saldo)}</td><td class="r sep">${nf(T.cart)}</td><td class="r">${nf(T.cart-T.fora)}</td><td class="r">${nf(T.fora)}</td><td class="r">${pp(pctN(T.cart-T.fora,T.cart))}</td></tr></tbody>`;
+  // prazo da carteira
+  const ca=u.ca.filter(r=>r.g===g);
+  $("ligFaixa").innerHTML=`<div class="fx"><div class="r hd"><span>Faixa</span>${POLOS.map(p=>`<span>${p.slice(0,5)}.</span>`).join("")}<span>Total</span></div>`+
+    FX.map(([k,l,c])=>{const n=p=>ca.filter(r=>faixaDe(r)===k&&(!p||r.p===p)).length;return `<div class="r"${go({modo:"carteira",g,fx:k,p:""})}><span class="l"><i style="--c:${c}"></i>${l}</span>${POLOS.map(p=>`<span class="n">${nf(n(p))}</span>`).join("")}<span class="n">${nf(n())}</span></div>`;}).join("")+
+    `<div class="r tt"><span class="l">Total</span>${POLOS.map(p=>`<span class="n">${nf(ca.filter(r=>r.p===p).length)}</span>`).join("")}<span class="n">${nf(ca.length)}</span></div></div>`;
+  // por TSS
+  const ts=tssDoGrupo(g);const cab=["Entradas","Executadas","Carteira","Fora prazo"];const ks=["ent","exe","cart","fora"];const md=["entradas","execucoes","carteira","carteira"];
+  let h=`<thead><tr><th rowspan="2">TSS</th>${POLOS.map(p=>`<th colspan="4" class="grp sep">${p}</th>`).join("")}</tr><tr>${POLOS.map(()=>cab.map((c,i)=>`<th class="r${i===0?" sep":""}">${c}</th>`).join("")).join("")}</tr></thead><tbody>`;
+  const tot=POLOS.map(()=>({ent:0,exe:0,cart:0,fora:0}));
+  for(const t of ts){h+=`<tr><td>${esc(t)}</td>`+POLOS.map((p,pi)=>{const c=contaTss(g,p,t);ks.forEach(k=>tot[pi][k]+=c[k]);return ks.map((k,i)=>`<td class="r${i===0?" sep":""}${k==="fora"&&c[k]?" up":""}"${c[k]?go({modo:md[i],g,p,tss:t,prazo:k==="fora"?"fora":"",nc:k==="exe"?"nao":""}):""}>${nf(c[k])}</td>`).join("");}).join("")+"</tr>";}
+  h+=`<tr class="total"><td>TOTAL</td>${tot.map(c=>ks.map((k,i)=>`<td class="r${i===0?" sep":""}">${nf(c[k])}</td>`).join("")).join("")}</tr></tbody>`;
+  $("tbLigTss").innerHTML=ts.length?h:`<tbody><tr><td class="empty">Nenhuma ligação de água nos arquivos.</td></tr></tbody>`;
+  // dia a dia
+  const dd=u.dias;const c2=(d,p,t)=>t==="e"?u.ac.filter(r=>r.g===g&&r.dt===d&&(!p||r.p===p)).length:u.ex.filter(r=>r.g===g&&r.dt===d&&r.conta&&(!p||r.p===p)).length;
+  $("tbLigDia").innerHTML=dd.length?`<thead><tr><th rowspan="2">Dia</th>${POLOS.concat(["Total"]).map(p=>`<th colspan="3" class="grp sep">${p}</th>`).join("")}</tr><tr>${POLOS.concat([""]).map(()=>`<th class="r sep">Entradas</th><th class="r">Executadas</th><th class="r">Saldo</th>`).join("")}</tr></thead><tbody>`+
+    dd.map(d=>`<tr><td class="g">${wd(d)} ${dm(d)}</td>`+POLOS.concat([""]).map(p=>{const e=c2(d,p,"e"),x=c2(d,p,"x");return `<td class="r sep">${nf(e)}</td><td class="r">${nf(x)}</td><td class="r ${e-x>0?"up":e-x<0?"down":""}">${sgn(e-x)}</td>`;}).join("")+"</tr>").join("")+
+    `<tr class="total"><td>TOTAL</td>`+POLOS.concat([""]).map(p=>{let e=0,x=0;dd.forEach(d=>{e+=c2(d,p,"e");x+=c2(d,p,"x");});return `<td class="r sep">${nf(e)}</td><td class="r">${nf(x)}</td><td class="r">${sgn(e-x)}</td>`;}).join("")+"</tr></tbody>":`<tbody><tr><td class="empty">Sem entradas e execuções.</td></tr></tbody>`;
+  // baixas que não contam
+  const nc=u.ex.filter(r=>r.g===g&&noDia(r)&&!r.conta);const pc={};nc.forEach(r=>{const k=r.cod;pc[k]=pc[k]||{n:0,res:r.res};pc[k].n++;});
+  $("ligNc").innerHTML=nc.length?`<div class="at nc">${Object.entries(pc).sort((a,b)=>b[1].n-a[1].n).map(([k,v])=>`<div class="ai" style="--c:var(--orange)"${go({modo:"execucoes",g,nc:"sim",p:""})}><div class="t">${esc(v.res||"Resultado "+k)}<small>código ${esc(k)}</small></div><b>${nf(v.n)}</b></div>`).join("")}</div><div class="note">Essas baixas saem nos Executados, mas o resultado não é o serviço feito, então não contam como executada.</div>`:`<div class="empty">Nenhuma baixa fora da conta em ${esc(rotDias())}.</div>`;
+  // evolução
+  const ds=datasHist();const mes=(u.dc||ds[ds.length-1]||"").slice(0,7);const f=(p,gg)=>gg===g;
+  const dm2=ds.filter(d=>d.startsWith(mes));
+  $("ligEvo").innerHTML=barras(dm2.filter(d=>somaHist(d,2,f)!=null||somaHist(d,3,f)!=null).map(d=>({lab:dm(d),sub:wd(d),vals:[{v:somaHist(d,2,f)||0,c:"#2FA36B"},{v:somaHist(d,3,f)||0,c:"#D9534A"}]})),{empilhar:1});
+  $("ligMov").innerHTML=barras(dm2.filter(d=>somaHist(d,0,f)!=null||somaHist(d,1,f)!=null).map(d=>({lab:dm(d),sub:wd(d),vals:[{v:somaHist(d,0,f),c:"#F0A23B"},{v:somaHist(d,1,f),c:"#23824F"}]})),{h:200});
+  $("ligEvoNota").textContent=`${MESES[Number(mes.slice(5,7))-1]||""} ${mes.slice(0,4)} · os dois polos`;}
+
+/* ================= lista de OS ================= */
+const MODOS=[["carteira","Carteira"],["entradas","Entradas (acatados)"],["execucoes","Execuções"]];
+function baseModo(){const u=S.ult;return osF.modo==="carteira"?u.ca:osF.modo==="entradas"?u.ac:u.ex;}
+function filtradosOS(semBusca){const q=U($("busca").value.trim());
+  return baseModo().filter(r=>fp(r)&&(!osF.g||r.g===osF.g)&&(!osF.tss||r.tss===osF.tss)&&(osF.modo==="carteira"?(!osF.prazo||(osF.prazo==="fora"?r.fora:!r.fora))&&(!osF.fx||faixaDe(r)===osF.fx):noDia(r))&&(!osF.nc||(osF.nc==="sim"?!r.conta:r.conta))&&
+    (semBusca||!q||U([r.os,r.end,r.bai,r.mun,r.tss,r.eq,r.st,r.res].join(" ")).includes(q)));}
+function renderOS(){
+  const u=S.ult;
+  $("chipsModo").innerHTML=MODOS.map(([k,l])=>{const n=(k==="carteira"?u.ca:k==="entradas"?u.ac:u.ex).filter(r=>fp(r)&&(k==="carteira"||noDia(r))).length;return `<button type="button" class="chip" data-m="${k}" aria-pressed="${osF.modo===k}">${l} <span class="c">${nf(n)}</span></button>`;}).join("");
+  $("fGrupo").innerHTML=`<option value="">Todos os grupos</option>`+GRUPOS.map(g=>`<option${g===osF.g?" selected":""}>${g}</option>`).join("");
+  const tss=[...new Set(baseModo().filter(r=>!osF.g||r.g===osF.g).map(r=>r.tss))].sort();
+  if(osF.tss&&!tss.includes(osF.tss))osF.tss="";
+  $("fTss").innerHTML=`<option value="">Todos os TSS</option>`+tss.map(t=>`<option${t===osF.tss?" selected":""}>${esc(t)}</option>`).join("");
+  $("fPrazo").hidden=osF.modo!=="carteira";$("fPrazo").value=osF.prazo;
+  const at=[];if(poloSel!=="Todos")at.push(poloSel);if(osF.g)at.push(osF.g);if(osF.tss)at.push(osF.tss);if(osF.modo==="carteira"&&osF.prazo)at.push(osF.prazo==="fora"?"Fora do prazo":"No prazo");if(osF.fx)at.push(FX.find(f=>f[0]===osF.fx)[1]);if(osF.nc)at.push(osF.nc==="sim"?"Baixas que não contam":"Só executadas que contam");if(osF.modo!=="carteira")at.push(rotDias());
+  $("ativos").hidden=!at.length;$("ativos").innerHTML=`Mostrando: ${at.map(a=>`<span class="fa">${esc(a)}</span>`).join("")} <button type="button" id="limpar">Limpar filtros</button>`;
+  let L=filtradosOS();
+  if(osF.modo==="carteira")L.sort((a,b)=>minutosResid(a.tr)-minutosResid(b.tr));else L.sort((a,b)=>a.dt<b.dt?-1:a.dt>b.dt?1:a.g.localeCompare(b.g));
+  const lim=800;const mostra=L.slice(0,lim);
+  const tag=r=>`<span class="tag cat" style="--c:${COR[r.g]}">${r.g}</span>`;
+  const endc=r=>`<td class="addr">${esc(r.end||"–")}<small>${esc([r.bai,r.mun].filter(Boolean).join(" · "))}</small></td>`;
+  let h;
+  if(osF.modo==="carteira")h=`<table><thead><tr><th>OS</th><th>Serviço</th><th>Endereço</th><th>Polo</th><th>Inserção</th><th>Prazo fim</th><th>Tempo residual</th><th>Status da operação</th><th>Prazo</th></tr></thead><tbody>`+
+    mostra.map(r=>`<tr><td class="os">${esc(r.os)}</td><td class="tss">${esc(r.tss)}<br>${tag(r)}</td>${endc(r)}<td>${r.p}</td><td class="mono">${esc(r.ins)}</td><td class="mono">${esc(r.pf)}</td><td class="mono ${r.fora?"up":""}"><b>${esc(r.tr)}</b></td><td>${esc(r.st)}</td><td><span class="pill ${r.fora?"fora":"no"}">${r.fora?"Fora do prazo":"No prazo"}</span></td></tr>`).join("");
+  else if(osF.modo==="entradas")h=`<table><thead><tr><th>OS</th><th>Serviço</th><th>Endereço</th><th>Polo</th><th>Dia</th><th>Inserção</th><th>Prazo fim</th><th>Status da operação</th></tr></thead><tbody>`+
+    mostra.map(r=>`<tr><td class="os">${esc(r.os)}</td><td class="tss">${esc(r.tss)}<br>${tag(r)}</td>${endc(r)}<td>${r.p}</td><td class="mono"><b>${wd(r.dt)} ${dm(r.dt)}</b></td><td class="mono">${esc(r.ins)}</td><td class="mono">${esc(r.pf)}</td><td>${esc(r.st)}</td></tr>`).join("");
+  else h=`<table><thead><tr><th>OS</th><th>Serviço</th><th>Endereço</th><th>Polo</th><th>Dia</th><th>Início · fim</th><th>Resultado</th><th>Equipe</th><th>Conta?</th></tr></thead><tbody>`+
+    mostra.map(r=>`<tr><td class="os">${esc(r.os)}</td><td class="tss">${esc(r.tss)}<br>${tag(r)}</td>${endc(r)}<td>${r.p}</td><td class="mono"><b>${wd(r.dt)} ${dm(r.dt)}</b></td><td class="mono">${esc(r.ini)}<br><small class="note">${esc(r.fim)}</small></td><td class="mne">${esc(r.cod)} ${esc(r.res)}</td><td class="mne">${esc(r.eq)}</td><td><span class="pill ${r.conta?"no":"nc"}">${r.conta?"Executada":"Não conta"}</span></td></tr>`).join("");
+  $("lista").innerHTML=L.length?h+"</tbody></table>":`<div class="empty">Nenhuma OS com esses filtros.</div>`;
+  $("rodape").textContent=`${nf(L.length)} OS${L.length>lim?` · mostrando as primeiras ${lim}; use a busca ou os filtros`:""}${osF.modo==="execucoes"?" · só conta como executada a baixa com resultado do próprio serviço (fim do dia, imóvel fechado, trata-se de outro serviço, duplicidade etc. aparecem como \"Não conta\")":""}`;
+  const lp=$("limpar");if(lp)lp.onclick=()=>{osF.g="";osF.tss="";osF.prazo="";osF.nc="";osF.fx="";poloSel="Todos";$("busca").value="";renderTudo();};}
+$("chipsModo").onclick=e=>{const b=e.target.closest("button");if(!b)return;osF.modo=b.dataset.m;renderOS();};
+$("fGrupo").onchange=e=>{osF.g=e.target.value;osF.tss="";renderOS();};
+$("fTss").onchange=e=>{osF.tss=e.target.value;renderOS();};
+$("fPrazo").onchange=e=>{osF.prazo=e.target.value;renderOS();};
+let tb;$("busca").addEventListener("input",()=>{clearTimeout(tb);tb=setTimeout(renderOS,180);});
+function irPara(o){osF.modo=o.modo||"carteira";osF.g=o.g||"";osF.tss=o.tss||"";osF.prazo=o.prazo||"";osF.nc=o.nc||"";osF.fx=o.fx||"";if(o.p!==undefined)poloSel=o.p||((abaAtual==="serv"||abaAtual==="lig")?"Todos":poloSel);$("busca").value="";aba("os");}
+document.addEventListener("click",e=>{const el=e.target.closest("[data-go]");if(el&&!el.closest("#v-os")&&!el.closest(".seg2")){irPara(JSON.parse(el.dataset.go));window.scrollTo({top:0,behavior:"smooth"});return;}
+  const d=e.target.closest("#diaDia .r[data-dia],#tbGrupo th[data-dia]");if(d){diaSel=diaSel===d.dataset.dia?"todos":d.dataset.dia;renderTudo();}});
+function aba(n){abaAtual=n;document.body.classList.remove("printmode");for(const k of ["painel","res","lig","serv","os"]){$("t-"+k).setAttribute("aria-selected",k===n);$("v-"+k).hidden=k!==n;}renderTudo();}
+$("t-painel").onclick=()=>aba("painel");$("t-lig").onclick=()=>aba("lig");$("t-res").onclick=()=>aba("res");$("t-serv").onclick=()=>aba("serv");$("t-os").onclick=()=>aba("os");
+function renderTudo(){renderFiltros();if(abaAtual==="painel")render();else if(abaAtual==="serv")renderServ();else if(abaAtual==="lig")renderLig();else if(abaAtual==="res")renderRes();else renderOS();}
+
+/* ================= Excel ================= */
+$("baixar").onclick=()=>{try{exportar();}catch(e){console.error(e);msg("Não consegui gerar o Excel: "+e.message);}};
+function exportar(){
+  const u=S.ult;if(!u.dc&&!u.dias.length){msg("Ainda não há dados para exportar.");return;}
+  const L=novoLivro();const NAVY="0B2540",LINE="D6DEE5";
+  const sT=L.st({f:{b:1,sz:16,c:"FFFFFF",n:"Segoe UI Semibold"},fill:NAVY,v:"center"});
+  const sSub=L.st({f:{sz:10,c:"5E6E7B",n:"Segoe UI"}});
+  const sSec=L.st({f:{b:1,sz:12,c:NAVY,n:"Segoe UI Semibold"}});
+  const sKl=L.st({f:{b:1,sz:9,c:"5E6E7B",n:"Segoe UI"},fill:"F3F6F9",h:"center",bd:LINE});
+  const sKv=L.st({f:{b:1,sz:20,c:NAVY,n:"Segoe UI Semibold"},fill:"FFFFFF",h:"center",v:"center",bd:LINE});
+  const sKvp=L.st({f:{b:1,sz:20,c:NAVY,n:"Segoe UI Semibold"},fill:"FFFFFF",h:"center",v:"center",bd:LINE,nf:"0.0%"});
+  const sKs=L.st({f:{sz:9,c:"5E6E7B",n:"Segoe UI"},fill:"FFFFFF",h:"center",bd:LINE});
+  const sH=L.st({f:{b:1,sz:10,c:"FFFFFF",n:"Segoe UI"},fill:NAVY,h:"center",v:"center",wrap:1,bd:NAVY});
+  const sHl=L.st({f:{b:1,sz:10,c:"FFFFFF",n:"Segoe UI"},fill:NAVY,v:"center",bd:NAVY});
+  const sC=L.st({f:{sz:10,n:"Segoe UI"},h:"center",bd:LINE});
+  const sCp=L.st({f:{sz:10,n:"Segoe UI"},h:"center",bd:LINE,nf:"0.0%"});
+  const sCd=L.st({f:{sz:10,n:"Segoe UI"},h:"center",bd:LINE,nf:"dd/mm/yyyy"});
+  const sL=L.st({f:{sz:10,n:"Segoe UI"},bd:LINE});
+  const sG=g=>L.st({f:{b:1,sz:10,n:"Segoe UI"},fill:COR_XL[g]||"FFFFFF",bd:LINE});
+  const sTot=L.st({f:{b:1,sz:10,c:"FFFFFF",n:"Segoe UI"},fill:"33475B",h:"center",bd:"33475B"});
+  const sTotL=L.st({f:{b:1,sz:10,c:"FFFFFF",n:"Segoe UI"},fill:"33475B",bd:"33475B"});
+  const sTotP=L.st({f:{b:1,sz:10,c:"FFFFFF",n:"Segoe UI"},fill:"33475B",h:"center",bd:"33475B",nf:"0.0%"});
+  const sBad=L.st({f:{b:1,sz:10,c:"C2362B",n:"Segoe UI"},h:"center",bd:LINE});
+  const sheets=[];
+  const iso2d=iso=>iso?new Date(iso+"T12:00:00"):"";
+  const put=(sh,r,c,v,s)=>sh.cells.set(r+","+c,{v,s});
+  // ---------- PAINEL ----------
+  const P=folha("PAINEL",{widths:[2,24,13,13,13,13,15,13,13,13],grid:false,tab:NAVY,merges:["B1:J1","B2:J2"],heights:{0:30}});
+  put(P,0,1,"PAINEL DA CARTEIRA DE SERVIÇOS",sT);for(let c=2;c<=9;c++)put(P,0,c,"",sT);
+  put(P,1,1,`Carteira de ${dmy(u.dc)} · Entradas e execuções: ${rotDias()} · Polo: ${poloSel} · gerado em ${new Date().toLocaleString("pt-BR")}`,sSub);
+  const polSalvo=poloSel;poloSel="Todos";const T=conta({});
+  const kp=[["CARTEIRA",T.cart,`${T.no} no prazo`],["FORA DO PRAZO",T.fora,T.dFora==null?"sem dia anterior":`${T.dFora>0?"▲ ":T.dFora<0?"▼ ":"= "}${Math.abs(T.dFora)} vs ${dm(T.da)}`],["% NO PRAZO",pctN(T.no,T.cart)??"",`meta ${Math.round(META*100)}%`],["ENTRADAS",T.ent,rotDias()],["EXECUÇÕES",T.exe,T.ent>T.exe?"carteira tende a subir":T.ent<T.exe?"carteira tende a cair":"equilibrado"],["SALDO",T.saldo,""]];
+  const kc=[1,2,3,4,5,6];
+  kp.forEach((k,i)=>{const c=kc[i];put(P,3,c,k[0],sKl);put(P,4,c,k[1],i===2?sKvp:sKv);put(P,5,c,k[2],sKs);});
+  P.heights[4]=32;
+  let r=7;
+  const tabelaGrupo=(titulo,p)=>{put(P,r,1,titulo,sSec);r++;
+    const hd=["Grupo","Carteira","No prazo","Fora do prazo","% no prazo",`Fora vs ${T.da?dm(T.da):"dia anterior"}`,"Entradas","Execuções","Saldo"];hd.forEach((h,i)=>put(P,r,1+i,h,i?sH:sHl));P.heights[r]=28;r++;
+    const tt={cart:0,no:0,fora:0,ent:0,exe:0,dF:0,temD:false};
+    for(const g of GRUPOS){const c=conta({g,p:p||null});[g,c.cart,c.no,c.fora,pctN(c.no,c.cart)??"",c.dFora==null?"–":c.dFora,c.ent,c.exe,c.saldo].forEach((v,i)=>put(P,r,1+i,v,i===0?sG(g):i===4?sCp:i===3&&c.fora?sBad:sC));
+      tt.cart+=c.cart;tt.no+=c.no;tt.fora+=c.fora;tt.ent+=c.ent;tt.exe+=c.exe;if(c.dFora!=null){tt.dF+=c.dFora;tt.temD=true;}r++;}
+    ["TOTAL",tt.cart,tt.no,tt.fora,pctN(tt.no,tt.cart)??"",tt.temD?tt.dF:"–",tt.ent,tt.exe,tt.ent-tt.exe].forEach((v,i)=>put(P,r,1+i,v,i===0?sTotL:i===4?sTotP:sTot));r+=2;};
+  tabelaGrupo("Situação por grupo · todos os polos","");
+  for(const p of POLOS.slice().reverse())tabelaGrupo("Situação por grupo · "+p,p);
+  put(P,r,1,"Entradas × execuções por dia",sSec);r++;
+  ["Data","Dia","Entradas","Execuções","Saldo"].forEach((h,i)=>put(P,r,1+i,h,i?sH:sHl));r++;
+  for(const d of u.dias){const e=u.ac.filter(x=>x.dt===d).length,x=u.ex.filter(y=>y.dt===d&&y.conta).length;[iso2d(d),wd(d),e,x,e-x].forEach((v,i)=>put(P,r,1+i,v,i===0?L.st({f:{b:1,sz:10,n:"Segoe UI"},bd:LINE,nf:"dd/mm/yyyy"}):sC));r++;}
+  poloSel=polSalvo;
+  sheets.push(P);
+  // ---------- LIGAÇÃO DE ÁGUA ----------
+  const g="Ligação de água";const LA=folha("LIGAÇÃO DE ÁGUA",{widths:[2,44,12,12,12,12,12,12,12,12],grid:false,tab:"E07B24",merges:["B1:J1","B2:J2"],heights:{0:30}});
+  put(LA,0,1,"LIGAÇÃO DE ÁGUA",sT);for(let c=2;c<=9;c++)put(LA,0,c,"",sT);
+  put(LA,1,1,`Entradas e execuções: ${rotDias()} · Carteira de ${dmy(u.dc)} · só Contrato Global`,sSub);
+  const PP=POLOS.map(p=>({p,...contaTss(g,p)}));const TT=PP.reduce((a,b)=>({ent:a.ent+b.ent,exe:a.exe+b.exe,cart:a.cart+b.cart,fora:a.fora+b.fora}),{ent:0,exe:0,cart:0,fora:0});
+  [["ENTRADAS",TT.ent,PP.map(x=>x.ent+" "+x.p).join(" · ")],["EXECUTADAS",TT.exe,PP.map(x=>x.exe+" "+x.p).join(" · ")],["SALDO DO DIA",TT.ent-TT.exe,TT.ent-TT.exe>0?"carteira sobe":TT.ent-TT.exe<0?"carteira desce":"equilibrado"],["CARTEIRA",TT.cart,(TT.cart-TT.fora)+" no prazo"],["FORA DO PRAZO",TT.fora,TT.cart?Math.round(TT.fora*100/TT.cart)+"% da carteira":""]].forEach((k,i)=>{const c=[1,2,4,6,8][i];
+    put(LA,3,c,k[0],sKl);put(LA,4,c,k[1],sKv);put(LA,5,c,k[2],sKs);if(c>1){put(LA,3,c+1,"",sKl);put(LA,4,c+1,"",sKv);put(LA,5,c+1,"",sKs);LA.merges.push(`${colName(c)}4:${colName(c+1)}4`,`${colName(c)}5:${colName(c+1)}5`,`${colName(c)}6:${colName(c+1)}6`);}});
+  LA.heights[4]=32;
+  put(LA,7,1,"Por polo",sSec);["Polo","Entradas","Executadas","Saldo do dia","Carteira","No prazo","Fora do prazo","% no prazo"].forEach((h,i)=>put(LA,8,1+i,h,i?sH:sHl));
+  let rr=9;for(const x of PP){[x.p,x.ent,x.exe,x.ent-x.exe,x.cart,x.cart-x.fora,x.fora,pctN(x.cart-x.fora,x.cart)??""].forEach((v,i)=>put(LA,rr,1+i,v,i===0?sL:i===7?sCp:sC));rr++;}
+  ["TOTAL",TT.ent,TT.exe,TT.ent-TT.exe,TT.cart,TT.cart-TT.fora,TT.fora,pctN(TT.cart-TT.fora,TT.cart)??""].forEach((v,i)=>put(LA,rr,1+i,v,i===0?sTotL:i===7?sTotP:sTot));rr+=2;
+  put(LA,rr,1,"Por tipo de ligação (TSS)",sSec);rr++;
+  put(LA,rr,1,"TSS",sHl);POLOS.forEach((p,pi)=>{const c0=2+pi*4;put(LA,rr,c0,p,sH);for(let k=1;k<4;k++)put(LA,rr,c0+k,"",sH);LA.merges.push(`${colName(c0)}${rr+1}:${colName(c0+3)}${rr+1}`);});rr++;
+  put(LA,rr,1,"",sHl);POLOS.forEach((p,pi)=>["Entradas","Executadas","Carteira","Fora prazo"].forEach((h,k)=>put(LA,rr,2+pi*4+k,h,sH)));LA.merges.push(`B${rr}:B${rr+1}`);rr++;
+  const tts=POLOS.map(()=>[0,0,0,0]);
+  for(const t of tssDoGrupo(g)){put(LA,rr,1,t,sL);POLOS.forEach((p,pi)=>{const c=contaTss(g,p,t);[c.ent,c.exe,c.cart,c.fora].forEach((v,k)=>{tts[pi][k]+=v;put(LA,rr,2+pi*4+k,v,sC);});});rr++;}
+  put(LA,rr,1,"TOTAL",sTotL);tts.forEach((a,pi)=>a.forEach((v,k)=>put(LA,rr,2+pi*4+k,v,sTot)));
+  rr+=2;put(LA,rr,1,"Dia a dia",sSec);rr++;put(LA,rr,1,"Dia",sHl);POLOS.forEach((p,pi)=>{put(LA,rr,2+pi*2,"Entradas "+p,sH);put(LA,rr,3+pi*2,"Executadas "+p,sH);});LA.heights[rr]=30;rr++;
+  for(const d of u.dias){put(LA,rr,1,wd(d)+" "+dmy(d),sL);POLOS.forEach((p,pi)=>{put(LA,rr,2+pi*2,u.ac.filter(x=>x.g===g&&x.dt===d&&x.p===p).length,sC);put(LA,rr,3+pi*2,u.ex.filter(x=>x.g===g&&x.dt===d&&x.p===p&&x.conta).length,sC);});rr++;}
+  rr++;put(LA,rr,1,"Prazo da carteira",sSec);rr++;put(LA,rr,1,"Faixa",sHl);POLOS.concat(["Total"]).forEach((p,i)=>put(LA,rr,2+i,p,sH));rr++;
+  for(const [k,l] of FX){put(LA,rr,1,l,sL);const ca=u.ca.filter(x=>x.g===g&&faixaDe(x)===k);POLOS.forEach((p,i)=>put(LA,rr,2+i,ca.filter(x=>x.p===p).length,sC));put(LA,rr,2+POLOS.length,ca.length,sC);rr++;}
+  sheets.push(LA);
+  // ---------- SERVIÇO POR DIA ----------
+  const SD=folha("SERVIÇO POR DIA",{widths:[2,24,13,12,12,12,12,12,12],grid:false,tab:"0F9D8A",freeze:"A5",merges:["B2:I2"]});
+  put(SD,1,1,"SERVIÇO POR DIA",sT);for(let c=2;c<=8;c++)put(SD,1,c,"",sT);SD.heights[1]=26;
+  ["Serviço","Data","Acatados","Executados","Acatados Grajaú","Executados Grajaú","Acatados Interlagos","Executados Interlagos"].forEach((h,i)=>put(SD,3,1+i,h,i?sH:sHl));SD.heights[3]=30;
+  let rs=4;let sa=0,se=0;
+  for(const d of u.dias)for(const gg of GRUPOS){const a=p=>u.ac.filter(x=>x.dt===d&&x.g===gg&&(!p||x.p===p)).length,e=p=>u.ex.filter(x=>x.dt===d&&x.g===gg&&x.conta&&(!p||x.p===p)).length;
+    [gg,iso2d(d),a(),e(),a("Grajaú"),e("Grajaú"),a("Interlagos"),e("Interlagos")].forEach((v,i)=>put(SD,rs,1+i,v,i===0?sG(gg):i===1?sCd:sC));sa+=a();se+=e();rs++;}
+  put(SD,2,1,"TOTAL",sTotL);put(SD,2,2,"",sTot);put(SD,2,3,sa,sTot);put(SD,2,4,se,sTot);
+  SD.filter=`B4:I${Math.max(5,rs)}`;
+  sheets.push(SD);
+  // ---------- HISTÓRICO ----------
+  const H=folha("HISTÓRICO",{widths:[2,13,13,22,12,12,16,18],grid:false,tab:"5E6E7B",freeze:"A4",merges:["B1:H1"]});
+  put(H,0,1,"HISTÓRICO DIÁRIO",sT);for(let c=2;c<=7;c++)put(H,0,c,"",sT);H.heights[0]=26;
+  ["Data","Polo","Grupo","Acatados","Executados","Carteira no prazo","Carteira fora do prazo"].forEach((h,i)=>put(H,2,1+i,h,i?sH:sHl));H.heights[2]=30;
+  let rh=3;for(const d of datasHist().reverse())for(const p of POLOS)for(const gg of GRUPOS){const a=S.hist[hk(d,p,gg)];if(!a||a.every(x=>x==null))continue;
+    [iso2d(d),p,gg,a[0]??"",a[1]??"",a[2]??"",a[3]??""].forEach((v,i)=>put(H,rh,1+i,v,i===0?sCd:i===2?sG(gg):i===1?sL:sC));rh++;}
+  H.filter=`B3:H${Math.max(4,rh)}`;sheets.push(H);
+  // ---------- bases ----------
+  const base=(nome,t,tab)=>{const raw=RAW&&RAW[t];let h,rows;
+    if(raw){h=raw.h;rows=raw.rows;}
+    else{const recs=u[t];if(t==="ex"){h=["Número OS","Descrição TSS","Família","Grupo","Polo","Código Resultado","Resultado","Data Início Execução","Data Fim Execução","Equipe","Endereço","Bairro","Município"];rows=recs.map(x=>[x.os,x.tss,x.fam,x.g,x.p,x.cod,x.res,x.ini,x.fim,x.eq,x.end,x.bai,x.mun]);}
+      else{h=["Número OS","TSS","Família","Grupo","Polo","Data Inserção","Prazo de Execução - Fim","Tempo Residual","Status da Operação","Endereço","Bairro","Município"];rows=recs.map(x=>[x.os,x.tss,x.fam,x.g,x.p,x.ins,x.pf,x.tr,x.st,x.end,x.bai,x.mun]);}}
+    const sh=folha(nome,{widths:h.map(x=>Math.min(40,Math.max(11,String(x).length+3))),tab,freeze:"A2",filter:`A1:${colName(h.length-1)}${rows.length+1}`});
+    h.forEach((x,i)=>put(sh,0,i,x,sHl));rows.forEach((row,ri)=>row.forEach((v,ci)=>{if(v!==""&&v!=null)put(sh,ri+1,ci,typeof v==="number"?v:String(v),0);}));sheets.push(sh);};
+  base("ACATADOS","ac","F0A23B");base("EXECUTADOS","ex","23824F");base("CARTEIRA","ca","2A7FD4");
+  baixarBlob(gerarXlsx(L,sheets),`CARTEIRA_DE_SERVIÇOS - PAINEL ${dmy(u.dc||hojeLocal()).replace(/\//g,"-")}.xlsx`);
+  msg("Excel baixado: PAINEL, LIGAÇÃO DE ÁGUA, SERVIÇO POR DIA, HISTÓRICO, ACATADOS, EXECUTADOS e CARTEIRA.");}
+
+/* ================= início ================= */
+/* ================= tela inicial com senha ================= */
+const CH_SENHA="carteira-senha";
+const lsg=k=>{try{return localStorage.getItem(k);}catch(e){return null;}},lss=(k,v)=>{try{v==null?localStorage.removeItem(k):localStorage.setItem(k,v);}catch(e){}};
+async function hashS(senha,sal){const b=new TextEncoder().encode(sal+"|"+senha);try{const d=await crypto.subtle.digest("SHA-256",b);return [...new Uint8Array(d)].map(x=>x.toString(16).padStart(2,"0")).join("");}
+  catch(e){let h=0;for(const c of b)h=(h*31+c)>>>0;return "x"+h.toString(16);}}
+function pedirSenha(){return new Promise(res=>{
+  let salva=null;try{salva=JSON.parse(lsg(CH_SENHA)||"null");}catch(e){}
+  try{if(salva&&sessionStorage.getItem("carteira-ok")===salva.hash){res();return;}}catch(e){}
+  const criar=!salva;document.body.classList.add("trancado");$("telaLogin").hidden=false;
+  $("tlTxt").textContent=criar?"Primeiro acesso neste computador: crie sua senha para abrir o painel.":"Digite sua senha para abrir o painel.";
+  $("tlS2").hidden=!criar;$("tlS1").placeholder=criar?"Crie uma senha":"Senha";$("tlBtn").textContent=criar?"Criar senha e entrar":"Entrar";$("tlEsq").hidden=criar;
+  setTimeout(()=>$("tlS1").focus(),50);
+  $("fTl").onsubmit=async e=>{e.preventDefault();const s1=$("tlS1").value,s2=$("tlS2").value;$("tlMsg").textContent="";
+    if(criar){if(s1.length<4){$("tlMsg").textContent="Use pelo menos 4 letras ou números.";return;}if(s1!==s2){$("tlMsg").textContent="As duas senhas não são iguais.";return;}
+      const sal=Math.random().toString(36).slice(2,10);salva={sal,hash:await hashS(s1,sal)};lss(CH_SENHA,JSON.stringify(salva));}
+    else if(await hashS(s1,salva.sal)!==salva.hash){$("tlMsg").textContent="Senha incorreta.";$("tlS1").select();return;}
+    try{sessionStorage.setItem("carteira-ok",salva.hash);}catch(e){}
+    $("tlS1").value=$("tlS2").value="";$("telaLogin").hidden=true;document.body.classList.remove("trancado");res();};
+  $("tlEsq").onclick=()=>{$("tlReset").hidden=!$("tlReset").hidden;};
+  $("tlApagar").onclick=async()=>{lss(CH_SENHA,null);lss("painel-carteira-estado",null);try{indexedDB.deleteDatabase("painel-carteira-servicos");}catch(e){}try{sessionStorage.clear();}catch(e){}location.reload();};
+});}
+(async()=>{await pedirSenha();await carregarLocal();renderTudo();window.__pronto=true;})();
+
+})();
+</script>
+</body>
+</html>
