@@ -1217,8 +1217,10 @@ function conta(o){const u=S.ult;const g=o.g,p=o.p||null;const fpol=r=>p?r.p===p:
   if(da){ant=somaHist(da,3,(pp,gg)=>(!g||gg===g)&&(p?pp===p:(poloSel==="Todos"||pp===poloSel)));}
   return {cart:ca.length,fora,no:ca.length-fora,ent,exe,saldo:ent-exe,dFora:ant==null?null:fora-ant,da};}
 function rotDias(){const d=diasSel();if(!d.length)return "sem entradas e execuções";if(d.length===1)return wd(d[0])+" "+dmy(d[0]);return `${wd(d[0])} ${dm(d[0])} a ${wd(d[d.length-1])} ${dm(d[d.length-1])} (${d.length} dias)`;}
-const ppCls=v=>v==null?"":v>=META?"ok":v>=META-0.15?"mid":"bad";
-const pp=v=>v==null?"–":`<span class="pp ${ppCls(v)}">${(Math.round(v*1000)/10).toLocaleString("pt-BR")}%</span>`;
+// meta: 80% no prazo; religação: nenhuma vencida (100%)
+const metaDe=g=>g==="Religação"?1:META;
+const ppCls=(v,m)=>{m=m??META;return v==null?"":v>=m-1e-9?"ok":v>=m-0.15?"mid":"bad";};
+const pp=(v,m)=>v==null?"–":`<span class="pp ${ppCls(v,m)}">${(Math.round(v*1000)/10).toLocaleString("pt-BR")}%</span>`;
 const sgn=n=>n==null?"–":(n>0?"+":"")+nf(n);
 const go=o=>` data-go='${esc(JSON.stringify(o))}'`;
 
@@ -1287,7 +1289,7 @@ function render(){
       <div class="lin"><div${go({modo:"carteira",p,prazo:"fora"})}><small>Fora do prazo</small><b class="${c.fora?"up":""}">${nf(c.fora)}</b></div><div${go({modo:"entradas",p})}><small>Entradas</small><b>${nf(c.ent)}</b></div><div${go({modo:"execucoes",p})}><small>Execuções</small><b>${nf(c.exe)}</b></div><div><small>Saldo</small><b class="${c.saldo>0?"up":"down"}">${sgn(c.saldo)}</b></div></div></div>`;}).join("");
   // carteira por grupo em cada polo
   const cg=p=>{const rs=GRUPOS.map(g=>({g,...conta({g,p})}));const m=Math.max(1,...rs.map(r=>r.cart));
-    return `<div class="cg">${rs.map(r=>`<div class="r"${go({modo:"carteira",g:r.g,p})}><span class="nm"><i style="--c:${COR[r.g]}"></i>${r.g}</span><div class="br" style="width:${Math.max(4,r.cart*100/m).toFixed(1)}%"><i style="width:${r.cart?(r.no*100/r.cart):0}%;background:#2FA36B">${r.no&&r.no/m>.08?r.no:""}</i><i style="width:${r.cart?(r.fora*100/r.cart):0}%;background:#D9534A">${r.fora&&r.fora/m>.08?r.fora:""}</i></div><span class="n">${nf(r.cart)}</span><span class="p">${pp(pctN(r.no,r.cart))}</span></div>`).join("")}</div>`;};
+    return `<div class="cg">${rs.map(r=>`<div class="r"${go({modo:"carteira",g:r.g,p})}><span class="nm"><i style="--c:${COR[r.g]}"></i>${r.g}</span><div class="br" style="width:${Math.max(4,r.cart*100/m).toFixed(1)}%"><i style="width:${r.cart?(r.no*100/r.cart):0}%;background:#2FA36B">${r.no&&r.no/m>.08?r.no:""}</i><i style="width:${r.cart?(r.fora*100/r.cart):0}%;background:#D9534A">${r.fora&&r.fora/m>.08?r.fora:""}</i></div><span class="n">${nf(r.cart)}</span><span class="p">${pp(pctN(r.no,r.cart),metaDe(r.g))}</span></div>`).join("")}</div>`;};
   $("cgInt").innerHTML=cg("Interlagos");$("cgGra").innerHTML=cg("Grajaú");
   renderEvo();renderEvoPolos();}
 function renderEvoPolos(){const ds=datasHist();const mes=(S.ult.dc||ds[ds.length-1]||"").slice(0,7);
@@ -1348,8 +1350,8 @@ function renderServ(){
     kpi({l:"Fora do prazo",v:nf(T.fora),s:T.cart?pctTxt(T.fora,T.cart)+" da carteira":"",ic:IC.fora,tone:"var(--red)",soft:"var(--red-soft)",go:{modo:"carteira",g,prazo:"fora",p:""}})].join("");
   $("servNota").textContent=`${g} · entradas e execuções: ${rotDias()} · carteira de ${dmy(S.ult.dc)}`;
   $("tbServPolo").innerHTML=`<thead><tr><th>Polo</th><th class="r">Entradas</th><th class="r">Executadas</th><th class="r">Saldo do dia</th><th class="r sep">Carteira</th><th class="r">No prazo</th><th class="r">Fora do prazo</th><th class="r">% no prazo</th></tr></thead><tbody>`+
-    P.map(x=>`<tr><td class="g">${x.p}</td><td class="r"${go({modo:"entradas",g,p:x.p})}>${nf(x.ent)}</td><td class="r"${go({modo:"execucoes",g,p:x.p})}>${nf(x.exe)}</td><td class="r ${x.ent-x.exe>0?"up":"down"}">${sgn(x.ent-x.exe)}</td><td class="r sep"${go({modo:"carteira",g,p:x.p})}>${nf(x.cart)}</td><td class="r"${go({modo:"carteira",g,p:x.p,prazo:"no"})}>${nf(x.cart-x.fora)}</td><td class="r ${x.fora?"up":""}"${go({modo:"carteira",g,p:x.p,prazo:"fora"})}>${nf(x.fora)}</td><td class="r">${pp(pctN(x.cart-x.fora,x.cart))}</td></tr>`).join("")+
-    `<tr class="total"><td>TOTAL</td><td class="r">${nf(T.ent)}</td><td class="r">${nf(T.exe)}</td><td class="r">${sgn(saldo)}</td><td class="r sep">${nf(T.cart)}</td><td class="r">${nf(T.cart-T.fora)}</td><td class="r">${nf(T.fora)}</td><td class="r">${pp(pctN(T.cart-T.fora,T.cart))}</td></tr></tbody>`;
+    P.map(x=>`<tr><td class="g">${x.p}</td><td class="r"${go({modo:"entradas",g,p:x.p})}>${nf(x.ent)}</td><td class="r"${go({modo:"execucoes",g,p:x.p})}>${nf(x.exe)}</td><td class="r ${x.ent-x.exe>0?"up":"down"}">${sgn(x.ent-x.exe)}</td><td class="r sep"${go({modo:"carteira",g,p:x.p})}>${nf(x.cart)}</td><td class="r"${go({modo:"carteira",g,p:x.p,prazo:"no"})}>${nf(x.cart-x.fora)}</td><td class="r ${x.fora?"up":""}"${go({modo:"carteira",g,p:x.p,prazo:"fora"})}>${nf(x.fora)}</td><td class="r">${pp(pctN(x.cart-x.fora,x.cart),metaDe(g))}</td></tr>`).join("")+
+    `<tr class="total"><td>TOTAL</td><td class="r">${nf(T.ent)}</td><td class="r">${nf(T.exe)}</td><td class="r">${sgn(saldo)}</td><td class="r sep">${nf(T.cart)}</td><td class="r">${nf(T.cart-T.fora)}</td><td class="r">${nf(T.fora)}</td><td class="r">${pp(pctN(T.cart-T.fora,T.cart),metaDe(g))}</td></tr></tbody>`;
   const ts=tssDoGrupo(g);const cab=["Entradas","Executadas","Carteira","Fora prazo"];const ks=["ent","exe","cart","fora"];const md=["entradas","execucoes","carteira","carteira"];
   let h=`<thead><tr><th rowspan="2">TSS</th>${POLOS.map(p=>`<th colspan="4" class="grp sep">${p}</th>`).join("")}</tr><tr>${POLOS.map(()=>cab.map((c,i)=>`<th class="r${i===0?" sep":""}">${c}</th>`).join("")).join("")}</tr></thead><tbody>`;
   const tot=POLOS.map(()=>({ent:0,exe:0,cart:0,fora:0}));
@@ -1455,7 +1457,9 @@ function renderMon(){
     m4("","#12A386","No prazo, com folga",nf(ok.length),`mais de ${REL?LIM+"h":LIM/24+" dias"} para vencer`,{modo:"carteira",prazo:"no",g:gGo,gs:gsGo}),
     m4("","#F29D0C",`Vencem em até ${REL?LIM+"h":LIM/24+" dias"}`,nf(at.length),"ainda dá tempo, priorize",{modo:"carteira",prazo:"no",g:gGo,gs:gsGo}),
     m4("","#E03E45","Fora do prazo",nf(fo.length),`${tot?pctTxt(fo.length,tot):"–"} da carteira de ${nf(tot)}`,{modo:"carteira",prazo:"fora",g:gGo,gs:gsGo}),
-    m4("",pv>=META?"#12A386":pv>=META-.15?"#F29D0C":"#E03E45","% no prazo",tot?(Math.round(pv*1000)/10).toLocaleString("pt-BR")+"%":"–",`meta ${Math.round(META*100)}% · ${pv>=META?"dentro da meta":"faltam "+nf(Math.max(0,Math.ceil(META*tot-(tot-fo.length))))+" OS para a meta"}`,{modo:"carteira",g:gGo,gs:gsGo},
+    REL?m4("",fo.length?"#E03E45":"#12A386","Meta: nenhuma vencida",fo.length?"Fora da meta":"Meta batida ✓",fo.length?`faltam ${nf(fo.length)} para zerar · ${(Math.round(pv*1000)/10).toLocaleString("pt-BR")}% no prazo`:"todas as religações dentro das 24h",{modo:"carteira",prazo:"fora",g:gGo,gs:gsGo},
+      `<div class="mb"><i style="width:${(pv*100).toFixed(1)}%"></i><s style="left:100%"></s></div>`)
+    :m4("",pv>=META?"#12A386":pv>=META-.15?"#F29D0C":"#E03E45","% no prazo",tot?(Math.round(pv*1000)/10).toLocaleString("pt-BR")+"%":"–",`meta ${Math.round(META*100)}% · ${pv>=META?"dentro da meta":"faltam "+nf(Math.max(0,Math.ceil(META*tot-(tot-fo.length))))+" OS para a meta"}`,{modo:"carteira",g:gGo,gs:gsGo},
       `<div class="mb"><i style="width:${(pv*100).toFixed(1)}%"></i><s style="left:${META*100}%"></s></div>`)].join("");
   const item=(r,venc)=>{const cl=venc?"cv":r.h<=(REL?1:24)?"c1":r.h<=(REL?3:48)?"c2":r.h<=LIM?"c3":"c4";
     return `<div class="fi"><span class="chip3 ${cl}">${venc?"há "+tempoTxt(r.h):"em "+tempoTxt(r.h)}</span><div class="d"><b>${esc(r.end||"Sem endereço")} · ${esc(r.bai||"")}</b><small>OS ${esc(r.os)} · ${esc(r.tss)} · ${r.p}</small></div><span class="sv" style="--c:${COR[r.g]}">${esc(r.g)}</span></div>`;};
@@ -1546,7 +1550,7 @@ function cardsServ(ds,polo){const u=S.ult;const fpo=r=>polo?r.p===polo:fp(r);
   return GRUPOS.map(g=>{const ca=u.ca.filter(r=>r.g===g&&fpo(r)),t=ca.length,f=ca.filter(r=>r.fora).length,n=t-f;
     const E=d=>u.ac.filter(r=>r.g===g&&r.dt===d&&fpo(r)).length,X=d=>u.ex.filter(r=>r.g===g&&r.dt===d&&r.conta&&fpo(r)).length;
     const te=ds.reduce((a,d)=>a+E(d),0),tx=ds.reduce((a,d)=>a+X(d),0);const pv=t?n/t:null;
-    return `<div class="c4" style="--c:${COR[g]}"><div class="h4"><b>${g}</b>${pp(pv)}</div>
+    return `<div class="c4" style="--c:${COR[g]}"><div class="h4"><b>${g}</b>${pp(pv,metaDe(g))}</div>
       <div class="big"><b>${nf(t)}</b><span>na carteira</span></div>
       <div class="pz4"${go({modo:"carteira",g,prazo:"fora"})}>${t?`<i style="width:${(n*100/t).toFixed(1)}%;background:#2FA36B">${n&&n/t>.12?n:""}</i><i style="width:${(f*100/t).toFixed(1)}%;background:#D9534A">${f&&f/t>.12?f:""}</i>`:""}</div>
       <div class="lg4"><span><b style="color:#2FA36B">${nf(n)}</b> no prazo</span><span><b style="color:#D9534A">${nf(f)}</b> fora</span></div>
