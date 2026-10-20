@@ -545,6 +545,43 @@ table.rt.rtss thead th{text-transform:none;letter-spacing:0;font-size:12px}
 body.trancado{overflow:hidden}
 body.trancado>.appbar,body.trancado>.wrap{filter:blur(6px);pointer-events:none;user-select:none}
 
+/* ===== identidade própria da Carteira (verde-azulado, diferente do Databricks) ===== */
+:root{--navy:#0A3D3A;--navy-2:#0F5E57;--bg:#F1F5F4;--accent:#0F766E;--accent-2:#14A394;--accent-soft:#DCF3EF;--line:#DCE6E3;--line-2:#E9F0EE;--sunk:#F3F8F7}
+.appbar{background:linear-gradient(115deg,#073B38 0%,#0F5E57 55%,#13786E 100%)}
+.logo{background:linear-gradient(135deg,#F2B544,#E08A1E)!important}
+.appbar .primary{background:linear-gradient(180deg,#F2B544,#E39A26)!important;border-color:#F2B544!important;color:#2B1B00!important}
+.kpi.hl{background:linear-gradient(140deg,#0A3D3A 0%,#0F766E 100%)!important}
+.seg2 button[aria-pressed="true"]{background:var(--accent)}
+table.tg th.grp,table.tg.multi tr.dh th{background:#0A3D3A}
+table.tg.multi tr.dh th.tp{background:#3B5754}
+.hero{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:18px;align-items:center;background:linear-gradient(120deg,#FFFFFF 0%,#EAF7F4 100%);border:1px solid var(--line);border-radius:18px;padding:20px 24px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+.hero::after{content:"";position:absolute;right:-60px;top:-80px;width:260px;height:260px;border-radius:50%;background:radial-gradient(circle,rgba(20,163,148,.16),rgba(20,163,148,0) 70%);pointer-events:none}
+.hsaud{font-family:var(--f-display);font-size:30px;font-weight:600;color:#0A3D3A;line-height:1.1}
+.hdata{color:var(--muted);font-size:14px;margin-top:4px}
+.hres{margin-top:10px;font-size:15px;color:var(--ink);max-width:62ch}
+.hres b{color:#0A3D3A}
+.hl2{display:flex;flex-direction:column;gap:10px;align-items:flex-end;position:relative;z-index:1}
+.hquem{display:flex;align-items:center;gap:10px;background:#fff;border:1px solid var(--line);border-radius:999px;padding:6px 14px 6px 6px;box-shadow:0 2px 8px rgba(10,61,58,.06)}
+.hquem .av{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#0F766E,#14A394);color:#fff;display:grid;place-items:center;font-weight:700;font-size:16px}
+.hquem b{display:block;font-size:14px}
+.hquem small{display:block;font-size:11.5px;color:var(--green);font-weight:700}
+.hquem .on{width:10px;height:10px;border-radius:50%;background:#22C55E;box-shadow:0 0 0 3px rgba(34,197,94,.2)}
+.hero .conn{background:none;border:0;box-shadow:none;padding:0;justify-content:flex-end;text-align:right}
+.hero .conn .txt{flex:0 1 auto;font-size:12px}
+.hbt{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.hbt button{padding:8px 12px;font-size:12.5px}
+/* gráficos dentro dos números */
+.kpi .kg{margin-top:4px;height:42px}
+.kpi .kg svg{width:100%;height:42px;display:block;overflow:visible}
+.kpi .kg .pbar{height:10px;border-radius:999px;background:var(--line-2);position:relative;margin-top:16px}
+.kpi .kg .pbar i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,#14A394,#0F766E)}
+.kpi .kg .pbar em{position:absolute;top:-6px;bottom:-6px;width:2px;background:#0A3D3A;border-radius:2px}
+.kpi .kg .pbar span{position:absolute;top:-19px;transform:translateX(-50%);font-size:10px;font-weight:700;color:#0A3D3A;font-style:normal}
+.kpi.hl .kg svg rect{fill:rgba(255,255,255,.5)} .kpi.hl .kg svg rect.ult{fill:#fff}
+@media (max-width:900px){.hero{grid-template-columns:minmax(0,1fr)}.hl2{align-items:flex-start}.hero .conn{justify-content:flex-start;text-align:left}.hbt{justify-content:flex-start}}
+
+.hero .conn{display:flex;flex-wrap:nowrap;align-items:center;gap:8px}.hero .conn .dot{order:2}
+
 </style>
 </head>
 <body>
@@ -565,7 +602,7 @@ body.trancado>.appbar,body.trancado>.wrap{filter:blur(6px);pointer-events:none;u
   </div>
 </div>
 <header class="appbar"><div class="appbar-in">
-  <div class="brand"><span class="logo"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2.5c-3.6 4.4-6.5 8-6.5 11.6a6.5 6.5 0 0 0 13 0C18.5 10.5 15.6 6.9 12 2.5Z" fill="#fff" fill-opacity=".95"/><path d="M9 14.5a3 3 0 0 0 3 3" stroke="#0B6E99" stroke-width="1.8" stroke-linecap="round"/></svg></span><div style="min-width:0"><div class="brand-t">Painel da Carteira de Serviços</div><div class="brand-s" id="sub">Interlagos · Grajaú</div></div></div>
+  <div class="brand"><span class="logo"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="14" height="17" rx="2.5"/><path d="M9 4.5V3h6v1.5M9 10h6M9 14h6M9 18h3"/></svg></span><div style="min-width:0"><div class="brand-t">Carteira de Serviços</div><div class="brand-s" id="sub">Interlagos · Grajaú</div></div></div>
   <nav class="tabs" role="tablist">
     <button class="tab" role="tab" id="t-painel" aria-selected="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg> Painel</button>
     <button class="tab" role="tab" id="t-res" aria-selected="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="12" cy="12" r="3"/><path d="M8 5l1.5-2h5L16 5"/></svg> Resumo p/ print</button>
@@ -579,12 +616,18 @@ body.trancado>.appbar,body.trancado>.wrap{filter:blur(6px);pointer-events:none;u
   </div>
 </div></header>
 <div class="wrap">
-  <div class="conn">
-    <span class="dot" id="connDot"></span>
-    <div class="txt"><b id="connTit">Carregando…</b> <span class="note" id="connSub"></span></div>
-    <button type="button" id="btnAjuda">Como usar</button>
-    <button type="button" id="btnBackup" title="Baixa um arquivo com o histórico, para levar a outro computador">Cópia de segurança</button>
-  </div>
+  <section class="hero">
+    <div class="hl1">
+      <div class="hsaud"><span id="hSaud">Bem-vinda</span>, Fernanda</div>
+      <div class="hdata" id="hData"></div>
+      <div class="hres" id="hRes"></div>
+    </div>
+    <div class="hl2">
+      <div class="hquem"><span class="av">F</span><div><b>Fernanda</b><small>Analista · conectada</small></div><span class="on"></span></div>
+      <div class="conn"><span class="dot" id="connDot"></span><div class="txt"><b id="connTit">Carregando…</b> <span class="note" id="connSub"></span></div></div>
+      <div class="hbt"><button type="button" id="btnAjuda">Como usar</button><button type="button" id="btnBackup" title="Baixa um arquivo com o histórico, para levar a outro computador">Cópia de segurança</button><button type="button" id="btnTrancar" title="Fecha o painel e pede a senha de novo">Sair</button></div>
+    </div>
+  </section>
   <div class="status" id="msg" role="status" aria-live="polite"></div>
 
   <section class="panel intro" id="intro" hidden>
@@ -1015,7 +1058,16 @@ const IC={
   saldo:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/></svg>',
   ent:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v12M6 10l6 6 6-6M4 20h16"/></svg>',
   exe:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"/></svg>'};
-function kpi(o){return `<div class="kpi${o.hl?" hl":""}"${o.go?go(o.go):""} style="--tone:${o.tone||"var(--accent)"};--tone-soft:${o.soft||"var(--accent-soft)"}"><div class="top"><span class="lbl">${o.l}</span><span class="ic">${o.ic}</span></div><b>${o.v}</b><small>${o.s||""}</small></div>`;}
+function kpi(o){return `<div class="kpi${o.hl?" hl":""}"${o.go?go(o.go):""} style="--tone:${o.tone||"var(--accent)"};--tone-soft:${o.soft||"var(--accent-soft)"}"><div class="top"><span class="lbl">${o.l}</span><span class="ic">${o.ic}</span></div><b>${o.v}</b><small>${o.s||""}</small>${o.g?`<div class="kg">${o.g}</div>`:""}</div>`;}
+
+// mini gráficos de barras para os cartões de números
+function miniG(series,o){o=o||{};const n=Math.max(...series.map(s=>s.v.length),0);if(!n)return "";
+  const W=200,H=42,mx=Math.max(1,...series.flatMap(s=>s.v.map(x=>Math.abs(x||0))));const gw=W/n,bw=Math.max(3,Math.min(16,(gw-4)/series.length-2));
+  let r=`<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none">`;
+  for(let i=0;i<n;i++){series.forEach((s,j)=>{const v=s.v[i]||0;const hh=Math.max(2,Math.abs(v)*(H-6)/mx);const x=i*gw+(gw-(bw+2)*series.length)/2+j*(bw+2);
+    const cor=typeof s.c==="function"?s.c(v):s.c;r+=`<rect class="${i===n-1?"ult":""}" x="${x.toFixed(1)}" y="${(H-hh).toFixed(1)}" width="${bw.toFixed(1)}" height="${hh.toFixed(1)}" rx="2" fill="${cor}" opacity="${i===n-1?1:.55}"><title>${s.t?s.t[i]:""}: ${v}</title></rect>`;});}
+  return r+"</svg>";}
+function serieHist(i){const ds=datasHist();const f=(p,g)=>poloSel==="Todos"||p===poloSel;const out=[];for(const d of ds){const a=somaHist(d,2,f),b=somaHist(d,3,f);if(a==null&&b==null)continue;out.push({d,np:a||0,fp:b||0});}return out.slice(-10);}
 function renderFiltros(){
   $("segPolo").innerHTML=["Todos"].concat(POLOS.slice().reverse()).map(p=>`<button type="button" data-polo="${p}" aria-pressed="${p===poloSel}">${p==="Todos"?"Todos":p}</button>`).join("");
   const ds=S.ult.dias;
@@ -1025,16 +1077,23 @@ function renderFiltros(){
 $("segPolo").onclick=e=>{const b=e.target.closest("button");if(!b)return;poloSel=b.dataset.polo;renderTudo();};
 $("segDia").onclick=e=>{const b=e.target.closest("button");if(!b)return;diaSel=b.dataset.dia;renderTudo();};
 
+
+function renderHero(T){const h=new Date().getHours();
+  $("hData").textContent=(h<12?"Bom dia":h<18?"Boa tarde":"Boa noite")+" · "+new Date().toLocaleDateString("pt-BR",{weekday:"long",day:"numeric",month:"long",year:"numeric"});
+  const u=S.ult;if(!u.dc){$("hRes").innerHTML="Bem-vinda! Clique em <b>Atualizar com os arquivos do dia</b> para montar o painel.";return;}
+  const v=pctN(T.no,T.cart);$("hRes").innerHTML=`A carteira de <b>${wd(u.dc)} ${dmy(u.dc)}</b> tem <b>${nf(T.cart)} OS</b>, com <b>${v==null?"–":(Math.round(v*1000)/10).toLocaleString("pt-BR")+"%"}</b> no prazo${v!=null?(v>=META?" (dentro da meta)":" (abaixo da meta de "+Math.round(META*100)+"%)"):""}. Entradas e execuções: <b>${esc(rotDias())}</b>.`;}
 function render(){
   const u=S.ult;const T=conta({});const da=T.da;
   $("sub").innerHTML=`Interlagos · Grajaú${u.dc?` · carteira de <b>${dmy(u.dc)}</b>`:""}`;
   const tend=T.ent>T.exe?"carteira tende a subir":T.ent<T.exe?"carteira tende a cair":"equilibrado";
+  const SH=serieHist();const DD=diasSel().map(d=>({d,e:u.ac.filter(r=>r.dt===d&&fp(r)).length,x:u.ex.filter(r=>r.dt===d&&fp(r)&&r.conta).length}));
   $("kpis").innerHTML=[
-    kpi({hl:1,l:"Carteira",v:nf(T.cart),s:`${nf(T.no)} no prazo`,ic:IC.cart,go:{modo:"carteira"}}),
-    kpi({l:"Fora do prazo",v:nf(T.fora),s:T.dFora==null?"sem dia anterior salvo":`<span class="delta ${T.dFora>0?"up":T.dFora<0?"down":""}">${T.dFora>0?"▲ "+nf(T.dFora):T.dFora<0?"▼ "+nf(-T.dFora):"= 0"}</span> vs ${dm(da)}`,ic:IC.fora,tone:"var(--red)",soft:"var(--red-soft)",go:{modo:"carteira",prazo:"fora"}}),
-    kpi({l:"% no prazo",v:T.cart?(Math.round(T.no*1000/T.cart)/10).toLocaleString("pt-BR")+"%":"–",s:`meta ${Math.round(META*100)}% ${T.cart?(T.no/T.cart>=META?'<span class="delta down">dentro da meta</span>':'<span class="delta up">abaixo da meta</span>'):""}`,ic:IC.pct,tone:"var(--green)",soft:"var(--green-soft)",go:{modo:"carteira",prazo:"no"}}),
-    kpi({l:"Entradas × execuções",v:`${nf(T.ent)} <span style="font-size:.6em;color:var(--muted)">×</span> ${nf(T.exe)}`,s:esc(rotDias()),ic:IC.mov,tone:"var(--orange)",soft:"var(--orange-soft)",go:{modo:"entradas"}}),
-    kpi({l:"Saldo",v:sgn(T.saldo),s:tend,ic:IC.saldo,tone:T.saldo>0?"var(--red)":"var(--green)",soft:T.saldo>0?"var(--red-soft)":"var(--green-soft)",go:{modo:"execucoes"}})].join("");
+    kpi({hl:1,l:"Carteira",v:nf(T.cart),s:`${nf(T.no)} no prazo`,ic:IC.cart,go:{modo:"carteira"},g:miniG([{v:SH.map(x=>x.np+x.fp),c:"#fff",t:SH.map(x=>dm(x.d))}])}),
+    kpi({l:"Fora do prazo",v:nf(T.fora),s:T.dFora==null?"sem dia anterior salvo":`<span class="delta ${T.dFora>0?"up":T.dFora<0?"down":""}">${T.dFora>0?"▲ "+nf(T.dFora):T.dFora<0?"▼ "+nf(-T.dFora):"= 0"}</span> vs ${dm(da)}`,ic:IC.fora,tone:"var(--red)",soft:"var(--red-soft)",go:{modo:"carteira",prazo:"fora"},g:miniG([{v:SH.map(x=>x.fp),c:"#D9534A",t:SH.map(x=>dm(x.d))}])}),
+    kpi({l:"% no prazo",v:T.cart?(Math.round(T.no*1000/T.cart)/10).toLocaleString("pt-BR")+"%":"–",s:`meta ${Math.round(META*100)}% ${T.cart?(T.no/T.cart>=META?'<span class="delta down">dentro da meta</span>':'<span class="delta up">abaixo da meta</span>'):""}`,ic:IC.pct,tone:"var(--green)",soft:"var(--green-soft)",go:{modo:"carteira",prazo:"no"},g:`<div class="pbar"><i style="width:${T.cart?(T.no*100/T.cart).toFixed(1):0}%"></i><em style="left:${META*100}%"></em><span style="left:${META*100}%">meta</span></div>`}),
+    kpi({l:"Entradas × execuções",v:`${nf(T.ent)} <span style="font-size:.6em;color:var(--muted)">×</span> ${nf(T.exe)}`,s:esc(rotDias()),ic:IC.mov,tone:"var(--orange)",soft:"var(--orange-soft)",go:{modo:"entradas"},g:miniG([{v:DD.map(x=>x.e),c:"#F0A23B",t:DD.map(x=>dm(x.d))},{v:DD.map(x=>x.x),c:"#23824F",t:DD.map(x=>dm(x.d))}])}),
+    kpi({l:"Saldo",v:sgn(T.saldo),s:tend,ic:IC.saldo,tone:T.saldo>0?"var(--red)":"var(--green)",soft:T.saldo>0?"var(--red-soft)":"var(--green-soft)",go:{modo:"execucoes"},g:miniG([{v:DD.map(x=>x.e-x.x),c:v=>v>0?"#D9534A":"#2FA36B",t:DD.map(x=>dm(x.d))}])})].join("");
+  renderHero(T);
   // situação por grupo
   $("sitNota").textContent=`carteira de ${dmy(u.dc)} · entradas e execuções: ${rotDias()}${poloSel!=="Todos"?" · "+poloSel:""}`;
   const dsv=diasSel();
@@ -1413,6 +1472,7 @@ function pedirSenha(){return new Promise(res=>{
   $("tlEsq").onclick=()=>{$("tlReset").hidden=!$("tlReset").hidden;};
   $("tlApagar").onclick=async()=>{lss(CH_SENHA,null);lss("painel-carteira-estado",null);try{indexedDB.deleteDatabase("painel-carteira-servicos");}catch(e){}try{sessionStorage.clear();}catch(e){}location.reload();};
 });}
+$("btnTrancar").onclick=()=>{try{sessionStorage.removeItem("carteira-ok");}catch(e){}location.reload();};
 (async()=>{await pedirSenha();await carregarLocal();renderTudo();window.__pronto=true;})();
 
 })();
