@@ -582,6 +582,12 @@ table.tg.multi tr.dh th.tp{background:#3B5754}
 
 .hero .conn{display:flex;flex-wrap:nowrap;align-items:center;gap:8px}.hero .conn .dot{order:2}
 
+.sect{font-family:var(--f-display);font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#0F5E57;display:flex;align-items:center;gap:10px;margin-top:4px}
+.sect::after{content:"";flex:1;height:2px;background:linear-gradient(90deg,#BFE3DC,transparent)}
+.chart.ev svg{min-width:0}
+
+.cg .r{grid-template-columns:190px minmax(0,1fr) 54px 64px}
+
 </style>
 </head>
 <body>
@@ -668,15 +674,20 @@ table.tg.multi tr.dh th.tp{background:#3B5754}
   <section id="v-painel" class="view">
     <div class="kpis k5" id="kpis"></div>
     <div class="dash">
+      <div class="sect s12">Carteira por grupo · hoje</div>
+      <article class="card s6"><header class="ch"><div><h3>Grajaú</h3><p>no prazo × fora do prazo</p></div><div class="leg2"><span style="--c:#2FA36B">No prazo</span><span style="--c:#D9534A">Fora do prazo</span></div></header><div id="cgGra"></div></article>
+      <article class="card s6"><header class="ch"><div><h3>Interlagos</h3><p>no prazo × fora do prazo</p></div><div class="leg2"><span style="--c:#2FA36B">No prazo</span><span style="--c:#D9534A">Fora do prazo</span></div></header><div id="cgInt"></div></article>
+      <div class="sect s12" id="evoTit">Evolução da carteira no mês</div>
+      <article class="card s6"><header class="ch"><div><h3>Grajaú</h3><p>no prazo × fora do prazo, dia a dia</p></div><div class="leg2"><span style="--c:#2FA36B">No prazo</span><span style="--c:#D9534A">Fora do prazo</span></div></header><div class="chart ev" id="evoGra"></div></article>
+      <article class="card s6"><header class="ch"><div><h3>Interlagos</h3><p>no prazo × fora do prazo, dia a dia</p></div><div class="leg2"><span style="--c:#2FA36B">No prazo</span><span style="--c:#D9534A">Fora do prazo</span></div></header><div class="chart ev" id="evoInt"></div></article>
+      <div class="sect s12">Situação por grupo e movimento do dia</div>
       <article class="card s9"><header class="ch"><div><h3>Situação por grupo</h3><p id="sitNota">carteira de hoje e o movimento do dia</p></div><span class="dica">Clique numa linha para ver as OS</span></header><div class="scroll"><table class="tg" id="tbGrupo"></table></div></article>
       <div class="side s3">
       <article class="card"><header class="ch"><div><h3>Dia a dia</h3><p>entradas × execuções de cada dia</p></div><div class="leg2"><span style="--c:#F0A23B">Entradas</span><span style="--c:#23824F">Execuções</span></div></header><div id="diaDia"></div></article>
       <article class="card"><header class="ch"><div><h3>Prazo da carteira</h3><p>no prazo × fora do prazo por polo</p></div><div class="leg2"><span style="--c:#2FA36B">No prazo</span><span style="--c:#D9534A">Fora</span></div></header><div id="prazoPolo"></div></article>
       </div>
       <article class="card s12"><header class="ch"><div><h3>Por polo</h3><p>carteira, prazo e movimento</p></div></header><div class="polos p2" id="poloCards"></div></article>
-      <article class="card s6"><header class="ch"><div><h3>Carteira por grupo · Interlagos</h3><p>no prazo × fora do prazo</p></div><div class="leg2"><span style="--c:#2FA36B">No prazo</span><span style="--c:#D9534A">Fora do prazo</span></div></header><div id="cgInt"></div></article>
-      <article class="card s6"><header class="ch"><div><h3>Carteira por grupo · Grajaú</h3><p>no prazo × fora do prazo</p></div><div class="leg2"><span style="--c:#2FA36B">No prazo</span><span style="--c:#D9534A">Fora do prazo</span></div></header><div id="cgGra"></div></article>
-      <article class="card s12"><header class="ch"><div><h3>Evolução da carteira</h3><p id="evoNota"></p></div><div class="row" style="gap:8px"><select id="selGrupoEvo" aria-label="Grupo"></select><select id="selMes" aria-label="Mês"></select></div></header><div class="leg2"><span style="--c:#2FA36B">No prazo</span><span style="--c:#D9534A">Fora do prazo</span></div><div class="chart" id="chartEvo"></div>
+      <article class="card s12"><header class="ch"><div><h3>Evolução detalhada</h3><p id="evoNota"></p></div><div class="row" style="gap:8px"><select id="selGrupoEvo" aria-label="Grupo"></select><select id="selMes" aria-label="Mês"></select></div></header><div class="leg2"><span style="--c:#2FA36B">No prazo</span><span style="--c:#D9534A">Fora do prazo</span></div><div class="chart" id="chartEvo"></div>
         <div class="leg2" style="margin-top:6px"><span style="--c:#F0A23B">Entradas</span><span style="--c:#23824F">Execuções</span></div><div class="chart" id="chartMov"></div>
         <details class="hist"><summary>Ver tabela do histórico</summary><div class="scroll"><table id="tbHist"></table></div></details></article>
     </div>
@@ -1134,19 +1145,24 @@ function render(){
   const cg=p=>{const rs=GRUPOS.map(g=>({g,...conta({g,p})}));const m=Math.max(1,...rs.map(r=>r.cart));
     return `<div class="cg">${rs.map(r=>`<div class="r"${go({modo:"carteira",g:r.g,p})}><span class="nm"><i style="--c:${COR[r.g]}"></i>${r.g}</span><div class="br" style="width:${Math.max(4,r.cart*100/m).toFixed(1)}%"><i style="width:${r.cart?(r.no*100/r.cart):0}%;background:#2FA36B">${r.no&&r.no/m>.08?r.no:""}</i><i style="width:${r.cart?(r.fora*100/r.cart):0}%;background:#D9534A">${r.fora&&r.fora/m>.08?r.fora:""}</i></div><span class="n">${nf(r.cart)}</span><span class="p">${pp(pctN(r.no,r.cart))}</span></div>`).join("")}</div>`;};
   $("cgInt").innerHTML=cg("Interlagos");$("cgGra").innerHTML=cg("Grajaú");
-  renderEvo();}
+  renderEvo();renderEvoPolos();}
+function renderEvoPolos(){const ds=datasHist();const mes=(S.ult.dc||ds[ds.length-1]||"").slice(0,7);
+  $("evoTit").textContent="Evolução da carteira em "+(MESES[Number(mes.slice(5,7))-1]||"")+" "+mes.slice(0,4);
+  for(const [p,id] of [["Grajaú","evoGra"],["Interlagos","evoInt"]]){const f=(pp,g)=>pp===p;
+    const it=ds.filter(d=>d.startsWith(mes)&&(somaHist(d,2,f)!=null||somaHist(d,3,f)!=null)).map(d=>({lab:dm(d),sub:wd(d),vals:[{v:somaHist(d,2,f)||0,c:"#2FA36B"},{v:somaHist(d,3,f)||0,c:"#D9534A"}]}));
+    $(id).innerHTML=barras(it,{empilhar:1,wmin:620,h:250,rotular:1,bw:34});}}
 
 function barras(itens,o){
   // itens: [{lab,sub,vals:[{v,c}]}]; o.empilhar
   const n=itens.length;if(!n)return `<div class="empty">Sem dados neste mês.</div>`;
-  const bw=o.empilhar?30:15,gap=o.empilhar?18:16,grupoW=o.empilhar?bw:bw*itens[0].vals.length+3;
-  const W=Math.max(1000,n*(grupoW+gap)+60),H=o.h||230,top=22,bot=40,left=36,ch=H-top-bot;
+  const bw=o.bw||(o.empilhar?30:15),gap=o.empilhar?18:16,grupoW=o.empilhar?bw:bw*itens[0].vals.length+3;
+  const W=Math.max(o.wmin||1000,n*(grupoW+gap)+60),H=o.h||230,top=22,bot=40,left=36,ch=H-top-bot;
   const tot=it=>o.empilhar?it.vals.reduce((a,b)=>a+(b.v||0),0):Math.max(...it.vals.map(b=>b.v||0));
   const mx=Math.max(1,...itens.map(tot));const passo=(W-left-10)/n;
   let s=`<svg viewBox="0 0 ${W} ${H}" role="img">`;
   for(let k=0;k<=4;k++){const y=top+ch-ch*k/4;s+=`<line x1="${left}" x2="${W-6}" y1="${y}" y2="${y}" stroke="#E6ECF1"/><text x="${left-6}" y="${y+4}" text-anchor="end" font-size="10.5" fill="#7A8995">${Math.round(mx*k/4)}</text>`;}
   itens.forEach((it,i)=>{const cx=left+passo*i+passo/2;
-    if(o.empilhar){let y=top+ch;it.vals.forEach(b=>{const hh=(b.v||0)*ch/mx;y-=hh;if(hh>0)s+=`<rect x="${cx-bw/2}" y="${y}" width="${bw}" height="${hh}" fill="${b.c}" rx="2"><title>${it.lab}: ${b.v}</title></rect>`;});
+    if(o.empilhar){let y=top+ch;it.vals.forEach(b=>{const hh=(b.v||0)*ch/mx;y-=hh;if(hh>0)s+=`<rect x="${cx-bw/2}" y="${y}" width="${bw}" height="${hh}" fill="${b.c}" rx="2"><title>${it.lab}: ${b.v}</title></rect>`;if(hh>15&&o.rotular)s+=`<text x="${cx}" y="${y+hh/2+4}" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">${b.v}</text>`;});
       s+=`<text x="${cx}" y="${y-5}" text-anchor="middle" font-size="11" font-weight="700" fill="#14212B">${tot(it)||""}</text>`;}
     else{const w0=cx-grupoW/2;it.vals.forEach((b,j)=>{const hh=(b.v||0)*ch/mx;const x=w0+j*(bw+3);s+=`<rect x="${x}" y="${top+ch-hh}" width="${bw}" height="${hh}" fill="${b.c}" rx="2"><title>${it.lab}: ${b.v}</title></rect>`;if(b.v!=null)s+=`<text x="${x+bw/2}" y="${top+ch-hh-4}" text-anchor="middle" font-size="9.5" font-weight="700" fill="#33424E">${b.v}</text>`;});}
     s+=`<text x="${cx}" y="${H-bot+16}" text-anchor="middle" font-size="11" font-weight="600" fill="#33424E">${it.lab}</text><text x="${cx}" y="${H-bot+29}" text-anchor="middle" font-size="9.5" fill="#7A8995">${it.sub||""}</text>`;});
