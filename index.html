@@ -669,6 +669,8 @@ table.tg.multi tr.dh th.tp{background:#3B5754}
 .gpol{display:grid;grid-template-columns:1fr 1fr;gap:8px;width:100%;margin-top:6px}.gpol div{background:var(--sunk);border-radius:10px;padding:8px 10px;text-align:center;cursor:pointer}.gpol span{display:block;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}.gpol b{font-family:var(--f-display);font-size:22px}.gpol small{display:block;font-size:10.5px;color:var(--muted)}
 .mserv{align-items:start}.sv3 .tr3{grid-template-columns:minmax(0,1fr) 60px 28px}
 
+.hrs.h2{background:#FDE2C8;color:#B4530F}
+
 </style>
 </head>
 <body>
@@ -799,7 +801,7 @@ table.tg.multi tr.dh th.tp{background:#3B5754}
   </section>
 
   <section id="v-rel" class="view" hidden>
-    <div class="relbar"><div><h2 class="relt">Religação · prazo de 48 horas</h2><div class="note" id="relNota"></div></div>
+    <div class="relbar"><div><h2 class="relt">Religação · prazo de 24 horas</h2><div class="note" id="relNota"></div></div>
       <div class="fgrp"><span class="lbl">Contar o tempo até</span><div class="seg2" id="segRef"><button type="button" data-ref="agora" aria-pressed="true"><small>ao vivo</small>Agora</button><button type="button" data-ref="cart" aria-pressed="false"><small id="refCartSub">carteira</small>Hora da carteira</button></div></div></div>
     <div class="kpis k5" id="kpisRel"></div>
     <div class="dash">
@@ -1075,6 +1077,13 @@ function unirTabelas(tabs,tipo){
     for(const r of t.rows){const os=keyOS(r[ix.os]);if(!os)continue;const k=JSON.stringify(map.map(i=>i<0?"":String(r[i]??"").trim()));
       if(visto.has(k)){rep++;continue;}visto.add(k);out.push(map.map(i=>i<0?"":r[i]));}}
   return {h,rows:out,rep};}
+
+// Religação: prazo de 24 horas a partir da inserção (regra da equipe). Os outros serviços seguem o prazo do sistema.
+const PRAZO_REL_H=24;
+function parseDT0(t){const m=String(t||"").match(/(\d{1,2})\/(\d{1,2})\/(\d{4})(?:\s+(\d{1,2}):(\d{2}))?/);return m?new Date(+m[3],+m[2]-1,+m[1],+(m[4]||0),+(m[5]||0)).getTime():null;}
+function vencimento(r){if(r.g==="Religação"){const i=parseDT0(r.ins);if(i!=null)return i+PRAZO_REL_H*3600000;}return parseDT0(r.pf);}
+function ajustarRel(recs){const v=[];for(const r of recs){const pf=parseDT0(r.pf);if(pf!=null&&r.tr)v.push(pf-minutosResid(r.tr)*60000);}v.sort((a,b)=>a-b);const m=v.length?v[Math.floor(v.length/2)]:null;
+  if(m==null)return;for(const r of recs){if(r.g!=="Religação")continue;const ve=vencimento(r);if(ve!=null)r.fora=ve<m;}}
 function registros(raw,tipo){
   const ix=indices(raw.h,tipo==="ex"?CAMPOS_EX:CAMPOS_AC);const g=(r,k)=>ix[k]>=0?r[ix[k]]:"";const out=[];const dias=new Set();
   for(const r of raw.rows){
@@ -1085,6 +1094,7 @@ function registros(raw,tipo){
     else{o.dt=dataIso(g(r,"ins"));o.ins=txtData(g(r,"ins"));o.pf=txtData(g(r,"pf"));o.tr=clean(g(r,"tr"));o.fora=o.tr.startsWith("-");o.st=clean(g(r,"st"));if(!o.tss)continue;}
     if(o.dt)dias.add(o.dt);
     if(o.g&&o.p!=="Outro")out.push(o);}
+  if(tipo!=="ex")ajustarRel(out);
   return {recs:out,dias:[...dias].sort()};}
 
 /* ================= tela de importação ================= */
@@ -1393,14 +1403,14 @@ $("btnPrint").onclick=()=>{document.body.classList.add("printmode");window.scrol
 document.addEventListener("keydown",e=>{if(e.key==="Escape")document.body.classList.remove("printmode");});
 
 
-/* ================= religação (prazo de 48 horas, acompanhado por horário) ================= */
+/* ================= religação (prazo de 24 horas, acompanhado por horário) ================= */
 function parseDT(t){const m=String(t||"").match(/(\d{1,2})\/(\d{1,2})\/(\d{4})(?:\s+(\d{1,2}):(\d{2}))?/);return m?new Date(+m[3],+m[2]-1,+m[1],+(m[4]||0),+(m[5]||0)).getTime():null;}
 function momentoCarteira(recs){const v=[];for(const r of recs||[]){const pf=parseDT(r.pf);if(pf==null||!r.tr)continue;v.push(pf-minutosResid(r.tr)*60000);}if(!v.length)return null;v.sort((a,b)=>a-b);return v[Math.floor(v.length/2)];}
 let refRel=null;
 const fmtHM=t=>{const d=new Date(t);return d.toLocaleDateString("pt-BR",{day:"2-digit",month:"2-digit"})+" "+d.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"});};
-const FXR=[["v","Vencida (passou de 48h)","#D9534A"],["h6","Vence em até 6h","#F08A24"],["h12","Vence em 6 a 12h","#E8C547"],["h24","Vence em 12 a 24h","#7BC29A"],["h48","Vence em 24 a 48h","#2FA36B"]];
-function restaH(r,ref){const pf=parseDT(r.pf);if(pf==null)return minutosResid(r.tr)/60;return (pf-ref)/3600000;}
-const fxDe=h=>h<0?"v":h<=6?"h6":h<=12?"h12":h<=24?"h24":"h48";
+const FXR=[["v","Vencida (passou de 24h)","#D9534A"],["h2","Vence em até 2h","#F08A24"],["h6","Vence em 2 a 6h","#E8C547"],["h12","Vence em 6 a 12h","#7BC29A"],["h24","Vence em 12 a 24h","#2FA36B"]];
+function restaH(r,ref){const pf=vencimento(r);if(pf==null)return minutosResid(r.tr)/60;return (pf-ref)/3600000;}
+const fxDe=h=>h<0?"v":h<=2?"h2":h<=6?"h6":h<=12?"h12":"h24";
 function txtH(h){const a=Math.abs(h);const d=Math.floor(a/24),hh=Math.floor(a%24),mm=Math.round((a*60)%60);const t=(d?d+"d ":"")+hh+"h"+(d?"":" "+String(mm).padStart(2,"0")+"min");return h<0?"vencida há "+t:"faltam "+t;}
 function renderRel(){
   const u=S.ult,g="Religação";const mom=momentoCarteira(u.ca);
@@ -1408,15 +1418,15 @@ function renderRel(){
   const ref=refRel==="cart"&&mom?mom:Date.now();
   document.querySelectorAll("#segRef button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.ref===refRel));
   $("refCartSub").textContent=mom?fmtHM(mom):"carteira";
-  $("relNota").textContent=`Carteira tirada do sistema em ${mom?fmtHM(mom):dmy(u.dc)} · tempo contado até ${refRel==="cart"&&mom?"a hora da carteira":"agora ("+fmtHM(Date.now())+")"} · no prazo = menos de 48 horas desde a inserção`;
+  $("relNota").textContent=`Carteira tirada do sistema em ${mom?fmtHM(mom):dmy(u.dc)} · tempo contado até ${refRel==="cart"&&mom?"a hora da carteira":"agora ("+fmtHM(Date.now())+")"} · no prazo = menos de 24 horas desde a inserção`;
   const ca=u.ca.filter(r=>r.g===g).map(r=>({...r,h:restaH(r,ref)}));ca.forEach(r=>r.fx=fxDe(r.h));
   const n=k=>ca.filter(r=>r.fx===k).length;const venc=n("v");const tot=ca.length;
   const ent=u.ac.filter(r=>r.g===g&&noDia(r)).length,exe=u.ex.filter(r=>r.g===g&&noDia(r)&&r.conta).length;
   $("kpisRel").innerHTML=[
     kpi({hl:1,l:"Religações na carteira",v:nf(tot),s:POLOS.map(p=>ca.filter(r=>r.p===p).length+" "+p).join(" · "),ic:IC.cart,go:{modo:"carteira",g,p:""}}),
-    kpi({l:"Fora do prazo",v:nf(venc),s:tot?pctTxt(venc,tot)+" passaram de 48h":"",ic:IC.fora,tone:"var(--red)",soft:"var(--red-soft)",go:{modo:"carteira",g,p:"",prazo:"fora"}}),
-    kpi({l:"Vencem em até 6h",v:nf(n("h6")),s:"prioridade agora",ic:IC.fora,tone:"var(--orange)",soft:"var(--orange-soft)"}),
-    kpi({l:"Vencem em 6 a 24h",v:nf(n("h12")+n("h24")),s:`${n("h12")} até 12h · ${n("h24")} de 12 a 24h`,ic:IC.pct,tone:"var(--amber)",soft:"var(--amber-soft)"}),
+    kpi({l:"Fora do prazo",v:nf(venc),s:tot?pctTxt(venc,tot)+" passaram de 24h":"",ic:IC.fora,tone:"var(--red)",soft:"var(--red-soft)",go:{modo:"carteira",g,p:"",prazo:"fora"}}),
+    kpi({l:"Vencem em até 2h",v:nf(n("h2")),s:"prioridade agora",ic:IC.fora,tone:"var(--orange)",soft:"var(--orange-soft)"}),
+    kpi({l:"Vencem em 2 a 12h",v:nf(n("h6")+n("h12")),s:`${n("h6")} de 2 a 6h · ${n("h12")} de 6 a 12h`,ic:IC.pct,tone:"var(--amber)",soft:"var(--amber-soft)"}),
     kpi({l:"Entradas × execuções",v:`${nf(ent)} <span style="font-size:.6em;color:var(--muted)">×</span> ${nf(exe)}`,s:esc(rotDias()),ic:IC.mov,tone:"var(--green)",soft:"var(--green-soft)",go:{modo:"execucoes",g,p:""}})].join("");
   // faixas por polo
   let h=`<thead><tr><th>Tempo que falta</th>${POLOS.slice().reverse().map(p=>`<th class="r">${p}</th>`).join("")}<th class="r">Total</th></tr></thead><tbody>`;
@@ -1442,7 +1452,7 @@ setInterval(()=>{if(abaAtual==="rel"&&refRel==="agora"&&!document.hidden)renderR
 /* ================= monitor ao vivo ================= */
 const monAberto=new Set();
 const CK={ok:"#14A394",at:"#F59E0B",fo:"#E5484D"};
-function situAgora(r,agora){const pf=parseDT(r.pf);const h=pf!=null?(pf-agora)/3600000:minutosResid(r.tr)/60;return {h,sx:h<0?"fo":h<=24?"at":"ok"};}
+function situAgora(r,agora){const pf=vencimento(r);const h=pf!=null?(pf-agora)/3600000:minutosResid(r.tr)/60;return {h,sx:h<0?"fo":h<=24?"at":"ok"};}
 function anel(pctOk,pctAt,tam){const R=36,C=2*Math.PI*R;const ok=Math.max(0,pctOk-pctAt);
   return `<svg viewBox="0 0 86 86"><circle cx="43" cy="43" r="${R}" fill="none" stroke="#FDE3E4" stroke-width="9"/>`+
    `<circle cx="43" cy="43" r="${R}" fill="none" stroke="${CK.fo}" stroke-width="9" stroke-dasharray="${C} ${C}" />`+
