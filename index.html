@@ -664,6 +664,49 @@ table.tg.multi tr.dh th.tp{background:#3B5754}
 
 .hrs.h2{background:#FDE2C8;color:#B4530F}
 
+/* ===== cartões visuais por serviço ===== */
+.svc4{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px}
+.c4{border:1px solid var(--line);border-radius:14px;padding:12px 14px;display:flex;flex-direction:column;gap:8px;border-top:5px solid var(--c);background:#fff}
+.c4 .h4{display:flex;justify-content:space-between;align-items:baseline;gap:6px}
+.c4 .h4 b{font-family:var(--f-display);font-size:15px;font-weight:600}
+.c4 .big{display:flex;align-items:baseline;gap:8px}
+.c4 .big b{font-family:var(--f-display);font-size:34px;font-weight:600;line-height:1}
+.c4 .big span{font-size:12px;color:var(--muted)}
+.c4 .pz4{display:flex;height:22px;border-radius:7px;overflow:hidden;background:var(--line-2);cursor:pointer}
+.c4 .pz4 i{display:flex;align-items:center;justify-content:center;color:#fff;font-size:11.5px;font-weight:700;font-style:normal;overflow:hidden;min-width:0}
+.c4 .lg4{display:flex;justify-content:space-between;font-size:11.5px;color:var(--muted)}
+.c4 .lg4 b{font-weight:700}
+.c4 .ch4 svg{width:100%;height:auto;display:block}
+.c4 .ft4{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;text-align:center;border-top:1px dashed var(--line);padding-top:7px}
+.c4 .ft4 small{display:block;font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
+.c4 .ft4 b{font-family:var(--f-display);font-size:17px}
+/* ===== lista simples (modal) ===== */
+.modal{position:fixed;inset:0;z-index:90;background:rgba(6,30,28,.55);display:grid;place-items:center;padding:16px}
+.mbox{background:#fff;border-radius:16px;width:min(900px,100%);max-height:86vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+.mhd{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:14px 18px;border-bottom:1px solid var(--line);background:var(--sunk)}
+.mhd b{display:block;font-family:var(--f-display);font-size:17px}
+.mhd small{color:var(--muted);font-size:12.5px}
+.mhd button{font-size:16px;padding:6px 11px}
+.mlist{overflow:auto}
+.mlist table{width:100%;border-collapse:collapse}
+.mlist th{position:sticky;top:0;background:#fff;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);text-align:left;padding:9px 14px;border-bottom:1px solid var(--line)}
+.mlist td{padding:9px 14px;border-bottom:1px solid var(--line-2);font-size:13.5px;vertical-align:top}
+.mlist td.e5{font-weight:600}
+.mlist .tg5{font-size:12px;font-weight:700;border-radius:999px;padding:2px 9px;white-space:nowrap}
+.tg5.f{background:var(--red-soft);color:var(--red)}.tg5.n{background:var(--green-soft);color:var(--green)}
+/* religação ao vivo dentro da aba */
+#v-rel .mon{margin-bottom:14px}
+
+.rsv{padding:14px 16px 4px}
+.r3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;padding:12px 16px}
+.r3 .rg svg{width:100%;height:auto}
+.hb.tsb .hr{grid-template-columns:150px minmax(0,1fr) 34px}
+.hb.tsb .hr span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11px}
+@media (max-width:1100px){.r3{grid-template-columns:minmax(0,1fr)}}
+body.printmode .hero{display:none!important}.rhead{background:linear-gradient(120deg,#073B38,#0F766E)!important}.rhead p,.rhead .rdt{color:#BFE6DF!important}
+
+.side2{display:grid!important;grid-template-columns:1fr 1fr;gap:14px}.side2 .dd .r{grid-template-columns:78px minmax(0,1fr) 62px}@media (max-width:900px){.side2{grid-template-columns:minmax(0,1fr)}}
+
 </style>
 </head>
 <body>
@@ -687,12 +730,12 @@ table.tg.multi tr.dh th.tp{background:#3B5754}
   <div class="brand"><span class="logo"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="14" height="17" rx="2.5"/><path d="M9 4.5V3h6v1.5M9 10h6M9 14h6M9 18h3"/></svg></span><div style="min-width:0"><div class="brand-t">Carteira de Serviços</div><div class="brand-s" id="sub">Interlagos · Grajaú</div></div></div>
   <nav class="tabs" role="tablist">
     <button class="tab" role="tab" id="t-painel" aria-selected="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg> Painel</button>
-    <button class="tab" role="tab" id="t-mon" aria-selected="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="13" rx="2"/><path d="M8 21h8M12 17v4M6 13l3-3 3 2 4-4"/></svg> Monitor</button>
+    <button class="tab" role="tab" id="t-mon" aria-selected="false" hidden><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="13" rx="2"/><path d="M8 21h8M12 17v4M6 13l3-3 3 2 4-4"/></svg> Monitor</button>
     <button class="tab" role="tab" id="t-res" aria-selected="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="12" cy="12" r="3"/><path d="M8 5l1.5-2h5L16 5"/></svg> Resumo p/ print</button>
-    <button class="tab" role="tab" id="t-rel" aria-selected="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2M9 2h6"/></svg> Religação</button>
+    <button class="tab" role="tab" id="t-rel" aria-selected="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2M9 2h6"/></svg> Religação ao vivo</button>
     <button class="tab" role="tab" id="t-lig" aria-selected="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9h7a3 3 0 0 1 3 3v9"/><path d="M3 6v6M18 4c-1.6 2-3 3.7-3 5.3a3 3 0 0 0 6 0C21 7.7 19.6 6 18 4Z"/></svg> Ligação de água</button>
     <button class="tab" role="tab" id="t-serv" aria-selected="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg> Outros serviços</button>
-    <button class="tab" role="tab" id="t-os" aria-selected="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M9 6h12M9 12h12M9 18h12M4 6h.01M4 12h.01M4 18h.01"/></svg> OS</button>
+    <button class="tab" role="tab" id="t-os" aria-selected="false" hidden><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M9 6h12M9 12h12M9 18h12M4 6h.01M4 12h.01M4 18h.01"/></svg> OS</button>
   </nav>
   <div class="actions">
     <button type="button" class="primary" id="btnSubir"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V4M6 10l6-6 6 6M4 20h16"/></svg> Atualizar com os arquivos do dia</button>
@@ -758,9 +801,9 @@ table.tg.multi tr.dh th.tp{background:#3B5754}
       <div class="sect s12" id="evoTit">Evolução da carteira no mês</div>
       <article class="card s6"><header class="ch"><div><h3>Grajaú</h3><p>no prazo × fora do prazo, dia a dia</p></div><div class="leg2"><span style="--c:#2FA36B">No prazo</span><span style="--c:#D9534A">Fora do prazo</span></div></header><div class="chart ev" id="evoGra"></div></article>
       <article class="card s6"><header class="ch"><div><h3>Interlagos</h3><p>no prazo × fora do prazo, dia a dia</p></div><div class="leg2"><span style="--c:#2FA36B">No prazo</span><span style="--c:#D9534A">Fora do prazo</span></div></header><div class="chart ev" id="evoInt"></div></article>
-      <div class="sect s12">Situação por grupo e movimento do dia</div>
-      <article class="card s9"><header class="ch"><div><h3>Situação por grupo</h3><p id="sitNota">carteira de hoje e o movimento do dia</p></div><span class="dica">Clique numa linha para ver as OS</span></header><div class="scroll"><table class="tg" id="tbGrupo"></table></div></article>
-      <div class="side s3">
+      <div class="sect s12">Situação por serviço e movimento do dia</div>
+<article class="card s12"><header class="ch"><div><h3>Situação por serviço</h3><p id="sitNota"></p></div><div class="leg2"><span style="--c:#2FA36B">No prazo</span><span style="--c:#D9534A">Fora</span><span style="--c:#F0A23B">Entradas</span><span style="--c:#23824F">Execuções</span></div></header><div class="svc4" id="tbGrupo"></div></article>
+      <div class="side s12 side2">
       <article class="card"><header class="ch"><div><h3>Dia a dia</h3><p>entradas × execuções de cada dia</p></div><div class="leg2"><span style="--c:#F0A23B">Entradas</span><span style="--c:#23824F">Execuções</span></div></header><div id="diaDia"></div></article>
       <article class="card"><header class="ch"><div><h3>Prazo da carteira</h3><p>no prazo × fora do prazo por polo</p></div><div class="leg2"><span style="--c:#2FA36B">No prazo</span><span style="--c:#D9534A">Fora</span></div></header><div id="prazoPolo"></div></article>
       </div>
@@ -771,18 +814,7 @@ table.tg.multi tr.dh th.tp{background:#3B5754}
     </div>
   </section>
 
-  <section id="v-mon" class="view" hidden>
-    <div class="mon" id="mon">
-      <div class="alerta" id="monAlerta"></div>
-      <div class="mk4" id="monTop"></div>
-      <div class="filas">
-        <div class="fila"><div class="fh2"><b>Vão vencer</b><span>da que vence primeiro · próximas 24h</span><em id="qtdVao"></em></div><div class="flist" id="filaVao"></div></div>
-        <div class="fila"><div class="fh2 red"><b>Já vencidas</b><span>da que venceu agora há pouco para a mais antiga</span><em id="qtdVenc"></em></div><div class="flist" id="filaVenc"></div></div>
-      </div>
-      <div class="msvc"><div class="fh2"><b>Por serviço</b><span>clique para filtrar a fila</span></div><div id="monRows"></div></div>
-      <div class="mfoot"><span id="monSub"></span><button type="button" id="monTela">Tela cheia</button></div>
-    </div>
-  </section>
+  <section id="v-mon" class="view" hidden></section>
 
   <section id="v-res" class="view" hidden>
     <div class="row resbar"><span class="note">Mostra todos os dias juntos, por serviço. Clique em <b>Modo print</b> para deixar só o quadro na tela e tirar o print.</span><button type="button" class="primary" id="btnPrint"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9V5h4M20 9V5h-4M4 15v4h4M20 15v4h-4"/></svg> Modo print</button></div>
@@ -790,14 +822,18 @@ table.tg.multi tr.dh th.tp{background:#3B5754}
   </section>
 
   <section id="v-rel" class="view" hidden>
-    <div class="relbar"><div><h2 class="relt">Religação · prazo de 24 horas</h2><div class="note" id="relNota"></div></div>
-      <div class="fgrp"><span class="lbl">Contar o tempo até</span><div class="seg2" id="segRef"><button type="button" data-ref="agora" aria-pressed="true"><small>ao vivo</small>Agora</button><button type="button" data-ref="cart" aria-pressed="false"><small id="refCartSub">carteira</small>Hora da carteira</button></div></div></div>
-    <div class="kpis k5" id="kpisRel"></div>
+    <div class="mon" id="mon">
+      <div class="alerta" id="monAlerta"></div>
+      <div class="mk4" id="monTop"></div>
+      <div class="filas">
+        <div class="fila"><div class="fh2"><b>Vão vencer</b><span>da que vence primeiro · próximas 24h</span><em id="qtdVao"></em></div><div class="flist" id="filaVao"></div></div>
+        <div class="fila"><div class="fh2 red"><b>Já vencidas</b><span>da que venceu agora há pouco para a mais antiga</span><em id="qtdVenc"></em></div><div class="flist" id="filaVenc"></div></div>
+      </div>
+      <div class="mfoot"><span id="monSub"></span><button type="button" id="monTela">Tela cheia</button></div>
+    </div>
     <div class="dash">
-      <article class="card s7"><header class="ch"><div><h3>Tempo que falta para vencer</h3><p id="relFxNota">por polo · clique para ver as OS</p></div></header><div class="scroll"><table class="tg" id="tbRelFx"></table></div></article>
-      <article class="card s5"><header class="ch"><div><h3>Acompanhamento por horário</h3><p>cada vez que você sobe a carteira</p></div><div class="leg2"><span style="--c:#2FA36B">No prazo</span><span style="--c:#D9534A">Fora do prazo</span></div></header><div class="chart ev" id="relHora"></div></article>
-      <article class="card s12"><header class="ch"><div><h3>Próximas a vencer</h3><p>da que vence primeiro para a última · as vencidas aparecem em vermelho</p></div><span class="dica" id="relQtd"></span></header><div class="list rl" id="relLista"></div></article>
-      <article class="card s12"><header class="ch"><div><h3>Entradas × execuções de religação por dia</h3><p>por polo</p></div></header><div class="scroll"><table class="tg" id="tbRelDia"></table></div></article>
+      <article class="card s6"><header class="ch"><div><h3>Ao longo do dia</h3><p>no prazo × fora a cada carteira que você sobe</p></div><div class="leg2"><span style="--c:#12A386">No prazo</span><span style="--c:#E03E45">Fora do prazo</span></div></header><div class="chart ev" id="relHora"></div></article>
+      <article class="card s6"><header class="ch"><div><h3>Entradas × execuções por dia</h3><p>religação · Interlagos e Grajaú</p></div><div class="leg2"><span style="--c:#F0A23B">Entradas</span><span style="--c:#23824F">Execuções</span></div></header><div class="chart ev" id="relDia"></div></article>
     </div>
   </section>
 
@@ -839,6 +875,8 @@ table.tg.multi tr.dh th.tp{background:#3B5754}
   </section>
   <div class="foot">Painel da Carteira de Serviços · os dados ficam guardados só neste computador</div>
 </div>
+
+<div class="modal" id="modal" hidden><div class="mbox"><div class="mhd"><div><b id="mTit"></b><small id="mSub"></small></div><button type="button" id="mFechar" aria-label="Fechar">✕</button></div><div class="mlist" id="mLista"></div></div></div>
 
 <script>
 (function(){
@@ -1218,27 +1256,9 @@ function render(){
     kpi({l:"Entradas × execuções",v:`${nf(T.ent)} <span style="font-size:.6em;color:var(--muted)">×</span> ${nf(T.exe)}`,s:esc(rotDias()),ic:IC.mov,tone:"var(--orange)",soft:"var(--orange-soft)",go:{modo:"entradas"},g:miniG([{v:DD.map(x=>x.e),c:"#F0A23B",t:DD.map(x=>dm(x.d))},{v:DD.map(x=>x.x),c:"#23824F",t:DD.map(x=>dm(x.d))}])}),
     kpi({l:"Saldo",v:sgn(T.saldo),s:tend,ic:IC.saldo,tone:T.saldo>0?"var(--red)":"var(--green)",soft:T.saldo>0?"var(--red-soft)":"var(--green-soft)",go:{modo:"execucoes"},g:miniG([{v:DD.map(x=>x.e-x.x),c:v=>v>0?"#D9534A":"#2FA36B",t:DD.map(x=>dm(x.d))}])})].join("");
   renderHero(T);
-  // situação por grupo
+  // situação por serviço (cartões visuais)
   $("sitNota").textContent=`carteira de ${dmy(u.dc)} · entradas e execuções: ${rotDias()}${poloSel!=="Todos"?" · "+poloSel:""}`;
-  const dsv=diasSel();
-  if(dsv.length>1){
-    const E=(d,g)=>u.ac.filter(r=>r.dt===d&&(!g||r.g===g)&&fp(r)).length,X=(d,g)=>u.ex.filter(r=>r.dt===d&&r.conta&&(!g||r.g===g)&&fp(r)).length;
-    let h=`<thead><tr class="dh"><th colspan="4" class="blank"></th>${dsv.map(d=>`<th colspan="2" class="grp sep dday" data-dia="${d}"><small>${wd(d)}</small>${dm(d)}</th>`).join("")}<th colspan="3" class="grp sep tp"><small>${dsv.length} dias</small>Total</th></tr>
-      <tr><th>Grupo</th><th class="r">Carteira</th><th class="r" title="entre parênteses: diferença vs ${da?dm(da):"dia anterior"}">Fora</th><th class="r">% prazo</th>${dsv.map(()=>`<th class="r sep e">Entr.</th><th class="r x">Exec.</th>`).join("")}<th class="r sep e">Entr.</th><th class="r x">Exec.</th><th class="r">Saldo</th></tr></thead><tbody>`;
-    const lin=(g,tot)=>{const c=tot?T:conta({g});const gg=tot?"":g;let r=tot?`<tr class="total"><td>TOTAL</td>`:`<tr><td class="g"${go({modo:"carteira",g})}><i style="--c:${COR[g]}"></i>${g}</td>`;
-      r+=`<td class="r"${tot?"":go({modo:"carteira",g})}>${nf(c.cart)}</td><td class="r ${c.fora&&!tot?"up":""}"${tot?"":go({modo:"carteira",g,prazo:"fora"})}>${nf(c.fora)}${c.dFora==null?"":`<span class="dfv ${c.dFora>0?"up":c.dFora<0?"down":""}">${c.dFora>0?"▲":c.dFora<0?"▼":"="}${c.dFora?nf(Math.abs(c.dFora)):""}</span>`}</td><td class="r">${pp(pctN(c.no,c.cart))}</td>`;
-      let te=0,tx=0;for(const d of dsv){const e=E(d,gg),x=X(d,gg);te+=e;tx+=x;r+=`<td class="r sep e">${nf(e)}</td><td class="r x">${nf(x)}</td>`;}
-      return r+`<td class="r sep e"${tot?"":go({modo:"entradas",g})}>${nf(te)}</td><td class="r x"${tot?"":go({modo:"execucoes",g})}>${nf(tx)}</td><td class="r ${te-tx>0?"up":te-tx<0?"down":""}">${sgn(te-tx)}</td></tr>`;};
-    h+=GRUPOS.map(g=>lin(g)).join("")+lin("",true)+"</tbody>";
-    $("tbGrupo").className="tg multi";$("tbGrupo").innerHTML=h;
-  }else{
-  $("tbGrupo").className="tg";
-  let h=`<thead><tr><th>Grupo</th><th class="r">Carteira</th><th class="r">No prazo</th><th class="r">Fora do prazo</th><th class="r">% no prazo</th><th class="r">Fora vs ${da?dm(da):"dia anterior"}</th><th class="r sep">Entradas</th><th class="r">Execuções</th><th class="r">Saldo</th></tr></thead><tbody>`;
-  for(const g of GRUPOS){const c=conta({g});
-    h+=`<tr><td class="g"${go({modo:"carteira",g})}><i style="--c:${COR[g]}"></i>${g}</td><td class="r"${go({modo:"carteira",g})}>${nf(c.cart)}</td><td class="r"${go({modo:"carteira",g,prazo:"no"})}>${nf(c.no)}</td><td class="r ${c.fora?"up":""}"${go({modo:"carteira",g,prazo:"fora"})}>${nf(c.fora)}</td><td class="r">${pp(pctN(c.no,c.cart))}</td><td class="r ${c.dFora>0?"up":c.dFora<0?"down":""}">${sgn(c.dFora)}</td><td class="r sep"${go({modo:"entradas",g})}>${nf(c.ent)}</td><td class="r"${go({modo:"execucoes",g})}>${nf(c.exe)}</td><td class="r ${c.saldo>0?"up":c.saldo<0?"down":""}">${sgn(c.saldo)}</td></tr>`;}
-  h+=`<tr class="total"><td>TOTAL</td><td class="r">${nf(T.cart)}</td><td class="r">${nf(T.no)}</td><td class="r">${nf(T.fora)}</td><td class="r">${pp(pctN(T.no,T.cart))}</td><td class="r">${sgn(T.dFora)}</td><td class="r sep">${nf(T.ent)}</td><td class="r">${nf(T.exe)}</td><td class="r">${sgn(T.saldo)}</td></tr></tbody>`;
-  $("tbGrupo").innerHTML=h;
-  }
+  $("tbGrupo").innerHTML=cardsServ(diasSel());
   // dia a dia
   const linhasDia=u.dias.map(d=>{const e=u.ac.filter(r=>r.dt===d&&fp(r)).length,x=u.ex.filter(r=>r.dt===d&&fp(r)&&r.conta).length;return {d,e,x};});
   const mx=Math.max(1,...linhasDia.map(l=>Math.max(l.e,l.x)));
@@ -1349,43 +1369,33 @@ function renderRes(){
   const per=ds.length?(ds.length===1?`${wd(ds[0])} ${dmy(ds[0])}`:`${wd(ds[0])} ${dm(ds[0])} a ${wd(ds[ds.length-1])} ${dm(ds[ds.length-1])}`):"–";
   let h=`<div class="rhead"><div><h2>Carteira de Serviços · ${pol==="Todos"?"Interlagos e Grajaú":esc(pol)}</h2><p>Entradas e execuções de ${per} · carteira de ${wd(u.dc)} ${dmy(u.dc)}</p></div><div class="rdt">Carteira de<b>${dmy(u.dc)}</b></div></div>`;
   const pv=pctN(T.no,T.cart);
-  h+=`<div class="rk"><div><small>Carteira</small><b>${nf(T.cart)}</b><em>${nf(T.no)} no prazo</em></div><div><small>Fora do prazo</small><b class="${T.fora?"up":""}">${nf(T.fora)}</b><em>${T.dFora==null?"":(T.dFora>0?"▲ ":T.dFora<0?"▼ ":"= ")+nf(Math.abs(T.dFora))+" vs "+dm(T.da)}</em></div><div><small>% no prazo</small><b>${pv==null?"–":(Math.round(pv*1000)/10).toLocaleString("pt-BR")+"%"}</b><em>meta ${Math.round(META*100)}%</em></div><div><small>Entradas</small><b style="color:#B9650F">${nf(se)}</b><em>${ds.length} dia${ds.length>1?"s":""}</em></div><div><small>Execuções</small><b style="color:#1C7444">${nf(sx)}</b><em>${ds.length} dia${ds.length>1?"s":""}</em></div><div><small>Saldo</small><b class="${se-sx>0?"up":"down"}">${sgn(se-sx)}</b><em>${se>sx?"carteira sobe":se<sx?"carteira desce":"equilibrado"}</em></div></div>`;
-  h+=`<div class="rbody"><table class="rt"><thead><tr class="d"><th class="blank"></th>${ds.map(d=>`<th colspan="2"><small>${wd(d)}</small>${dm(d)}</th>`).join("")}<th colspan="3" class="tp"><small>período</small>Total</th><th colspan="3" class="ct"><small>${dm(u.dc)}</small>Carteira</th></tr>
-    <tr class="h"><th style="text-align:left">Serviço</th>${ds.map(()=>`<th class="e bl">Entr.</th><th class="x">Exec.</th>`).join("")}<th class="e bl">Entr.</th><th class="x">Exec.</th><th>Saldo</th><th class="bl">Total</th><th>Fora</th><th>% prazo</th></tr></thead><tbody>`;
-  const linha=(nome,g,cls)=>{let te=0,tx=0;let r=`<tr class="${cls||""}"><td class="s">${g?`<i style="--c:${COR[g]}"></i>`:""}${nome}</td>`;
-    for(const d of ds){const e=E(d,g),x=X(d,g);te+=e;tx+=x;r+=`<td class="e bl">${nf(e)}</td><td class="x">${nf(x)}</td>`;}
-    const c=conta({g});r+=`<td class="e bl">${nf(te)}</td><td class="x">${nf(tx)}</td><td class="sd ${te-tx>0?"up":te-tx<0?"down":""}">${sgn(te-tx)}</td><td class="bl">${nf(c.cart)}</td><td class="${c.fora?"up":""}">${nf(c.fora)}</td><td>${pp(pctN(c.no,c.cart))}</td></tr>`;return r;};
-  for(const g of GRUPOS)h+=linha(g,g);
-  h+=linha("TOTAL","","tot")+`</tbody></table></div>`;
-  // gráficos ao lado
+  h+=`<div class="rk"><div><small>Carteira</small><b>${nf(T.cart)}</b><em>${nf(T.no)} no prazo</em></div><div><small>Fora do prazo</small><b class="${T.fora?"up":""}">${nf(T.fora)}</b><em>${T.dFora==null?"":(T.dFora>0?"▲ ":T.dFora<0?"▼ ":"= ")+nf(Math.abs(T.dFora))+" vs "+dm(T.da)}</em></div><div><small>% no prazo</small><b style="color:${pv==null?"inherit":pv>=META?"#23824F":pv>=META-.15?"#A66B00":"#C2362B"}">${pv==null?"–":(Math.round(pv*1000)/10).toLocaleString("pt-BR")+"%"}</b><em>meta ${Math.round(META*100)}%</em></div><div><small>Entradas</small><b style="color:#B9650F">${nf(se)}</b><em>${ds.length} dia${ds.length>1?"s":""}</em></div><div><small>Execuções</small><b style="color:#1C7444">${nf(sx)}</b><em>${ds.length} dia${ds.length>1?"s":""}</em></div><div><small>Saldo</small><b class="${se-sx>0?"up":"down"}">${sgn(se-sx)}</b><em>${se>sx?"carteira sobe":se<sx?"carteira desce":"equilibrado"}</em></div></div>`;
+  // serviços em cartões
+  h+=`<div class="rsv"><div class="svc4">${cardsServ(ds)}</div></div>`;
+  // gráficos: dia a dia, prazo por polo, evolução
   const itD=ds.map(d=>({lab:dm(d),sub:wd(d),vals:[{v:E(d),c:"#F0A23B"},{v:X(d),c:"#23824F"}]}));
   const pzRows=(pol==="Todos"?POLOS.slice().reverse():[pol]).map(p=>({p,...conta({p})}));
-  const graf=`<div class="rgraf"><div class="rg"><div class="rgt">Entradas × execuções por dia<span class="leg2"><span style="--c:#F0A23B">Entradas</span><span style="--c:#23824F">Execuções</span></span></div>${miniBarras(itD,{h:190})}</div>
-    <div class="rg"><div class="rgt">Prazo da carteira<span class="leg2"><span style="--c:#2FA36B">No prazo</span><span style="--c:#D9534A">Fora</span></span></div>${pzBarras(pzRows)}</div></div>`;
-  h=h.replace('<div class="rbody">','<div class="rgrid"><div class="rbody">')+graf+`</div>`;
-  if(pol==="Todos"){h+=`<div class="rpolo">`+POLOS.slice().reverse().map(p=>{const c=conta({p});let e=0,x=0;ds.forEach(d=>{e+=E(d,"",p);x+=X(d,"",p);});
-    return `<div class="pb"><b class="pn">${p}</b><small>Carteira</small><small>Fora</small><small>% prazo</small><small>Entradas</small><small>Execuções</small><span>${nf(c.cart)}</span><span class="${c.fora?"up":""}">${nf(c.fora)}</span><span>${pp(pctN(c.no,c.cart))}</span><span style="color:#B9650F">${nf(e)}</span><span style="color:#1C7444">${nf(x)}</span></div>`;}).join("")+`</div>`;}
-  // ---- ligação de água ----
+  const dsH=datasHist();const mes=(u.dc||"").slice(0,7);const fH=(p,g)=>pol==="Todos"||p===pol;
+  const evo=dsH.filter(d=>d.startsWith(mes)&&(somaHist(d,2,fH)!=null||somaHist(d,3,fH)!=null)).slice(-10).map(d=>({lab:dm(d),sub:wd(d),vals:[{v:somaHist(d,2,fH)||0,c:"#2FA36B"},{v:somaHist(d,3,fH)||0,c:"#D9534A"}]}));
+  h+=`<div class="r3"><div class="rg"><div class="rgt">Entradas × execuções por dia<span class="leg2"><span style="--c:#F0A23B">Entradas</span><span style="--c:#23824F">Execuções</span></span></div>${miniBarras(itD,{h:180})}</div>
+    <div class="rg"><div class="rgt">Prazo da carteira por polo<span class="leg2"><span style="--c:#2FA36B">No prazo</span><span style="--c:#D9534A">Fora</span></span></div>${pzBarras(pzRows)}</div>
+    <div class="rg"><div class="rgt">Evolução da carteira no mês<span class="leg2"><span style="--c:#2FA36B">No prazo</span><span style="--c:#D9534A">Fora</span></span></div>${evo.length?barras(evo,{empilhar:1,wmin:420,h:200,rotular:1,bw:26}):'<div class="empty">Sem histórico no mês.</div>'}</div></div>`;
+  // ---- ligação de água (visual) ----
   {const g=LIG;const Pl=POLOS.slice().reverse();
    const El=(d,p)=>u.ac.filter(r=>r.g===g&&r.dt===d&&(!p||r.p===p)).length,Xl=(d,p)=>u.ex.filter(r=>r.g===g&&r.dt===d&&r.conta&&(!p||r.p===p)).length;
    const cl=p=>{const c=u.ca.filter(r=>r.g===g&&(!p||r.p===p));return {cart:c.length,fora:c.filter(r=>r.fora).length};};
    const te=ds.reduce((a,d)=>a+El(d),0),tx=ds.reduce((a,d)=>a+Xl(d),0),ct=cl();
    h+=`<div class="rsec"><div class="rsech"><span class="rdot" style="--c:${COR[g]}"></span>Ligação de água<small>só Contrato Global · ${per}</small></div>
-     <div class="rk rk5"><div><small>Entradas</small><b style="color:#B9650F">${nf(te)}</b><em>${Pl.map(p=>ds.reduce((a,d)=>a+El(d,p),0)+" "+p).join(" · ")}</em></div><div><small>Executadas</small><b style="color:#1C7444">${nf(tx)}</b><em>${Pl.map(p=>ds.reduce((a,d)=>a+Xl(d,p),0)+" "+p).join(" · ")}</em></div><div><small>Saldo</small><b class="${te-tx>0?"up":"down"}">${sgn(te-tx)}</b><em>${te>tx?"carteira sobe":te<tx?"carteira desce":"equilibrado"}</em></div><div><small>Carteira</small><b>${nf(ct.cart)}</b><em>${Pl.map(p=>cl(p).cart+" "+p).join(" · ")}</em></div><div><small>Fora do prazo</small><b class="${ct.fora?"up":""}">${nf(ct.fora)}</b><em>${ct.cart?pctTxt(ct.fora,ct.cart)+" da carteira":""}</em></div></div>
-     <div class="rgrid"><div class="rbody"><table class="rt"><thead><tr class="d"><th class="blank"></th>${ds.map(d=>`<th colspan="2"><small>${wd(d)}</small>${dm(d)}</th>`).join("")}<th colspan="3" class="tp"><small>período</small>Total</th><th colspan="2" class="ct"><small>${dm(u.dc)}</small>Carteira</th></tr>
-     <tr class="h"><th style="text-align:left">Polo</th>${ds.map(()=>`<th class="e bl">Entr.</th><th class="x">Exec.</th>`).join("")}<th class="e bl">Entr.</th><th class="x">Exec.</th><th>Saldo</th><th class="bl">Total</th><th>Fora</th></tr></thead><tbody>`+
-     Pl.concat([""]).map(p=>{let a=0,b=0;let r=`<tr class="${p?"":"tot"}"><td class="s">${p||"TOTAL"}</td>`;for(const d of ds){const e=El(d,p),x=Xl(d,p);a+=e;b+=x;r+=`<td class="e bl">${nf(e)}</td><td class="x">${nf(x)}</td>`;}const c=cl(p);
-       return r+`<td class="e bl">${nf(a)}</td><td class="x">${nf(b)}</td><td class="sd ${a-b>0?"up":a-b<0?"down":""}">${sgn(a-b)}</td><td class="bl">${nf(c.cart)}</td><td class="${c.fora?"up":""}">${nf(c.fora)}</td></tr>`;}).join("")+`</tbody></table>`;
-   // TSS da carteira
-   const ts=tssDoGrupo(g).filter(t=>u.ca.some(r=>r.g===g&&r.tss===t)||ds.some(d=>El(d)||Xl(d)));
-   h+=`<table class="rt rtss"><thead><tr class="h"><th style="text-align:left">Tipo de ligação (TSS)</th>${Pl.map(p=>`<th class="bl">${p}<br><span class="e">Entr.</span> · <span class="x">Exec.</span> · Cart.</th>`).join("")}</tr></thead><tbody>`+
-     ts.map(t=>`<tr><td class="s">${esc(t)}</td>${Pl.map(p=>{const m=r=>r.g===g&&r.p===p&&r.tss===t;const e=u.ac.filter(r=>m(r)&&ds.includes(r.dt)).length,x=u.ex.filter(r=>m(r)&&ds.includes(r.dt)&&r.conta).length,c=u.ca.filter(m).length;return `<td class="bl"><span class="e">${e}</span> · <span class="x">${x}</span> · <b>${c}</b></td>`;}).join("")}</tr>`).join("")+`</tbody></table></div>`;
+     <div class="rk rk5"><div><small>Entradas</small><b style="color:#B9650F">${nf(te)}</b><em>${Pl.map(p=>ds.reduce((a,d)=>a+El(d,p),0)+" "+p).join(" · ")}</em></div><div><small>Executadas</small><b style="color:#1C7444">${nf(tx)}</b><em>${Pl.map(p=>ds.reduce((a,d)=>a+Xl(d,p),0)+" "+p).join(" · ")}</em></div><div><small>Saldo</small><b class="${te-tx>0?"up":"down"}">${sgn(te-tx)}</b><em>${te>tx?"carteira sobe":te<tx?"carteira desce":"equilibrado"}</em></div><div><small>Carteira</small><b>${nf(ct.cart)}</b><em>${Pl.map(p=>cl(p).cart+" "+p).join(" · ")}</em></div><div><small>Fora do prazo</small><b class="${ct.fora?"up":""}">${nf(ct.fora)}</b><em>${ct.cart?pctTxt(ct.fora,ct.cart)+" da carteira":""}</em></div></div>`;
    const itL=ds.map(d=>({lab:dm(d),sub:wd(d),vals:[{v:El(d),c:"#F0A23B"},{v:Xl(d),c:"#23824F"}]}));
    const ca=u.ca.filter(r=>r.g===g);
    const fx=FX.map(([k,l,c])=>({l,c,n:ca.filter(r=>faixaDe(r)===k).length}));const mf=Math.max(1,...fx.map(f=>f.n));
-   h+=`<div class="rgraf"><div class="rg"><div class="rgt">Entradas × executadas por dia<span class="leg2"><span style="--c:#F0A23B">Entradas</span><span style="--c:#23824F">Executadas</span></span></div>${miniBarras(itL,{h:170})}</div>
-     <div class="rg"><div class="rgt">Prazo da carteira de ligação</div><div class="hb">${fx.map(f=>`<div class="hr"><span>${f.l}</span><div><i style="width:${(f.n*100/mf).toFixed(1)}%;background:${f.c}"></i></div><b>${nf(f.n)}</b></div>`).join("")}</div></div></div></div></div>`;}
-  h+=`<div class="rfoot"><span>Entradas = acatados pela data de inserção · Execuções = executados pela data de início só com resultado do próprio serviço; fim do dia, imóvel fechado, outro serviço, duplicidade etc. não contam${(()=>{const n=u.ex.filter(r=>ds.includes(r.dt)&&fpp(r)&&!r.conta).length;return n?` (${nf(n)} baixas fora da conta)`:""})()}</span><span>Gerado em ${new Date().toLocaleString("pt-BR",{dateStyle:"short",timeStyle:"short"})}</span></div>`;
+   const ts=tssDoGrupo(g).map(t=>({t,c:ca.filter(r=>r.tss===t).length,e:u.ac.filter(r=>r.g===g&&r.tss===t&&ds.includes(r.dt)).length,x:u.ex.filter(r=>r.g===g&&r.tss===t&&ds.includes(r.dt)&&r.conta).length})).filter(x=>x.c||x.e||x.x);
+   const mt=Math.max(1,...ts.map(x=>x.c));
+   h+=`<div class="r3"><div class="rg"><div class="rgt">Entradas × executadas por dia<span class="leg2"><span style="--c:#F0A23B">Entradas</span><span style="--c:#23824F">Executadas</span></span></div>${miniBarras(itL,{h:170})}</div>
+     <div class="rg"><div class="rgt">Prazo da carteira de ligação</div><div class="hb">${fx.map(f=>`<div class="hr"><span>${f.l}</span><div><i style="width:${(f.n*100/mf).toFixed(1)}%;background:${f.c}"></i></div><b>${nf(f.n)}</b></div>`).join("")}</div></div>
+     <div class="rg"><div class="rgt">Carteira por tipo de ligação</div><div class="hb tsb">${ts.map(x=>`<div class="hr"><span title="${esc(x.t)}">${esc(x.t)}</span><div><i style="width:${(x.c*100/mt).toFixed(1)}%;background:${COR[g]}"></i></div><b>${nf(x.c)}</b></div>`).join("")}</div></div></div></div>`;}
+  h+=`<div class="rfoot"><span>Entradas = acatados pela data de inserção · Execuções = só baixas com o serviço executado (fim do dia, imóvel fechado, outro serviço, duplicidade etc. não contam)</span><span>Gerado em ${new Date().toLocaleString("pt-BR",{dateStyle:"short",timeStyle:"short"})}</span></div>`;
   $("resCard").innerHTML=ds.length||u.dc?h:`<div class="empty">Suba os arquivos do dia para montar o resumo.</div>`;}
 $("btnPrint").onclick=()=>{document.body.classList.add("printmode");window.scrollTo({top:0});};
 (()=>{const b=document.createElement("button");b.type="button";b.className="sairprint";b.textContent="Sair do modo print (Esc)";b.onclick=()=>document.body.classList.remove("printmode");document.body.appendChild(b);})();
@@ -1402,39 +1412,12 @@ function restaH(r,ref){const pf=vencimento(r);if(pf==null)return minutosResid(r.
 const fxDe=h=>h<0?"v":h<=2?"h2":h<=6?"h6":h<=12?"h12":"h24";
 function txtH(h){const a=Math.abs(h);const d=Math.floor(a/24),hh=Math.floor(a%24),mm=Math.round((a*60)%60);const t=(d?d+"d ":"")+hh+"h"+(d?"":" "+String(mm).padStart(2,"0")+"min");return h<0?"vencida há "+t:"faltam "+t;}
 function renderRel(){
-  const u=S.ult,g="Religação";const mom=momentoCarteira(u.ca);
-  if(!refRel)refRel=mom&&Date.now()-mom>24*3600000?"cart":"agora";
-  const ref=refRel==="cart"&&mom?mom:Date.now();
-  document.querySelectorAll("#segRef button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.ref===refRel));
-  $("refCartSub").textContent=mom?fmtHM(mom):"carteira";
-  $("relNota").textContent=`Carteira tirada do sistema em ${mom?fmtHM(mom):dmy(u.dc)} · tempo contado até ${refRel==="cart"&&mom?"a hora da carteira":"agora ("+fmtHM(Date.now())+")"} · no prazo = menos de 24 horas desde a inserção`;
-  const ca=u.ca.filter(r=>r.g===g).map(r=>({...r,h:restaH(r,ref)}));ca.forEach(r=>r.fx=fxDe(r.h));
-  const n=k=>ca.filter(r=>r.fx===k).length;const venc=n("v");const tot=ca.length;
-  const ent=u.ac.filter(r=>r.g===g&&noDia(r)).length,exe=u.ex.filter(r=>r.g===g&&noDia(r)&&r.conta).length;
-  $("kpisRel").innerHTML=[
-    kpi({hl:1,l:"Religações na carteira",v:nf(tot),s:POLOS.map(p=>ca.filter(r=>r.p===p).length+" "+p).join(" · "),ic:IC.cart,go:{modo:"carteira",g,p:""}}),
-    kpi({l:"Fora do prazo",v:nf(venc),s:tot?pctTxt(venc,tot)+" passaram de 24h":"",ic:IC.fora,tone:"var(--red)",soft:"var(--red-soft)",go:{modo:"carteira",g,p:"",prazo:"fora"}}),
-    kpi({l:"Vencem em até 2h",v:nf(n("h2")),s:"prioridade agora",ic:IC.fora,tone:"var(--orange)",soft:"var(--orange-soft)"}),
-    kpi({l:"Vencem em 2 a 12h",v:nf(n("h6")+n("h12")),s:`${n("h6")} de 2 a 6h · ${n("h12")} de 6 a 12h`,ic:IC.pct,tone:"var(--amber)",soft:"var(--amber-soft)"}),
-    kpi({l:"Entradas × execuções",v:`${nf(ent)} <span style="font-size:.6em;color:var(--muted)">×</span> ${nf(exe)}`,s:esc(rotDias()),ic:IC.mov,tone:"var(--green)",soft:"var(--green-soft)",go:{modo:"execucoes",g,p:""}})].join("");
-  // faixas por polo
-  let h=`<thead><tr><th>Tempo que falta</th>${POLOS.slice().reverse().map(p=>`<th class="r">${p}</th>`).join("")}<th class="r">Total</th></tr></thead><tbody>`;
-  for(const [k,l,c] of FXR){h+=`<tr><td class="g"><i style="--c:${c}"></i>${l}</td>${POLOS.slice().reverse().map(p=>{const q=ca.filter(r=>r.fx===k&&r.p===p).length;return `<td class="r ${k==="v"&&q?"up":""}">${nf(q)}</td>`;}).join("")}<td class="r"><b>${nf(n(k))}</b></td></tr>`;}
-  h+=`<tr class="total"><td>TOTAL</td>${POLOS.slice().reverse().map(p=>`<td class="r">${nf(ca.filter(r=>r.p===p).length)}</td>`).join("")}<td class="r">${nf(tot)}</td></tr></tbody>`;
-  $("tbRelFx").innerHTML=h;
-  // por horário
-  const sn=(S.rel||[]).slice(-14);
-  $("relHora").innerHTML=sn.length?barras(sn.map(x=>{const d=new Date(x.t);const np=POLOS.reduce((a,p)=>a+((x.p[p]||[0,0])[0]),0),fp=POLOS.reduce((a,p)=>a+((x.p[p]||[0,0])[1]),0);
-    return {lab:d.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"}),sub:d.toLocaleDateString("pt-BR",{day:"2-digit",month:"2-digit"}),vals:[{v:np,c:"#2FA36B"},{v:fp,c:"#D9534A"}]};}),{empilhar:1,wmin:520,h:230,rotular:1,bw:30}):`<div class="empty">A cada carteira que você subir, entra uma coluna aqui com o horário.</div>`;
-  // lista
-  const L=ca.slice().sort((a,b)=>a.h-b.h);$("relQtd").textContent=`${nf(L.length)} OS`;
-  $("relLista").innerHTML=L.length?`<table><thead><tr><th>Tempo</th><th>OS</th><th>Serviço</th><th>Endereço</th><th>Polo</th><th>Inserida em</th><th>Vence em</th><th>Status da operação</th></tr></thead><tbody>`+
-    L.map(r=>`<tr><td><span class="hrs ${r.fx}">${txtH(r.h)}</span></td><td class="os">${esc(r.os)}</td><td class="tss">${esc(r.tss)}</td><td class="addr">${esc(r.end||"–")}<small>${esc([r.bai,r.mun].filter(Boolean).join(" · "))}</small></td><td>${r.p}</td><td class="mono">${esc(r.ins)}</td><td class="mono"><b>${esc(r.pf)}</b></td><td>${esc(r.st)}</td></tr>`).join("")+"</tbody></table>":`<div class="empty">Nenhuma religação na carteira.</div>`;
-  // por dia
-  const dd=u.dias;const E=(d,p)=>u.ac.filter(r=>r.g===g&&r.dt===d&&(!p||r.p===p)).length,X=(d,p)=>u.ex.filter(r=>r.g===g&&r.dt===d&&r.conta&&(!p||r.p===p)).length;const PP=POLOS.slice().reverse().concat([""]);
-  $("tbRelDia").innerHTML=dd.length?`<thead><tr><th rowspan="2">Dia</th>${PP.map(p=>`<th colspan="3" class="grp sep">${p||"Total"}</th>`).join("")}</tr><tr>${PP.map(()=>`<th class="r sep">Entradas</th><th class="r">Executadas</th><th class="r">Saldo</th>`).join("")}</tr></thead><tbody>`+
-    dd.map(d=>`<tr><td class="g">${wd(d)} ${dm(d)}</td>`+PP.map(p=>{const e=E(d,p),x=X(d,p);return `<td class="r sep">${nf(e)}</td><td class="r">${nf(x)}</td><td class="r ${e-x>0?"up":e-x<0?"down":""}">${sgn(e-x)}</td>`;}).join("")+"</tr>").join("")+"</tbody>":`<tbody><tr><td class="empty">Sem entradas e execuções.</td></tr></tbody>`;}
-$("segRef").onclick=e=>{const b=e.target.closest("button");if(!b)return;refRel=b.dataset.ref;renderRel();};
+  monG="Religação";renderMon();
+  const u=S.ult;const sn=(S.rel||[]).slice(-14);
+  $("relHora").innerHTML=sn.length?barras(sn.map(x=>{const d=new Date(x.t);const ps=poloSel==="Todos"?POLOS:[poloSel];const np=ps.reduce((a,p)=>a+((x.p[p]||[0,0])[0]),0),fp2=ps.reduce((a,p)=>a+((x.p[p]||[0,0])[1]),0);
+    return {lab:d.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"}),sub:d.toLocaleDateString("pt-BR",{day:"2-digit",month:"2-digit"}),vals:[{v:np,c:"#12A386"},{v:fp2,c:"#E03E45"}]};}),{empilhar:1,wmin:560,h:230,rotular:1,bw:30}):`<div class="empty">A cada carteira que você subir, entra uma coluna aqui com o horário.</div>`;
+  const g="Religação";$("relDia").innerHTML=barras(u.dias.map(d=>({lab:dm(d),sub:wd(d),vals:[{v:u.ac.filter(r=>r.g===g&&r.dt===d&&fp(r)).length,c:"#F0A23B"},{v:u.ex.filter(r=>r.g===g&&r.dt===d&&fp(r)&&r.conta).length,c:"#23824F"}]})),{wmin:560,h:230,bw:26});}
+
 setInterval(()=>{if(abaAtual==="rel"&&refRel==="agora"&&!document.hidden)renderRel();},60000);
 
 
@@ -1445,6 +1428,7 @@ function tempoTxt(h){const a=Math.abs(h);if(a<1)return Math.max(1,Math.round(a*6
 function renderMon(){
   const u=S.ult,agora=Date.now();const todos=u.ca.filter(r=>fp(r)).map(r=>({...r,...situAgora(r,agora)}));
   const ca=monG?todos.filter(r=>r.g===monG):todos;
+  const LIM=monG==="Religação"?6:24;ca.forEach(r=>{r.sx=r.h<0?"fo":r.h<=LIM?"at":"ok";});
   const fo=ca.filter(r=>r.sx==="fo"),at=ca.filter(r=>r.sx==="at"),ok=ca.filter(r=>r.sx==="ok");const tot=ca.length;
   const em1=ca.filter(r=>r.h>=0&&r.h<=1).length,em6=ca.filter(r=>r.h>=0&&r.h<=6).length;
   const d=new Date(agora);const hora=d.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"});
@@ -1457,26 +1441,26 @@ function renderMon(){
   const pv=tot?(tot-fo.length)/tot:0;
   const m4=(cls,c,l,v,e,goO,extra)=>`<div class="m4" style="--c:${c}"${go(goO)}><small>${l}</small><b>${v}</b><em>${e}</em>${extra||""}</div>`;
   $("monTop").innerHTML=[
-    m4("","#12A386","No prazo, com folga",nf(ok.length),"mais de 24h para vencer",{modo:"carteira",prazo:"no",g:monG}),
-    m4("","#F29D0C","Vencem em até 24h",nf(at.length),"ainda dá tempo, priorize",{modo:"carteira",prazo:"no",g:monG}),
+    m4("","#12A386","No prazo, com folga",nf(ok.length),`mais de ${LIM}h para vencer`,{modo:"carteira",prazo:"no",g:monG}),
+    m4("","#F29D0C",`Vencem em até ${LIM}h`,nf(at.length),"ainda dá tempo, priorize",{modo:"carteira",prazo:"no",g:monG}),
     m4("","#E03E45","Fora do prazo",nf(fo.length),`${tot?pctTxt(fo.length,tot):"–"} da carteira de ${nf(tot)}`,{modo:"carteira",prazo:"fora",g:monG}),
     m4("",pv>=META?"#12A386":pv>=META-.15?"#F29D0C":"#E03E45","% no prazo",tot?(Math.round(pv*1000)/10).toLocaleString("pt-BR")+"%":"–",`meta ${Math.round(META*100)}% · ${pv>=META?"dentro da meta":"faltam "+nf(Math.max(0,Math.ceil(META*tot-(tot-fo.length))))+" OS para a meta"}`,{modo:"carteira",g:monG},
       `<div class="mb"><i style="width:${(pv*100).toFixed(1)}%"></i><s style="left:${META*100}%"></s></div>`)].join("");
-  const item=(r,venc)=>{const cl=venc?"cv":r.h<=1?"c1":r.h<=6?"c2":r.h<=12?"c3":"c4";
+  const item=(r,venc)=>{const cl=venc?"cv":r.h<=1?"c1":r.h<=3?"c2":r.h<=LIM?"c3":"c4";
     return `<div class="fi"><span class="chip3 ${cl}">${venc?"há "+tempoTxt(r.h):"em "+tempoTxt(r.h)}</span><div class="d"><b>${esc(r.end||"Sem endereço")} · ${esc(r.bai||"")}</b><small>OS ${esc(r.os)} · ${esc(r.tss)} · ${r.p}</small></div><span class="sv" style="--c:${COR[r.g]}">${esc(r.g)}</span></div>`;};
-  const vao=at.slice().sort((x,y)=>x.h-y.h),venc=fo.slice().sort((x,y)=>y.h-x.h);
+  const vao=ca.filter(r=>r.h>=0&&r.h<=24).sort((x,y)=>x.h-y.h),venc=fo.slice().sort((x,y)=>y.h-x.h);
   $("qtdVao").textContent=nf(vao.length)+" OS";$("qtdVenc").textContent=nf(venc.length)+" OS";
   $("filaVao").innerHTML=vao.length?vao.slice(0,150).map(r=>item(r,false)).join(""):`<div class="fvazia">Nada vencendo nas próximas 24 horas.</div>`;
   $("filaVenc").innerHTML=venc.length?venc.slice(0,150).map(r=>item(r,true)).join(""):`<div class="fvazia">Nenhuma OS vencida. 👏</div>`;
-  let h=`<div class="srow3 hd"><span>Serviço</span><span style="text-align:center">Fora</span><span style="text-align:center">Até 24h</span><span style="text-align:center">Com folga</span><span></span></div>`;
+  if($("monRows")){let h=`<div class="srow3 hd"><span>Serviço</span><span style="text-align:center">Fora</span><span style="text-align:center">Até 24h</span><span style="text-align:center">Com folga</span><span></span></div>`;
   for(const g of GRUPOS){const L=todos.filter(r=>r.g===g),t=L.length,f=L.filter(r=>r.sx==="fo").length,a=L.filter(r=>r.sx==="at").length,o=t-f-a;
     h+=`<div class="srow3${monG===g?" sel":""}" data-mg="${esc(g)}"><span class="n3"><i style="--c:${COR[g]}"></i>${g}</span><span class="v3 fo">${nf(f)}</span><span class="v3 at">${nf(a)}</span><span class="v3 ok">${nf(o)}</span><div class="sbar">${t?`<i style="width:${(o*100/t).toFixed(1)}%;background:#12A386"></i><i style="width:${(a*100/t).toFixed(1)}%;background:#F29D0C"></i><i style="width:${(f*100/t).toFixed(1)}%;background:#E03E45"></i>`:""}</div></div>`;}
-  $("monRows").innerHTML=h;
+  $("monRows").innerHTML=h;}
   const mom=momentoCarteira(u.ca);
-  $("monSub").textContent=`Carteira tirada do sistema em ${mom?fmtHM(mom):dmy(u.dc)} · prazo contado até agora, atualiza sozinho a cada 30 segundos · religação: 24h desde a inserção${monG?" · mostrando só "+monG+" (clique de novo para ver tudo)":""}`;}
-$("monRows").addEventListener("click",e=>{const r=e.target.closest(".srow3[data-mg]");if(!r)return;monG=monG===r.dataset.mg?"":r.dataset.mg;renderMon();});
+  $("monSub").textContent=`Carteira tirada do sistema em ${mom?fmtHM(mom):dmy(u.dc)} · prazo contado até agora, atualiza sozinho a cada 30 segundos · religação: 24h desde a inserção`;}
+if($("monRows"))$("monRows").addEventListener("click",e=>{const r=e.target.closest(".srow3[data-mg]");if(!r)return;monG=monG===r.dataset.mg?"":r.dataset.mg;renderMon();});
 $("monTela").onclick=()=>{const m=$("mon");if(document.fullscreenElement)document.exitFullscreen();else if(m.requestFullscreen)m.requestFullscreen();};
-setInterval(()=>{if(abaAtual==="mon"&&!document.hidden)renderMon();},30000);
+setInterval(()=>{if(abaAtual==="rel"&&!document.hidden)renderRel();},30000);
 
 /* ================= ligação de água ================= */
 const LIG="Ligação de água";
@@ -1524,6 +1508,38 @@ function renderLig(){
   $("ligMov").innerHTML=barras(dm2.filter(d=>somaHist(d,0,f)!=null||somaHist(d,1,f)!=null).map(d=>({lab:dm(d),sub:wd(d),vals:[{v:somaHist(d,0,f),c:"#F0A23B"},{v:somaHist(d,1,f),c:"#23824F"}]})),{h:200});
   $("ligEvoNota").textContent=`${MESES[Number(mes.slice(5,7))-1]||""} ${mes.slice(0,4)} · os dois polos`;}
 
+
+/* ================= cartões visuais por serviço ================= */
+function miniDia(ds,E,X){if(!ds.length)return "";const W=220,H=74,bt=16,mx=Math.max(1,...ds.map(d=>Math.max(E(d),X(d))));const gw=W/ds.length,bw=Math.min(16,gw/2-4);
+  let s=`<svg viewBox="0 0 ${W} ${H}">`;ds.forEach((d,i)=>{const cx=i*gw+gw/2;[[E(d),"#F0A23B"],[X(d),"#23824F"]].forEach(([v,c],j)=>{const hh=v*(H-bt-12)/mx,x=cx-bw-1+j*(bw+2);
+    s+=`<rect x="${x.toFixed(1)}" y="${(H-bt-hh).toFixed(1)}" width="${bw.toFixed(1)}" height="${Math.max(hh,1).toFixed(1)}" rx="2" fill="${c}"/>`;if(v)s+=`<text x="${(x+bw/2).toFixed(1)}" y="${(H-bt-hh-2).toFixed(1)}" text-anchor="middle" font-size="8.5" font-weight="700" fill="#33424E">${v}</text>`;});
+    s+=`<text x="${cx.toFixed(1)}" y="${H-3}" text-anchor="middle" font-size="9" font-weight="600" fill="#5E6E7B">${ds.length>1?wd(d):dm(d)}</text>`;});return s+"</svg>";}
+function cardsServ(ds,polo){const u=S.ult;const fpo=r=>polo?r.p===polo:fp(r);
+  return GRUPOS.map(g=>{const ca=u.ca.filter(r=>r.g===g&&fpo(r)),t=ca.length,f=ca.filter(r=>r.fora).length,n=t-f;
+    const E=d=>u.ac.filter(r=>r.g===g&&r.dt===d&&fpo(r)).length,X=d=>u.ex.filter(r=>r.g===g&&r.dt===d&&r.conta&&fpo(r)).length;
+    const te=ds.reduce((a,d)=>a+E(d),0),tx=ds.reduce((a,d)=>a+X(d),0);const pv=t?n/t:null;
+    return `<div class="c4" style="--c:${COR[g]}"><div class="h4"><b>${g}</b>${pp(pv)}</div>
+      <div class="big"><b>${nf(t)}</b><span>na carteira</span></div>
+      <div class="pz4"${go({modo:"carteira",g,prazo:"fora"})}>${t?`<i style="width:${(n*100/t).toFixed(1)}%;background:#2FA36B">${n&&n/t>.12?n:""}</i><i style="width:${(f*100/t).toFixed(1)}%;background:#D9534A">${f&&f/t>.12?f:""}</i>`:""}</div>
+      <div class="lg4"><span><b style="color:#2FA36B">${nf(n)}</b> no prazo</span><span><b style="color:#D9534A">${nf(f)}</b> fora</span></div>
+      <div class="ch4">${miniDia(ds,E,X)}</div>
+      <div class="ft4"><div><small>Entradas</small><b style="color:#B9650F">${nf(te)}</b></div><div><small>Execuções</small><b style="color:#1C7444">${nf(tx)}</b></div><div><small>Saldo</small><b class="${te-tx>0?"up":te-tx<0?"down":""}">${sgn(te-tx)}</b></div></div></div>`;}).join("");}
+function abrirLista(o){const u=S.ult;const modo=o.modo||"carteira";const agora=Date.now();
+  let L=(modo==="carteira"?u.ca:modo==="entradas"?u.ac:u.ex).filter(r=>(o.p?r.p===o.p:fp(r))&&(!o.g||r.g===o.g)&&(!o.tss||r.tss===o.tss));
+  if(modo==="carteira"){if(o.prazo==="fora")L=L.filter(r=>r.fora);else if(o.prazo==="no")L=L.filter(r=>!r.fora);if(o.fx)L=L.filter(r=>faixaDe(r)===o.fx);}
+  else{L=L.filter(r=>noDia(r));if(modo==="execucoes")L=L.filter(r=>o.nc==="sim"?!r.conta:r.conta);}
+  const vc=r=>{const v=vencimento(r);return v==null?null:(v-agora)/3600000;};
+  if(modo==="carteira")L.sort((a,b)=>(vc(a)??0)-(vc(b)??0));else L.sort((a,b)=>a.dt<b.dt?-1:1);
+  $("mTit").textContent=(o.g||"Todos os serviços")+" · "+(modo==="carteira"?(o.prazo==="fora"?"fora do prazo":o.prazo==="no"?"no prazo":"carteira"):modo==="entradas"?"entradas":"execuções");
+  $("mSub").textContent=`${nf(L.length)} endereço${L.length===1?"":"s"}${o.p?" · "+o.p:poloSel!=="Todos"?" · "+poloSel:""}${modo!=="carteira"?" · "+rotDias():""}`;
+  $("mLista").innerHTML=L.length?`<table><thead><tr><th>Endereço</th><th>Bairro</th><th>Tipo</th><th>Polo</th><th>${modo==="carteira"?"Prazo":"Dia"}</th></tr></thead><tbody>`+L.slice(0,800).map(r=>{const h=vc(r);
+    const sit=modo==="carteira"?(r.fora||(h!=null&&h<0)?`<span class="tg5 f">${h!=null&&h<0?"venceu há "+tempoTxt(h):"fora do prazo"}</span>`:`<span class="tg5 n">${h!=null?"vence em "+tempoTxt(h):"no prazo"}</span>`):`${wd(r.dt)} ${dm(r.dt)}`;
+    return `<tr><td class="e5">${esc(r.end||"–")}</td><td>${esc(r.bai||"")}</td><td>${esc(r.tss)}</td><td>${r.p}</td><td>${sit}</td></tr>`;}).join("")+"</tbody></table>":`<div class="fvazia">Nenhum endereço.</div>`;
+  $("modal").hidden=false;}
+$("mFechar").onclick=()=>{$("modal").hidden=true;};
+$("modal").addEventListener("click",e=>{if(e.target.id==="modal")$("modal").hidden=true;});
+document.addEventListener("keydown",e=>{if(e.key==="Escape")$("modal").hidden=true;});
+
 /* ================= lista de OS ================= */
 const MODOS=[["carteira","Carteira"],["entradas","Entradas (acatados)"],["execucoes","Execuções"]];
 function baseModo(){const u=S.ult;return osF.modo==="carteira"?u.ca:osF.modo==="entradas"?u.ac:u.ex;}
@@ -1560,8 +1576,8 @@ $("fGrupo").onchange=e=>{osF.g=e.target.value;osF.tss="";renderOS();};
 $("fTss").onchange=e=>{osF.tss=e.target.value;renderOS();};
 $("fPrazo").onchange=e=>{osF.prazo=e.target.value;renderOS();};
 let tb;$("busca").addEventListener("input",()=>{clearTimeout(tb);tb=setTimeout(renderOS,180);});
-function irPara(o){osF.modo=o.modo||"carteira";osF.g=o.g||"";osF.tss=o.tss||"";osF.prazo=o.prazo||"";osF.nc=o.nc||"";osF.fx=o.fx||"";if(o.p!==undefined)poloSel=o.p||((abaAtual==="serv"||abaAtual==="lig")?"Todos":poloSel);$("busca").value="";aba("os");}
-document.addEventListener("click",e=>{const el=e.target.closest("[data-go]");if(el&&!el.closest("#v-os")&&!el.closest(".seg2")){irPara(JSON.parse(el.dataset.go));window.scrollTo({top:0,behavior:"smooth"});return;}
+function irPara(o){abrirLista(o);}
+document.addEventListener("click",e=>{const el=e.target.closest("[data-go]");if(el&&!el.closest("#v-os")&&!el.closest(".seg2")){irPara(JSON.parse(el.dataset.go));return;}
   const d=e.target.closest("#diaDia .r[data-dia],#tbGrupo th[data-dia]");if(d){diaSel=diaSel===d.dataset.dia?"todos":d.dataset.dia;renderTudo();}});
 function aba(n){abaAtual=n;if(n!=="os")lss("carteira-aba",n);document.body.classList.remove("printmode");for(const k of ["painel","mon","res","rel","lig","serv","os"]){$("t-"+k).setAttribute("aria-selected",k===n);$("v-"+k).hidden=k!==n;}renderTudo();}
 $("t-painel").onclick=()=>aba("painel");$("t-lig").onclick=()=>aba("lig");$("t-mon").onclick=()=>aba("mon");$("t-rel").onclick=()=>aba("rel");$("t-res").onclick=()=>aba("res");$("t-serv").onclick=()=>aba("serv");$("t-os").onclick=()=>aba("os");
@@ -1689,7 +1705,7 @@ function pedirSenha(){return new Promise(res=>{
   $("tlApagar").onclick=async()=>{lss(CH_SENHA,null);lss("painel-carteira-estado",null);try{indexedDB.deleteDatabase("painel-carteira-servicos");}catch(e){}try{sessionStorage.clear();}catch(e){}location.reload();};
 });}
 $("btnTrancar").onclick=()=>{try{sessionStorage.removeItem("carteira-ok");}catch(e){}location.reload();};
-(async()=>{await pedirSenha();await carregarLocal();const ab=lsg("carteira-aba");if(ab&&$("t-"+ab))aba(ab);else renderTudo();window.__pronto=true;})();
+(async()=>{await pedirSenha();await carregarLocal();let ab=lsg("carteira-aba");if(ab==="mon")ab="rel";if(ab&&$("t-"+ab)&&!$("t-"+ab).hidden)aba(ab);else renderTudo();window.__pronto=true;})();
 
 })();
 </script>
