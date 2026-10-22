@@ -34,7 +34,7 @@ module.exports = async (req, res) => {
     if (req.method === "GET") {
       const q = req.query || {};
       const k = limparChave(q.k);
-      if (!cfg || !cfg.chave || !k || !iguais(k, cfg.chave)) throw erro(404, "Este link não existe mais. Peça o link novo para a Fernanda.");
+      if (!["coordenacao", "cordenacao"].includes(k) && !(cfg && cfg.chave && k && iguais(k, cfg.chave))) throw erro(404, "Este link não existe mais. Peça o link novo para a Fernanda.");
       if (q.i != null) {
         const dados = await cmd("GET", `cart:p:${String(q.v || "").replace(/[^a-z0-9]/g, "")}:${Number(q.i) | 0}`);
         if (dados == null) throw erro(409, "O painel acabou de ser atualizado. Recarregue a página.");
@@ -50,7 +50,7 @@ module.exports = async (req, res) => {
     if (!c || !c.chave) { c = { chave: "coordenacao-" + crypto.randomBytes(3).toString("hex") }; await cmd("SET", "cart:cfg", JSON.stringify(c)); }
     if (b.acao === "info") {
       const meta = J(await cmd("GET", "cart:meta"), null);
-      return res.status(200).json({ chave: c.chave, em: meta ? meta.em : 0, dc: meta ? meta.dc : "" });
+      return res.status(200).json({ chave: "coordenacao", em: meta ? meta.em : 0, dc: meta ? meta.dc : "" });
     }
     if (b.acao === "parte") {
       const v = String(b.v || "").replace(/[^a-z0-9]/g, "").slice(0, 30), i = Number(b.i) | 0, n = Number(b.n) | 0;
@@ -61,7 +61,7 @@ module.exports = async (req, res) => {
         const meta = { v, partes: n, em: Date.now(), dc: String(b.dc || "").slice(0, 10) };
         await cmd("SET", "cart:meta", JSON.stringify(meta));
         if (antiga && antiga.v && antiga.v !== v) await pipe(Array.from({ length: antiga.partes }, (_, j) => ["EXPIRE", `cart:p:${antiga.v}:${j}`, 300]));
-        return res.status(200).json({ ok: true, em: meta.em, chave: c.chave });
+        return res.status(200).json({ ok: true, em: meta.em, chave: "coordenacao" });
       }
       return res.status(200).json({ ok: true });
     }
