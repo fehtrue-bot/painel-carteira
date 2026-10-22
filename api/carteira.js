@@ -2,8 +2,8 @@
 // A Fernanda publica o painel (com a senha do painel); quem tem o link só vê.
 // GET  /api/carteira?k=<final do link>            -> versão publicada (hora, partes)
 // GET  /api/carteira?k=<final>&v=<versão>&i=<n>   -> parte n do painel (gzip em base64)
-// POST {acao:"entrar",senha}                      -> token para publicar neste computador
-// POST {acao:"info"} | {acao:"parte",v,i,n,dados,dc} | {acao:"chave",chave}   (com x-token)
+// POST {acao:"info"}                             -> o link (criado sozinho na primeira vez)
+// POST {acao:"parte",v,i,n,dados,dc}              -> grava o painel publicado
 const crypto = require("crypto");
 const acharEnv = (fim) => Object.entries(process.env).filter(([k, v]) => k.endsWith(fim) && !k.includes("READ_ONLY") && v).map(([, v]) => v)[0];
 const URL_DB = acharEnv("REST_API_URL") || process.env.UPSTASH_REDIS_REST_URL;
@@ -45,29 +45,12 @@ module.exports = async (req, res) => {
     }
     if (req.method !== "POST") throw erro(405, "Método não aceito.");
     const b = await lerCorpo(req);
-    if (b.acao === "entrar") {
-      const senha = String(b.senha || "");
-      if (senha.length < 4) throw erro(400, "Digite a senha do painel.");
-      let c = cfg;
-      if (!c || !c.hash) { const sal = crypto.randomBytes(8).toString("hex"); c = { sal, hash: hash(senha, sal), chave: (c && c.chave) || "coordenacao-" + crypto.randomBytes(3).toString("hex"), tokens: [] }; }
-      else if (!iguais(hash(senha, c.sal), c.hash)) throw erro(401, "Senha incorreta. Use a mesma senha que você usa para abrir o painel.");
-      const t = crypto.randomBytes(24).toString("hex");
-      c.tokens = [sha(t)].concat(c.tokens || []).slice(0, 8);
-      await cmd("SET", "cart:cfg", JSON.stringify(c));
-      return res.status(200).json({ token: t, chave: c.chave });
-    }
-    const tk = String((req.headers || {})["x-token"] || "");
-    if (!cfg || !tk || !(cfg.tokens || []).some((x) => iguais(x, sha(tk)))) throw erro(401, "Digite a senha do painel de novo para publicar.");
+    // o link é criado sozinho na primeira vez e não muda mais
+    let c = cfg;
+    if (!c || !c.chave) { c = { chave: "coordenacao-" + crypto.randomBytes(3).toString("hex") }; await cmd("SET", "cart:cfg", JSON.stringify(c)); }
     if (b.acao === "info") {
       const meta = J(await cmd("GET", "cart:meta"), null);
-      return res.status(200).json({ chave: cfg.chave, em: meta ? meta.em : 0 });
-    }
-    if (b.acao === "chave") {
-      const k = limparChave(b.chave);
-      if (k.length < 6) throw erro(400, "O final do link precisa ter pelo menos 6 letras ou números.");
-      if (["api", "index", "index-html"].includes(k)) throw erro(400, "Escolha outro final para o link.");
-      cfg.chave = k; await cmd("SET", "cart:cfg", JSON.stringify(cfg));
-      return res.status(200).json({ chave: k });
+      return res.status(200).json({ chave: c.chave, em: meta ? meta.em : 0, dc: meta ? meta.dc : "" });
     }
     if (b.acao === "parte") {
       const v = String(b.v || "").replace(/[^a-z0-9]/g, "").slice(0, 30), i = Number(b.i) | 0, n = Number(b.n) | 0;
@@ -78,7 +61,7 @@ module.exports = async (req, res) => {
         const meta = { v, partes: n, em: Date.now(), dc: String(b.dc || "").slice(0, 10) };
         await cmd("SET", "cart:meta", JSON.stringify(meta));
         if (antiga && antiga.v && antiga.v !== v) await pipe(Array.from({ length: antiga.partes }, (_, j) => ["EXPIRE", `cart:p:${antiga.v}:${j}`, 300]));
-        return res.status(200).json({ ok: true, em: meta.em, chave: cfg.chave });
+        return res.status(200).json({ ok: true, em: meta.em, chave: c.chave });
       }
       return res.status(200).json({ ok: true });
     }

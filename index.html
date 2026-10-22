@@ -797,16 +797,8 @@ body.leitor .appbar .actions{display:none}
 
   <section class="panel pub" id="pub" hidden>
     <div class="panel-h"><h2>🔗 Link da coordenação</h2><button type="button" id="pubFechar">Fechar</button></div>
-    <p class="note">Quem abre este link só vê o painel (sem subir arquivos, sem senha, sem Excel). Ele se atualiza sozinho toda vez que você monta o painel com os arquivos do dia.</p>
-    <form id="pubEntrar" class="row" style="gap:8px">
-      <span class="note">Para ligar o link neste computador, digite a <b>senha do painel</b> (a mesma da tela inicial):</span>
-      <input type="password" id="pubSenha" placeholder="Senha do painel" autocomplete="current-password" style="max-width:220px">
-      <button type="submit" class="primary">Ligar o link</button>
-    </form>
-    <div id="pubOn" hidden>
-      <div class="publ"><input id="pubUrl" readonly><button type="button" class="primary" id="pubCopiar">Copiar link</button><button type="button" id="pubAgora">Atualizar agora</button></div>
-      <div class="row" style="gap:8px;margin-top:10px"><span class="note">Trocar o final do link (o link antigo para de funcionar):</span><input id="pubChave" style="max-width:240px"><button type="button" id="pubTrocar">Trocar</button></div>
-    </div>
+    <p class="note">É só copiar e mandar. Quem abre o link só vê o painel, sem senha. Ele se atualiza sozinho toda vez que você monta o painel com os arquivos do dia.</p>
+    <div class="publ"><input id="pubUrl" readonly placeholder="preparando o link…"><button type="button" class="primary" id="pubCopiar">Copiar link</button></div>
     <div class="note" id="pubMsg" style="margin-top:8px"></div>
   </section>
   <section class="panel imp" id="imp" hidden>
@@ -1220,8 +1212,8 @@ $("impOk").onclick=async()=>{
     const fora=lidas("ac")+lidas("ca");if(fora)checks.push(check("warn",nf(fora),"Linhas fora do painel","outros serviços, outros ATC ou fora do Contrato Global"));
     $("impChecks").innerHTML=checks.join("");
     diaSel="todos";await salvar();renderTudo();
-    msg((avisos.length?avisos.join(" ")+" ":"")+"Painel montado com os arquivos do dia."+(lsg(CH_PUB)?" Atualizando o link da coordenação…":""));
-    if(lsg(CH_PUB))publicar(false).then(ok=>{if(ok)msg("Painel montado e link da coordenação atualizado.");});
+    msg((avisos.length?avisos.join(" ")+" ":"")+"Painel montado com os arquivos do dia. Atualizando o link da coordenação…");
+    publicar(true).then(ok=>{if(ok)msg((avisos.length?avisos.join(" ")+" ":"")+"Painel montado e link da coordenação atualizado.");});
     setTimeout(()=>{$("imp").hidden=true;for(const t of ["ac","ex","ca"]){impArq[t]=[];$(SLOT[t][0]).value="";marcaSlot(t);}},1600);
   }catch(e){console.error(e);msg("Não consegui montar: "+(e.message||e));}
   finally{bt.disabled=!(impArq.ac.length||impArq.ex.length||impArq.ca.length);}
@@ -1821,32 +1813,30 @@ $("btnTrancar").onclick=()=>{try{sessionStorage.removeItem("carteira-ok");}catch
 /* ================= link da coordenação ================= */
 const SLUG=(()=>{try{return decodeURIComponent(location.pathname).replace(/^\/+|\/+$/g,"");}catch(e){return "";}})();
 const LEITOR=!!SLUG&&!/^index(\.html)?$/i.test(SLUG);
-const CH_PUB="carteira-pub-token";
 const b64de=async blob=>{const u=await new Promise((r,j)=>{const f=new FileReader();f.onload=()=>r(f.result);f.onerror=j;f.readAsDataURL(blob);});return String(u).split(",")[1]||"";};
 async function compactar(txt){if(!window.CompressionStream)return "J"+await b64de(new Blob([txt]));const st=new Blob([txt]).stream().pipeThrough(new CompressionStream("gzip"));return "G"+await b64de(await new Response(st).blob());}
 async function descompactar(s){const bin=atob(s.slice(1));const u8=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)u8[i]=bin.charCodeAt(i);
   if(s[0]==="J")return new TextDecoder().decode(u8);return await new Response(new Blob([u8]).stream().pipeThrough(new DecompressionStream("gzip"))).text();}
-async function apiC(corpo,metodo,q){const o={method:metodo||"POST",headers:{"x-token":lsg(CH_PUB)||""},cache:"no-store"};if(corpo){o.headers["Content-Type"]="application/json";o.body=JSON.stringify(corpo);}
-  const r=await fetch("/api/carteira"+(q||""),o);let j={};try{j=await r.json();}catch(e){throw new Error(r.status===404?"O link online ainda não está ligado na Vercel (falta publicar a pasta api).":"Erro "+r.status);}
-  if(r.status===401&&corpo&&corpo.acao!=="entrar"){lss(CH_PUB,null);}if(!r.ok)throw new Error(j.erro||("Erro "+r.status));return j;}
+async function apiC(corpo,metodo,q){const o={method:metodo||"POST",cache:"no-store",headers:{}};if(corpo){o.headers["Content-Type"]="application/json";o.body=JSON.stringify(corpo);}
+  const r=await fetch("/api/carteira"+(q||""),o);let j={};try{j=await r.json();}catch(e){throw new Error("o link online ainda não está ligado (falta conectar o banco na Vercel).");}
+  if(!r.ok)throw new Error(j.erro||("Erro "+r.status));return j;}
 const urlLink=ch=>location.origin+"/"+ch;
 function pubMsg(t,cls){$("pubMsg").textContent=t||"";$("pubMsg").className="note "+(cls||"");}
-async function abrirPub(){$("pub").hidden=false;$("imp").hidden=true;const tem=!!lsg(CH_PUB);$("pubEntrar").hidden=tem;$("pubOn").hidden=!tem;pubMsg("");
-  if(tem){try{const j=await apiC({acao:"info"});$("pubUrl").value=urlLink(j.chave);$("pubChave").value=j.chave;pubMsg(j.em?"Última atualização do link: "+new Date(j.em).toLocaleString("pt-BR",{dateStyle:"short",timeStyle:"short"}):"O link ainda não foi atualizado. Clique em Atualizar agora.",j.em?"ok":"");}
-    catch(e){pubMsg(e.message,"err");$("pubEntrar").hidden=!!lsg(CH_PUB);$("pubOn").hidden=!lsg(CH_PUB);}}}
+let infoPub=null;
+async function abrirPub(){$("pub").hidden=false;$("imp").hidden=true;pubMsg("");
+  try{infoPub=await apiC({acao:"info"});$("pubUrl").value=urlLink(infoPub.chave);
+    if(!infoPub.em||(S.ult.em&&S.ult.em>infoPub.em)){pubMsg("Atualizando o link com o painel de agora…");if(await publicar(false))pubMsg("Link pronto e atualizado.","ok");}
+    else pubMsg("Link atualizado em "+new Date(infoPub.em).toLocaleString("pt-BR",{dateStyle:"short",timeStyle:"short"})+(infoPub.dc?" · carteira de "+dmy(infoPub.dc):""),"ok");}
+  catch(e){$("pubUrl").value="";pubMsg("Não consegui preparar o link: "+e.message,"err");}}
 $("btnLink").onclick=()=>{if($("pub").hidden)abrirPub();else $("pub").hidden=true;};
 $("pubFechar").onclick=()=>{$("pub").hidden=true;};
-$("pubEntrar").onsubmit=async e=>{e.preventDefault();pubMsg("Ligando…");try{const j=await apiC({acao:"entrar",senha:$("pubSenha").value});lss(CH_PUB,j.token);$("pubSenha").value="";await publicar(true);await abrirPub();}catch(err){pubMsg(err.message,"err");}};
-$("pubCopiar").onclick=async()=>{const i=$("pubUrl");try{await navigator.clipboard.writeText(i.value);}catch(e){i.select();document.execCommand("copy");}pubMsg("Link copiado! É só colar no WhatsApp ou no e-mail.","ok");};
-$("pubAgora").onclick=async()=>{await publicar(true);abrirPub();};
-$("pubTrocar").onclick=async()=>{try{const j=await apiC({acao:"chave",chave:$("pubChave").value});$("pubUrl").value=urlLink(j.chave);$("pubChave").value=j.chave;pubMsg("Pronto! Mande o link novo para a coordenação.","ok");}catch(e){pubMsg(e.message,"err");}};
+$("pubCopiar").onclick=async()=>{const i=$("pubUrl");if(!i.value)return;try{await navigator.clipboard.writeText(i.value);}catch(e){i.select();document.execCommand("copy");}pubMsg("Link copiado! É só colar no WhatsApp ou no e-mail.","ok");};
 let publicando=null;
-async function publicar(avisar){if(LEITOR||!lsg(CH_PUB))return;if(publicando)return publicando;
-  publicando=(async()=>{try{if(avisar)pubMsg("Atualizando o link…");
+async function publicar(avisar){if(LEITOR)return false;if(publicando)return publicando;
+  publicando=(async()=>{try{
     const z=await compactar(JSON.stringify(S));const T=3000000,n=Math.max(1,Math.ceil(z.length/T));const v=Date.now().toString(36)+Math.random().toString(36).slice(2,6);
-    for(let i=0;i<n;i++)await apiC({acao:"parte",v,i,n,dados:z.slice(i*T,(i+1)*T),dc:S.ult.dc||""});
-    if(avisar)pubMsg("Link da coordenação atualizado às "+new Date().toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"})+".","ok");return true;}
-  catch(e){if(avisar)pubMsg("Não consegui atualizar o link: "+e.message,"err");else msg("Painel montado, mas o link da coordenação não atualizou: "+e.message);return false;}
+    for(let i=0;i<n;i++)await apiC({acao:"parte",v,i,n,dados:z.slice(i*T,(i+1)*T),dc:S.ult.dc||""});return true;}
+  catch(e){if(avisar)msg("Painel montado, mas o link da coordenação não atualizou: "+e.message);return false;}
   finally{publicando=null;}})();return publicando;}
 let versaoLeitor=0;
 async function carregarLeitor(){const q="?k="+encodeURIComponent(SLUG);const m=await apiC(null,"GET",q);
