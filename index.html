@@ -776,7 +776,7 @@ body.aba-rel .hero{display:none}
 #v-rel .fh2{flex-wrap:nowrap}
 body.aba-rel .foot{display:none}
 
-#v-rel .mk4{grid-template-columns:repeat(5,minmax(0,1fr))}
+#v-rel .mk4{grid-template-columns:repeat(4,minmax(0,1fr))}
 @media (max-width:1100px){#v-rel .mk4{grid-template-columns:repeat(2,minmax(0,1fr))}}
 /* ===== cores da Sabesp ===== */
 .appbar{background:linear-gradient(110deg,#00305E 0%,#00539F 55%,#0097D6 100%)}
@@ -1570,7 +1570,6 @@ function renderMonRel(){
   const pv=tot?(tot-fo.length)/tot:0;const dR=diaRel();
   const entR=u.ac.filter(r=>r.g===g&&fp(r)&&r.dt===dR).length,exeR=u.ex.filter(r=>r.g===g&&fp(r)&&r.dt===dR&&r.conta).length;
   $("monTop").innerHTML=[
-    m4("#E8891A","Entradas · "+(dR?wd(dR)+" "+dm(dR):"dia anterior"),nf(entR),`acatados do dia anterior · ${nf(exeR)} executadas · saldo ${sgn(entR-exeR)}`,{modo:"entradas",g}),
     m4("#12A386","Dentro das 24h",nf(ok.length),`nosso controle · ${nf(em6)} passam de 24h em até 6h`,{modo:"carteira",prazo:"d24",g}),
     m4("#F29D0C","Passaram de 24h",nf(p24.length),"ainda no prazo de 48h · priorize",{modo:"carteira",prazo:"p24",g}),
     m4("#E03E45","Vencidas · 48h",nf(fo.length),`prazo oficial · ${tot?pctTxt(fo.length,tot):"–"} da carteira de ${nf(tot)}`,{modo:"carteira",prazo:"fora",g}),
