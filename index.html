@@ -713,7 +713,7 @@ body.printmode .hero{display:none!important}.rhead{background:linear-gradient(12
 /* religação 24h / 48h */
 .filas.f3{grid-template-columns:repeat(3,minmax(0,1fr))}
 .fh2.ok{background:var(--ok-s)}.fh2.ok b,.fh2.ok em{color:#0B6B60}
-.alerta.at{background:linear-gradient(100deg,#C46A00,#F29D0C);box-shadow:0 8px 24px rgba(242,157,12,.25)}
+.alerta.amar{background:linear-gradient(100deg,#C46A00,#F29D0C);box-shadow:0 8px 24px rgba(242,157,12,.25)}
 #relGraf{margin:0}
 .rp .hr{cursor:pointer}
 .rpk{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px}
@@ -731,6 +731,50 @@ body.printmode .hero{display:none!important}.rhead{background:linear-gradient(12
 /* modo coordenação: só visualização */
 body.leitor #btnSubir,body.leitor #baixar,body.leitor .hbt,body.leitor #imp,body.leitor #intro,body.leitor #pub,body.leitor .hquem,body.leitor #telaLogin,body.leitor #t-os,body.leitor #t-mon{display:none!important}
 body.leitor .appbar .actions{display:none}
+
+/* religação compacta (cabe numa tela) */
+body.aba-rel .hero{display:none}
+.reltit{display:flex;align-items:center;justify-content:space-between;gap:12px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:10px 18px;box-shadow:var(--shadow);border-left:6px solid #0F9D8A}
+.reltit h2{margin:0;font-family:var(--f-display);font-size:22px;color:#0A3D3A}
+.reltit p{margin:2px 0 0;font-size:13px;color:var(--muted)}.reltit p b{color:#0A3D3A}
+.reltit .rtc{text-align:right}.reltit .rtc small{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}.reltit .rtc b{font-family:var(--f-display);font-size:18px;color:#0A3D3A}
+#v-rel .mon{gap:10px}
+#v-rel .alerta{padding:8px 16px;gap:12px;flex-wrap:nowrap;text-align:left;justify-content:flex-start}
+#v-rel .alerta .ic{width:38px;height:38px;border-radius:10px}#v-rel .alerta .ic svg{width:22px;height:22px}
+#v-rel .alerta .tx b{font-size:19px}#v-rel .alerta .tx span,#v-rel .alerta .tx span b{font-size:12.5px}
+#v-rel .alerta .rel{text-align:right}#v-rel .alerta .rel b{font-size:24px}
+#v-rel .mk4{gap:10px}
+#v-rel .m4{padding:8px 14px;gap:2px;border-radius:12px;border-left-width:5px}
+#v-rel .m4 small{font-size:10.5px}#v-rel .m4 b{font-size:28px}#v-rel .m4 em{font-size:11.5px}#v-rel .m4 .mb{height:6px;margin-top:3px}
+#v-rel #relGraf{gap:10px}
+#v-rel #relGraf .card{padding:10px 14px}
+#v-rel #relGraf .ch{margin-bottom:2px;padding-bottom:4px}#v-rel #relGraf .ch h3{font-size:14px}#v-rel #relGraf .ch p{font-size:11px}
+#v-rel #relGraf .leg2{font-size:11px;margin:2px 0}
+#v-rel #relGraf .chart svg{max-height:150px}
+#v-rel .rpk{margin-top:8px}#v-rel .rpk div{padding:5px}#v-rel .rpk b{font-size:20px}
+#v-rel .hb.pzb .st{height:18px!important}
+#v-rel .filas{gap:10px}
+#v-rel .fh2{padding:7px 12px;gap:8px;align-items:center}#v-rel .fh2 b{font-size:14px}#v-rel .fh2 span{font-size:11px}
+#v-rel .flist{max-height:300px}
+#v-rel .fi{grid-template-columns:auto minmax(0,1fr);gap:10px;padding:6px 12px;align-items:start}
+#v-rel .fi .d b{white-space:normal;overflow:visible;font-size:12.5px;line-height:1.3;user-select:text}
+#v-rel .fi .d small{white-space:normal;overflow:visible;font-size:11px;user-select:text}
+#v-rel .chip3{font-size:11.5px;padding:3px 7px}
+#v-rel .mfoot{font-size:11px}
+.cpy{font-size:11.5px;font-weight:700;padding:4px 9px;border-radius:8px;border:1px solid var(--line);background:#fff;color:#0A3D3A;cursor:pointer;white-space:nowrap}
+.cpy:hover{background:var(--sunk)}
+.fh2 .cpy{margin-left:6px}
+.mhd .cpy{margin-left:auto;margin-right:8px}
+.mlist td.e5{white-space:normal;user-select:text}
+
+.reltit{padding:7px 16px}.reltit h2{font-size:19px}.reltit p{font-size:12px}.reltit .rtc b{font-size:16px}
+#v-rel .alerta .rel small{font-size:10.5px}
+#v-rel #relGraf .ch p,#v-rel .fh2 span{display:none}
+#v-rel #relGraf .chart svg{max-height:none}
+#v-rel #relGraf .ch{border:0}
+#v-rel .flist{max-height:235px}
+#v-rel .fh2{flex-wrap:nowrap}
+body.aba-rel .foot{display:none}
 
 </style>
 </head>
@@ -863,6 +907,7 @@ body.leitor .appbar .actions{display:none}
   <section id="v-rel" class="view" hidden>
     <div id="relSlot"></div>
     <div class="mon" id="mon">
+      <div class="reltit"><div><h2>Religação ao vivo</h2><p>Prazo oficial: <b>48 horas</b> desde a inserção · Controle da equipe: <b>24 horas</b> · <span id="relTitSub">Interlagos e Grajaú</span></p></div><div class="rtc"><small>carteira de</small><b id="relTitDc">–</b></div></div>
       <div class="alerta" id="monAlerta"></div>
       <div class="mk4" id="monTop"></div>
       <div class="dash" id="relGraf">
@@ -871,9 +916,9 @@ body.leitor .appbar .actions{display:none}
         <article class="card s4"><header class="ch"><div><h3>Entradas × execuções por dia</h3><p>religação · Interlagos e Grajaú</p></div></header><div class="leg2"><span style="--c:#F0A23B">Entradas</span><span style="--c:#23824F">Execuções</span></div><div class="chart ev" id="relDia"></div></article>
       </div>
       <div class="filas f3">
-        <div class="fila"><div class="fh2 ok"><b>Vão passar de 24h</b><span id="vaoSub">nosso controle · da que passa primeiro</span><em id="qtdVao"></em></div><div class="flist" id="filaVao"></div></div>
-        <div class="fila"><div class="fh2"><b>Passaram de 24h · vencem em 48h</b><span>da que vence primeiro</span><em id="qtdP24"></em></div><div class="flist" id="filaP24"></div></div>
-        <div class="fila"><div class="fh2 red"><b>Vencidas · passaram de 48h</b><span>prazo oficial</span><em id="qtdVenc"></em></div><div class="flist" id="filaVenc"></div></div>
+        <div class="fila"><div class="fh2 ok"><b>Vão passar de 24h</b><span id="vaoSub">nosso controle · da que passa primeiro</span><em id="qtdVao"></em><button type="button" class="cpy" data-cpy="filaVao">📋 Copiar</button></div><div class="flist" id="filaVao"></div></div>
+        <div class="fila"><div class="fh2"><b>Passaram de 24h · vencem em 48h</b><span>da que vence primeiro</span><em id="qtdP24"></em><button type="button" class="cpy" data-cpy="filaP24">📋 Copiar</button></div><div class="flist" id="filaP24"></div></div>
+        <div class="fila"><div class="fh2 red"><b>Vencidas · passaram de 48h</b><span>prazo oficial</span><em id="qtdVenc"></em><button type="button" class="cpy" data-cpy="filaVenc">📋 Copiar</button></div><div class="flist" id="filaVenc"></div></div>
       </div>
       <div class="mfoot"><span id="monSub"></span><button type="button" id="monTela">Tela cheia</button></div>
     </div>
@@ -918,7 +963,7 @@ body.leitor .appbar .actions{display:none}
   <div class="foot">Painel da Carteira de Serviços · os dados ficam guardados só neste computador</div>
 </div>
 
-<div class="modal" id="modal" hidden><div class="mbox"><div class="mhd"><div><b id="mTit"></b><small id="mSub"></small></div><button type="button" id="mFechar" aria-label="Fechar">✕</button></div><div class="mlist" id="mLista"></div></div></div>
+<div class="modal" id="modal" hidden><div class="mbox"><div class="mhd"><div><b id="mTit"></b><small id="mSub"></small></div><button type="button" class="cpy" id="mCopiar">📋 Copiar endereços</button><button type="button" id="mFechar" aria-label="Fechar">✕</button></div><div class="mlist" id="mLista"></div></div></div>
 
 <script>
 (function(){
@@ -1462,8 +1507,8 @@ function renderRel(){
   $("relSlot").after($("mon"));monG="Religação";renderMonRel();
   const u=S.ult;const sn=(S.rel||[]).slice(-14);const ps=poloSel==="Todos"?POLOS:[poloSel];
   $("relHora").innerHTML=sn.length?barras(sn.map(x=>{const d=new Date(x.t);const sm=i=>ps.reduce((a,p)=>a+((x.p[p]||[])[i]||0),0);const p24=sm(2);
-    return {lab:d.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"}),sub:d.toLocaleDateString("pt-BR",{day:"2-digit",month:"2-digit"}),vals:[{v:sm(0)-p24,c:"#12A386"},{v:p24,c:"#F29D0C"},{v:sm(1),c:"#E03E45"}]};}),{empilhar:1,wmin:420,h:240,rotular:1,bw:26}):`<div class="empty">A cada carteira que você subir, entra uma coluna aqui com o horário.</div>`;
-  const g="Religação";$("relDia").innerHTML=barras(u.dias.map(d=>({lab:dm(d),sub:wd(d),vals:[{v:u.ac.filter(r=>r.g===g&&r.dt===d&&fp(r)).length,c:"#F0A23B"},{v:u.ex.filter(r=>r.g===g&&r.dt===d&&fp(r)&&r.conta).length,c:"#23824F"}]})),{wmin:420,h:240,bw:20});}
+    return {lab:d.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"}),sub:d.toLocaleDateString("pt-BR",{day:"2-digit",month:"2-digit"}),vals:[{v:sm(0)-p24,c:"#12A386"},{v:p24,c:"#F29D0C"},{v:sm(1),c:"#E03E45"}]};}),{empilhar:1,wmin:420,h:175,rotular:1,bw:26}):`<div class="empty">A cada carteira que você subir, entra uma coluna aqui com o horário.</div>`;
+  const g="Religação";$("relDia").innerHTML=barras(u.dias.map(d=>({lab:dm(d),sub:wd(d),vals:[{v:u.ac.filter(r=>r.g===g&&r.dt===d&&fp(r)).length,c:"#F0A23B"},{v:u.ex.filter(r=>r.g===g&&r.dt===d&&fp(r)&&r.conta).length,c:"#23824F"}]})),{wmin:420,h:175,bw:20});}
 
 /* religação: prazo oficial 48h · nosso controle 24h */
 function situRel(r,agora){const v=vencimento(r),m=marca24(r);const h=v!=null?(v-agora)/3600000:minutosResid(r.tr)/60;const h24=m!=null?(m-agora)/3600000:h-24;
@@ -1476,7 +1521,7 @@ function renderMonRel(){
   const hora=new Date(agora).toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"});
   const icW='<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 2 20h20L12 3z"/><path d="M12 10v4M12 17h.01"/></svg>';
   const icOk='<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"/></svg>';
-  const al=$("monAlerta");al.className="alerta"+(fo.length?"":p24.length?" at":" ok");
+  const al=$("monAlerta");al.className="alerta"+(fo.length?"":p24.length?" amar":" ok");
   al.innerHTML=`<span class="ic">${fo.length||p24.length?icW:icOk}</span><div class="tx"><b>${fo.length?nf(fo.length)+(fo.length>1?" religações vencidas (48h)":" religação vencida (48h)"):p24.length?nf(p24.length)+(p24.length>1?" religações passaram de 24h":" religação passou de 24h"):"Todas as religações dentro das 24h"}</b>
     <span>${fo.length?`<b>${nf(p24.length)}</b> passaram de 24h e ainda estão no prazo de 48h · `:""}<b>${nf(em6v)}</b> vencem as 48h nas próximas 6 horas · <b>${nf(em6)}</b> passam de 24h nas próximas 6 horas${poloSel!=="Todos"?" · "+poloSel:""}</span></div>
     <div class="rel"><small>ao vivo</small><b>${hora}</b></div>`;
@@ -1488,18 +1533,19 @@ function renderMonRel(){
     m4("#E03E45","Vencidas · 48h",nf(fo.length),`prazo oficial · ${tot?pctTxt(fo.length,tot):"–"} da carteira de ${nf(tot)}`,{modo:"carteira",prazo:"fora",g}),
     m4(fo.length?"#E03E45":"#12A386","Meta: nenhuma vencida",fo.length?"Fora da meta":"Meta batida ✓",fo.length?`faltam ${nf(fo.length)} para zerar · ${(Math.round(pv*1000)/10).toLocaleString("pt-BR")}% no prazo`:"nenhuma religação passou de 48h",{modo:"carteira",prazo:"fora",g},
       `<div class="mb"><i style="width:${(pv*100).toFixed(1)}%"></i><s style="left:100%"></s></div>`)].join("");
-  const linha=(r,chip,cl,sub)=>`<div class="fi"><span class="chip3 ${cl}">${chip}</span><div class="d"><b>${esc(r.end||"Sem endereço")} · ${esc(r.bai||"")}</b><small>${sub?sub+" · ":""}OS ${esc(r.os)} · ${esc(r.tss)} · ${r.p}</small></div><span class="sv" style="--c:${COR[g]}">${r.p}</span></div>`;
+  const linha=(r,chip,cl,sub)=>{const txt=`${r.end||"Sem endereço"} – ${r.bai||""} (${r.p}) · OS ${r.os} · ${r.tss} · ${chip}${sub?" · "+sub:""}`;
+    return `<div class="fi" data-txt="${esc(txt)}"><span class="chip3 ${cl}">${chip}</span><div class="d"><b>${esc(r.end||"Sem endereço")} – ${esc(r.bai||"")}</b><small>${r.p} · OS ${esc(r.os)} · ${esc(r.tss)}${sub?" · "+sub:""}</small></div></div>`;};
   const vao=ok.slice().sort((x,y)=>x.h24-y.h24),pa=p24.slice().sort((x,y)=>x.h-y.h),venc=fo.slice().sort((x,y)=>y.h-x.h);
   $("qtdVao").textContent=nf(vao.length);$("qtdP24").textContent=nf(pa.length);$("qtdVenc").textContent=nf(venc.length);
-  $("filaVao").innerHTML=vao.length?vao.slice(0,150).map(r=>linha(r,"24h em "+tempoTxt(r.h24),r.h24<=2?"c2":r.h24<=6?"c3":"c4","")).join(""):`<div class="fvazia">Nenhuma religação dentro das 24h.</div>`;
-  $("filaP24").innerHTML=pa.length?pa.slice(0,150).map(r=>linha(r,"vence em "+tempoTxt(r.h),r.h<=6?"c1":"c2","passou de 24h há "+tempoTxt(r.h24))).join(""):`<div class="fvazia">Nenhuma religação passou de 24h. 👏</div>`;
-  $("filaVenc").innerHTML=venc.length?venc.slice(0,150).map(r=>linha(r,"há "+tempoTxt(r.h),"cv","")).join(""):`<div class="fvazia">Nenhuma vencida. 👏</div>`;
+  $("filaVao").innerHTML=vao.length?vao.map(r=>linha(r,"24h em "+tempoTxt(r.h24),r.h24<=2?"c2":r.h24<=6?"c3":"c4","")).join(""):`<div class="fvazia">Nenhuma religação dentro das 24h.</div>`;
+  $("filaP24").innerHTML=pa.length?pa.map(r=>linha(r,"vence em "+tempoTxt(r.h),r.h<=6?"c1":"c2","passou de 24h há "+tempoTxt(r.h24))).join(""):`<div class="fvazia">Nenhuma religação passou de 24h. 👏</div>`;
+  $("filaVenc").innerHTML=venc.length?venc.map(r=>linha(r,"há "+tempoTxt(r.h),"cv","")).join(""):`<div class="fvazia">Nenhuma vencida. 👏</div>`;
   // por polo (agora)
   const rows=(poloSel==="Todos"?POLOS.slice().reverse():[poloSel]).map(p=>{const L=ca.filter(r=>r.p===p);return {p,t:L.length,o:L.filter(r=>r.sx==="ok").length,a:L.filter(r=>r.sx==="p24").length,f:L.filter(r=>r.sx==="fo").length};});
   const mx=Math.max(1,...rows.map(r=>r.t));
   $("relPolo").innerHTML=`<div class="hb pzb rp">${rows.map(r=>`<div class="hr"${go({modo:"carteira",g,p:r.p})}><span>${r.p}<small>${nf(r.t)} religações</small></span><div class="st" style="width:${Math.max(10,r.t*100/mx).toFixed(1)}%">${r.t?`<i style="width:${r.o*100/r.t}%;background:#12A386">${r.o||""}</i><i style="width:${r.a*100/r.t}%;background:#F29D0C">${r.a||""}</i><i style="width:${r.f*100/r.t}%;background:#E03E45">${r.f||""}</i>`:""}</div></div>`).join("")}</div>
     <div class="rpk">${[["Dentro das 24h",ok.length,"#12A386"],["Passou de 24h",p24.length,"#F29D0C"],["Vencida 48h",fo.length,"#E03E45"]].map(([l,n,c])=>`<div style="--c:${c}"><b>${nf(n)}</b><small>${l}</small></div>`).join("")}</div>`;
-  const mom=momentoCarteira(u.ca);
+  const mom=momentoCarteira(u.ca);$("relTitDc").textContent=mom?fmtHM(mom):dmy(u.dc);$("relTitSub").textContent=poloSel==="Todos"?"Interlagos e Grajaú":poloSel;
   $("monSub").textContent=`Carteira tirada do sistema em ${mom?fmtHM(mom):dmy(u.dc)} · contado até agora, atualiza sozinho a cada 30 segundos · religação: prazo oficial de 48h desde a inserção, nosso controle em 24h`;}
 
 setInterval(()=>{if(abaAtual==="rel"&&refRel==="agora"&&!document.hidden)renderRel();},60000);
@@ -1536,8 +1582,8 @@ function renderMon(){
     return `<div class="fi"><span class="chip3 ${cl}">${venc?"há "+tempoTxt(r.h):"em "+tempoTxt(r.h)}</span><div class="d"><b>${esc(r.end||"Sem endereço")} · ${esc(r.bai||"")}</b><small>OS ${esc(r.os)} · ${esc(r.tss)} · ${r.p}</small></div><span class="sv" style="--c:${COR[r.g]}">${esc(r.g)}</span></div>`;};
   const vao=ca.filter(r=>r.h>=0&&r.h<=HOR).sort((x,y)=>x.h-y.h),venc=fo.slice().sort((x,y)=>y.h-x.h);
   $("vaoSub").textContent="da que vence primeiro · "+(REL?"próximas 24h":"próximos 3 dias");$("qtdVao").textContent=nf(vao.length)+" OS";$("qtdVenc").textContent=nf(venc.length)+" OS";
-  $("filaVao").innerHTML=vao.length?vao.slice(0,150).map(r=>item(r,false)).join(""):`<div class="fvazia">Nada vencendo ${REL?"nas próximas 24 horas":"nos próximos 3 dias"}.</div>`;
-  $("filaVenc").innerHTML=venc.length?venc.slice(0,150).map(r=>item(r,true)).join(""):`<div class="fvazia">Nenhuma OS vencida. 👏</div>`;
+  $("filaVao").innerHTML=vao.length?vao.map(r=>item(r,false)).join(""):`<div class="fvazia">Nada vencendo ${REL?"nas próximas 24 horas":"nos próximos 3 dias"}.</div>`;
+  $("filaVenc").innerHTML=venc.length?venc.map(r=>item(r,true)).join(""):`<div class="fvazia">Nenhuma OS vencida. 👏</div>`;
   if($("monRows")){let h=`<div class="srow3 hd"><span>Serviço</span><span style="text-align:center">Fora</span><span style="text-align:center">Até 24h</span><span style="text-align:center">Com folga</span><span></span></div>`;
   for(const g of GRUPOS){const L=todos.filter(r=>r.g===g),t=L.length,f=L.filter(r=>r.sx==="fo").length,a=L.filter(r=>r.sx==="at").length,o=t-f-a;
     h+=`<div class="srow3${monG===g?" sel":""}" data-mg="${esc(g)}"><span class="n3"><i style="--c:${COR[g]}"></i>${g}</span><span class="v3 fo">${nf(f)}</span><span class="v3 at">${nf(a)}</span><span class="v3 ok">${nf(o)}</span><div class="sbar">${t?`<i style="width:${(o*100/t).toFixed(1)}%;background:#12A386"></i><i style="width:${(a*100/t).toFixed(1)}%;background:#F29D0C"></i><i style="width:${(f*100/t).toFixed(1)}%;background:#E03E45"></i>`:""}</div></div>`;}
@@ -1639,9 +1685,16 @@ function abrirLista(o){const u=S.ult;const modo=o.modo||"carteira";const agora=D
   $("mLista").innerHTML=L.length?`<table><thead><tr><th>Endereço</th><th>Bairro</th><th>Tipo</th><th>Polo</th><th>${modo==="carteira"?"Prazo":"Dia"}</th></tr></thead><tbody>`+L.slice(0,800).map(r=>{const h=vc(r);
     const k24=r.g==="Religação"?h24(r):null;
     const sit=modo==="carteira"?(r.g==="Religação"&&h!=null&&h>=0&&k24!=null&&k24<0?`<span class="tg5 a">passou de 24h · vence 48h em ${tempoTxt(h)}</span>`:r.fora||(h!=null&&h<0)?`<span class="tg5 f">${h!=null&&h<0?"venceu há "+tempoTxt(h):"fora do prazo"}</span>`:`<span class="tg5 n">${h!=null?"vence em "+tempoTxt(h):"no prazo"}</span>`):`${wd(r.dt)} ${dm(r.dt)}`;
-    return `<tr><td class="e5">${esc(r.end||"–")}</td><td>${esc(r.bai||"")}</td><td>${esc(r.tss)}</td><td>${r.p}</td><td>${sit}</td></tr>`;}).join("")+"</tbody></table>":`<div class="fvazia">Nenhum endereço.</div>`;
+    const txt=`${r.end||"–"} – ${r.bai||""} (${r.p}) · OS ${r.os} · ${r.tss}`;
+    return `<tr data-txt="${esc(txt)}"><td class="e5">${esc(r.end||"–")}</td><td>${esc(r.bai||"")}</td><td>${esc(r.tss)}</td><td>${r.p}</td><td>${sit}</td></tr>`;}).join("")+"</tbody></table>":`<div class="fvazia">Nenhum endereço.</div>`;
   $("modal").hidden=false;}
 $("mFechar").onclick=()=>{$("modal").hidden=true;};
+async function copiarTexto(t,bt){try{await navigator.clipboard.writeText(t);}catch(e){const a=document.createElement("textarea");a.value=t;document.body.appendChild(a);a.select();document.execCommand("copy");a.remove();}
+  if(bt){const o=bt.textContent;bt.textContent="✔ Copiado";setTimeout(()=>bt.textContent=o,1600);}}
+const juntar=els=>[...els].map(e=>e.dataset.txt).filter(Boolean).join("\n");
+$("mCopiar").onclick=e=>{const t=juntar($("mLista").querySelectorAll("[data-txt]"));if(t)copiarTexto($("mTit").textContent+"\n"+t,e.currentTarget);};
+document.addEventListener("click",e=>{const b=e.target.closest("button[data-cpy]");if(!b)return;const box=$(b.dataset.cpy);const t=juntar(box.querySelectorAll("[data-txt]"));
+  if(t)copiarTexto(b.closest(".fila").querySelector(".fh2 b").textContent+"\n"+t,b);});
 $("modal").addEventListener("click",e=>{if(e.target.id==="modal")$("modal").hidden=true;});
 document.addEventListener("keydown",e=>{if(e.key==="Escape")$("modal").hidden=true;});
 
@@ -1684,7 +1737,7 @@ let tb;$("busca").addEventListener("input",()=>{clearTimeout(tb);tb=setTimeout(r
 function irPara(o){abrirLista(o);}
 document.addEventListener("click",e=>{const el=e.target.closest("[data-go]");if(el&&!el.closest("#v-os")&&!el.closest(".seg2")){irPara(JSON.parse(el.dataset.go));return;}
   const d=e.target.closest("#diaDia .r[data-dia],#tbGrupo th[data-dia]");if(d){diaSel=diaSel===d.dataset.dia?"todos":d.dataset.dia;renderTudo();}});
-function aba(n){abaAtual=n;if(n!=="os")lss("carteira-aba",n);document.body.classList.remove("printmode");for(const k of ["painel","mon","res","rel","lig","serv","os"]){$("t-"+k).setAttribute("aria-selected",k===n);$("v-"+k).hidden=k!==n;}renderTudo();}
+function aba(n){abaAtual=n;document.body.classList.toggle("aba-rel",n==="rel");if(n!=="os")lss("carteira-aba",n);document.body.classList.remove("printmode");for(const k of ["painel","mon","res","rel","lig","serv","os"]){$("t-"+k).setAttribute("aria-selected",k===n);$("v-"+k).hidden=k!==n;}renderTudo();}
 $("t-painel").onclick=()=>aba("painel");$("t-lig").onclick=()=>aba("lig");$("t-mon").onclick=()=>aba("mon");$("t-rel").onclick=()=>aba("rel");$("t-res").onclick=()=>aba("res");$("t-serv").onclick=()=>aba("serv");$("t-os").onclick=()=>aba("os");
 function renderTudo(){renderFiltros();if(abaAtual==="painel")render();else if(abaAtual==="serv")renderServ();else if(abaAtual==="lig")renderLig();else if(abaAtual==="mon")renderMonLig();else if(abaAtual==="rel")renderRel();else if(abaAtual==="res")renderRes();else renderOS();}
 
