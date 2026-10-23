@@ -1244,7 +1244,7 @@ let S=null,RAW=null,timerSalvar=null;
 function idb(){return new Promise((res,rej)=>{try{const r=indexedDB.open("painel-carteira-servicos",1);r.onupgradeneeded=()=>r.result.createObjectStore("d");r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error);}catch(e){rej(e);}});}
 async function idbGet(k){const d=await idb();return await new Promise((res,rej)=>{const q=d.transaction("d").objectStore("d").get(k);q.onsuccess=()=>res(q.result??null);q.onerror=()=>rej(q.error);});}
 async function idbSet(k,v){const d=await idb();return await new Promise((res,rej)=>{const t=d.transaction("d","readwrite");t.objectStore("d").put(v,k);t.oncomplete=()=>res();t.onerror=()=>rej(t.error);});}
-function normalizar(o){const s=Object.assign(vazio(),o||{});s.hist=s.hist||{};s.rel=s.rel||[];s.ult=Object.assign(vazio().ult,s.ult||{});s.ult.arq=Object.assign({ac:[],ex:[],ca:[]},s.ult.arq||{});return s;}
+function normalizar(o){const s=Object.assign(vazio(),o||{});s.hist=s.hist||{};s.histF=s.histF||{};s.rel=s.rel||[];s.ult=Object.assign(vazio().ult,s.ult||{});s.ult.arq=Object.assign({ac:[],ex:[],ca:[]},s.ult.arq||{});return s;}
 function setConn(estado,tit,sub){$("connDot").className="dot "+estado;$("connTit").textContent=tit;$("connSub").textContent=sub||"";}
 function statusGuardado(){setConn("on","Dados guardados neste computador",(S.ult.dc?"carteira de "+dmy(S.ult.dc)+" · ":"")+"salvo às "+new Date().toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"}));}
 async function salvar(){
@@ -1262,7 +1262,7 @@ async function carregarLocal(){
 const hk=(d,p,g)=>d+"|"+p+"|"+g;
 function hset(d,p,g,i,v){const k=hk(d,p,g);const a=S.hist[k]||[null,null,null,null,null];a[i]=v;S.hist[k]=a;}
 function datasHist(){return [...new Set(Object.keys(S.hist).map(k=>k.slice(0,10)))].sort();}
-function somaHist(d,i,f){let t=null;for(const p of POLOS)for(const g of GRUPOS_H){if(f&&!f(p,g))continue;const a=S.hist[hk(d,p,g)];const v=a?(i===4&&a[4]==null?a[1]:a[i]):null;if(v!=null)t=(t||0)+v;}return t;}
+function somaHist(d,i,f){let t=null;const H=fornSel?((S.histF||{})[fornSel]||{}):S.hist;for(const p of POLOS)for(const g of GRUPOS_H){if(f&&!f(p,g))continue;const a=H[hk(d,p,g)];const v=a?(i===4&&a[4]==null?a[1]:a[i]):null;if(v!=null)t=(t||0)+v;}return t;}
 function diaAnterior(){const dc=S.ult.dc;const ds=datasHist().filter(d=>d<dc&&somaHist(d,3)!=null);return ds[ds.length-1]||"";}
 
 /* ================= leitura dos arquivos ================= */
@@ -1346,6 +1346,12 @@ $("impOk").onclick=async()=>{
     if(res.ac){for(const d of res.ac.dias)for(const p of POLOS)for(const g of GRUPOS_H)hset(d,p,g,0,res.ac.recs.filter(r=>r.dt===d&&r.p===p&&r.g===g).length);}
     if(res.ex){for(const d of res.ex.dias)for(const p of POLOS)for(const g of GRUPOS_H){const L=res.ex.recs.filter(r=>r.dt===d&&r.p===p&&r.g===g);hset(d,p,g,1,L.filter(r=>exGeral(r,g)).length);hset(d,p,g,4,L.length);}}
     if(res.ca){for(const p of POLOS)for(const g of GRUPOS_H){const c=res.ca.recs.filter(r=>r.p===p&&r.g===g);hset(dc,p,g,2,c.filter(r=>!r.fora).length);hset(dc,p,g,3,c.filter(r=>r.fora).length);}}
+    // histórico por fornecedor (para os gráficos quando um fornecedor está selecionado)
+    {const HF=S.histF;const put=(f,d,p,g,i,v)=>{const H=HF[f]||(HF[f]={});const k=hk(d,p,g);const a=H[k]||(H[k]=[null,null,null,null,null]);a[i]=v;};
+     const forns=t=>res[t]?[...new Set(res[t].recs.map(r=>nomeForn(r.forn)))]:[];
+     if(res.ac)for(const f of forns("ac"))for(const d of res.ac.dias)for(const p of POLOS)for(const g of GRUPOS_H)put(f,d,p,g,0,res.ac.recs.filter(r=>r.dt===d&&r.p===p&&r.g===g&&nomeForn(r.forn)===f).length);
+     if(res.ex)for(const f of forns("ex"))for(const d of res.ex.dias)for(const p of POLOS)for(const g of GRUPOS_H){const L=res.ex.recs.filter(r=>r.dt===d&&r.p===p&&r.g===g&&nomeForn(r.forn)===f);put(f,d,p,g,1,L.filter(r=>exGeral(r,g)).length);put(f,d,p,g,4,L.length);}
+     if(res.ca)for(const f of forns("ca"))for(const p of POLOS)for(const g of GRUPOS_H){const c=res.ca.recs.filter(r=>r.p===p&&r.g===g&&nomeForn(r.forn)===f);put(f,dc,p,g,2,c.filter(r=>!r.fora).length);put(f,dc,p,g,3,c.filter(r=>r.fora).length);}}
     const U2=S.ult;
     for(const t of ["ac","ex","ca"])if(res[t]){U2[t]=res[t].recs;U2.arq[t]=novoRaw[t].arq;}
     if(res.ca)U2.dc=dc;
@@ -1404,7 +1410,7 @@ function conta(o){const u=ultF();const g=o.g,p=o.p||null;const fpol=r=>p?r.p===p
   const ent=u.ac.filter(r=>(!g||r.g===g)&&fpol(r)&&noDia(r)).length;
   const exe=u.ex.filter(r=>(!g||r.g===g)&&fpol(r)&&noDia(r)&&exGeral(r,g)).length;
   const da=diaAnterior();let ant=null;
-  if(da&&!fornSel){ant=somaHist(da,3,(pp,gg)=>(!g||gg===g)&&(p?pp===p:(poloSel==="Todos"||pp===poloSel)));}
+  if(da){ant=somaHist(da,3,(pp,gg)=>(!g||gg===g)&&(p?pp===p:(poloSel==="Todos"||pp===poloSel)));}
   return {cart:ca.length,fora,no:ca.length-fora,ent,exe,saldo:ent-exe,dFora:ant==null?null:fora-ant,da};}
 function rotDias(){const d=diasSel();if(!d.length)return "sem entradas e execuções";if(d.length===1)return wd(d[0])+" "+dmy(d[0]);return `${wd(d[0])} ${dm(d[0])} a ${wd(d[d.length-1])} ${dm(d[d.length-1])} (${d.length} dias)`;}
 // meta: 80% no prazo; religação: nenhuma vencida (100%)
