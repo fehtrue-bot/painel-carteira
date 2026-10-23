@@ -879,6 +879,12 @@ body.aba-rel .assina{display:block}
 .pzaviso button{margin-left:auto;padding:7px 12px;font-size:12.5px}
 .cg .dqt{font-size:11px;color:var(--muted);white-space:nowrap}
 
+.legpz [data-prazo]{cursor:pointer;padding:5px 10px;border-radius:999px;border:1px solid var(--line);background:var(--surface);font-weight:600;transition:background .15s}
+.legpz [data-prazo]:hover{background:#F2F8FB;border-color:var(--c)}
+.legpz [data-prazo].on{background:var(--c);color:#fff;border-color:var(--c)}
+.legpz [data-prazo].on::before{background:#fff}
+.legpz.ativo [data-prazo]:not(.on){opacity:.55}
+
 </style>
 </head>
 <body>
@@ -977,10 +983,10 @@ body.aba-rel .assina{display:block}
     <div class="fornp" id="fornPainel"></div>
     <div class="dash">
       <div class="sect s12">Carteira por grupo · hoje</div>
-      <article class="card s6"><header class="ch"><div><h3>Grajaú</h3><p>no prazo × fora do prazo</p></div><div class="leg2"><span style="--c:#2FA36B">No prazo</span><span style="--c:#D9534A">Fora do prazo</span></div></header><div id="cgGra"></div></article>
-      <article class="card s6"><header class="ch"><div><h3>Interlagos</h3><p>no prazo × fora do prazo</p></div><div class="leg2"><span style="--c:#2FA36B">No prazo</span><span style="--c:#D9534A">Fora do prazo</span></div></header><div id="cgInt"></div></article>
+      <article class="card s6"><header class="ch"><div><h3>Grajaú</h3><p>no prazo × fora do prazo</p></div><div class="leg2 legpz"><span style="--c:#2FA36B" data-prazo="no" title="Clique para ver só o que está no prazo">No prazo</span><span style="--c:#D9534A" data-prazo="fora" title="Clique para ver só o que está fora do prazo">Fora do prazo</span></div></header><div id="cgGra"></div></article>
+      <article class="card s6"><header class="ch"><div><h3>Interlagos</h3><p>no prazo × fora do prazo</p></div><div class="leg2 legpz"><span style="--c:#2FA36B" data-prazo="no" title="Clique para ver só o que está no prazo">No prazo</span><span style="--c:#D9534A" data-prazo="fora" title="Clique para ver só o que está fora do prazo">Fora do prazo</span></div></header><div id="cgInt"></div></article>
       <div class="sect s12">Carteira por família · todos os serviços</div>
-      <article class="card s12"><header class="ch"><div><h3>Por família</h3><p id="famNota">clique na família para ver os TSS · clique nos números para ver as OS</p></div><div class="leg2"><span style="--c:#2FA36B">No prazo</span><span style="--c:#D9534A">Fora do prazo</span></div></header><div class="scroll"><table class="tfam" id="tbFam"></table></div></article>
+      <article class="card s12"><header class="ch"><div><h3>Por família</h3><p id="famNota">clique na família para ver os TSS · clique nos números para ver as OS</p></div><div class="leg2 legpz"><span style="--c:#2FA36B" data-prazo="no">No prazo</span><span style="--c:#D9534A" data-prazo="fora">Fora do prazo</span></div></header><div class="scroll"><table class="tfam" id="tbFam"></table></div></article>
       <div class="sect s12" id="evoTit">Evolução da carteira no mês</div>
       <article class="card s6"><header class="ch"><div><h3>Grajaú</h3><p>no prazo × fora do prazo, dia a dia</p></div><div class="leg2"><span style="--c:#2FA36B">No prazo</span><span style="--c:#D9534A">Fora do prazo</span></div></header><div class="chart ev" id="evoGra"></div></article>
       <article class="card s6"><header class="ch"><div><h3>Interlagos</h3><p>no prazo × fora do prazo, dia a dia</p></div><div class="leg2"><span style="--c:#2FA36B">No prazo</span><span style="--c:#D9534A">Fora do prazo</span></div></header><div class="chart ev" id="evoInt"></div></article>
@@ -1485,6 +1491,7 @@ function renderFiltros(){
   $("segDia").innerHTML=`<button type="button" data-dia="todos" aria-pressed="${diaSel==="todos"}"><small>${ds.length>1?ds.length+" dias":"período"}</small>Todos</button>`+ds.map(d=>`<button type="button" data-dia="${d}" aria-pressed="${diaSel===d}"><small>${wd(d)}</small>${dm(d)}</button>`).join("");
   $("segPrazo").innerHTML=[["","Todos"],["no","No prazo"],["fora","Fora do prazo"]].map(([k,l])=>`<button type="button" class="pz-${k||"t"}" data-pz="${k}" aria-pressed="${k===prazoSel}">${l}</button>`).join("");
   $("fgPrazo").hidden=abaAtual!=="painel";
+  document.querySelectorAll(".legpz [data-prazo]").forEach(e=>e.classList.toggle("on",e.dataset.prazo===prazoSel));document.querySelectorAll(".legpz").forEach(e=>e.classList.toggle("ativo",!!prazoSel));
   $("dataCart").textContent=S.ult.dc?wd(S.ult.dc)+" "+dmy(S.ult.dc):"–";
   $("segPolo").closest(".fgrp").hidden=abaAtual==="serv"||abaAtual==="lig"||abaAtual==="rel";$("segDia").closest(".fgrp").hidden=abaAtual==="res";}
 $("segPolo").onclick=e=>{const b=e.target.closest("button");if(!b)return;poloSel=b.dataset.polo;renderTudo();};
