@@ -814,6 +814,14 @@ body.aba-rel .foot{display:none}
 .gota.tlg{width:56px;height:56px;border-radius:16px;margin:0 auto 4px}
 #hData,#hRes{display:none!important}
 
+/* resumo · por fornecedor */
+table.rforn{width:calc(100% - 36px);margin:10px 18px 4px;border-collapse:collapse;font-size:13px}
+.rforn th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);padding:6px 8px;border-bottom:1px solid var(--line)}
+.rforn td{padding:7px 8px;border-bottom:1px solid var(--line-2);font-variant-numeric:tabular-nums}
+.rforn td.up{color:#C2362B;font-weight:700}
+.rfb{height:10px;border-radius:999px;background:var(--line-2);overflow:hidden}.rfb i{display:block;height:100%;background:#0093C9;border-radius:999px}
+.rfnota{font-size:11px;color:var(--muted);padding:2px 18px 12px}
+
 </style>
 </head>
 <body>
@@ -1270,7 +1278,7 @@ function registros(raw,tipo){
   for(const r of raw.rows){
     const o={os:keyOS(g(r,"os")),p:poloDe(g(r,"atc")),tss:clean(g(r,"tss")),fam:clean(g(r,"fam")),end:clean([clean(g(r,"end")),clean(g(r,"num"))].filter(Boolean).join(", ")),bai:clean(g(r,"bai")),mun:clean(g(r,"mun"))};
     // só a ligação de água exige o Consórcio Global (acatados, executados e carteira); o resto vale para todos os contratos
-    o.g=grupoDe(o.tss,o.fam,g(r,"forn"));
+    o.g=grupoDe(o.tss,o.fam,g(r,"forn"));o.forn=clean(g(r,"forn"));
     if(tipo==="ex"){o.dt=dataIso(g(r,"ini"));o.ini=txtData(g(r,"ini"));o.fim=txtData(g(r,"fim"));o.cod=clean(g(r,"cod")).split(".")[0];o.res=clean(g(r,"res"));o.eq=clean(g(r,"eq"));
       o.conta=executadoDeFato(o.cod,o.res);if(!o.tss){est.semTss++;continue;}}
     else{o.dt=dataIso(g(r,"ins"));o.ins=txtData(g(r,"ins"));o.pf=txtData(g(r,"pf"));o.tr=clean(g(r,"tr"));o.fora=o.tr.startsWith("-");o.st=clean(g(r,"st"));if(!o.tss)continue;}
@@ -1547,6 +1555,16 @@ function renderRes(){
     <div class="rg"><div class="rgt">Evolução da carteira no mês<span class="leg2"><span style="--c:#2FA36B">No prazo</span><span style="--c:#D9534A">Fora</span></span></div>${evo.length?barras(evo,{empilhar:1,wmin:420,h:200,rotular:1,bw:26}):'<div class="empty">Sem histórico no mês.</div>'}</div></div>`;
   // serviços em cartões
   h+=`<div class="rsv"><div class="svc4">${cardsServ(ds)}</div></div>`;
+  // ---- por fornecedor (contrato) ----
+  {const nomeF=f=>{let t=clean(f);if(!t)return "Sem fornecedor";t=t.replace(/^EMPRESA\s+/i,"").split("/")[0].trim();return t.length>46?t.slice(0,44)+"…":t;};
+   const F={};const add=(f,k,v)=>{const n=nomeF(f);(F[n]=F[n]||{n,ent:0,exe:0,cart:0,fora:0})[k]+=v;};
+   for(const r of u.ac)if(ds.includes(r.dt)&&relOk(r)&&fpp(r))add(r.forn,"ent",1);
+   for(const r of u.ex)if(ds.includes(r.dt)&&relOk(r)&&fpp(r))add(r.forn,"exe",1);
+   for(const r of u.ca)if(fpp(r)){add(r.forn,"cart",1);if(r.fora)add(r.forn,"fora",1);}
+   const L=Object.values(F).sort((a,b)=>(b.cart+b.ent+b.exe)-(a.cart+a.ent+a.exe));const mx=Math.max(1,...L.map(x=>x.cart));
+   if(L.length&&!(L.length===1&&L[0].n==="Sem fornecedor"))h+=`<div class="rsec"><div class="rsech">Por fornecedor<small>contratos · entradas e execuções de ${per} · carteira de ${dmy(u.dc)}</small></div>
+     <table class="rforn"><thead><tr><th>Fornecedor</th><th>Entradas</th><th>Execuções</th><th>Carteira</th><th>Fora do prazo</th><th style="width:30%"></th></tr></thead><tbody>${L.map(x=>`<tr><td><b>${esc(x.n)}</b></td><td>${nf(x.ent)}</td><td>${nf(x.exe)}</td><td><b>${nf(x.cart)}</b></td><td class="${x.fora?"up":""}">${nf(x.fora)}</td><td><div class="rfb"><i style="width:${(x.cart*100/mx).toFixed(1)}%"></i></div></td></tr>`).join("")}</tbody></table>
+     <div class="rfnota">Execuções = todas as baixas do contrato. Os arquivos precisam ter sido subidos depois desta atualização para aparecer o fornecedor.</div></div>`;}
   // ---- ligação de água (visual) ----
   {const g=LIG;const Pl=POLOS.slice().reverse();
    const El=(d,p)=>u.ac.filter(r=>r.g===g&&r.dt===d&&(!p||r.p===p)).length,Xl=(d,p)=>u.ex.filter(r=>r.g===g&&r.dt===d&&r.conta&&(!p||r.p===p)).length;
