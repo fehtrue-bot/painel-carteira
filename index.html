@@ -729,7 +729,7 @@ body.printmode .hero{display:none!important}.rhead{background:linear-gradient(12
 .pub .publ input{flex:1;min-width:240px;font-family:var(--f-mono,monospace);font-size:14px;font-weight:600;padding:10px 12px;border-radius:10px;border:1.5px solid #9FD3B5;background:#F4FBF7;color:#14613A}
 #pubMsg.ok{color:#14613A;font-weight:600}#pubMsg.err{color:#C2362B;font-weight:600}
 /* modo coordenação: só visualização */
-body.leitor #btnSubir,body.leitor .hbt,body.leitor #imp,body.leitor #intro,body.leitor #pub,body.leitor .hquem,body.leitor #telaLogin,body.leitor #t-os,body.leitor #t-mon{display:none!important}
+body.leitor #btnSubir,body.leitor .hbt,body.leitor #imp,body.leitor #intro,body.leitor #pub,body.leitor .hquem,body.leitor #telaLogin,body.leitor #t-os,body.leitor #t-mon,body.leitor #t-res,body.leitor .resbar{display:none!important}
 body.leitor .appbar .actions{display:flex}
 
 /* religação compacta (cabe numa tela) */
@@ -2110,7 +2110,7 @@ async function carregarLeitor(){const q="?k="+encodeURIComponent(SLUG);const m=a
 async function iniciarLeitor(){document.body.classList.add("leitor");const ft=document.querySelector(".foot");if(ft)ft.textContent="Painel da Carteira de Serviços · Interlagos e Grajaú · só visualização";$("telaLogin").hidden=true;document.title="Carteira de Serviços · Interlagos e Grajaú";
   $("hSaudL").textContent="Carteira de Serviços · Interlagos e Grajaú";setConn("warn","Carregando o painel…","");
   try{await carregarLeitor();}catch(e){S=normalizar(null);setConn("off",e.message,"");$("hRes").textContent=e.message;window.__pronto=true;return;}
-  let ab=lsg("carteira-aba");if(ab==="mon"||ab==="os")ab="rel";if(ab&&$("t-"+ab))aba(ab);else renderTudo();window.__pronto=true;
+  let ab=lsg("carteira-aba");if(ab==="mon"||ab==="os")ab="rel";if(ab==="res")ab="painel";if(ab&&$("t-"+ab))aba(ab);else renderTudo();window.__pronto=true;
   setInterval(async()=>{if(document.hidden)return;try{if(await carregarLeitor())renderTudo();}catch(e){}},180000);}
 if(LEITOR)iniciarLeitor();else
 (async()=>{await pedirSenha();await carregarLocal();let ab=lsg("carteira-aba");if(ab==="mon")ab="rel";if(ab&&$("t-"+ab)&&!$("t-"+ab).hidden)aba(ab);else renderTudo();window.__pronto=true;})();
