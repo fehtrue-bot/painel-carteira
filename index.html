@@ -886,9 +886,9 @@ body.aba-rel .foot{display:none}
   <section class="panel imp" id="imp" hidden>
     <div class="panel-h"><h2>Arquivos do dia</h2><button type="button" id="impFechar">Fechar</button></div>
     <div class="slots s3">
-      <label class="slot" for="fAc"><span class="sn1">1</span><span class="st1"><b>Acatados</b><small>do sistema · Interlagos e Embu (pode escolher os 2 juntos)</small><em id="nAc">Clique para escolher</em></span><input type="file" id="fAc" accept=".xlsx,.csv" multiple></label>
-      <label class="slot" for="fEx"><span class="sn1">2</span><span class="st1"><b>Executados</b><small>do sistema · Interlagos e Embu (pode escolher os 2 juntos)</small><em id="nEx">Clique para escolher</em></span><input type="file" id="fEx" accept=".xlsx,.csv" multiple></label>
-      <label class="slot" for="fCa"><span class="sn1">3</span><span class="st1"><b>Carteira</b><small>do sistema · Interlagos e Embu (pode escolher os 2 juntos)</small><em id="nCa">Clique para escolher</em></span><input type="file" id="fCa" accept=".xlsx,.csv" multiple></label>
+      <label class="slot" for="fAc"><span class="sn1">1</span><span class="st1"><b>Acatados</b><small>do sistema · Interlagos e Embu (pode escolher os 2 juntos)</small><em id="nAc">Clique para escolher</em></span><input type="file" id="fAc" accept=".xlsx,.xls,.csv,.txt,.htm,.html,.xml" multiple></label>
+      <label class="slot" for="fEx"><span class="sn1">2</span><span class="st1"><b>Executados</b><small>do sistema · Interlagos e Embu (pode escolher os 2 juntos)</small><em id="nEx">Clique para escolher</em></span><input type="file" id="fEx" accept=".xlsx,.xls,.csv,.txt,.htm,.html,.xml" multiple></label>
+      <label class="slot" for="fCa"><span class="sn1">3</span><span class="st1"><b>Carteira</b><small>do sistema · Interlagos e Embu (pode escolher os 2 juntos)</small><em id="nCa">Clique para escolher</em></span><input type="file" id="fCa" accept=".xlsx,.xls,.csv,.txt,.htm,.html,.xml" multiple></label>
     </div>
     <div class="row">
       <label for="dCart" class="lbl">Data da carteira</label><input type="date" id="dCart">
@@ -1014,7 +1014,7 @@ async function inflateRaw(bytes){
 }
 async function unzip(buf){
   const u=new Uint8Array(buf),v=new DataView(buf);let e=-1;
-  for(let i=u.length-22;i>=Math.max(0,u.length-70000);i--){if(v.getUint32(i,true)===0x06054b50){e=i;break;}}
+  for(let i=u.length-22;i>=0;i--){if(v.getUint32(i,true)===0x06054b50){e=i;break;}}
   if(e<0)throw new Error("zip");
   const n=v.getUint16(e+10,true);let p=v.getUint32(e+16,true);const files={};const td=new TextDecoder();
   for(let k=0;k<n;k++){
@@ -1052,6 +1052,27 @@ async function abrirXlsx(buf){
     return aoa;}
   return {nomes:abas.map(a=>a.nome),ler};
 }
+// Abre qualquer planilha exportada: .xlsx normal, Excel 2003 (XML), página web salva como .xls/.xlsx ou texto (CSV/TSV)
+async function abrirPlanilha(file){
+  const buf=await file.arrayBuffer();const u=new Uint8Array(buf.slice(0,8));
+  if(u[0]===0x50&&u[1]===0x4B){try{return await abrirXlsx(buf);}catch(e){throw new Error(`O arquivo "${file.name}" parece estar incompleto ou corrompido. Baixe de novo do sistema.`);}}
+  if(u[0]===0xD0&&u[1]===0xCF&&u[2]===0x11&&u[3]===0xE0)throw new Error(`O arquivo "${file.name}" está no formato antigo do Excel (.xls). Abra no Excel e use Salvar como → Pasta de Trabalho do Excel (.xlsx), depois suba de novo.`);
+  if(!buf.byteLength)throw new Error(`O arquivo "${file.name}" está vazio. Baixe de novo do sistema.`);
+  let txt=new TextDecoder("utf-8").decode(buf);if(txt.includes("�"))txt=new TextDecoder("windows-1252").decode(buf);
+  const ini=txt.slice(0,2000).trim();
+  const grade=linhas=>({nomes:["Planilha1"],ler:async()=>linhas});
+  if(/<\?xml|<Workbook/i.test(ini)&&/<Worksheet|<ss:Worksheet/i.test(txt)){
+    const doc=new DOMParser().parseFromString(txt,"application/xml");const abas=tags(doc,"Worksheet");
+    const lerAba=ws=>{const out=[];for(const row of tags(ws,"Row")){const r=[];for(const c of tags(row,"Cell")){const ix=c.getAttribute("ss:Index")||c.getAttributeNS("urn:schemas-microsoft-com:office:spreadsheet","Index");if(ix)while(r.length<Number(ix)-1)r.push("");const d=tags(c,"Data")[0];r.push(d?d.textContent:"");}out.push(r);}return out;};
+    return {nomes:abas.map((w,i)=>w.getAttribute("ss:Name")||"Planilha"+(i+1)),ler:async nome=>{const i=abas.findIndex((w,k)=>(w.getAttribute("ss:Name")||"Planilha"+(k+1))===nome);return lerAba(abas[Math.max(0,i)]);}};}
+  if(/<(html|table|!doctype)/i.test(ini)||/<table/i.test(txt.slice(0,20000))){
+    const doc=new DOMParser().parseFromString(txt,"text/html");const tabs=[...doc.querySelectorAll("table")];
+    if(!tabs.length)throw new Error(`Não achei tabela no arquivo "${file.name}".`);
+    const t=tabs.sort((a,b)=>b.rows.length-a.rows.length)[0];
+    return grade([...t.rows].map(tr=>[...tr.cells].map(td=>td.textContent.replace(/\s+/g," ").trim())));}
+  // texto: tabulação ou ; ou ,
+  const l0=txt.split("\n")[0];if(l0.includes("\t"))return grade(txt.split(/\r?\n/).map(l=>l.split("\t")));
+  return grade(lerCsv(txt));}
 async function lerXlsx(buf){const w=await abrirXlsx(buf);return w.ler(w.nomes[0]);}
 function lerCsv(txt){const sep=(txt.split("\n")[0].match(/;/g)||[]).length>(txt.split("\n")[0].match(/,/g)||[]).length?";":",";
   const rows=[];let row=[],cur="",q=false;
@@ -1213,7 +1234,7 @@ const ABA_TIPO={ac:"ACATADOS",ex:"EXECUTADOS",ca:"CARTEIRA"};
 async function lerTabela(file,tipo){
   const nome=file.name;let aoa=null;
   if(/\.csv$/i.test(nome))aoa=lerCsv(await file.text());
-  else{const w=await abrirXlsx(await file.arrayBuffer());
+  else{const w=await abrirPlanilha(file);
     let alvo=w.nomes.find(n=>U(n).trim()===ABA_TIPO[tipo]);
     if(alvo)aoa=await w.ler(alvo);
     else{for(const n of w.nomes){const a=await w.ler(n);if(a&&acharCab(a)>=0){aoa=a;break;}}}}
