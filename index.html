@@ -826,19 +826,6 @@ body.aba-rel .foot{display:none}
 
 /* balões no Painel */
 .fornp:empty{display:none}.fornp .bfw{background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);padding:10px 14px}
-/* Resumo compacto: cabe numa tela */
-#resCard .rhead{padding:8px 16px}#resCard .rhead h2{font-size:17px}#resCard .rhead p{font-size:11.5px;margin-top:2px}#resCard .rhead .rdt{font-size:10px}#resCard .rhead .rdt b{font-size:16px}
-#resCard .rk div{padding:5px 12px}#resCard .rk b{font-size:21px}#resCard .rk small{font-size:9.5px}#resCard .rk em{font-size:10.5px}
-#resCard .bfw{padding:6px 12px 2px}#resCard .bft{margin-bottom:4px;font-size:10px}#resCard .bfs{gap:6px}
-#resCard .bfo{padding:5px 9px;gap:3px;border-radius:10px}#resCard .bfn{font-size:10.5px}#resCard .bfc b{font-size:19px}#resCard .bfc span{font-size:10.5px}#resCard .bfm{padding-top:3px;gap:10px}#resCard .bfm small{font-size:9px}#resCard .bfm b{font-size:12.5px}
-#resCard .r3{padding:6px 12px;gap:8px}#resCard .rg{padding:5px 8px}#resCard .rgt{font-size:12px;margin-bottom:2px}
-#resCard .rsv{padding:4px 12px 2px}#resCard .svc4{gap:7px}
-#resCard .c4{padding:6px 9px;gap:3px;border-radius:10px;border-top-width:4px}#resCard .c4 .h4 b{font-size:13px}#resCard .c4 .big b{font-size:22px}#resCard .c4 .big span{font-size:10.5px}
-#resCard .c4 .pz4{height:15px}#resCard .c4 .pz4 i{font-size:10px}#resCard .c4 .lg4{font-size:10.5px}#resCard .c4 .ch4 svg{max-height:46px}#resCard .c4 .ft4{padding-top:3px}#resCard .c4 .ft4 small{font-size:8.5px}#resCard .c4 .ft4 b{font-size:14px}
-#resCard .rsec{border-top-width:3px;margin-top:2px}#resCard .rsech{padding:5px 12px;font-size:14px}#resCard .rsech small{font-size:11px}
-#resCard .hb .hr{font-size:11px}#resCard .hb{gap:4px}
-#resCard .rfoot{padding:4px 12px 6px;font-size:10px}
-#resCard .hb .hr{min-height:0}#resCard .hb .hr>div{height:11px}#resCard .pzb .st{height:18px!important}
 
 /* balões clicáveis */
 .bfo{font:inherit;text-align:left;cursor:pointer;color:inherit;transition:box-shadow .15s,opacity .15s}
@@ -847,6 +834,13 @@ body.aba-rel .foot{display:none}
 .bfo.sel{outline:3px solid #0093C9;outline-offset:1px}
 .bfo.apag{opacity:.5}
 .bft span{font-weight:500;text-transform:none;letter-spacing:0;margin-left:6px;color:var(--muted)}.bft span b{color:#00396F}
+
+/* print separado: carteira ou ligação de água, ocupando a tela */
+body.print-cart .pc-lig,body.print-lig .pc-cart{display:none!important}
+body.print-lig .pc-lig{border-top:0;margin-top:0}
+body.printmode #resCard{max-width:1700px;margin:0 auto}
+.ghost2{background:#fff;color:#00396F;border:1px solid #BFE9F7}
+body.print-lig #resCard{zoom:1.45;max-width:1280px}
 
 </style>
 </head>
@@ -973,7 +967,7 @@ body.aba-rel .foot{display:none}
   </section>
 
   <section id="v-res" class="view" hidden>
-    <div class="row resbar"><span class="note">Mostra todos os dias juntos, por serviço. Clique em <b>Modo print</b> para deixar só o quadro na tela e tirar o print.</span><button type="button" class="primary" id="btnPrint"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9V5h4M20 9V5h-4M4 15v4h4M20 15v4h-4"/></svg> Modo print</button></div>
+    <div class="row resbar"><span class="note">Escolha o que vai para o print: o quadro fica sozinho na tela, do tamanho dela. Para sair, aperte <b>Esc</b>.</span><div class="row" style="gap:8px"><button type="button" class="primary" id="btnPrintCart"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9V5h4M20 9V5h-4M4 15v4h4M20 15v4h-4"/></svg> Print da carteira</button><button type="button" class="ghost2" id="btnPrintLig"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9V5h4M20 9V5h-4M4 15v4h4M20 15v4h-4"/></svg> Print da ligação de água</button><button type="button" class="ghost2" id="btnPrint"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9V5h4M20 9V5h-4M4 15v4h4M20 15v4h-4"/></svg> Tudo junto</button></div></div>
     <div class="rescard" id="resCard"></div>
   </section>
 
@@ -1602,6 +1596,7 @@ function renderRes(){
   const per=ds.length?(ds.length===1?`${wd(ds[0])} ${dmy(ds[0])}`:`${wd(ds[0])} ${dm(ds[0])} a ${wd(ds[ds.length-1])} ${dm(ds[ds.length-1])}`):"–";
   let h=`<div class="rhead"><div><h2>Carteira de Serviços · ${pol==="Todos"?"Interlagos e Grajaú":esc(pol)}</h2><p>Entradas e execuções de ${per} · carteira de ${wd(u.dc)} ${dmy(u.dc)}</p></div><div class="rdt">Carteira de<b>${dmy(u.dc)}</b></div></div>`;
   const pv=pctN(T.no,T.cart);
+  h+=`<div class="pc-cart">`;
   h+=`<div class="rk"><div><small>Carteira</small><b>${nf(T.cart)}</b><em>${nf(T.no)} no prazo</em></div><div><small>Fora do prazo</small><b class="${T.fora?"up":""}">${nf(T.fora)}</b><em>${T.dFora==null?"":(T.dFora>0?"▲ ":T.dFora<0?"▼ ":"= ")+nf(Math.abs(T.dFora))+" vs "+dm(T.da)}</em></div><div><small>% no prazo</small><b style="color:${pv==null?"inherit":pv>=META?"#23824F":pv>=META-.15?"#A66B00":"#C2362B"}">${pv==null?"–":(Math.round(pv*1000)/10).toLocaleString("pt-BR")+"%"}</b><em>meta ${Math.round(META*100)}%</em></div><div><small>Entradas</small><b style="color:#B9650F">${nf(se)}</b><em>${ds.length} dia${ds.length>1?"s":""}</em></div><div><small>Execuções</small><b style="color:#1C7444">${nf(sx)}</b><em>${ds.length} dia${ds.length>1?"s":""}</em></div><div><small>Saldo</small><b class="${se-sx>0?"up":"down"}">${sgn(se-sx)}</b><em>${se>sx?"carteira sobe":se<sx?"carteira desce":"equilibrado"}</em></div></div>`;
   h+=baloesForn(ds,fppPolo);
   // gráficos: dia a dia, prazo por polo, evolução
@@ -1609,29 +1604,31 @@ function renderRes(){
   const pzRows=(pol==="Todos"?POLOS.slice().reverse():[pol]).map(p=>({p,...conta({p})}));
   const dsH=datasHist();const mes=(u.dc||"").slice(0,7);const fH=(p,g)=>pol==="Todos"||p===pol;
   const evo=dsH.filter(d=>d.startsWith(mes)&&(somaHist(d,2,fH)!=null||somaHist(d,3,fH)!=null)).slice(-10).map(d=>({lab:dm(d),sub:wd(d),vals:[{v:somaHist(d,2,fH)||0,c:"#2FA36B"},{v:somaHist(d,3,fH)||0,c:"#D9534A"}]}));
-  h+=`<div class="r3"><div class="rg"><div class="rgt">Entradas × execuções por dia<span class="leg2"><span style="--c:#F0A23B">Entradas</span><span style="--c:#23824F">Execuções</span></span></div>${miniBarras(itD,{h:104})}</div>
+  h+=`<div class="r3"><div class="rg"><div class="rgt">Entradas × execuções por dia<span class="leg2"><span style="--c:#F0A23B">Entradas</span><span style="--c:#23824F">Execuções</span></span></div>${miniBarras(itD,{h:170})}</div>
     <div class="rg"><div class="rgt">Prazo da carteira por polo<span class="leg2"><span style="--c:#2FA36B">No prazo</span><span style="--c:#D9534A">Fora</span></span></div>${pzBarras(pzRows)}</div>
-    <div class="rg"><div class="rgt">Evolução da carteira no mês<span class="leg2"><span style="--c:#2FA36B">No prazo</span><span style="--c:#D9534A">Fora</span></span></div>${evo.length?barras(evo,{empilhar:1,wmin:560,h:128,rotular:1,bw:26}):'<div class="empty">Sem histórico no mês.</div>'}</div></div>`;
+    <div class="rg"><div class="rgt">Evolução da carteira no mês<span class="leg2"><span style="--c:#2FA36B">No prazo</span><span style="--c:#D9534A">Fora</span></span></div>${evo.length?barras(evo,{empilhar:1,wmin:420,h:200,rotular:1,bw:26}):'<div class="empty">Sem histórico no mês.</div>'}</div></div>`;
   // serviços em cartões
   h+=`<div class="rsv"><div class="svc4">${cardsServ(ds)}</div></div>`;
+  h+=`</div>`;
   // ---- ligação de água (visual) ----
   {const g=LIG;const Pl=POLOS.slice().reverse();
    const El=(d,p)=>u.ac.filter(r=>r.g===g&&r.dt===d&&(!p||r.p===p)).length,Xl=(d,p)=>u.ex.filter(r=>r.g===g&&r.dt===d&&r.conta&&(!p||r.p===p)).length;
    const cl=p=>{const c=u.ca.filter(r=>r.g===g&&(!p||r.p===p));return {cart:c.length,fora:c.filter(r=>r.fora).length};};
    const te=ds.reduce((a,d)=>a+El(d),0),tx=ds.reduce((a,d)=>a+Xl(d),0),ct=cl();
-   h+=`<div class="rsec"><div class="rsech"><span class="rdot" style="--c:${COR[g]}"></span>Ligação de água<small>só Contrato Global · ${per}</small></div>
+   h+=`<div class="rsec pc-lig"><div class="rsech"><span class="rdot" style="--c:${COR[g]}"></span>Ligação de água<small>só Contrato Global · ${per}</small></div>
      <div class="rk rk5"><div><small>Entradas</small><b style="color:#B9650F">${nf(te)}</b><em>${Pl.map(p=>ds.reduce((a,d)=>a+El(d,p),0)+" "+p).join(" · ")}</em></div><div><small>Executadas</small><b style="color:#1C7444">${nf(tx)}</b><em>${Pl.map(p=>ds.reduce((a,d)=>a+Xl(d,p),0)+" "+p).join(" · ")}</em></div><div><small>Saldo</small><b class="${te-tx>0?"up":"down"}">${sgn(te-tx)}</b><em>${te>tx?"carteira sobe":te<tx?"carteira desce":"equilibrado"}</em></div><div><small>Carteira</small><b>${nf(ct.cart)}</b><em>${Pl.map(p=>cl(p).cart+" "+p).join(" · ")}</em></div><div><small>Fora do prazo</small><b class="${ct.fora?"up":""}">${nf(ct.fora)}</b><em>${ct.cart?pctTxt(ct.fora,ct.cart)+" da carteira":""}</em></div></div>`;
    const itL=ds.map(d=>({lab:dm(d),sub:wd(d),vals:[{v:El(d),c:"#F0A23B"},{v:Xl(d),c:"#23824F"}]}));
    const ca=u.ca.filter(r=>r.g===g);
    const fx=FX.map(([k,l,c])=>({l,c,n:ca.filter(r=>faixaDe(r)===k).length}));const mf=Math.max(1,...fx.map(f=>f.n));
    const ts=tssDoGrupo(g).map(t=>({t,c:ca.filter(r=>r.tss===t).length,e:u.ac.filter(r=>r.g===g&&r.tss===t&&ds.includes(r.dt)).length,x:u.ex.filter(r=>r.g===g&&r.tss===t&&ds.includes(r.dt)&&r.conta).length})).filter(x=>x.c||x.e||x.x);
    const mt=Math.max(1,...ts.map(x=>x.c));
-   h+=`<div class="r3"><div class="rg"><div class="rgt">Entradas × executadas por dia<span class="leg2"><span style="--c:#F0A23B">Entradas</span><span style="--c:#23824F">Executadas</span></span></div>${miniBarras(itL,{h:100})}</div>
+   h+=`<div class="r3"><div class="rg"><div class="rgt">Entradas × executadas por dia<span class="leg2"><span style="--c:#F0A23B">Entradas</span><span style="--c:#23824F">Executadas</span></span></div>${miniBarras(itL,{h:160})}</div>
      <div class="rg"><div class="rgt">Prazo da carteira de ligação</div><div class="hb">${fx.map(f=>`<div class="hr"><span>${f.l}</span><div><i style="width:${(f.n*100/mf).toFixed(1)}%;background:${f.c}"></i></div><b>${nf(f.n)}</b></div>`).join("")}</div></div>
-     <div class="rg"><div class="rgt">Carteira por tipo de ligação</div><div class="hb tsb">${ts.slice(0,5).map(x=>`<div class="hr"><span title="${esc(x.t)}">${esc(x.t)}</span><div><i style="width:${(x.c*100/mt).toFixed(1)}%;background:${COR[g]}"></i></div><b>${nf(x.c)}</b></div>`).join("")}</div></div></div></div>`;}
+     <div class="rg"><div class="rgt">Carteira por tipo de ligação</div><div class="hb tsb">${ts.slice(0,7).map(x=>`<div class="hr"><span title="${esc(x.t)}">${esc(x.t)}</span><div><i style="width:${(x.c*100/mt).toFixed(1)}%;background:${COR[g]}"></i></div><b>${nf(x.c)}</b></div>`).join("")}</div></div></div></div>`;}
   h+=`<div class="rfoot"><span>Entradas = acatados pela data de inserção · Execuções no total = todas as baixas; nos serviços = só o serviço executado (fim do dia, imóvel fechado, outro serviço, duplicidade etc. não contam)</span><span>Gerado em ${new Date().toLocaleString("pt-BR",{dateStyle:"short",timeStyle:"short"})}</span></div>`;
   $("resCard").innerHTML=ds.length||u.dc?h:`<div class="empty">Suba os arquivos do dia para montar o resumo.</div>`;}
-$("btnPrint").onclick=()=>{document.body.classList.add("printmode");window.scrollTo({top:0});};
+const modoPrint=q=>{document.body.classList.remove("print-cart","print-lig");if(q)document.body.classList.add(q);document.body.classList.add("printmode");window.scrollTo({top:0});};
+$("btnPrint").onclick=()=>modoPrint("");$("btnPrintCart").onclick=()=>modoPrint("print-cart");$("btnPrintLig").onclick=()=>modoPrint("print-lig");
 (()=>{const b=document.createElement("button");b.type="button";b.className="sairprint";b.textContent="Sair do modo print (Esc)";b.onclick=()=>document.body.classList.remove("printmode");document.body.appendChild(b);})();
 document.addEventListener("keydown",e=>{if(e.key==="Escape")document.body.classList.remove("printmode");});
 
