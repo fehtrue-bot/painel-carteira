@@ -840,6 +840,14 @@ body.aba-rel .foot{display:none}
 #resCard .rfoot{padding:4px 12px 6px;font-size:10px}
 #resCard .hb .hr{min-height:0}#resCard .hb .hr>div{height:11px}#resCard .pzb .st{height:18px!important}
 
+/* balões clicáveis */
+.bfo{font:inherit;text-align:left;cursor:pointer;color:inherit;transition:box-shadow .15s,opacity .15s}
+.bfo:hover{box-shadow:0 4px 12px rgba(0,57,111,.15)}
+.bfo.cg{background:#E3F8FE;border:2px solid #12D1FE}
+.bfo.sel{outline:3px solid #0093C9;outline-offset:1px}
+.bfo.apag{opacity:.5}
+.bft span{font-weight:500;text-transform:none;letter-spacing:0;margin-left:6px;color:var(--muted)}.bft span b{color:#00396F}
+
 </style>
 </head>
 <body>
@@ -1385,17 +1393,18 @@ $("btnAjuda").onclick=()=>{$("intro").hidden=!$("intro").hidden;};$("btnFecharAj
 let poloSel="Todos",diaSel="todos",abaAtual="painel",servSel="Vazamento de água",grupoEvo="Todos",mesSel="";
 const osF={modo:"carteira",g:"",tss:"",prazo:"",nc:"",fx:""};
 const fp=r=>poloSel==="Todos"||r.p===poloSel;
+const fpPolo=fp;
 const diasSel=()=>diaSel==="todos"?S.ult.dias:[diaSel];
 // Religação: entradas e execuções sempre só do dia anterior à carteira (nenhum dia a mais)
 function diaRel(){const dc=S.ult.dc;if(!dc)return S.ult.dias[S.ult.dias.length-1]||"";const d=new Date(dc+"T12:00:00");d.setDate(d.getDate()-1);return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;}
 const relOk=r=>r.g!=="Religação"||r.dt===diaRel();
 const noDia=r=>r.g==="Religação"?r.dt===diaRel():diasSel().includes(r.dt);
-function conta(o){const u=S.ult;const g=o.g,p=o.p||null;const fpol=r=>p?r.p===p:fp(r);
+function conta(o){const u=ultF();const g=o.g,p=o.p||null;const fpol=r=>p?r.p===p:fp(r);
   const ca=u.ca.filter(r=>(!g||r.g===g)&&fpol(r));const fora=ca.filter(r=>r.fora).length;
   const ent=u.ac.filter(r=>(!g||r.g===g)&&fpol(r)&&noDia(r)).length;
   const exe=u.ex.filter(r=>(!g||r.g===g)&&fpol(r)&&noDia(r)&&exGeral(r,g)).length;
   const da=diaAnterior();let ant=null;
-  if(da){ant=somaHist(da,3,(pp,gg)=>(!g||gg===g)&&(p?pp===p:(poloSel==="Todos"||pp===poloSel)));}
+  if(da&&!fornSel){ant=somaHist(da,3,(pp,gg)=>(!g||gg===g)&&(p?pp===p:(poloSel==="Todos"||pp===poloSel)));}
   return {cart:ca.length,fora,no:ca.length-fora,ent,exe,saldo:ent-exe,dFora:ant==null?null:fora-ant,da};}
 function rotDias(){const d=diasSel();if(!d.length)return "sem entradas e execuções";if(d.length===1)return wd(d[0])+" "+dmy(d[0]);return `${wd(d[0])} ${dm(d[0])} a ${wd(d[d.length-1])} ${dm(d[d.length-1])} (${d.length} dias)`;}
 // meta: 80% no prazo; religação: nenhuma vencida (100%)
@@ -1436,10 +1445,10 @@ $("segDia").onclick=e=>{const b=e.target.closest("button");if(!b)return;diaSel=b
 
 function renderHero(T){const h=new Date().getHours();
   $("hData").textContent=(h<12?"Bom dia":h<18?"Boa tarde":"Boa noite")+" · "+new Date().toLocaleDateString("pt-BR",{weekday:"long",day:"numeric",month:"long",year:"numeric"});
-  const u=S.ult;if(!u.dc){$("hRes").innerHTML="Bem-vinda! Clique em <b>Atualizar com os arquivos do dia</b> para montar o painel.";return;}
+  const u=ultF();if(!u.dc){$("hRes").innerHTML="Bem-vinda! Clique em <b>Atualizar com os arquivos do dia</b> para montar o painel.";return;}
   const v=pctN(T.no,T.cart);$("hRes").innerHTML=`A carteira de <b>${wd(u.dc)} ${dmy(u.dc)}</b> tem <b>${nf(T.cart)} OS</b>, com <b>${v==null?"–":(Math.round(v*1000)/10).toLocaleString("pt-BR")+"%"}</b> no prazo${v!=null?(v>=META?" (dentro da meta)":" (abaixo da meta de "+Math.round(META*100)+"%)"):""}. Entradas e execuções: <b>${esc(rotDias())}</b>.`;}
 function render(){
-  const u=S.ult;const T=conta({});const da=T.da;
+  const u=ultF();const T=conta({});const da=T.da;
   $("sub").innerHTML=`Interlagos · Grajaú${u.dc?` · carteira de <b>${dmy(u.dc)}</b>`:""}`;
   const tend=T.ent>T.exe?"carteira tende a subir":T.ent<T.exe?"carteira tende a cair":"equilibrado";
   const SH=serieHist();const DD=diasSel().map(d=>({d,e:u.ac.filter(r=>r.dt===d&&fp(r)&&relOk(r)).length,x:u.ex.filter(r=>r.dt===d&&fp(r)&&relOk(r)).length}));
@@ -1449,7 +1458,7 @@ function render(){
     kpi({l:"% no prazo",v:T.cart?(Math.round(T.no*1000/T.cart)/10).toLocaleString("pt-BR")+"%":"–",s:`meta ${Math.round(META*100)}% ${T.cart?(T.no/T.cart>=META?'<span class="delta down">dentro da meta</span>':'<span class="delta up">abaixo da meta</span>'):""}`,ic:IC.pct,tone:"var(--green)",soft:"var(--green-soft)",go:{modo:"carteira",prazo:"no"},g:`<div class="pbar"><i style="width:${T.cart?(T.no*100/T.cart).toFixed(1):0}%"></i><em style="left:${META*100}%"></em><span style="left:${META*100}%">meta</span></div>`}),
     kpi({l:"Entradas × execuções",v:`${nf(T.ent)} <span style="font-size:.6em;color:var(--muted)">×</span> ${nf(T.exe)}`,s:esc(rotDias()),ic:IC.mov,tone:"var(--orange)",soft:"var(--orange-soft)",go:{modo:"entradas"},g:miniG([{v:DD.map(x=>x.e),c:"#F0A23B",t:DD.map(x=>dm(x.d))},{v:DD.map(x=>x.x),c:"#23824F",t:DD.map(x=>dm(x.d))}])}),
     kpi({l:"Saldo",v:sgn(T.saldo),s:tend,ic:IC.saldo,tone:T.saldo>0?"var(--red)":"var(--green)",soft:T.saldo>0?"var(--red-soft)":"var(--green-soft)",go:{modo:"execucoes"},g:miniG([{v:DD.map(x=>x.e-x.x),c:v=>v>0?"#D9534A":"#2FA36B",t:DD.map(x=>dm(x.d))}])})].join("");
-  renderHero(T);$("fornPainel").innerHTML=baloesForn(diasSel(),fp);
+  renderHero(T);$("fornPainel").innerHTML=baloesForn(diasSel(),fpPolo);
   // situação por serviço (cartões visuais)
   $("sitNota").textContent=`carteira de ${dmy(u.dc)} · entradas e execuções: ${rotDias()}${poloSel!=="Todos"?" · "+poloSel:""}`;
   $("tbGrupo").innerHTML=cardsServ(diasSel());
@@ -1514,10 +1523,10 @@ $("selMes").onchange=e=>{mesSel=e.target.value;renderEvo();};
 $("selGrupoEvo").onchange=e=>{grupoEvo=e.target.value;renderEvo();};
 
 /* ================= por serviço ================= */
-function tssDoGrupo(g){const c={};const u=S.ult;for(const r of u.ca.concat(u.ac,u.ex))if(r.g===g)c[r.tss]=(c[r.tss]||0)+1;
+function tssDoGrupo(g){const c={};const u=ultF();for(const r of u.ca.concat(u.ac,u.ex))if(r.g===g)c[r.tss]=(c[r.tss]||0)+1;
   const ca={};for(const r of u.ca)if(r.g===g)ca[r.tss]=(ca[r.tss]||0)+1;
   return Object.keys(c).sort((a,b)=>(ca[b]||0)-(ca[a]||0)||c[b]-c[a]||a.localeCompare(b));}
-function contaTss(g,p,t){const u=S.ult;const m=r=>r.g===g&&r.p===p&&(!t||r.tss===t);
+function contaTss(g,p,t){const u=ultF();const m=r=>r.g===g&&r.p===p&&(!t||r.tss===t);
   const ca=u.ca.filter(m);return {ent:u.ac.filter(r=>m(r)&&noDia(r)).length,exe:u.ex.filter(r=>m(r)&&noDia(r)&&r.conta).length,cart:ca.length,fora:ca.filter(r=>r.fora).length};}
 function renderServ(){
   const g=servSel;
@@ -1556,18 +1565,31 @@ function miniBarras(itens,o){
 function pzBarras(rows){const m=Math.max(1,...rows.map(r=>r.cart));
   return `<div class="hb pzb">${rows.map(r=>`<div class="hr"><span>${r.p}<small>${nf(r.cart)} OS · ${pctTxt(r.no,r.cart)} no prazo</small></span><div class="st" style="width:${Math.max(8,r.cart*100/m).toFixed(1)}%"><i style="width:${r.cart?r.no*100/r.cart:0}%;background:#2FA36B">${r.no||""}</i><i style="width:${r.cart?r.fora*100/r.cart:0}%;background:#D9534A">${r.fora||""}</i></div></div>`).join("")}</div>`;}
 // ---- balões por fornecedor (contrato) · Resumo e Painel ----
-function baloesForn(ds,fpp){const u=S.ult;let h="";const nomeF=f=>{let t=clean(f);if(!t)return "Sem fornecedor";t=t.replace(/^EMPRESA\s+/i,"").split("/")[0].trim();return t.length>34?t.slice(0,32)+"…":t;};
-   const F={};const add=(f,k)=>{const n=nomeF(f);(F[n]=F[n]||{n,ent:0,exe:0,cart:0,fora:0})[k]++;};
+// dados do painel com o filtro de fornecedor aplicado (quando um balão está selecionado)
+let _uf=null,_ufk="";
+function ultF(){const u=S.ult;if(!fornSel)return u;const k=fornSel+"|"+u.em+"|"+u.ca.length+"|"+u.ac.length+"|"+u.ex.length;if(_ufk===k)return _uf;
+  _ufk=k;_uf=Object.assign({},u,{ca:u.ca.filter(fForn),ac:u.ac.filter(fForn),ex:u.ex.filter(fForn)});return _uf;}
+// fornecedor (contrato): nome curto para agrupar e mostrar
+const nomeForn=f=>{let t=clean(f);if(!t)return "Sem fornecedor";return t.replace(/^EMPRESA\s+/i,"").split("/")[0].trim();};
+const ehCG=n=>/CONSORCIO GLOBAL/.test(U(n));
+let fornSel=(()=>{try{return localStorage.getItem("carteira-forn")||"";}catch(e){return "";}})();
+const fForn=r=>!fornSel||nomeForn(r.forn)===fornSel;
+function baloesForn(ds,fpp){const u=S.ult;let h="";
+   const F={};const add=(f,k)=>{const n=nomeForn(f);(F[n]=F[n]||{n,ent:0,exe:0,cart:0,fora:0})[k]++;};
    for(const r of u.ac)if(ds.includes(r.dt)&&relOk(r)&&fpp(r))add(r.forn,"ent");
-   for(const r of u.ex)if(ds.includes(r.dt)&&relOk(r)&&fpp(r))add(r.forn,"exe");
+   for(const r of u.ex)if(ds.includes(r.dt)&&relOk(r)&&fpp(r)&&exGeral(r))add(r.forn,"exe");
    for(const r of u.ca)if(fpp(r)){add(r.forn,"cart");if(r.fora)add(r.forn,"fora");}
-   const L=Object.values(F).sort((a,b)=>(a.n==="Sem fornecedor")-(b.n==="Sem fornecedor")||(b.cart+b.ent+b.exe)-(a.cart+a.ent+a.exe));
+   const L=Object.values(F).sort((a,b)=>ehCG(b.n)-ehCG(a.n)||(a.n==="Sem fornecedor")-(b.n==="Sem fornecedor")||(b.cart+b.ent+b.exe)-(a.cart+a.ent+a.exe));
+   if(fornSel&&!F[fornSel]){fornSel="";lss("carteira-forn",null);}
    const tot=L.reduce((a,x)=>({ent:a.ent+x.ent,exe:a.exe+x.exe,cart:a.cart+x.cart,fora:a.fora+x.fora}),{ent:0,exe:0,cart:0,fora:0});
-   const bal=(x,cls)=>`<div class="bfo${cls?" "+cls:""}"><div class="bfn">${esc(x.n)}</div><div class="bfc"><b>${nf(x.cart)}</b><span>na carteira${x.fora?` · <em>${nf(x.fora)} fora</em>`:""}</span></div><div class="bfm"><span><small>Entradas</small><b>${nf(x.ent)}</b></span><span><small>Execuções</small><b>${nf(x.exe)}</b></span></div></div>`;
-   if(L.length&&!(L.length===1&&L[0].n==="Sem fornecedor"))h+=`<div class="bfw"><div class="bft">Por fornecedor</div><div class="bfs">${L.map(x=>bal(x)).join("")}${bal({n:"Total",...tot},"tot")}</div></div>`;return h;}
+   const curto=n=>n.length>34?n.slice(0,32)+"…":n;
+   const bal=(x,cls,chave)=>{const sel=chave===""?!fornSel:fornSel===chave;
+     return `<button type="button" class="bfo${cls?" "+cls:""}${ehCG(x.n)?" cg":""}${sel?" sel":""}${fornSel&&!sel?" apag":""}" data-forn="${esc(chave)}" title="${chave?"Ver o painel só com "+esc(x.n):"Ver todos os fornecedores"}"><div class="bfn">${ehCG(x.n)?"★ ":""}${esc(curto(x.n))}</div><div class="bfc"><b>${nf(x.cart)}</b><span>na carteira${x.fora?` · <em>${nf(x.fora)} fora</em>`:""}</span></div><div class="bfm"><span><small>Entradas</small><b>${nf(x.ent)}</b></span><span><small>Execuções</small><b>${nf(x.exe)}</b></span></div></button>`;};
+   if(L.length&&!(L.length===1&&L[0].n==="Sem fornecedor"))h+=`<div class="bfw"><div class="bft">Por fornecedor <span>${fornSel?`mostrando só <b>${esc(fornSel)}</b> · clique em Total para ver todos`:"clique num fornecedor para ver o painel só dele"}</span></div><div class="bfs">${L.map(x=>bal(x,"",x.n)).join("")}${bal({n:"Total",...tot},"tot","")}</div></div>`;return h;}
+document.addEventListener("click",e=>{const b=e.target.closest(".bfo[data-forn]");if(!b)return;const k=b.dataset.forn;fornSel=fornSel===k?"":k;lss("carteira-forn",fornSel||null);renderTudo();});
 /* ================= resumo para print ================= */
 function renderRes(){
-  const u=S.ult,ds=u.dias;const pol=poloSel;const fpp=r=>pol==="Todos"||r.p===pol;
+  const u=ultF(),ds=u.dias;const pol=poloSel;const fppPolo=r=>pol==="Todos"||r.p===pol;const fpp=fppPolo;
   const E=(d,g,p)=>u.ac.filter(r=>r.dt===d&&relOk(r)&&(!g||r.g===g)&&(p?r.p===p:fpp(r))).length;
   const X=(d,g,p)=>u.ex.filter(r=>r.dt===d&&exGeral(r,g)&&relOk(r)&&(!g||r.g===g)&&(p?r.p===p:fpp(r))).length;
   const T=conta({});const se=ds.reduce((a,d)=>a+E(d),0),sx=ds.reduce((a,d)=>a+X(d),0);
@@ -1575,7 +1597,7 @@ function renderRes(){
   let h=`<div class="rhead"><div><h2>Carteira de Serviços · ${pol==="Todos"?"Interlagos e Grajaú":esc(pol)}</h2><p>Entradas e execuções de ${per} · carteira de ${wd(u.dc)} ${dmy(u.dc)}</p></div><div class="rdt">Carteira de<b>${dmy(u.dc)}</b></div></div>`;
   const pv=pctN(T.no,T.cart);
   h+=`<div class="rk"><div><small>Carteira</small><b>${nf(T.cart)}</b><em>${nf(T.no)} no prazo</em></div><div><small>Fora do prazo</small><b class="${T.fora?"up":""}">${nf(T.fora)}</b><em>${T.dFora==null?"":(T.dFora>0?"▲ ":T.dFora<0?"▼ ":"= ")+nf(Math.abs(T.dFora))+" vs "+dm(T.da)}</em></div><div><small>% no prazo</small><b style="color:${pv==null?"inherit":pv>=META?"#23824F":pv>=META-.15?"#A66B00":"#C2362B"}">${pv==null?"–":(Math.round(pv*1000)/10).toLocaleString("pt-BR")+"%"}</b><em>meta ${Math.round(META*100)}%</em></div><div><small>Entradas</small><b style="color:#B9650F">${nf(se)}</b><em>${ds.length} dia${ds.length>1?"s":""}</em></div><div><small>Execuções</small><b style="color:#1C7444">${nf(sx)}</b><em>${ds.length} dia${ds.length>1?"s":""}</em></div><div><small>Saldo</small><b class="${se-sx>0?"up":"down"}">${sgn(se-sx)}</b><em>${se>sx?"carteira sobe":se<sx?"carteira desce":"equilibrado"}</em></div></div>`;
-  h+=baloesForn(ds,fpp);
+  h+=baloesForn(ds,fppPolo);
   // gráficos: dia a dia, prazo por polo, evolução
   const itD=ds.map(d=>({lab:dm(d),sub:wd(d),vals:[{v:E(d),c:"#F0A23B"},{v:X(d),c:"#23824F"}]}));
   const pzRows=(pol==="Todos"?POLOS.slice().reverse():[pol]).map(p=>({p,...conta({p})}));
@@ -1619,7 +1641,7 @@ const fxDe=h=>h<0?"v":h<=2?"h2":h<=6?"h6":h<=12?"h12":"h24";
 function txtH(h){const a=Math.abs(h);const d=Math.floor(a/24),hh=Math.floor(a%24),mm=Math.round((a*60)%60);const t=(d?d+"d ":"")+hh+"h"+(d?"":" "+String(mm).padStart(2,"0")+"min");return h<0?"vencida há "+t:"faltam "+t;}
 function renderRel(){
   $("relSlot").after($("mon"));monG="Religação";renderMonRel();
-  const u=S.ult;const sn=(S.rel||[]).slice(-14);const ps=poloSel==="Todos"?POLOS:[poloSel];
+  const u=ultF();const sn=(S.rel||[]).slice(-14);const ps=poloSel==="Todos"?POLOS:[poloSel];
   $("relHora").innerHTML=sn.length?barras(sn.map(x=>{const d=new Date(x.t);const sm=i=>ps.reduce((a,p)=>a+((x.p[p]||[])[i]||0),0);const p24=sm(2);
     return {lab:d.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"}),sub:d.toLocaleDateString("pt-BR",{day:"2-digit",month:"2-digit"}),vals:[{v:sm(0)-p24,c:"#12A386"},{v:p24,c:"#F29D0C"},{v:sm(1),c:"#E03E45"}]};}),{empilhar:1,wmin:420,h:175,rotular:1,bw:26}):`<div class="empty">A cada carteira que você subir, entra uma coluna aqui com o horário.</div>`;
   const g="Religação";const dR=diaRel();const pol=(poloSel==="Todos"?POLOS.slice().reverse():[poloSel]);
@@ -1632,7 +1654,7 @@ function renderRel(){
 function situRel(r,agora){const v=vencimento(r),m=marca24(r);const h=v!=null?(v-agora)/3600000:minutosResid(r.tr)/60;const h24=m!=null?(m-agora)/3600000:h-24;
   return {h,h24,sx:h<0?"fo":h24<0?"p24":"ok"};}
 function renderMonRel(){
-  const u=S.ult,agora=Date.now();const g="Religação";
+  const u=ultF(),agora=Date.now();const g="Religação";
   const ca=u.ca.filter(r=>r.g===g&&fp(r)).map(r=>({...r,...situRel(r,agora)}));
   const fo=ca.filter(r=>r.sx==="fo"),p24=ca.filter(r=>r.sx==="p24"),ok=ca.filter(r=>r.sx==="ok");const tot=ca.length;
   const em6=ok.filter(r=>r.h24<=6).length,em6v=p24.filter(r=>r.h<=6).length;
@@ -1675,7 +1697,7 @@ let monG="";
 function situAgora(r,agora){const pf=vencimento(r);const h=pf!=null?(pf-agora)/3600000:minutosResid(r.tr)/60;return {h,sx:h<0?"fo":h<=24?"at":"ok"};}
 function tempoTxt(h){const a=Math.abs(h);if(a<1)return Math.max(1,Math.round(a*60))+" min";const d=Math.floor(a/24),hh=Math.floor(a%24),mm=Math.round((a*60)%60);return d?`${d}d ${hh}h`:`${hh}h${mm?String(mm).padStart(2,"0"):""}`;}
 function renderMon(){
-  const u=S.ult,agora=Date.now();const todos=u.ca.filter(r=>fp(r)).map(r=>({...r,...situAgora(r,agora)}));
+  const u=ultF(),agora=Date.now();const todos=u.ca.filter(r=>fp(r)).map(r=>({...r,...situAgora(r,agora)}));
   const GS=monG==="ligacoes"?["Ligação de água","Ligação de esgoto"]:monG?[monG]:GRUPOS;const ca=todos.filter(r=>GS.includes(r.g));const gGo=GS.length===1?GS[0]:"";const gsGo=GS.length>1&&GS.length<GRUPOS.length?GS:undefined;
   const REL=monG==="Religação";const LIM=REL?6:48,HOR=REL?24:72;ca.forEach(r=>{r.sx=r.h<0?"fo":r.h<=LIM?"at":"ok";});
   const fo=ca.filter(r=>r.sx==="fo"),at=ca.filter(r=>r.sx==="at"),ok=ca.filter(r=>r.sx==="ok");const tot=ca.length;
@@ -1720,7 +1742,7 @@ function renderMonLig(){
   $("monSlot").after($("mon"));monG=monLig;
   $("chipsMon").innerHTML=[["Ligação de água","Ligação de água"],["Ligação de esgoto","Ligação de esgoto"],["ligacoes","Água e esgoto juntas"]].map(([k,l])=>`<button type="button" class="chip" data-ml="${k}" aria-pressed="${monLig===k}">${k==="ligacoes"?"":`<span class="cdot" style="--c:${COR[k]}"></span>`}${l}</button>`).join("");
   renderMon();
-  const u=S.ult;const GS=monLig==="ligacoes"?["Ligação de água","Ligação de esgoto"]:[monLig];
+  const u=ultF();const GS=monLig==="ligacoes"?["Ligação de água","Ligação de esgoto"]:[monLig];
   $("monDiaNota").textContent=(monLig==="ligacoes"?"ligações de água e de esgoto":monLig.toLowerCase())+" · "+rotDias();
   $("monDia").innerHTML=barras(u.dias.map(d=>({lab:dm(d),sub:wd(d),vals:[{v:u.ac.filter(r=>GS.includes(r.g)&&r.dt===d&&fp(r)).length,c:"#F0A23B"},{v:u.ex.filter(r=>GS.includes(r.g)&&r.dt===d&&fp(r)&&r.conta).length,c:"#23824F"}]})),{wmin:560,h:230,bw:26});
   const agora=Date.now();const ca=u.ca.filter(r=>GS.includes(r.g)&&fp(r)).map(r=>({...r,...situAgora(r,agora)}));
@@ -1735,7 +1757,7 @@ const LIG="Ligação de água";
 const FX=[["fora","Fora do prazo","#D9534A"],["d2","Vence em até 2 dias","#F0A23B"],["d7","Vence em 3 a 7 dias","#E8C547"],["d15","Vence em 8 a 15 dias","#7BC29A"],["mais","Mais de 15 dias","#2FA36B"]];
 function faixaDe(r){const m=minutosResid(r.tr);if(m<0||r.fora)return "fora";const d=m/1440;return d<=2?"d2":d<=7?"d7":d<=15?"d15":"mais";}
 function renderLig(){
-  const g=LIG,u=S.ult;
+  const g=LIG,u=ultF();
   const P=POLOS.map(p=>({p,...contaTss(g,p)}));const T=P.reduce((a,b)=>({ent:a.ent+b.ent,exe:a.exe+b.exe,cart:a.cart+b.cart,fora:a.fora+b.fora}),{ent:0,exe:0,cart:0,fora:0});
   const por=k=>P.map(x=>`${nf(x[k])} ${x.p}`).join(" · ");const saldo=T.ent-T.exe;
   const ncTot=u.ex.filter(r=>r.g===g&&noDia(r)&&!r.conta).length;
@@ -1782,7 +1804,7 @@ function miniDia(ds,E,X){if(!ds.length)return "";const W=220,H=74,bt=16,mx=Math.
   let s=`<svg viewBox="0 0 ${W} ${H}">`;ds.forEach((d,i)=>{const cx=i*gw+gw/2;[[E(d),"#F0A23B"],[X(d),"#23824F"]].forEach(([v,c],j)=>{const hh=v*(H-bt-12)/mx,x=cx-bw-1+j*(bw+2);
     s+=`<rect x="${x.toFixed(1)}" y="${(H-bt-hh).toFixed(1)}" width="${bw.toFixed(1)}" height="${Math.max(hh,1).toFixed(1)}" rx="2" fill="${c}"/>`;if(v)s+=`<text x="${(x+bw/2).toFixed(1)}" y="${(H-bt-hh-2).toFixed(1)}" text-anchor="middle" font-size="8.5" font-weight="700" fill="#33424E">${v}</text>`;});
     s+=`<text x="${cx.toFixed(1)}" y="${H-3}" text-anchor="middle" font-size="9" font-weight="600" fill="#5E6E7B">${ds.length>1?wd(d):dm(d)}</text>`;});return s+"</svg>";}
-function cardsServ(ds,polo){const u=S.ult;const fpo=r=>polo?r.p===polo:fp(r);
+function cardsServ(ds,polo){const u=ultF();const fpo=r=>polo?r.p===polo:fp(r);
   const dsTodos=ds;
   return GRUPOS.map(g=>{const ds=g==="Religação"?[diaRel()].filter(Boolean):dsTodos;const ca=u.ca.filter(r=>r.g===g&&fpo(r)),t=ca.length,f=ca.filter(r=>r.fora).length,n=t-f;
     const E=d=>u.ac.filter(r=>r.g===g&&r.dt===d&&fpo(r)).length,X=d=>u.ex.filter(r=>r.g===g&&r.dt===d&&r.conta&&fpo(r)).length;
@@ -1793,7 +1815,7 @@ function cardsServ(ds,polo){const u=S.ult;const fpo=r=>polo?r.p===polo:fp(r);
       <div class="lg4"><span><b style="color:#2FA36B">${nf(n)}</b> no prazo</span>${g==="Religação"?`<span${go({modo:"carteira",g,prazo:"p24"})}><b style="color:#E8891A">${nf(ca.filter(r=>!r.fora&&(marca24(r)??Infinity)<Date.now()&&(vencimento(r)??0)>=Date.now()).length)}</b> +24h</span>`:""}<span><b style="color:#D9534A">${nf(f)}</b> fora${g==="Religação"?" (48h)":""}</span></div>
       <div class="ch4">${miniDia(ds,E,X)}</div>
       <div class="ft4"><div><small>Entradas</small><b style="color:#B9650F">${nf(te)}</b></div><div><small>Execuções</small><b style="color:#1C7444">${nf(tx)}</b></div><div><small>Saldo</small><b class="${te-tx>0?"up":te-tx<0?"down":""}">${sgn(te-tx)}</b></div></div></div>`;}).join("");}
-function abrirLista(o){const u=S.ult;const modo=o.modo||"carteira";const agora=Date.now();
+function abrirLista(o){const u=ultF();const modo=o.modo||"carteira";const agora=Date.now();
   let L=(modo==="carteira"?u.ca:modo==="entradas"?u.ac:u.ex).filter(r=>(o.p?r.p===o.p:fp(r))&&(!o.g||r.g===o.g)&&(!o.gs||o.gs.includes(r.g))&&(!o.tss||r.tss===o.tss));
   const h24=r=>{const m=marca24(r);return m==null?null:(m-agora)/3600000;};
   if(modo==="carteira"){if(o.prazo==="fora")L=L.filter(r=>r.fora);else if(o.prazo==="no")L=L.filter(r=>!r.fora);else if(o.prazo==="p24")L=L.filter(r=>r.g==="Religação"&&!r.fora&&(h24(r)??1)<0);else if(o.prazo==="d24")L=L.filter(r=>r.g==="Religação"&&!r.fora&&(h24(r)??-1)>=0);if(o.fx)L=L.filter(r=>faixaDe(r)===o.fx);}
@@ -1820,12 +1842,12 @@ document.addEventListener("keydown",e=>{if(e.key==="Escape")$("modal").hidden=tr
 
 /* ================= lista de OS ================= */
 const MODOS=[["carteira","Carteira"],["entradas","Entradas (acatados)"],["execucoes","Execuções"]];
-function baseModo(){const u=S.ult;return osF.modo==="carteira"?u.ca:osF.modo==="entradas"?u.ac:u.ex;}
+function baseModo(){const u=ultF();return osF.modo==="carteira"?u.ca:osF.modo==="entradas"?u.ac:u.ex;}
 function filtradosOS(semBusca){const q=U($("busca").value.trim());
   return baseModo().filter(r=>fp(r)&&(!osF.g||r.g===osF.g)&&(!osF.tss||r.tss===osF.tss)&&(osF.modo==="carteira"?(!osF.prazo||(osF.prazo==="fora"?r.fora:!r.fora))&&(!osF.fx||faixaDe(r)===osF.fx):noDia(r))&&(!osF.nc||(osF.nc==="sim"?!r.conta:r.conta))&&
     (semBusca||!q||U([r.os,r.end,r.bai,r.mun,r.tss,r.eq,r.st,r.res].join(" ")).includes(q)));}
 function renderOS(){
-  const u=S.ult;
+  const u=ultF();
   $("chipsModo").innerHTML=MODOS.map(([k,l])=>{const n=(k==="carteira"?u.ca:k==="entradas"?u.ac:u.ex).filter(r=>fp(r)&&(k==="carteira"||noDia(r))).length;return `<button type="button" class="chip" data-m="${k}" aria-pressed="${osF.modo===k}">${l} <span class="c">${nf(n)}</span></button>`;}).join("");
   $("fGrupo").innerHTML=`<option value="">Todos os grupos</option>`+GRUPOS_H.map(g=>`<option${g===osF.g?" selected":""}>${g}</option>`).join("");
   const tss=[...new Set(baseModo().filter(r=>!osF.g||r.g===osF.g).map(r=>r.tss))].sort();
@@ -1864,6 +1886,8 @@ function renderTudo(){renderFiltros();if(abaAtual==="painel")render();else if(ab
 /* ================= Excel ================= */
 $("baixar").onclick=()=>{try{exportar();}catch(e){console.error(e);msg("Não consegui gerar o Excel: "+e.message);}};
 function exportar(){
+  const fornAntes=fornSel;fornSel="";try{return exportarTudo();}finally{fornSel=fornAntes;}}
+function exportarTudo(){
   const u=S.ult;if(!u.dc&&!u.dias.length){msg("Ainda não há dados para exportar.");return;}
   const L=novoLivro();const NAVY="0B2540",LINE="D6DEE5";
   const sT=L.st({f:{b:1,sz:16,c:"FFFFFF",n:"Segoe UI Semibold"},fill:NAVY,v:"center"});
