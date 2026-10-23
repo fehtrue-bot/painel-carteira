@@ -1262,17 +1262,21 @@ function ajustarRel(recs){const v=[];for(const r of recs){const pf=parseDT0(r.pf
   if(m==null)return;for(const r of recs){if(r.g!=="Religação")continue;const ve=vencimento(r);if(ve!=null)r.fora=ve<m;const m24=marca24(r);r.f24=m24!=null&&m24<m&&!r.fora;}}
 function registros(raw,tipo){
   const ix=indices(raw.h,tipo==="ex"?CAMPOS_EX:CAMPOS_AC);const g=(r,k)=>ix[k]>=0?r[ix[k]]:"";const out=[];const dias=new Set();
+  const est={linhas:raw.rows.length,semTss:0,outroServ:0,ligOutroContrato:0,outroAtc:0,alegacao:0,conta:0};
   for(const r of raw.rows){
     const o={os:keyOS(g(r,"os")),p:poloDe(g(r,"atc")),tss:clean(g(r,"tss")),fam:clean(g(r,"fam")),end:clean([clean(g(r,"end")),clean(g(r,"num"))].filter(Boolean).join(", ")),bai:clean(g(r,"bai")),mun:clean(g(r,"mun"))};
     // só a ligação de água exige o Consórcio Global (acatados, executados e carteira); o resto vale para todos os contratos
     o.g=grupoDe(o.tss,o.fam,g(r,"forn"));
     if(tipo==="ex"){o.dt=dataIso(g(r,"ini"));o.ini=txtData(g(r,"ini"));o.fim=txtData(g(r,"fim"));o.cod=clean(g(r,"cod")).split(".")[0];o.res=clean(g(r,"res"));o.eq=clean(g(r,"eq"));
-      o.conta=executadoDeFato(o.cod,o.res);if(!o.tss)continue;}
+      o.conta=executadoDeFato(o.cod,o.res);if(!o.tss){est.semTss++;continue;}}
     else{o.dt=dataIso(g(r,"ins"));o.ins=txtData(g(r,"ins"));o.pf=txtData(g(r,"pf"));o.tr=clean(g(r,"tr"));o.fora=o.tr.startsWith("-");o.st=clean(g(r,"st"));if(!o.tss)continue;}
     if(o.dt)dias.add(o.dt);
-    if(o.g&&o.p!=="Outro")out.push(o);}
+    if(!o.g){const f=FAM[U(clean(o.fam))];if(f&&f[1])est.ligOutroContrato++;else est.outroServ++;continue;}
+    if(o.p==="Outro"){est.outroAtc++;continue;}
+    if(tipo==="ex"){if(o.conta)est.conta++;else est.alegacao++;}
+    out.push(o);}
   if(tipo!=="ex")ajustarRel(out);
-  return {recs:out,dias:[...dias].sort()};}
+  return {recs:out,dias:[...dias].sort(),est};}
 
 /* ================= tela de importação ================= */
 const impArq={ac:[],ex:[],ca:[]};
@@ -1313,6 +1317,8 @@ $("impOk").onclick=async()=>{
     RAW=novoRaw;
     if(res.ac)checks.push(check("good",nf(res.ac.recs.length),"Entradas (acatados)",`${res.ac.dias.map(d=>wd(d)+" "+dm(d)).join(" · ")}${res.ac.raw.rep?` · ${res.ac.raw.rep} repetidas tiradas`:""}`));
     if(res.ex)checks.push(check("good",nf(res.ex.recs.filter(r=>r.conta).length),"Execuções",`${res.ex.dias.map(d=>wd(d)+" "+dm(d)).join(" · ")}${res.ex.raw.rep?` · ${res.ex.raw.rep} repetidas tiradas`:""}`));
+    if(res.ex){const e=res.ex.est;const dR=diaRel();const relFora=res.ex.recs.filter(r=>r.g==="Religação"&&r.conta&&r.dt!==dR).length;
+      checks.push(check("warn",nf(e.linhas),"Linhas no arquivo de executados",`${nf(e.conta)} executadas de fato · ${nf(e.alegacao)} alegações (não contam) · ${nf(e.outroServ)} outros serviços fora do painel · ${nf(e.outroAtc)} de outro ATC · ${nf(e.ligOutroContrato)} ligação de água de outro contrato${relFora?` · ${nf(relFora)} religações de outros dias (religação conta só ${dm(dR)})`:""}`));}
     if(res.ca)checks.push(check("good",nf(res.ca.recs.length),"Carteira de "+dm(dc),`${res.ca.recs.filter(r=>r.fora).length} fora do prazo`));
     const lidas=t=>res[t]?res[t].raw.rows.length-res[t].recs.length:0;
     const fora=lidas("ac")+lidas("ca");if(fora)checks.push(check("warn",nf(fora),"Linhas fora do painel","outros serviços, outros ATC ou fora do Contrato Global"));
