@@ -873,7 +873,7 @@ body.aba-rel .foot{display:none}
       <li>Escolha o dia no alto do painel para ver as entradas e execuções de cada um. Clique em qualquer número para ver as OS.</li>
       <li>Clique em <b>Baixar Excel</b> para ter o PAINEL, a Ligação de água, o Serviço por dia, o Histórico e as bases, no formato da sua planilha.</li>
     </ol>
-    <div class="note">As regras são as mesmas da sua planilha: ATC 923 é Interlagos; 929 e 299 são Grajaú. Os vazamentos de água são separados pelo TSS, os outros serviços pela família. Ligação de água e de esgoto contam só o Contrato Global. Só conta como executada a baixa em que o resultado é o próprio serviço: fim do dia, imóvel fechado, trata-se de outro serviço, duplicidade, continua, nada consta e parecidos não contam, em nenhum serviço. Meta: 80% no prazo.</div>
+    <div class="note">As regras são as mesmas da sua planilha: ATC 923 é Interlagos; 929 e 299 são Grajaú. Os vazamentos de água são separados pelo TSS, os outros serviços pela família. Ligação de água conta só o Contrato Global (acatados, executados e carteira); os outros serviços contam todos os contratos. Só conta como executada a baixa em que o resultado é o próprio serviço: fim do dia, imóvel fechado, trata-se de outro serviço, duplicidade, continua, nada consta e parecidos não contam, em nenhum serviço. Meta: 80% no prazo.</div>
     <div class="note">Os dados ficam guardados neste computador, no próprio navegador. Para usar em outro computador, leve a <b>Cópia de segurança</b>.</div>
   </section>
 
@@ -1183,7 +1183,7 @@ const GRUPOS=["Vazamento de água","Religação","Ligação de água","Ligação
 const COR={"Vazamento de água":"#2A7FD4","Religação":"#0F9D8A","Ligação de água":"#E07B24","Ligação de esgoto":"#7A4FD6","Vazamento de esgoto":"#C2417A"};
 const COR_XL={"Vazamento de água":"DCEBFA","Religação":"D5F2EE","Ligação de água":"FCE6D2","Ligação de esgoto":"E9E1FA","Vazamento de esgoto":"F8DDE8"};
 const VAZ=new Set(["CAVALETE QUEBRADO","CAVALETE VAZANDO","REGISTRO DO CAVALETE QUEBRADO","REGISTRO DO CAVALETE VAZANDO","TROCAR RAMAL DE ÁGUA","TROCAR RAMAL DE ÁGUA - VAZ NÃO VISIVEL","TROCAR RAMAL DE ÁGUA - VAZ NÃO VISÍVEL","VAZAMENTO DE ÁGUA COM INFILTRAÇÃO","VAZAMENTO DE ÁGUA LEITO PAVIMENTADO","VAZAMENTO DE ÁGUA NO PASSEIO","VAZAMENTO DE ÁGUA LEITO TERRA","ARREBENTADO DE REDE DE ÁGUA","VAZAMENTO DE ÁGUA NÃO VISÍVEL REDE","VAZAMENTO DE ÁGUA NÃO VISÍVEL RAMAL","VAZAMENTO DE ÁGUA NÃO VISÍVEL CAVALETE","VAZAMENTO DE ÁGUA EM RAMAL ABANDONADO","VAZAMENTO DE ÁGUA NA VÁLVULA","PESQUISAR VAZAMENTO"].map(U));
-const FAM={[U("REATIV/RELIG/RESTAB")]:["Religação",false],[U("LIGAÇÃO DE ÁGUA")]:["Ligação de água",true],[U("LIGAÇÃO DE ESGOTO")]:["Ligação de esgoto",true],[U("DESOBSTRUÇÃO")]:["Vazamento de esgoto",false]};
+const FAM={[U("REATIV/RELIG/RESTAB")]:["Religação",false],[U("LIGAÇÃO DE ÁGUA")]:["Ligação de água",true],[U("LIGAÇÃO DE ESGOTO")]:["Ligação de esgoto",false],[U("DESOBSTRUÇÃO")]:["Vazamento de esgoto",false]};
 const CG=U("EMPRESA CONSORCIO GLOBAL INTERLAGOS/04576-050 SÃO PAULO");
 // Executado de verdade = o resultado é o próprio serviço (códigos de serviço, abaixo de 900000).
 // Fim do dia (FJL), imóvel fechado, trata-se de outro serviço, duplicidade, continua, nada consta etc. (900000 em diante) não contam.
@@ -1264,8 +1264,8 @@ function registros(raw,tipo){
   const ix=indices(raw.h,tipo==="ex"?CAMPOS_EX:CAMPOS_AC);const g=(r,k)=>ix[k]>=0?r[ix[k]]:"";const out=[];const dias=new Set();
   for(const r of raw.rows){
     const o={os:keyOS(g(r,"os")),p:poloDe(g(r,"atc")),tss:clean(g(r,"tss")),fam:clean(g(r,"fam")),end:clean([clean(g(r,"end")),clean(g(r,"num"))].filter(Boolean).join(", ")),bai:clean(g(r,"bai")),mun:clean(g(r,"mun"))};
-    // executados: todos os contratos contam (a regra do Consórcio Global vale só para acatados e carteira)
-    o.g=tipo==="ex"?grupoDe(o.tss,o.fam,CG):grupoDe(o.tss,o.fam,g(r,"forn"));
+    // só a ligação de água exige o Consórcio Global (acatados, executados e carteira); o resto vale para todos os contratos
+    o.g=grupoDe(o.tss,o.fam,g(r,"forn"));
     if(tipo==="ex"){o.dt=dataIso(g(r,"ini"));o.ini=txtData(g(r,"ini"));o.fim=txtData(g(r,"fim"));o.cod=clean(g(r,"cod")).split(".")[0];o.res=clean(g(r,"res"));o.eq=clean(g(r,"eq"));
       o.conta=executadoDeFato(o.cod,o.res);if(!o.tss)continue;}
     else{o.dt=dataIso(g(r,"ins"));o.ins=txtData(g(r,"ins"));o.pf=txtData(g(r,"pf"));o.tr=clean(g(r,"tr"));o.fora=o.tr.startsWith("-");o.st=clean(g(r,"st"));if(!o.tss)continue;}
