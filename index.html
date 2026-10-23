@@ -824,6 +824,22 @@ body.aba-rel .foot{display:none}
 .bfm{display:flex;gap:14px;border-top:1px dashed #BFE9F7;padding-top:6px}.bfm small{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}.bfm b{font-size:15px;color:#1F2A26}
 .bfo.tot{background:#00396F;border-color:#00396F}.bfo.tot .bfn,.bfo.tot .bfc b,.bfo.tot .bfm b{color:#fff}.bfo.tot .bfc span,.bfo.tot .bfm small{color:rgba(255,255,255,.8)}.bfo.tot .bfc em{color:#FFB4AE}.bfo.tot .bfm{border-top-color:rgba(255,255,255,.3)}
 
+/* balões no Painel */
+.fornp:empty{display:none}.fornp .bfw{background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);padding:10px 14px}
+/* Resumo compacto: cabe numa tela */
+#resCard .rhead{padding:8px 16px}#resCard .rhead h2{font-size:17px}#resCard .rhead p{font-size:11.5px;margin-top:2px}#resCard .rhead .rdt{font-size:10px}#resCard .rhead .rdt b{font-size:16px}
+#resCard .rk div{padding:5px 12px}#resCard .rk b{font-size:21px}#resCard .rk small{font-size:9.5px}#resCard .rk em{font-size:10.5px}
+#resCard .bfw{padding:6px 12px 2px}#resCard .bft{margin-bottom:4px;font-size:10px}#resCard .bfs{gap:6px}
+#resCard .bfo{padding:5px 9px;gap:3px;border-radius:10px}#resCard .bfn{font-size:10.5px}#resCard .bfc b{font-size:19px}#resCard .bfc span{font-size:10.5px}#resCard .bfm{padding-top:3px;gap:10px}#resCard .bfm small{font-size:9px}#resCard .bfm b{font-size:12.5px}
+#resCard .r3{padding:6px 12px;gap:8px}#resCard .rg{padding:5px 8px}#resCard .rgt{font-size:12px;margin-bottom:2px}
+#resCard .rsv{padding:4px 12px 2px}#resCard .svc4{gap:7px}
+#resCard .c4{padding:6px 9px;gap:3px;border-radius:10px;border-top-width:4px}#resCard .c4 .h4 b{font-size:13px}#resCard .c4 .big b{font-size:22px}#resCard .c4 .big span{font-size:10.5px}
+#resCard .c4 .pz4{height:15px}#resCard .c4 .pz4 i{font-size:10px}#resCard .c4 .lg4{font-size:10.5px}#resCard .c4 .ch4 svg{max-height:46px}#resCard .c4 .ft4{padding-top:3px}#resCard .c4 .ft4 small{font-size:8.5px}#resCard .c4 .ft4 b{font-size:14px}
+#resCard .rsec{border-top-width:3px;margin-top:2px}#resCard .rsech{padding:5px 12px;font-size:14px}#resCard .rsech small{font-size:11px}
+#resCard .hb .hr{font-size:11px}#resCard .hb{gap:4px}
+#resCard .rfoot{padding:4px 12px 6px;font-size:10px}
+#resCard .hb .hr{min-height:0}#resCard .hb .hr>div{height:11px}#resCard .pzb .st{height:18px!important}
+
 </style>
 </head>
 <body>
@@ -917,6 +933,7 @@ body.aba-rel .foot{display:none}
 
   <section id="v-painel" class="view">
     <div class="kpis k5" id="kpis"></div>
+    <div class="fornp" id="fornPainel"></div>
     <div class="dash">
       <div class="sect s12">Carteira por grupo · hoje</div>
       <article class="card s6"><header class="ch"><div><h3>Grajaú</h3><p>no prazo × fora do prazo</p></div><div class="leg2"><span style="--c:#2FA36B">No prazo</span><span style="--c:#D9534A">Fora do prazo</span></div></header><div id="cgGra"></div></article>
@@ -1431,7 +1448,7 @@ function render(){
     kpi({l:"% no prazo",v:T.cart?(Math.round(T.no*1000/T.cart)/10).toLocaleString("pt-BR")+"%":"–",s:`meta ${Math.round(META*100)}% ${T.cart?(T.no/T.cart>=META?'<span class="delta down">dentro da meta</span>':'<span class="delta up">abaixo da meta</span>'):""}`,ic:IC.pct,tone:"var(--green)",soft:"var(--green-soft)",go:{modo:"carteira",prazo:"no"},g:`<div class="pbar"><i style="width:${T.cart?(T.no*100/T.cart).toFixed(1):0}%"></i><em style="left:${META*100}%"></em><span style="left:${META*100}%">meta</span></div>`}),
     kpi({l:"Entradas × execuções",v:`${nf(T.ent)} <span style="font-size:.6em;color:var(--muted)">×</span> ${nf(T.exe)}`,s:esc(rotDias()),ic:IC.mov,tone:"var(--orange)",soft:"var(--orange-soft)",go:{modo:"entradas"},g:miniG([{v:DD.map(x=>x.e),c:"#F0A23B",t:DD.map(x=>dm(x.d))},{v:DD.map(x=>x.x),c:"#23824F",t:DD.map(x=>dm(x.d))}])}),
     kpi({l:"Saldo",v:sgn(T.saldo),s:tend,ic:IC.saldo,tone:T.saldo>0?"var(--red)":"var(--green)",soft:T.saldo>0?"var(--red-soft)":"var(--green-soft)",go:{modo:"execucoes"},g:miniG([{v:DD.map(x=>x.e-x.x),c:v=>v>0?"#D9534A":"#2FA36B",t:DD.map(x=>dm(x.d))}])})].join("");
-  renderHero(T);
+  renderHero(T);$("fornPainel").innerHTML=baloesForn(diasSel(),fp);
   // situação por serviço (cartões visuais)
   $("sitNota").textContent=`carteira de ${dmy(u.dc)} · entradas e execuções: ${rotDias()}${poloSel!=="Todos"?" · "+poloSel:""}`;
   $("tbGrupo").innerHTML=cardsServ(diasSel());
@@ -1537,6 +1554,16 @@ function miniBarras(itens,o){
   return s+"</svg>";}
 function pzBarras(rows){const m=Math.max(1,...rows.map(r=>r.cart));
   return `<div class="hb pzb">${rows.map(r=>`<div class="hr"><span>${r.p}<small>${nf(r.cart)} OS · ${pctTxt(r.no,r.cart)} no prazo</small></span><div class="st" style="width:${Math.max(8,r.cart*100/m).toFixed(1)}%"><i style="width:${r.cart?r.no*100/r.cart:0}%;background:#2FA36B">${r.no||""}</i><i style="width:${r.cart?r.fora*100/r.cart:0}%;background:#D9534A">${r.fora||""}</i></div></div>`).join("")}</div>`;}
+// ---- balões por fornecedor (contrato) · Resumo e Painel ----
+function baloesForn(ds,fpp){const u=S.ult;let h="";const nomeF=f=>{let t=clean(f);if(!t)return "Sem fornecedor";t=t.replace(/^EMPRESA\s+/i,"").split("/")[0].trim();return t.length>34?t.slice(0,32)+"…":t;};
+   const F={};const add=(f,k)=>{const n=nomeF(f);(F[n]=F[n]||{n,ent:0,exe:0,cart:0,fora:0})[k]++;};
+   for(const r of u.ac)if(ds.includes(r.dt)&&relOk(r)&&fpp(r))add(r.forn,"ent");
+   for(const r of u.ex)if(ds.includes(r.dt)&&relOk(r)&&fpp(r))add(r.forn,"exe");
+   for(const r of u.ca)if(fpp(r)){add(r.forn,"cart");if(r.fora)add(r.forn,"fora");}
+   const L=Object.values(F).sort((a,b)=>(a.n==="Sem fornecedor")-(b.n==="Sem fornecedor")||(b.cart+b.ent+b.exe)-(a.cart+a.ent+a.exe));
+   const tot=L.reduce((a,x)=>({ent:a.ent+x.ent,exe:a.exe+x.exe,cart:a.cart+x.cart,fora:a.fora+x.fora}),{ent:0,exe:0,cart:0,fora:0});
+   const bal=(x,cls)=>`<div class="bfo${cls?" "+cls:""}"><div class="bfn">${esc(x.n)}</div><div class="bfc"><b>${nf(x.cart)}</b><span>na carteira${x.fora?` · <em>${nf(x.fora)} fora</em>`:""}</span></div><div class="bfm"><span><small>Entradas</small><b>${nf(x.ent)}</b></span><span><small>Execuções</small><b>${nf(x.exe)}</b></span></div></div>`;
+   if(L.length&&!(L.length===1&&L[0].n==="Sem fornecedor"))h+=`<div class="bfw"><div class="bft">Por fornecedor</div><div class="bfs">${L.map(x=>bal(x)).join("")}${bal({n:"Total",...tot},"tot")}</div></div>`;return h;}
 /* ================= resumo para print ================= */
 function renderRes(){
   const u=S.ult,ds=u.dias;const pol=poloSel;const fpp=r=>pol==="Todos"||r.p===pol;
@@ -1547,24 +1574,15 @@ function renderRes(){
   let h=`<div class="rhead"><div><h2>Carteira de Serviços · ${pol==="Todos"?"Interlagos e Grajaú":esc(pol)}</h2><p>Entradas e execuções de ${per} · carteira de ${wd(u.dc)} ${dmy(u.dc)}</p></div><div class="rdt">Carteira de<b>${dmy(u.dc)}</b></div></div>`;
   const pv=pctN(T.no,T.cart);
   h+=`<div class="rk"><div><small>Carteira</small><b>${nf(T.cart)}</b><em>${nf(T.no)} no prazo</em></div><div><small>Fora do prazo</small><b class="${T.fora?"up":""}">${nf(T.fora)}</b><em>${T.dFora==null?"":(T.dFora>0?"▲ ":T.dFora<0?"▼ ":"= ")+nf(Math.abs(T.dFora))+" vs "+dm(T.da)}</em></div><div><small>% no prazo</small><b style="color:${pv==null?"inherit":pv>=META?"#23824F":pv>=META-.15?"#A66B00":"#C2362B"}">${pv==null?"–":(Math.round(pv*1000)/10).toLocaleString("pt-BR")+"%"}</b><em>meta ${Math.round(META*100)}%</em></div><div><small>Entradas</small><b style="color:#B9650F">${nf(se)}</b><em>${ds.length} dia${ds.length>1?"s":""}</em></div><div><small>Execuções</small><b style="color:#1C7444">${nf(sx)}</b><em>${ds.length} dia${ds.length>1?"s":""}</em></div><div><small>Saldo</small><b class="${se-sx>0?"up":"down"}">${sgn(se-sx)}</b><em>${se>sx?"carteira sobe":se<sx?"carteira desce":"equilibrado"}</em></div></div>`;
-  // ---- balões por fornecedor (contrato), logo abaixo dos números ----
-  {const nomeF=f=>{let t=clean(f);if(!t)return "Sem fornecedor";t=t.replace(/^EMPRESA\s+/i,"").split("/")[0].trim();return t.length>34?t.slice(0,32)+"…":t;};
-   const F={};const add=(f,k)=>{const n=nomeF(f);(F[n]=F[n]||{n,ent:0,exe:0,cart:0,fora:0})[k]++;};
-   for(const r of u.ac)if(ds.includes(r.dt)&&relOk(r)&&fpp(r))add(r.forn,"ent");
-   for(const r of u.ex)if(ds.includes(r.dt)&&relOk(r)&&fpp(r))add(r.forn,"exe");
-   for(const r of u.ca)if(fpp(r)){add(r.forn,"cart");if(r.fora)add(r.forn,"fora");}
-   const L=Object.values(F).sort((a,b)=>(a.n==="Sem fornecedor")-(b.n==="Sem fornecedor")||(b.cart+b.ent+b.exe)-(a.cart+a.ent+a.exe));
-   const tot=L.reduce((a,x)=>({ent:a.ent+x.ent,exe:a.exe+x.exe,cart:a.cart+x.cart,fora:a.fora+x.fora}),{ent:0,exe:0,cart:0,fora:0});
-   const bal=(x,cls)=>`<div class="bfo${cls?" "+cls:""}"><div class="bfn">${esc(x.n)}</div><div class="bfc"><b>${nf(x.cart)}</b><span>na carteira${x.fora?` · <em>${nf(x.fora)} fora</em>`:""}</span></div><div class="bfm"><span><small>Entradas</small><b>${nf(x.ent)}</b></span><span><small>Execuções</small><b>${nf(x.exe)}</b></span></div></div>`;
-   if(L.length&&!(L.length===1&&L[0].n==="Sem fornecedor"))h+=`<div class="bfw"><div class="bft">Por fornecedor</div><div class="bfs">${L.map(x=>bal(x)).join("")}${bal({n:"Total",...tot},"tot")}</div></div>`;}
+  h+=baloesForn(ds,fpp);
   // gráficos: dia a dia, prazo por polo, evolução
   const itD=ds.map(d=>({lab:dm(d),sub:wd(d),vals:[{v:E(d),c:"#F0A23B"},{v:X(d),c:"#23824F"}]}));
   const pzRows=(pol==="Todos"?POLOS.slice().reverse():[pol]).map(p=>({p,...conta({p})}));
   const dsH=datasHist();const mes=(u.dc||"").slice(0,7);const fH=(p,g)=>pol==="Todos"||p===pol;
   const evo=dsH.filter(d=>d.startsWith(mes)&&(somaHist(d,2,fH)!=null||somaHist(d,3,fH)!=null)).slice(-10).map(d=>({lab:dm(d),sub:wd(d),vals:[{v:somaHist(d,2,fH)||0,c:"#2FA36B"},{v:somaHist(d,3,fH)||0,c:"#D9534A"}]}));
-  h+=`<div class="r3"><div class="rg"><div class="rgt">Entradas × execuções por dia<span class="leg2"><span style="--c:#F0A23B">Entradas</span><span style="--c:#23824F">Execuções</span></span></div>${miniBarras(itD,{h:180})}</div>
+  h+=`<div class="r3"><div class="rg"><div class="rgt">Entradas × execuções por dia<span class="leg2"><span style="--c:#F0A23B">Entradas</span><span style="--c:#23824F">Execuções</span></span></div>${miniBarras(itD,{h:104})}</div>
     <div class="rg"><div class="rgt">Prazo da carteira por polo<span class="leg2"><span style="--c:#2FA36B">No prazo</span><span style="--c:#D9534A">Fora</span></span></div>${pzBarras(pzRows)}</div>
-    <div class="rg"><div class="rgt">Evolução da carteira no mês<span class="leg2"><span style="--c:#2FA36B">No prazo</span><span style="--c:#D9534A">Fora</span></span></div>${evo.length?barras(evo,{empilhar:1,wmin:420,h:200,rotular:1,bw:26}):'<div class="empty">Sem histórico no mês.</div>'}</div></div>`;
+    <div class="rg"><div class="rgt">Evolução da carteira no mês<span class="leg2"><span style="--c:#2FA36B">No prazo</span><span style="--c:#D9534A">Fora</span></span></div>${evo.length?barras(evo,{empilhar:1,wmin:560,h:128,rotular:1,bw:26}):'<div class="empty">Sem histórico no mês.</div>'}</div></div>`;
   // serviços em cartões
   h+=`<div class="rsv"><div class="svc4">${cardsServ(ds)}</div></div>`;
   // ---- ligação de água (visual) ----
@@ -1579,10 +1597,10 @@ function renderRes(){
    const fx=FX.map(([k,l,c])=>({l,c,n:ca.filter(r=>faixaDe(r)===k).length}));const mf=Math.max(1,...fx.map(f=>f.n));
    const ts=tssDoGrupo(g).map(t=>({t,c:ca.filter(r=>r.tss===t).length,e:u.ac.filter(r=>r.g===g&&r.tss===t&&ds.includes(r.dt)).length,x:u.ex.filter(r=>r.g===g&&r.tss===t&&ds.includes(r.dt)&&r.conta).length})).filter(x=>x.c||x.e||x.x);
    const mt=Math.max(1,...ts.map(x=>x.c));
-   h+=`<div class="r3"><div class="rg"><div class="rgt">Entradas × executadas por dia<span class="leg2"><span style="--c:#F0A23B">Entradas</span><span style="--c:#23824F">Executadas</span></span></div>${miniBarras(itL,{h:170})}</div>
+   h+=`<div class="r3"><div class="rg"><div class="rgt">Entradas × executadas por dia<span class="leg2"><span style="--c:#F0A23B">Entradas</span><span style="--c:#23824F">Executadas</span></span></div>${miniBarras(itL,{h:100})}</div>
      <div class="rg"><div class="rgt">Prazo da carteira de ligação</div><div class="hb">${fx.map(f=>`<div class="hr"><span>${f.l}</span><div><i style="width:${(f.n*100/mf).toFixed(1)}%;background:${f.c}"></i></div><b>${nf(f.n)}</b></div>`).join("")}</div></div>
-     <div class="rg"><div class="rgt">Carteira por tipo de ligação</div><div class="hb tsb">${ts.map(x=>`<div class="hr"><span title="${esc(x.t)}">${esc(x.t)}</span><div><i style="width:${(x.c*100/mt).toFixed(1)}%;background:${COR[g]}"></i></div><b>${nf(x.c)}</b></div>`).join("")}</div></div></div></div>`;}
-  h+=`<div class="rfoot"><span>Entradas = acatados pela data de inserção · Execuções = só baixas com o serviço executado (fim do dia, imóvel fechado, outro serviço, duplicidade etc. não contam)</span><span>Gerado em ${new Date().toLocaleString("pt-BR",{dateStyle:"short",timeStyle:"short"})}</span></div>`;
+     <div class="rg"><div class="rgt">Carteira por tipo de ligação</div><div class="hb tsb">${ts.slice(0,5).map(x=>`<div class="hr"><span title="${esc(x.t)}">${esc(x.t)}</span><div><i style="width:${(x.c*100/mt).toFixed(1)}%;background:${COR[g]}"></i></div><b>${nf(x.c)}</b></div>`).join("")}</div></div></div></div>`;}
+  h+=`<div class="rfoot"><span>Entradas = acatados pela data de inserção · Execuções no total = todas as baixas; nos serviços = só o serviço executado (fim do dia, imóvel fechado, outro serviço, duplicidade etc. não contam)</span><span>Gerado em ${new Date().toLocaleString("pt-BR",{dateStyle:"short",timeStyle:"short"})}</span></div>`;
   $("resCard").innerHTML=ds.length||u.dc?h:`<div class="empty">Suba os arquivos do dia para montar o resumo.</div>`;}
 $("btnPrint").onclick=()=>{document.body.classList.add("printmode");window.scrollTo({top:0});};
 (()=>{const b=document.createElement("button");b.type="button";b.className="sairprint";b.textContent="Sair do modo print (Esc)";b.onclick=()=>document.body.classList.remove("printmode");document.body.appendChild(b);})();
