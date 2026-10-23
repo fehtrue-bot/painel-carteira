@@ -841,6 +841,8 @@ body.print-lig .pc-lig{border-top:0;margin-top:0}
 body.printmode #resCard{max-width:1700px;margin:0 auto}
 .ghost2{background:#fff;color:#00396F;border:1px solid #BFE9F7}
 body.print-lig #resCard{zoom:1.45;max-width:1280px}
+.assina{text-align:center;font-size:10px;color:#9AA7B2;padding:2px 0 10px;letter-spacing:.02em}
+body.aba-rel .assina{display:block}
 
 </style>
 </head>
@@ -1028,6 +1030,7 @@ body.print-lig #resCard{zoom:1.45;max-width:1280px}
     <div class="note" id="rodape"></div>
   </section>
   <div class="foot">Painel da Carteira de Serviços · os dados ficam guardados só neste computador</div>
+  <div class="assina">Sistema desenvolvido por Fernanda</div>
 </div>
 
 <div class="modal" id="modal" hidden><div class="mbox"><div class="mhd"><div><b id="mTit"></b><small id="mSub"></small></div><button type="button" class="cpy" id="mCopiar">📋 Copiar endereços</button><button type="button" id="mFechar" aria-label="Fechar">✕</button></div><div class="mlist" id="mLista"></div></div></div>
@@ -1625,7 +1628,7 @@ function renderRes(){
    h+=`<div class="r3"><div class="rg"><div class="rgt">Entradas × executadas por dia<span class="leg2"><span style="--c:#F0A23B">Entradas</span><span style="--c:#23824F">Executadas</span></span></div>${miniBarras(itL,{h:160})}</div>
      <div class="rg"><div class="rgt">Prazo da carteira de ligação</div><div class="hb">${fx.map(f=>`<div class="hr"><span>${f.l}</span><div><i style="width:${(f.n*100/mf).toFixed(1)}%;background:${f.c}"></i></div><b>${nf(f.n)}</b></div>`).join("")}</div></div>
      <div class="rg"><div class="rgt">Carteira por tipo de ligação</div><div class="hb tsb">${ts.slice(0,7).map(x=>`<div class="hr"><span title="${esc(x.t)}">${esc(x.t)}</span><div><i style="width:${(x.c*100/mt).toFixed(1)}%;background:${COR[g]}"></i></div><b>${nf(x.c)}</b></div>`).join("")}</div></div></div></div>`;}
-  h+=`<div class="rfoot"><span>Entradas = acatados pela data de inserção · Execuções no total = todas as baixas; nos serviços = só o serviço executado (fim do dia, imóvel fechado, outro serviço, duplicidade etc. não contam)</span><span>Gerado em ${new Date().toLocaleString("pt-BR",{dateStyle:"short",timeStyle:"short"})}</span></div>`;
+  h+=`<div class="rfoot"><span>Entradas = acatados pela data de inserção · Execuções no total = todas as baixas; nos serviços = só o serviço executado (fim do dia, imóvel fechado, outro serviço, duplicidade etc. não contam)</span><span>Gerado em ${new Date().toLocaleString("pt-BR",{dateStyle:"short",timeStyle:"short"})} · sistema desenvolvido por Fernanda</span></div>`;
   $("resCard").innerHTML=ds.length||u.dc?h:`<div class="empty">Suba os arquivos do dia para montar o resumo.</div>`;}
 const modoPrint=q=>{document.body.classList.remove("print-cart","print-lig");if(q)document.body.classList.add(q);document.body.classList.add("printmode");window.scrollTo({top:0});};
 $("btnPrint").onclick=()=>modoPrint("");$("btnPrintCart").onclick=()=>modoPrint("print-cart");$("btnPrintLig").onclick=()=>modoPrint("print-lig");
