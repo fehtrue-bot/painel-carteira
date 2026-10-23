@@ -1264,7 +1264,8 @@ function registros(raw,tipo){
   const ix=indices(raw.h,tipo==="ex"?CAMPOS_EX:CAMPOS_AC);const g=(r,k)=>ix[k]>=0?r[ix[k]]:"";const out=[];const dias=new Set();
   for(const r of raw.rows){
     const o={os:keyOS(g(r,"os")),p:poloDe(g(r,"atc")),tss:clean(g(r,"tss")),fam:clean(g(r,"fam")),end:clean([clean(g(r,"end")),clean(g(r,"num"))].filter(Boolean).join(", ")),bai:clean(g(r,"bai")),mun:clean(g(r,"mun"))};
-    o.g=grupoDe(o.tss,o.fam,g(r,"forn"));
+    // executados: todos os contratos contam (a regra do Consórcio Global vale só para acatados e carteira)
+    o.g=tipo==="ex"?grupoDe(o.tss,o.fam,CG):grupoDe(o.tss,o.fam,g(r,"forn"));
     if(tipo==="ex"){o.dt=dataIso(g(r,"ini"));o.ini=txtData(g(r,"ini"));o.fim=txtData(g(r,"fim"));o.cod=clean(g(r,"cod")).split(".")[0];o.res=clean(g(r,"res"));o.eq=clean(g(r,"eq"));
       o.conta=executadoDeFato(o.cod,o.res);if(!o.tss)continue;}
     else{o.dt=dataIso(g(r,"ins"));o.ins=txtData(g(r,"ins"));o.pf=txtData(g(r,"pf"));o.tr=clean(g(r,"tr"));o.fora=o.tr.startsWith("-");o.st=clean(g(r,"st"));if(!o.tss)continue;}
