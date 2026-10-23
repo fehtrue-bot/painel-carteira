@@ -1210,7 +1210,7 @@ const GRUPOS=["Vazamento de água","Religação","Ligação de água","Ligação
 // tudo que não é dos 5 grupos entra no total geral como "Outros serviços"
 const OUT="Outros serviços",GRUPOS_H=GRUPOS.concat([OUT]);
 // execução: nos grupos só o serviço executado de verdade; no total geral e em outros serviços, todas as baixas
-const exGeral=(r,g)=>(g&&g!==OUT)?r.conta:true;
+const exGeral=(r,g)=>(r.g==="Ligação de água"||(g&&g!==OUT))?r.conta:true;
 const COR={"Outros serviços":"#8A97A3","Vazamento de água":"#2A7FD4","Religação":"#0F9D8A","Ligação de água":"#E07B24","Ligação de esgoto":"#7A4FD6","Vazamento de esgoto":"#C2417A"};
 const COR_XL={"Outros serviços":"EEF1F4","Vazamento de água":"DCEBFA","Religação":"D5F2EE","Ligação de água":"FCE6D2","Ligação de esgoto":"E9E1FA","Vazamento de esgoto":"F8DDE8"};
 const VAZ=new Set(["CAVALETE QUEBRADO","CAVALETE VAZANDO","REGISTRO DO CAVALETE QUEBRADO","REGISTRO DO CAVALETE VAZANDO","TROCAR RAMAL DE ÁGUA","TROCAR RAMAL DE ÁGUA - VAZ NÃO VISIVEL","TROCAR RAMAL DE ÁGUA - VAZ NÃO VISÍVEL","VAZAMENTO DE ÁGUA COM INFILTRAÇÃO","VAZAMENTO DE ÁGUA LEITO PAVIMENTADO","VAZAMENTO DE ÁGUA NO PASSEIO","VAZAMENTO DE ÁGUA LEITO TERRA","ARREBENTADO DE REDE DE ÁGUA","VAZAMENTO DE ÁGUA NÃO VISÍVEL REDE","VAZAMENTO DE ÁGUA NÃO VISÍVEL RAMAL","VAZAMENTO DE ÁGUA NÃO VISÍVEL CAVALETE","VAZAMENTO DE ÁGUA EM RAMAL ABANDONADO","VAZAMENTO DE ÁGUA NA VÁLVULA","PESQUISAR VAZAMENTO"].map(U));
@@ -1303,7 +1303,8 @@ function registros(raw,tipo){
     else{o.dt=dataIso(g(r,"ins"));o.ins=txtData(g(r,"ins"));o.pf=txtData(g(r,"pf"));o.tr=clean(g(r,"tr"));o.fora=o.tr.startsWith("-");o.st=clean(g(r,"st"));if(!o.tss)continue;}
     if(o.dt)dias.add(o.dt);
     if(o.p==="Outro"){est.outroAtc++;continue;}
-    if(!o.g){const f=FAM[U(clean(o.fam))];if(f&&f[1])est.ligOutroContrato++;else est.outroServ++;o.g=OUT;}
+    // ligação de água de outro contrato não entra em lugar nenhum (nem no total geral)
+    if(!o.g){const f=FAM[U(clean(o.fam))];if(f&&f[1]){est.ligOutroContrato++;continue;}est.outroServ++;o.g=OUT;}
     else if(tipo==="ex"){if(o.conta)est.conta++;else est.alegacao++;}
     out.push(o);}
   if(tipo!=="ex")ajustarRel(out);
@@ -1347,12 +1348,12 @@ $("impOk").onclick=async()=>{
     if(!U2.dias.length)U2.dias=[...new Set(U2.ac.map(r=>r.dt).concat(U2.ex.map(r=>r.dt)))].sort();
     RAW=novoRaw;
     if(res.ac)checks.push(check("good",nf(res.ac.recs.length),"Entradas (acatados)",`${res.ac.dias.map(d=>wd(d)+" "+dm(d)).join(" · ")}${res.ac.raw.rep?` · ${res.ac.raw.rep} repetidas tiradas`:""}`));
-    if(res.ex)checks.push(check("good",nf(res.ex.recs.length),"Execuções (todas as baixas)",`${res.ex.dias.map(d=>wd(d)+" "+dm(d)).join(" · ")}${res.ex.raw.rep?` · ${res.ex.raw.rep} repetidas tiradas`:""}`));
+    if(res.ex)checks.push(check("good",nf(res.ex.recs.filter(r=>exGeral(r)).length),"Execuções (total geral)",`${res.ex.dias.map(d=>wd(d)+" "+dm(d)).join(" · ")}${res.ex.raw.rep?` · ${res.ex.raw.rep} repetidas tiradas`:""}`));
     if(res.ex){const e=res.ex.est;const dR=diaRel();const relFora=res.ex.recs.filter(r=>r.g==="Religação"&&r.conta&&r.dt!==dR).length;
-      checks.push(check("warn",nf(e.linhas),"Linhas no arquivo de executados",`${nf(e.linhas-e.outroAtc-e.semTss)} entram no total geral · nos 5 grupos: ${nf(e.conta)} executadas de fato e ${nf(e.alegacao)} alegações · ${nf(e.outroServ+e.ligOutroContrato)} outros serviços · ${nf(e.outroAtc)} de outro ATC (fora)${relFora?` · ${nf(relFora)} religações de outros dias (religação conta só ${dm(dR)})`:""}`));}
+      checks.push(check("warn",nf(e.linhas),"Linhas no arquivo de executados",`${nf(e.linhas-e.outroAtc-e.semTss-e.ligOutroContrato)} entram no total geral · nos 5 grupos: ${nf(e.conta)} executadas de fato e ${nf(e.alegacao)} alegações · ${nf(e.outroServ)} outros serviços · ${nf(e.ligOutroContrato)} ligação de água de outro contrato (fora) · ${nf(e.outroAtc)} de outro ATC (fora)${relFora?` · ${nf(relFora)} religações de outros dias (religação conta só ${dm(dR)})`:""}`));}
     if(res.ca)checks.push(check("good",nf(res.ca.recs.length),"Carteira de "+dm(dc),`${res.ca.recs.filter(r=>r.fora).length} fora do prazo`));
     const lidas=t=>res[t]?res[t].raw.rows.length-res[t].recs.length:0;
-    const fora=lidas("ac")+lidas("ca");if(fora)checks.push(check("warn",nf(fora),"Linhas fora do painel","de outro ATC (fora de 923, 929 e 299)"));
+    const fora=lidas("ac")+lidas("ca");if(fora)checks.push(check("warn",nf(fora),"Linhas fora do painel","de outro ATC (fora de 923, 929 e 299) ou ligação de água de outro contrato"));
     $("impChecks").innerHTML=checks.join("");
     diaSel="todos";await salvar();renderTudo();
     msg((avisos.length?avisos.join(" ")+" ":"")+"Painel montado com os arquivos do dia. Atualizando o link da coordenação…");
