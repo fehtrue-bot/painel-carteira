@@ -1180,8 +1180,12 @@ function minutosResid(s){const t=String(s||"").trim();const neg=t.startsWith("-"
 const POLOS=["Grajaú","Interlagos"];
 const ATC_POLO={"923":"Interlagos","929":"Grajaú","299":"Grajaú"};
 const GRUPOS=["Vazamento de água","Religação","Ligação de água","Ligação de esgoto","Vazamento de esgoto"];
-const COR={"Vazamento de água":"#2A7FD4","Religação":"#0F9D8A","Ligação de água":"#E07B24","Ligação de esgoto":"#7A4FD6","Vazamento de esgoto":"#C2417A"};
-const COR_XL={"Vazamento de água":"DCEBFA","Religação":"D5F2EE","Ligação de água":"FCE6D2","Ligação de esgoto":"E9E1FA","Vazamento de esgoto":"F8DDE8"};
+// tudo que não é dos 5 grupos entra no total geral como "Outros serviços"
+const OUT="Outros serviços",GRUPOS_H=GRUPOS.concat([OUT]);
+// execução: nos grupos só o serviço executado de verdade; no total geral e em outros serviços, todas as baixas
+const exGeral=(r,g)=>(g&&g!==OUT)?r.conta:true;
+const COR={"Outros serviços":"#8A97A3","Vazamento de água":"#2A7FD4","Religação":"#0F9D8A","Ligação de água":"#E07B24","Ligação de esgoto":"#7A4FD6","Vazamento de esgoto":"#C2417A"};
+const COR_XL={"Outros serviços":"EEF1F4","Vazamento de água":"DCEBFA","Religação":"D5F2EE","Ligação de água":"FCE6D2","Ligação de esgoto":"E9E1FA","Vazamento de esgoto":"F8DDE8"};
 const VAZ=new Set(["CAVALETE QUEBRADO","CAVALETE VAZANDO","REGISTRO DO CAVALETE QUEBRADO","REGISTRO DO CAVALETE VAZANDO","TROCAR RAMAL DE ÁGUA","TROCAR RAMAL DE ÁGUA - VAZ NÃO VISIVEL","TROCAR RAMAL DE ÁGUA - VAZ NÃO VISÍVEL","VAZAMENTO DE ÁGUA COM INFILTRAÇÃO","VAZAMENTO DE ÁGUA LEITO PAVIMENTADO","VAZAMENTO DE ÁGUA NO PASSEIO","VAZAMENTO DE ÁGUA LEITO TERRA","ARREBENTADO DE REDE DE ÁGUA","VAZAMENTO DE ÁGUA NÃO VISÍVEL REDE","VAZAMENTO DE ÁGUA NÃO VISÍVEL RAMAL","VAZAMENTO DE ÁGUA NÃO VISÍVEL CAVALETE","VAZAMENTO DE ÁGUA EM RAMAL ABANDONADO","VAZAMENTO DE ÁGUA NA VÁLVULA","PESQUISAR VAZAMENTO"].map(U));
 const FAM={[U("REATIV/RELIG/RESTAB")]:["Religação",false],[U("LIGAÇÃO DE ÁGUA")]:["Ligação de água",true],[U("LIGAÇÃO DE ESGOTO")]:["Ligação de esgoto",false],[U("DESOBSTRUÇÃO")]:["Vazamento de esgoto",false]};
 const CG=U("EMPRESA CONSORCIO GLOBAL INTERLAGOS/04576-050 SÃO PAULO");
@@ -1221,9 +1225,9 @@ async function carregarLocal(){
 
 /* ================= histórico ================= */
 const hk=(d,p,g)=>d+"|"+p+"|"+g;
-function hset(d,p,g,i,v){const k=hk(d,p,g);const a=S.hist[k]||[null,null,null,null];a[i]=v;S.hist[k]=a;}
+function hset(d,p,g,i,v){const k=hk(d,p,g);const a=S.hist[k]||[null,null,null,null,null];a[i]=v;S.hist[k]=a;}
 function datasHist(){return [...new Set(Object.keys(S.hist).map(k=>k.slice(0,10)))].sort();}
-function somaHist(d,i,f){let t=null;for(const p of POLOS)for(const g of GRUPOS){if(f&&!f(p,g))continue;const a=S.hist[hk(d,p,g)];if(a&&a[i]!=null)t=(t||0)+a[i];}return t;}
+function somaHist(d,i,f){let t=null;for(const p of POLOS)for(const g of GRUPOS_H){if(f&&!f(p,g))continue;const a=S.hist[hk(d,p,g)];const v=a?(i===4&&a[4]==null?a[1]:a[i]):null;if(v!=null)t=(t||0)+v;}return t;}
 function diaAnterior(){const dc=S.ult.dc;const ds=datasHist().filter(d=>d<dc&&somaHist(d,3)!=null);return ds[ds.length-1]||"";}
 
 /* ================= leitura dos arquivos ================= */
@@ -1271,9 +1275,9 @@ function registros(raw,tipo){
       o.conta=executadoDeFato(o.cod,o.res);if(!o.tss){est.semTss++;continue;}}
     else{o.dt=dataIso(g(r,"ins"));o.ins=txtData(g(r,"ins"));o.pf=txtData(g(r,"pf"));o.tr=clean(g(r,"tr"));o.fora=o.tr.startsWith("-");o.st=clean(g(r,"st"));if(!o.tss)continue;}
     if(o.dt)dias.add(o.dt);
-    if(!o.g){const f=FAM[U(clean(o.fam))];if(f&&f[1])est.ligOutroContrato++;else est.outroServ++;continue;}
     if(o.p==="Outro"){est.outroAtc++;continue;}
-    if(tipo==="ex"){if(o.conta)est.conta++;else est.alegacao++;}
+    if(!o.g){const f=FAM[U(clean(o.fam))];if(f&&f[1])est.ligOutroContrato++;else est.outroServ++;o.g=OUT;}
+    else if(tipo==="ex"){if(o.conta)est.conta++;else est.alegacao++;}
     out.push(o);}
   if(tipo!=="ex")ajustarRel(out);
   return {recs:out,dias:[...dias].sort(),est};}
@@ -1303,9 +1307,9 @@ $("impOk").onclick=async()=>{
       const r=registros(u,t);res[t]={...r,raw:u};}
     if(res.ca&&!res.ca.recs.length)throw new Error("A Carteira não tem nenhuma OS dos grupos do painel (ATC 923, 929 ou 299). Confira o arquivo do campo 3.");
     // grava no histórico
-    if(res.ac){for(const d of res.ac.dias)for(const p of POLOS)for(const g of GRUPOS)hset(d,p,g,0,res.ac.recs.filter(r=>r.dt===d&&r.p===p&&r.g===g).length);}
-    if(res.ex){for(const d of res.ex.dias)for(const p of POLOS)for(const g of GRUPOS)hset(d,p,g,1,res.ex.recs.filter(r=>r.dt===d&&r.p===p&&r.g===g&&r.conta).length);}
-    if(res.ca){for(const p of POLOS)for(const g of GRUPOS){const c=res.ca.recs.filter(r=>r.p===p&&r.g===g);hset(dc,p,g,2,c.filter(r=>!r.fora).length);hset(dc,p,g,3,c.filter(r=>r.fora).length);}}
+    if(res.ac){for(const d of res.ac.dias)for(const p of POLOS)for(const g of GRUPOS_H)hset(d,p,g,0,res.ac.recs.filter(r=>r.dt===d&&r.p===p&&r.g===g).length);}
+    if(res.ex){for(const d of res.ex.dias)for(const p of POLOS)for(const g of GRUPOS_H){const L=res.ex.recs.filter(r=>r.dt===d&&r.p===p&&r.g===g);hset(d,p,g,1,L.filter(r=>exGeral(r,g)).length);hset(d,p,g,4,L.length);}}
+    if(res.ca){for(const p of POLOS)for(const g of GRUPOS_H){const c=res.ca.recs.filter(r=>r.p===p&&r.g===g);hset(dc,p,g,2,c.filter(r=>!r.fora).length);hset(dc,p,g,3,c.filter(r=>r.fora).length);}}
     const U2=S.ult;
     for(const t of ["ac","ex","ca"])if(res[t]){U2[t]=res[t].recs;U2.arq[t]=novoRaw[t].arq;}
     if(res.ca)U2.dc=dc;
@@ -1316,12 +1320,12 @@ $("impOk").onclick=async()=>{
     if(!U2.dias.length)U2.dias=[...new Set(U2.ac.map(r=>r.dt).concat(U2.ex.map(r=>r.dt)))].sort();
     RAW=novoRaw;
     if(res.ac)checks.push(check("good",nf(res.ac.recs.length),"Entradas (acatados)",`${res.ac.dias.map(d=>wd(d)+" "+dm(d)).join(" · ")}${res.ac.raw.rep?` · ${res.ac.raw.rep} repetidas tiradas`:""}`));
-    if(res.ex)checks.push(check("good",nf(res.ex.recs.filter(r=>r.conta).length),"Execuções",`${res.ex.dias.map(d=>wd(d)+" "+dm(d)).join(" · ")}${res.ex.raw.rep?` · ${res.ex.raw.rep} repetidas tiradas`:""}`));
+    if(res.ex)checks.push(check("good",nf(res.ex.recs.length),"Execuções (todas as baixas)",`${res.ex.dias.map(d=>wd(d)+" "+dm(d)).join(" · ")}${res.ex.raw.rep?` · ${res.ex.raw.rep} repetidas tiradas`:""}`));
     if(res.ex){const e=res.ex.est;const dR=diaRel();const relFora=res.ex.recs.filter(r=>r.g==="Religação"&&r.conta&&r.dt!==dR).length;
-      checks.push(check("warn",nf(e.linhas),"Linhas no arquivo de executados",`${nf(e.conta)} executadas de fato · ${nf(e.alegacao)} alegações (não contam) · ${nf(e.outroServ)} outros serviços fora do painel · ${nf(e.outroAtc)} de outro ATC · ${nf(e.ligOutroContrato)} ligação de água de outro contrato${relFora?` · ${nf(relFora)} religações de outros dias (religação conta só ${dm(dR)})`:""}`));}
+      checks.push(check("warn",nf(e.linhas),"Linhas no arquivo de executados",`${nf(e.linhas-e.outroAtc-e.semTss)} entram no total geral · nos 5 grupos: ${nf(e.conta)} executadas de fato e ${nf(e.alegacao)} alegações · ${nf(e.outroServ+e.ligOutroContrato)} outros serviços · ${nf(e.outroAtc)} de outro ATC (fora)${relFora?` · ${nf(relFora)} religações de outros dias (religação conta só ${dm(dR)})`:""}`));}
     if(res.ca)checks.push(check("good",nf(res.ca.recs.length),"Carteira de "+dm(dc),`${res.ca.recs.filter(r=>r.fora).length} fora do prazo`));
     const lidas=t=>res[t]?res[t].raw.rows.length-res[t].recs.length:0;
-    const fora=lidas("ac")+lidas("ca");if(fora)checks.push(check("warn",nf(fora),"Linhas fora do painel","outros serviços, outros ATC ou fora do Contrato Global"));
+    const fora=lidas("ac")+lidas("ca");if(fora)checks.push(check("warn",nf(fora),"Linhas fora do painel","de outro ATC (fora de 923, 929 e 299)"));
     $("impChecks").innerHTML=checks.join("");
     diaSel="todos";await salvar();renderTudo();
     msg((avisos.length?avisos.join(" ")+" ":"")+"Painel montado com os arquivos do dia. Atualizando o link da coordenação…");
@@ -1361,7 +1365,7 @@ const noDia=r=>r.g==="Religação"?r.dt===diaRel():diasSel().includes(r.dt);
 function conta(o){const u=S.ult;const g=o.g,p=o.p||null;const fpol=r=>p?r.p===p:fp(r);
   const ca=u.ca.filter(r=>(!g||r.g===g)&&fpol(r));const fora=ca.filter(r=>r.fora).length;
   const ent=u.ac.filter(r=>(!g||r.g===g)&&fpol(r)&&noDia(r)).length;
-  const exe=u.ex.filter(r=>(!g||r.g===g)&&fpol(r)&&noDia(r)&&r.conta).length;
+  const exe=u.ex.filter(r=>(!g||r.g===g)&&fpol(r)&&noDia(r)&&exGeral(r,g)).length;
   const da=diaAnterior();let ant=null;
   if(da){ant=somaHist(da,3,(pp,gg)=>(!g||gg===g)&&(p?pp===p:(poloSel==="Todos"||pp===poloSel)));}
   return {cart:ca.length,fora,no:ca.length-fora,ent,exe,saldo:ent-exe,dFora:ant==null?null:fora-ant,da};}
@@ -1410,7 +1414,7 @@ function render(){
   const u=S.ult;const T=conta({});const da=T.da;
   $("sub").innerHTML=`Interlagos · Grajaú${u.dc?` · carteira de <b>${dmy(u.dc)}</b>`:""}`;
   const tend=T.ent>T.exe?"carteira tende a subir":T.ent<T.exe?"carteira tende a cair":"equilibrado";
-  const SH=serieHist();const DD=diasSel().map(d=>({d,e:u.ac.filter(r=>r.dt===d&&fp(r)&&relOk(r)).length,x:u.ex.filter(r=>r.dt===d&&fp(r)&&r.conta&&relOk(r)).length}));
+  const SH=serieHist();const DD=diasSel().map(d=>({d,e:u.ac.filter(r=>r.dt===d&&fp(r)&&relOk(r)).length,x:u.ex.filter(r=>r.dt===d&&fp(r)&&relOk(r)).length}));
   $("kpis").innerHTML=[
     kpi({hl:1,l:"Carteira",v:nf(T.cart),s:`${nf(T.no)} no prazo`,ic:IC.cart,go:{modo:"carteira"},g:miniG([{v:SH.map(x=>x.np+x.fp),c:"#fff",t:SH.map(x=>dm(x.d))}])}),
     kpi({l:"Fora do prazo",v:nf(T.fora),s:T.dFora==null?"sem dia anterior salvo":`<span class="delta ${T.dFora>0?"up":T.dFora<0?"down":""}">${T.dFora>0?"▲ "+nf(T.dFora):T.dFora<0?"▼ "+nf(-T.dFora):"= 0"}</span> vs ${dm(da)}`,ic:IC.fora,tone:"var(--red)",soft:"var(--red-soft)",go:{modo:"carteira",prazo:"fora"},g:miniG([{v:SH.map(x=>x.fp),c:"#D9534A",t:SH.map(x=>dm(x.d))}])}),
@@ -1422,7 +1426,7 @@ function render(){
   $("sitNota").textContent=`carteira de ${dmy(u.dc)} · entradas e execuções: ${rotDias()}${poloSel!=="Todos"?" · "+poloSel:""}`;
   $("tbGrupo").innerHTML=cardsServ(diasSel());
   // dia a dia
-  const linhasDia=u.dias.map(d=>{const e=u.ac.filter(r=>r.dt===d&&fp(r)&&relOk(r)).length,x=u.ex.filter(r=>r.dt===d&&fp(r)&&r.conta&&relOk(r)).length;return {d,e,x};});
+  const linhasDia=u.dias.map(d=>{const e=u.ac.filter(r=>r.dt===d&&fp(r)&&relOk(r)).length,x=u.ex.filter(r=>r.dt===d&&fp(r)&&relOk(r)).length;return {d,e,x};});
   const mx=Math.max(1,...linhasDia.map(l=>Math.max(l.e,l.x)));
   $("diaDia").innerHTML=linhasDia.length?`<div class="dd">${linhasDia.map(l=>`<div class="r${diaSel===l.d?" sel":""}" data-dia="${l.d}"><div class="dl"><small>${wd(l.d)}</small><b>${dm(l.d)}</b></div><div class="bb"><div class="bl"><span style="--c:#F0A23B;width:${(l.e*100/mx).toFixed(1)}%"></span><em>${nf(l.e)}</em></div><div class="bl"><span style="--c:#23824F;width:${(l.x*100/mx).toFixed(1)}%"></span><em>${nf(l.x)}</em></div></div><div class="sd ${l.e-l.x>0?"up":"down"}"><small>saldo</small>${sgn(l.e-l.x)}</div></div>`).join("")}
     <div class="r tt"><div class="dl"><small>total</small><b>${linhasDia.length} dias</b></div><div class="bb"><div class="bl"><em>${nf(linhasDia.reduce((a,l)=>a+l.e,0))} entradas</em></div><div class="bl"><em>${nf(linhasDia.reduce((a,l)=>a+l.x,0))} execuções</em></div></div><div class="sd">${sgn(linhasDia.reduce((a,l)=>a+l.e-l.x,0))}</div></div></div><div class="note">Clique num dia para ver só ele no painel.</div>`:`<div class="empty">Sem entradas e execuções. Suba os arquivos de Acatados e Executados.</div>`;
@@ -1470,12 +1474,13 @@ function renderEvo(){
   const f=(p,g)=>(poloSel==="Todos"||p===poloSel)&&(grupoEvo==="Todos"||g===grupoEvo);
   const dm2=ds.filter(d=>d.startsWith(mesSel));
   const evo=dm2.filter(d=>somaHist(d,2,f)!=null||somaHist(d,3,f)!=null).map(d=>({lab:dm(d),sub:wd(d),vals:[{v:somaHist(d,2,f)||0,c:"#2FA36B"},{v:somaHist(d,3,f)||0,c:"#D9534A"}]}));
-  const mov=dm2.filter(d=>somaHist(d,0,f)!=null||somaHist(d,1,f)!=null).map(d=>({lab:dm(d),sub:wd(d),vals:[{v:somaHist(d,0,f),c:"#F0A23B"},{v:somaHist(d,1,f),c:"#23824F"}]}));
+  const iX=grupoEvo==="Todos"?4:1;
+  const mov=dm2.filter(d=>somaHist(d,0,f)!=null||somaHist(d,iX,f)!=null).map(d=>({lab:dm(d),sub:wd(d),vals:[{v:somaHist(d,0,f),c:"#F0A23B"},{v:somaHist(d,iX,f),c:"#23824F"}]}));
   $("chartEvo").innerHTML=barras(evo,{empilhar:1});$("chartMov").innerHTML=barras(mov,{h:200});
   const pri=evo[0],ult=evo[evo.length-1];const tt=it=>it.vals[0].v+it.vals[1].v;
   $("evoNota").textContent=`${MESES[Number(mesSel.slice(5,7))-1]||""} · ${poloSel==="Todos"?"todos os polos":poloSel} · ${grupoEvo==="Todos"?"todos os grupos":grupoEvo}`+(pri&&ult&&pri!==ult?` · de ${nf(tt(pri))} (${pri.lab}) para ${nf(tt(ult))} (${ult.lab})`:"");
   $("tbHist").innerHTML=`<thead><tr><th>Data</th><th class="r">Carteira</th><th class="r">No prazo</th><th class="r">Fora do prazo</th><th class="r">% no prazo</th><th class="r">Entradas</th><th class="r">Execuções</th></tr></thead><tbody>`+
-    ds.slice().reverse().filter(d=>d.startsWith(mesSel)).map(d=>{const np=somaHist(d,2,f),fo=somaHist(d,3,f),a=somaHist(d,0,f),x=somaHist(d,1,f);const c=(np||0)+(fo||0);
+    ds.slice().reverse().filter(d=>d.startsWith(mesSel)).map(d=>{const np=somaHist(d,2,f),fo=somaHist(d,3,f),a=somaHist(d,0,f),x=somaHist(d,iX,f);const c=(np||0)+(fo||0);
       return `<tr><td>${wd(d)} ${dmy(d)}</td><td class="r">${np==null&&fo==null?"–":nf(c)}</td><td class="r">${np==null?"–":nf(np)}</td><td class="r">${fo==null?"–":nf(fo)}</td><td class="r">${np==null?"–":pctTxt(np,c)}</td><td class="r">${a==null?"–":nf(a)}</td><td class="r">${x==null?"–":nf(x)}</td></tr>`;}).join("")+"</tbody>";}
 $("selMes").onchange=e=>{mesSel=e.target.value;renderEvo();};
 $("selGrupoEvo").onchange=e=>{grupoEvo=e.target.value;renderEvo();};
@@ -1526,7 +1531,7 @@ function pzBarras(rows){const m=Math.max(1,...rows.map(r=>r.cart));
 function renderRes(){
   const u=S.ult,ds=u.dias;const pol=poloSel;const fpp=r=>pol==="Todos"||r.p===pol;
   const E=(d,g,p)=>u.ac.filter(r=>r.dt===d&&relOk(r)&&(!g||r.g===g)&&(p?r.p===p:fpp(r))).length;
-  const X=(d,g,p)=>u.ex.filter(r=>r.dt===d&&r.conta&&relOk(r)&&(!g||r.g===g)&&(p?r.p===p:fpp(r))).length;
+  const X=(d,g,p)=>u.ex.filter(r=>r.dt===d&&exGeral(r,g)&&relOk(r)&&(!g||r.g===g)&&(p?r.p===p:fpp(r))).length;
   const T=conta({});const se=ds.reduce((a,d)=>a+E(d),0),sx=ds.reduce((a,d)=>a+X(d),0);
   const per=ds.length?(ds.length===1?`${wd(ds[0])} ${dmy(ds[0])}`:`${wd(ds[0])} ${dm(ds[0])} a ${wd(ds[ds.length-1])} ${dm(ds[ds.length-1])}`):"–";
   let h=`<div class="rhead"><div><h2>Carteira de Serviços · ${pol==="Todos"?"Interlagos e Grajaú":esc(pol)}</h2><p>Entradas e execuções de ${per} · carteira de ${wd(u.dc)} ${dmy(u.dc)}</p></div><div class="rdt">Carteira de<b>${dmy(u.dc)}</b></div></div>`;
@@ -1753,7 +1758,7 @@ function abrirLista(o){const u=S.ult;const modo=o.modo||"carteira";const agora=D
   let L=(modo==="carteira"?u.ca:modo==="entradas"?u.ac:u.ex).filter(r=>(o.p?r.p===o.p:fp(r))&&(!o.g||r.g===o.g)&&(!o.gs||o.gs.includes(r.g))&&(!o.tss||r.tss===o.tss));
   const h24=r=>{const m=marca24(r);return m==null?null:(m-agora)/3600000;};
   if(modo==="carteira"){if(o.prazo==="fora")L=L.filter(r=>r.fora);else if(o.prazo==="no")L=L.filter(r=>!r.fora);else if(o.prazo==="p24")L=L.filter(r=>r.g==="Religação"&&!r.fora&&(h24(r)??1)<0);else if(o.prazo==="d24")L=L.filter(r=>r.g==="Religação"&&!r.fora&&(h24(r)??-1)>=0);if(o.fx)L=L.filter(r=>faixaDe(r)===o.fx);}
-  else{L=L.filter(r=>noDia(r));if(modo==="execucoes")L=L.filter(r=>o.nc==="sim"?!r.conta:r.conta);}
+  else{L=L.filter(r=>noDia(r));if(modo==="execucoes"){if(o.nc==="sim")L=L.filter(r=>!r.conta);else if(o.g&&o.g!==OUT)L=L.filter(r=>r.conta);}}
   const vc=r=>{const v=vencimento(r);return v==null?null:(v-agora)/3600000;};
   if(modo==="carteira")L.sort((a,b)=>(vc(a)??0)-(vc(b)??0));else L.sort((a,b)=>a.dt<b.dt?-1:1);
   $("mTit").textContent=(o.g||(o.gs?o.gs.join(" e "):"Todos os serviços"))+" · "+(modo==="carteira"?(o.prazo==="fora"?(o.g==="Religação"?"vencidas (passaram de 48h)":"fora do prazo"):o.prazo==="no"?"no prazo":o.prazo==="p24"?"passaram de 24h · vencem em 48h":o.prazo==="d24"?"dentro das 24h":"carteira"):modo==="entradas"?"entradas":"execuções");
@@ -1783,7 +1788,7 @@ function filtradosOS(semBusca){const q=U($("busca").value.trim());
 function renderOS(){
   const u=S.ult;
   $("chipsModo").innerHTML=MODOS.map(([k,l])=>{const n=(k==="carteira"?u.ca:k==="entradas"?u.ac:u.ex).filter(r=>fp(r)&&(k==="carteira"||noDia(r))).length;return `<button type="button" class="chip" data-m="${k}" aria-pressed="${osF.modo===k}">${l} <span class="c">${nf(n)}</span></button>`;}).join("");
-  $("fGrupo").innerHTML=`<option value="">Todos os grupos</option>`+GRUPOS.map(g=>`<option${g===osF.g?" selected":""}>${g}</option>`).join("");
+  $("fGrupo").innerHTML=`<option value="">Todos os grupos</option>`+GRUPOS_H.map(g=>`<option${g===osF.g?" selected":""}>${g}</option>`).join("");
   const tss=[...new Set(baseModo().filter(r=>!osF.g||r.g===osF.g).map(r=>r.tss))].sort();
   if(osF.tss&&!tss.includes(osF.tss))osF.tss="";
   $("fTss").innerHTML=`<option value="">Todos os TSS</option>`+tss.map(t=>`<option${t===osF.tss?" selected":""}>${esc(t)}</option>`).join("");
@@ -1856,14 +1861,15 @@ function exportar(){
   const tabelaGrupo=(titulo,p)=>{put(P,r,1,titulo,sSec);r++;
     const hd=["Grupo","Carteira","No prazo","Fora do prazo","% no prazo",`Fora vs ${T.da?dm(T.da):"dia anterior"}`,"Entradas","Execuções","Saldo"];hd.forEach((h,i)=>put(P,r,1+i,h,i?sH:sHl));P.heights[r]=28;r++;
     const tt={cart:0,no:0,fora:0,ent:0,exe:0,dF:0,temD:false};
-    for(const g of GRUPOS){const c=conta({g,p:p||null});[g,c.cart,c.no,c.fora,pctN(c.no,c.cart)??"",c.dFora==null?"–":c.dFora,c.ent,c.exe,c.saldo].forEach((v,i)=>put(P,r,1+i,v,i===0?sG(g):i===4?sCp:i===3&&c.fora?sBad:sC));
+    for(const g of GRUPOS_H){const c=conta({g,p:p||null});[g,c.cart,c.no,c.fora,pctN(c.no,c.cart)??"",c.dFora==null?"–":c.dFora,c.ent,c.exe,c.saldo].forEach((v,i)=>put(P,r,1+i,v,i===0?sG(g):i===4?sCp:i===3&&c.fora?sBad:sC));
       tt.cart+=c.cart;tt.no+=c.no;tt.fora+=c.fora;tt.ent+=c.ent;tt.exe+=c.exe;if(c.dFora!=null){tt.dF+=c.dFora;tt.temD=true;}r++;}
+    {const G=conta({p:p||null});tt.exe=G.exe;tt.ent=G.ent;}
     ["TOTAL",tt.cart,tt.no,tt.fora,pctN(tt.no,tt.cart)??"",tt.temD?tt.dF:"–",tt.ent,tt.exe,tt.ent-tt.exe].forEach((v,i)=>put(P,r,1+i,v,i===0?sTotL:i===4?sTotP:sTot));r+=2;};
   tabelaGrupo("Situação por grupo · todos os polos","");
   for(const p of POLOS.slice().reverse())tabelaGrupo("Situação por grupo · "+p,p);
   put(P,r,1,"Entradas × execuções por dia",sSec);r++;
   ["Data","Dia","Entradas","Execuções","Saldo"].forEach((h,i)=>put(P,r,1+i,h,i?sH:sHl));r++;
-  for(const d of u.dias){const e=u.ac.filter(x=>x.dt===d).length,x=u.ex.filter(y=>y.dt===d&&y.conta).length;[iso2d(d),wd(d),e,x,e-x].forEach((v,i)=>put(P,r,1+i,v,i===0?L.st({f:{b:1,sz:10,n:"Segoe UI"},bd:LINE,nf:"dd/mm/yyyy"}):sC));r++;}
+  for(const d of u.dias){const e=u.ac.filter(x=>x.dt===d&&relOk(x)).length,x=u.ex.filter(y=>y.dt===d&&relOk(y)).length;[iso2d(d),wd(d),e,x,e-x].forEach((v,i)=>put(P,r,1+i,v,i===0?L.st({f:{b:1,sz:10,n:"Segoe UI"},bd:LINE,nf:"dd/mm/yyyy"}):sC));r++;}
   poloSel=polSalvo;
   sheets.push(P);
   // ---------- LIGAÇÃO DE ÁGUA ----------
@@ -1893,7 +1899,7 @@ function exportar(){
   put(SD,1,1,"SERVIÇO POR DIA",sT);for(let c=2;c<=8;c++)put(SD,1,c,"",sT);SD.heights[1]=26;
   ["Serviço","Data","Acatados","Executados","Acatados Grajaú","Executados Grajaú","Acatados Interlagos","Executados Interlagos"].forEach((h,i)=>put(SD,3,1+i,h,i?sH:sHl));SD.heights[3]=30;
   let rs=4;let sa=0,se=0;
-  for(const d of u.dias)for(const gg of GRUPOS){const a=p=>u.ac.filter(x=>x.dt===d&&x.g===gg&&(!p||x.p===p)).length,e=p=>u.ex.filter(x=>x.dt===d&&x.g===gg&&x.conta&&(!p||x.p===p)).length;
+  for(const d of u.dias)for(const gg of GRUPOS_H){const a=p=>u.ac.filter(x=>x.dt===d&&x.g===gg&&(!p||x.p===p)).length,e=p=>u.ex.filter(x=>x.dt===d&&x.g===gg&&exGeral(x,gg)&&(!p||x.p===p)).length;
     [gg,iso2d(d),a(),e(),a("Grajaú"),e("Grajaú"),a("Interlagos"),e("Interlagos")].forEach((v,i)=>put(SD,rs,1+i,v,i===0?sG(gg):i===1?sCd:sC));sa+=a();se+=e();rs++;}
   put(SD,2,1,"TOTAL",sTotL);put(SD,2,2,"",sTot);put(SD,2,3,sa,sTot);put(SD,2,4,se,sTot);
   SD.filter=`B4:I${Math.max(5,rs)}`;
@@ -1902,7 +1908,7 @@ function exportar(){
   const H=folha("HISTÓRICO",{widths:[2,13,13,22,12,12,16,18],grid:false,tab:"5E6E7B",freeze:"A4",merges:["B1:H1"]});
   put(H,0,1,"HISTÓRICO DIÁRIO",sT);for(let c=2;c<=7;c++)put(H,0,c,"",sT);H.heights[0]=26;
   ["Data","Polo","Grupo","Acatados","Executados","Carteira no prazo","Carteira fora do prazo"].forEach((h,i)=>put(H,2,1+i,h,i?sH:sHl));H.heights[2]=30;
-  let rh=3;for(const d of datasHist().reverse())for(const p of POLOS)for(const gg of GRUPOS){const a=S.hist[hk(d,p,gg)];if(!a||a.every(x=>x==null))continue;
+  let rh=3;for(const d of datasHist().reverse())for(const p of POLOS)for(const gg of GRUPOS_H){const a=S.hist[hk(d,p,gg)];if(!a||a.every(x=>x==null))continue;
     [iso2d(d),p,gg,a[0]??"",a[1]??"",a[2]??"",a[3]??""].forEach((v,i)=>put(H,rh,1+i,v,i===0?sCd:i===2?sG(gg):i===1?sL:sC));rh++;}
   H.filter=`B3:H${Math.max(4,rh)}`;sheets.push(H);
   // ---------- bases ----------
