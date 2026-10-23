@@ -844,6 +844,26 @@ body.print-lig #resCard{zoom:1.45;max-width:1280px}
 .assina{text-align:center;font-size:10px;color:#9AA7B2;padding:2px 0 10px;letter-spacing:.02em}
 body.aba-rel .assina{display:block}
 
+/* carteira por família */
+.tfam{width:100%;border-collapse:collapse;font-size:13px}
+.tfam th{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:700;text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);background:var(--sunk)}
+.tfam th.r,.tfam td.r{text-align:right}
+.tfam td{padding:6px 10px;border-bottom:1px solid var(--line-2);vertical-align:middle}
+.tfam tr.fam{cursor:pointer}.tfam tr.fam:hover td{background:#F4F9FD}
+.tfam tr.fam td.fnm{font-weight:700;color:#00396F;white-space:nowrap}
+.tfam td.fnm small{font-weight:500;color:var(--muted);font-size:11px;margin-left:8px}
+.tfam .seta{display:inline-block;width:16px;color:#12A5D6;transition:transform .15s}.tfam tr.ab .seta{transform:rotate(90deg)}
+.tfam tr.tss td{background:#F7FAFC;font-size:12.5px}.tfam tr.tss td.fnm{padding-left:34px;color:var(--ink)}
+.tfam .nb{display:inline-block;min-width:44px;text-align:center;padding:3px 8px;border-radius:7px;font-weight:700;font-variant-numeric:tabular-nums;cursor:pointer;border:1px solid transparent}
+.tfam .nb.e{background:#FFF3E3;color:#B9650F;border-color:#F6D9B0}.tfam .nb.x{background:#E5F4EC;color:#1C7444;border-color:#BFE3CD}
+.tfam .nb.n{background:#E8F6EE;color:#23824F;border-color:#C6E8D3}.tfam .nb.f{background:#FCE9E8;color:#C23A31;border-color:#F3C6C2}
+.tfam .nb.z{opacity:.45;cursor:default}
+.tfam td.tt{font-weight:800;color:var(--ink);font-variant-numeric:tabular-nums}
+.tfam td.pr{min-width:170px;white-space:nowrap}.tfam .pbar{display:inline-flex;width:120px;height:9px;border-radius:5px;overflow:hidden;background:var(--line-2);vertical-align:middle}.tfam .pbar i{display:block;height:100%}
+.tfam td.pr b{display:inline-block;width:42px;text-align:right;font-size:12px;color:var(--muted);margin-left:6px}.tfam td.pr b.med{color:#C27A12}.tfam td.pr b.ruim{color:#C23A31}
+.tfam tr.total td{font-weight:800;border-top:2px solid var(--ink);background:var(--surface);cursor:default}
+@media (max-width:760px){.tfam td.pr .pbar{width:60px}.tfam td.fnm small{display:none}}
+
 </style>
 </head>
 <body>
@@ -942,6 +962,8 @@ body.aba-rel .assina{display:block}
       <div class="sect s12">Carteira por grupo · hoje</div>
       <article class="card s6"><header class="ch"><div><h3>Grajaú</h3><p>no prazo × fora do prazo</p></div><div class="leg2"><span style="--c:#2FA36B">No prazo</span><span style="--c:#D9534A">Fora do prazo</span></div></header><div id="cgGra"></div></article>
       <article class="card s6"><header class="ch"><div><h3>Interlagos</h3><p>no prazo × fora do prazo</p></div><div class="leg2"><span style="--c:#2FA36B">No prazo</span><span style="--c:#D9534A">Fora do prazo</span></div></header><div id="cgInt"></div></article>
+      <div class="sect s12">Carteira por família · todos os serviços</div>
+      <article class="card s12"><header class="ch"><div><h3>Por família</h3><p id="famNota">clique na família para ver os TSS · clique nos números para ver as OS</p></div><div class="leg2"><span style="--c:#2FA36B">No prazo</span><span style="--c:#D9534A">Fora do prazo</span></div></header><div class="scroll"><table class="tfam" id="tbFam"></table></div></article>
       <div class="sect s12" id="evoTit">Evolução da carteira no mês</div>
       <article class="card s6"><header class="ch"><div><h3>Grajaú</h3><p>no prazo × fora do prazo, dia a dia</p></div><div class="leg2"><span style="--c:#2FA36B">No prazo</span><span style="--c:#D9534A">Fora do prazo</span></div></header><div class="chart ev" id="evoGra"></div></article>
       <article class="card s6"><header class="ch"><div><h3>Interlagos</h3><p>no prazo × fora do prazo, dia a dia</p></div><div class="leg2"><span style="--c:#2FA36B">No prazo</span><span style="--c:#D9534A">Fora do prazo</span></div></header><div class="chart ev" id="evoInt"></div></article>
@@ -1488,7 +1510,30 @@ function render(){
   const cg=p=>{const rs=GRUPOS.map(g=>({g,...conta({g,p})}));const m=Math.max(1,...rs.map(r=>r.cart));
     return `<div class="cg">${rs.map(r=>`<div class="r"${go({modo:"carteira",g:r.g,p})}><span class="nm"><i style="--c:${COR[r.g]}"></i>${r.g}</span><div class="br" style="width:${Math.max(4,r.cart*100/m).toFixed(1)}%"><i style="width:${r.cart?(r.no*100/r.cart):0}%;background:#2FA36B">${r.no&&r.no/m>.08?r.no:""}</i><i style="width:${r.cart?(r.fora*100/r.cart):0}%;background:#D9534A">${r.fora&&r.fora/m>.08?r.fora:""}</i></div><span class="n">${nf(r.cart)}</span><span class="p">${pp(pctN(r.no,r.cart),metaDe(r.g))}</span></div>`).join("")}</div>`;};
   $("cgInt").innerHTML=cg("Interlagos");$("cgGra").innerHTML=cg("Grajaú");
+  renderFam();
   renderEvo();renderEvoPolos();}
+// ---- carteira por família (todos os serviços), com os TSS de cada família ----
+const famDe=r=>U(clean(r.fam))||"(SEM FAMÍLIA)";
+let famAbertas=new Set();
+function renderFam(){const u=ultF();const nd=r=>diasSel().includes(r.dt);
+  const F={},NM={};const pega=(f,t)=>{const a=F[f]=F[f]||{f,ent:0,exe:0,no:0,fora:0,ts:{}};const b=a.ts[t]=a.ts[t]||{t,ent:0,exe:0,no:0,fora:0};return [a,b];};
+  for(const r of u.ac.concat(u.ex,u.ca)){const k=famDe(r),n=clean(r.fam).toUpperCase();if(n&&(!NM[k]||/[^\x00-\x7F]/.test(n)))NM[k]=n;}
+  for(const r of u.ac)if(fp(r)&&nd(r))pega(famDe(r),r.tss||"(sem TSS)").forEach(x=>x.ent++);
+  for(const r of u.ex)if(fp(r)&&nd(r))pega(famDe(r),r.tss||"(sem TSS)").forEach(x=>x.exe++);
+  for(const r of u.ca)if(fp(r))pega(famDe(r),r.tss||"(sem TSS)").forEach(x=>x[r.fora?"fora":"no"]++);
+  const L=Object.values(F).sort((a,b)=>a.f.localeCompare(b.f,"pt-BR"));
+  const tot=L.reduce((a,x)=>({ent:a.ent+x.ent,exe:a.exe+x.exe,no:a.no+x.no,fora:a.fora+x.fora}),{ent:0,exe:0,no:0,fora:0});
+  const cel=(v,cls,o)=>`<td class="r"><span class="nb ${cls}${v?"":" z"}"${v&&o?go(o):""}>${nf(v)}</span></td>`;
+  const barra=x=>{const t=x.no+x.fora;const pf=t?x.fora/t:0;return `<td class="pr"><div class="pbar"><i style="width:${(t?x.no*100/t:0).toFixed(1)}%;background:#2FA36B"></i><i style="width:${(pf*100).toFixed(1)}%;background:#D9534A"></i></div><b class="${pf>=.5?"ruim":pf>=.2?"med":""}">${t?Math.round(pf*100)+"%":"–"}</b></td>`;};
+  const linha=(x,nome,o,cls)=>`${cel(x.ent,"e",{...o,modo:"entradas"})}${cel(x.exe,"x",{...o,modo:"execucoes"})}${cel(x.no,"n",{...o,modo:"carteira",prazo:"no"})}${cel(x.fora,"f",{...o,modo:"carteira",prazo:"fora"})}<td class="r tt">${nf(x.no+x.fora)}</td>${barra(x)}`;
+  let h=`<thead><tr><th>Família</th><th class="r">Entradas</th><th class="r">Executadas</th><th class="r">No prazo</th><th class="r">Fora do prazo</th><th class="r">Carteira</th><th>Fora do prazo (%)</th></tr></thead><tbody>`;
+  for(const x of L){const ab=famAbertas.has(x.f);
+    h+=`<tr class="fam${ab?" ab":""}" data-fam="${esc(x.f)}"><td class="fnm"><span class="seta">▸</span>${esc(NM[x.f]||x.f)}<small>${Object.keys(x.ts).length} TSS</small></td>${linha(x,x.f,{fam:x.f})}</tr>`;
+    if(ab)for(const t of Object.values(x.ts).sort((a,b)=>(b.no+b.fora)-(a.no+a.fora)||b.exe-a.exe||a.t.localeCompare(b.t)))h+=`<tr class="tss"><td class="fnm">${esc(t.t)}</td>${linha(t,t.t,{fam:x.f,tss:t.t})}</tr>`;}
+  h+=`<tr class="total"><td>TOTAL</td><td class="r">${nf(tot.ent)}</td><td class="r">${nf(tot.exe)}</td><td class="r">${nf(tot.no)}</td><td class="r">${nf(tot.fora)}</td><td class="r tt">${nf(tot.no+tot.fora)}</td>${barra(tot)}</tr></tbody>`;
+  $("tbFam").innerHTML=L.length?h:`<tbody><tr><td class="empty">Suba os arquivos do dia.</td></tr></tbody>`;
+  $("famNota").textContent=`entradas e execuções: ${rotDias()} · carteira de ${dmy(S.ult.dc)} · clique na família para ver os TSS · clique nos números para ver as OS`;}
+document.addEventListener("click",e=>{if(e.target.closest("[data-go]"))return;const tr=e.target.closest("#tbFam tr.fam");if(!tr)return;const f=tr.dataset.fam;famAbertas.has(f)?famAbertas.delete(f):famAbertas.add(f);renderFam();});
 function renderEvoPolos(){const ds=datasHist();const mes=(S.ult.dc||ds[ds.length-1]||"").slice(0,7);
   $("evoTit").textContent="Evolução da carteira em "+(MESES[Number(mes.slice(5,7))-1]||"")+" "+mes.slice(0,4);
   for(const [p,id] of [["Grajaú","evoGra"],["Interlagos","evoInt"]]){const f=(pp,g)=>pp===p;
@@ -1826,13 +1871,13 @@ function cardsServ(ds,polo){const u=ultF();const fpo=r=>polo?r.p===polo:fp(r);
       <div class="ch4">${miniDia(ds,E,X)}</div>
       <div class="ft4"><div><small>Entradas</small><b style="color:#B9650F">${nf(te)}</b></div><div><small>Execuções</small><b style="color:#1C7444">${nf(tx)}</b></div><div><small>Saldo</small><b class="${te-tx>0?"up":te-tx<0?"down":""}">${sgn(te-tx)}</b></div></div></div>`;}).join("");}
 function abrirLista(o){const u=ultF();const modo=o.modo||"carteira";const agora=Date.now();
-  let L=(modo==="carteira"?u.ca:modo==="entradas"?u.ac:u.ex).filter(r=>(o.p?r.p===o.p:fp(r))&&(!o.g||r.g===o.g)&&(!o.gs||o.gs.includes(r.g))&&(!o.tss||r.tss===o.tss));
+  let L=(modo==="carteira"?u.ca:modo==="entradas"?u.ac:u.ex).filter(r=>(o.p?r.p===o.p:fp(r))&&(!o.g||r.g===o.g)&&(!o.gs||o.gs.includes(r.g))&&(!o.tss||r.tss===o.tss)&&(!o.fam||famDe(r)===o.fam));
   const h24=r=>{const m=marca24(r);return m==null?null:(m-agora)/3600000;};
   if(modo==="carteira"){if(o.prazo==="fora")L=L.filter(r=>r.fora);else if(o.prazo==="no")L=L.filter(r=>!r.fora);else if(o.prazo==="p24")L=L.filter(r=>r.g==="Religação"&&!r.fora&&(h24(r)??1)<0);else if(o.prazo==="d24")L=L.filter(r=>r.g==="Religação"&&!r.fora&&(h24(r)??-1)>=0);if(o.fx)L=L.filter(r=>faixaDe(r)===o.fx);}
   else{L=L.filter(r=>noDiaG(r,o.g));if(modo==="execucoes"){if(o.nc==="sim")L=L.filter(r=>!exGeral(r));else if(o.g)L=L.filter(r=>exGeral(r));}}
   const vc=r=>{const v=vencimento(r);return v==null?null:(v-agora)/3600000;};
   if(modo==="carteira")L.sort((a,b)=>(vc(a)??0)-(vc(b)??0));else L.sort((a,b)=>a.dt<b.dt?-1:1);
-  $("mTit").textContent=(o.g||(o.gs?o.gs.join(" e "):"Todos os serviços"))+" · "+(modo==="carteira"?(o.prazo==="fora"?(o.g==="Religação"?"vencidas (passaram de 48h)":"fora do prazo"):o.prazo==="no"?"no prazo":o.prazo==="p24"?"passaram de 24h · vencem em 48h":o.prazo==="d24"?"dentro das 24h":"carteira"):modo==="entradas"?"entradas":"execuções");
+  $("mTit").textContent=(o.tss||(o.fam?"Família "+o.fam:"")||o.g||(o.gs?o.gs.join(" e "):"Todos os serviços"))+" · "+(modo==="carteira"?(o.prazo==="fora"?(o.g==="Religação"?"vencidas (passaram de 48h)":"fora do prazo"):o.prazo==="no"?"no prazo":o.prazo==="p24"?"passaram de 24h · vencem em 48h":o.prazo==="d24"?"dentro das 24h":"carteira"):modo==="entradas"?"entradas":"execuções");
   $("mSub").textContent=`${nf(L.length)} endereço${L.length===1?"":"s"}${o.p?" · "+o.p:poloSel!=="Todos"?" · "+poloSel:""}${modo!=="carteira"?" · "+(o.g==="Religação"?"só "+wd(diaRel())+" "+dmy(diaRel())+" (dia anterior)":rotDias()):""}`;
   $("mLista").innerHTML=L.length?`<table><thead><tr><th>Endereço</th><th>Bairro</th><th>Tipo</th><th>Polo</th><th>${modo==="carteira"?"Prazo":"Dia"}</th></tr></thead><tbody>`+L.slice(0,800).map(r=>{const h=vc(r);
     const k24=r.g==="Religação"?h24(r):null;
