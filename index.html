@@ -1187,8 +1187,9 @@ const FAM={[U("REATIV/RELIG/RESTAB")]:["Religação",false],[U("LIGAÇÃO DE ÁG
 const CG=U("EMPRESA CONSORCIO GLOBAL INTERLAGOS/04576-050 SÃO PAULO");
 // Executado de verdade = o resultado é o próprio serviço (códigos de serviço, abaixo de 900000).
 // Fim do dia (FJL), imóvel fechado, trata-se de outro serviço, duplicidade, continua, nada consta etc. (900000 em diante) não contam.
-const RES_NAO=/FIM DO DIA|IMOVEL FECHADO|OUTRO SERVICO|DUPLICIDADE|CONTINUA|NADA CONSTA|EXECUTADO ANTERIORMENTE|CANCELAD|DEFEITO INTERNO|NAO EXECUTAD|REPROGRAMAR/;
-function executadoDeFato(cod,res){const c=String(cod||"").trim();if(/^\d+$/.test(c))return Number(c)<900000;if(c)return false;return !!clean(res)&&!RES_NAO.test(U(res));}
+const RES_NAO=/FIM DO DIA|IMOVEL FECHADO|OUTRO SERVICO|DUPLICIDADE|CONTINUA|NADA CONSTA|EXECUTADO ANTERIORMENTE|CANCELAD|DEFEITO INTERNO|NAO EXECUTAD|REPROGRAMAR|NAO CONCLUID/;
+// além do código, o texto do resultado também é conferido: alegação nunca conta, mesmo com código de serviço
+function executadoDeFato(cod,res){const c=String(cod||"").trim();if(RES_NAO.test(U(res)))return false;if(/^\d+$/.test(c))return Number(c)<900000;if(c)return false;return !!clean(res);}
 const META=0.8;
 function grupoDe(tss,fam,forn){
   if(VAZ.has(U(clean(tss))))return "Vazamento de água";
@@ -1214,7 +1215,7 @@ async function salvar(){
 async function carregarLocal(){
   let o=null;try{o=await idbGet("estado");RAW=await idbGet("raw");}catch(e){}
   if(!o){try{o=JSON.parse(localStorage.getItem("painel-carteira-estado")||"null");}catch(e){}}
-  S=normalizar(o||(SEMENTE?JSON.parse(JSON.stringify(SEMENTE)):null));ajustarRel(S.ult.ca);
+  S=normalizar(o||(SEMENTE?JSON.parse(JSON.stringify(SEMENTE)):null));ajustarRel(S.ult.ca);for(const r of S.ult.ex)r.conta=executadoDeFato(r.cod,r.res);
   if(!o)setConn("warn","Primeiro uso neste computador",SEMENTE?"já vem com a carteira de "+dmy(S.ult.dc)+" e o histórico desde junho; é só subir os arquivos do dia":"suba os arquivos do dia");
   else statusGuardado();}
 
@@ -1963,7 +1964,7 @@ let versaoLeitor=0;
 async function carregarLeitor(){const q="?k="+encodeURIComponent(SLUG);const m=await apiC(null,"GET",q);
   if(!m.em)throw new Error("O painel ainda não foi publicado. Tente mais tarde.");
   if(m.em===versaoLeitor)return false;let z="";for(let i=0;i<m.partes;i++){const j=await apiC(null,"GET",q+"&v="+m.v+"&i="+i);z+=j.dados;}
-  S=normalizar(JSON.parse(await descompactar(z)));ajustarRel(S.ult.ca);versaoLeitor=m.em;
+  S=normalizar(JSON.parse(await descompactar(z)));ajustarRel(S.ult.ca);for(const r of S.ult.ex)r.conta=executadoDeFato(r.cod,r.res);versaoLeitor=m.em;
   setConn("on","Atualizado pela equipe em "+new Date(m.em).toLocaleString("pt-BR",{dateStyle:"short",timeStyle:"short"}),S.ult.dc?"carteira de "+dmy(S.ult.dc):"");return true;}
 async function iniciarLeitor(){document.body.classList.add("leitor");const ft=document.querySelector(".foot");if(ft)ft.textContent="Painel da Carteira de Serviços · Interlagos e Grajaú · só visualização";$("telaLogin").hidden=true;document.title="Carteira de Serviços · Interlagos e Grajaú";
   $("hSaudL").textContent="Carteira de Serviços · Interlagos e Grajaú";setConn("warn","Carregando o painel…","");
