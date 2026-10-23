@@ -814,13 +814,15 @@ body.aba-rel .foot{display:none}
 .gota.tlg{width:56px;height:56px;border-radius:16px;margin:0 auto 4px}
 #hData,#hRes{display:none!important}
 
-/* resumo · por fornecedor */
-table.rforn{width:calc(100% - 36px);margin:10px 18px 4px;border-collapse:collapse;font-size:13px}
-.rforn th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);padding:6px 8px;border-bottom:1px solid var(--line)}
-.rforn td{padding:7px 8px;border-bottom:1px solid var(--line-2);font-variant-numeric:tabular-nums}
-.rforn td.up{color:#C2362B;font-weight:700}
-.rfb{height:10px;border-radius:999px;background:var(--line-2);overflow:hidden}.rfb i{display:block;height:100%;background:#0093C9;border-radius:999px}
-.rfnota{font-size:11px;color:var(--muted);padding:2px 18px 12px}
+/* resumo · balões por fornecedor */
+.bfw{padding:12px 18px 4px}
+.bft{font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.bfs{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px}
+.bfo{background:#F2FAFE;border:1px solid #BFE9F7;border-radius:14px;padding:10px 12px;display:flex;flex-direction:column;gap:6px}
+.bfn{font-size:12px;font-weight:800;color:#00396F;line-height:1.2}
+.bfc b{font-family:var(--f-display);font-size:28px;line-height:1;color:#0B2545}.bfc span{font-size:11.5px;color:var(--muted);margin-left:5px}.bfc em{font-style:normal;color:#C2362B;font-weight:700}
+.bfm{display:flex;gap:14px;border-top:1px dashed #BFE9F7;padding-top:6px}.bfm small{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}.bfm b{font-size:15px;color:#1F2A26}
+.bfo.tot{background:#00396F;border-color:#00396F}.bfo.tot .bfn,.bfo.tot .bfc b,.bfo.tot .bfm b{color:#fff}.bfo.tot .bfc span,.bfo.tot .bfm small{color:rgba(255,255,255,.8)}.bfo.tot .bfc em{color:#FFB4AE}.bfo.tot .bfm{border-top-color:rgba(255,255,255,.3)}
 
 </style>
 </head>
@@ -1545,6 +1547,16 @@ function renderRes(){
   let h=`<div class="rhead"><div><h2>Carteira de Serviços · ${pol==="Todos"?"Interlagos e Grajaú":esc(pol)}</h2><p>Entradas e execuções de ${per} · carteira de ${wd(u.dc)} ${dmy(u.dc)}</p></div><div class="rdt">Carteira de<b>${dmy(u.dc)}</b></div></div>`;
   const pv=pctN(T.no,T.cart);
   h+=`<div class="rk"><div><small>Carteira</small><b>${nf(T.cart)}</b><em>${nf(T.no)} no prazo</em></div><div><small>Fora do prazo</small><b class="${T.fora?"up":""}">${nf(T.fora)}</b><em>${T.dFora==null?"":(T.dFora>0?"▲ ":T.dFora<0?"▼ ":"= ")+nf(Math.abs(T.dFora))+" vs "+dm(T.da)}</em></div><div><small>% no prazo</small><b style="color:${pv==null?"inherit":pv>=META?"#23824F":pv>=META-.15?"#A66B00":"#C2362B"}">${pv==null?"–":(Math.round(pv*1000)/10).toLocaleString("pt-BR")+"%"}</b><em>meta ${Math.round(META*100)}%</em></div><div><small>Entradas</small><b style="color:#B9650F">${nf(se)}</b><em>${ds.length} dia${ds.length>1?"s":""}</em></div><div><small>Execuções</small><b style="color:#1C7444">${nf(sx)}</b><em>${ds.length} dia${ds.length>1?"s":""}</em></div><div><small>Saldo</small><b class="${se-sx>0?"up":"down"}">${sgn(se-sx)}</b><em>${se>sx?"carteira sobe":se<sx?"carteira desce":"equilibrado"}</em></div></div>`;
+  // ---- balões por fornecedor (contrato), logo abaixo dos números ----
+  {const nomeF=f=>{let t=clean(f);if(!t)return "Sem fornecedor";t=t.replace(/^EMPRESA\s+/i,"").split("/")[0].trim();return t.length>34?t.slice(0,32)+"…":t;};
+   const F={};const add=(f,k)=>{const n=nomeF(f);(F[n]=F[n]||{n,ent:0,exe:0,cart:0,fora:0})[k]++;};
+   for(const r of u.ac)if(ds.includes(r.dt)&&relOk(r)&&fpp(r))add(r.forn,"ent");
+   for(const r of u.ex)if(ds.includes(r.dt)&&relOk(r)&&fpp(r))add(r.forn,"exe");
+   for(const r of u.ca)if(fpp(r)){add(r.forn,"cart");if(r.fora)add(r.forn,"fora");}
+   const L=Object.values(F).sort((a,b)=>(a.n==="Sem fornecedor")-(b.n==="Sem fornecedor")||(b.cart+b.ent+b.exe)-(a.cart+a.ent+a.exe));
+   const tot=L.reduce((a,x)=>({ent:a.ent+x.ent,exe:a.exe+x.exe,cart:a.cart+x.cart,fora:a.fora+x.fora}),{ent:0,exe:0,cart:0,fora:0});
+   const bal=(x,cls)=>`<div class="bfo${cls?" "+cls:""}"><div class="bfn">${esc(x.n)}</div><div class="bfc"><b>${nf(x.cart)}</b><span>na carteira${x.fora?` · <em>${nf(x.fora)} fora</em>`:""}</span></div><div class="bfm"><span><small>Entradas</small><b>${nf(x.ent)}</b></span><span><small>Execuções</small><b>${nf(x.exe)}</b></span></div></div>`;
+   if(L.length&&!(L.length===1&&L[0].n==="Sem fornecedor"))h+=`<div class="bfw"><div class="bft">Por fornecedor</div><div class="bfs">${L.map(x=>bal(x)).join("")}${bal({n:"Total",...tot},"tot")}</div></div>`;}
   // gráficos: dia a dia, prazo por polo, evolução
   const itD=ds.map(d=>({lab:dm(d),sub:wd(d),vals:[{v:E(d),c:"#F0A23B"},{v:X(d),c:"#23824F"}]}));
   const pzRows=(pol==="Todos"?POLOS.slice().reverse():[pol]).map(p=>({p,...conta({p})}));
@@ -1555,16 +1567,6 @@ function renderRes(){
     <div class="rg"><div class="rgt">Evolução da carteira no mês<span class="leg2"><span style="--c:#2FA36B">No prazo</span><span style="--c:#D9534A">Fora</span></span></div>${evo.length?barras(evo,{empilhar:1,wmin:420,h:200,rotular:1,bw:26}):'<div class="empty">Sem histórico no mês.</div>'}</div></div>`;
   // serviços em cartões
   h+=`<div class="rsv"><div class="svc4">${cardsServ(ds)}</div></div>`;
-  // ---- por fornecedor (contrato) ----
-  {const nomeF=f=>{let t=clean(f);if(!t)return "Sem fornecedor";t=t.replace(/^EMPRESA\s+/i,"").split("/")[0].trim();return t.length>46?t.slice(0,44)+"…":t;};
-   const F={};const add=(f,k,v)=>{const n=nomeF(f);(F[n]=F[n]||{n,ent:0,exe:0,cart:0,fora:0})[k]+=v;};
-   for(const r of u.ac)if(ds.includes(r.dt)&&relOk(r)&&fpp(r))add(r.forn,"ent",1);
-   for(const r of u.ex)if(ds.includes(r.dt)&&relOk(r)&&fpp(r))add(r.forn,"exe",1);
-   for(const r of u.ca)if(fpp(r)){add(r.forn,"cart",1);if(r.fora)add(r.forn,"fora",1);}
-   const L=Object.values(F).sort((a,b)=>(b.cart+b.ent+b.exe)-(a.cart+a.ent+a.exe));const mx=Math.max(1,...L.map(x=>x.cart));
-   if(L.length&&!(L.length===1&&L[0].n==="Sem fornecedor"))h+=`<div class="rsec"><div class="rsech">Por fornecedor<small>contratos · entradas e execuções de ${per} · carteira de ${dmy(u.dc)}</small></div>
-     <table class="rforn"><thead><tr><th>Fornecedor</th><th>Entradas</th><th>Execuções</th><th>Carteira</th><th>Fora do prazo</th><th style="width:30%"></th></tr></thead><tbody>${L.map(x=>`<tr><td><b>${esc(x.n)}</b></td><td>${nf(x.ent)}</td><td>${nf(x.exe)}</td><td><b>${nf(x.cart)}</b></td><td class="${x.fora?"up":""}">${nf(x.fora)}</td><td><div class="rfb"><i style="width:${(x.cart*100/mx).toFixed(1)}%"></i></div></td></tr>`).join("")}</tbody></table>
-     <div class="rfnota">Execuções = todas as baixas do contrato. Os arquivos precisam ter sido subidos depois desta atualização para aparecer o fornecedor.</div></div>`;}
   // ---- ligação de água (visual) ----
   {const g=LIG;const Pl=POLOS.slice().reverse();
    const El=(d,p)=>u.ac.filter(r=>r.g===g&&r.dt===d&&(!p||r.p===p)).length,Xl=(d,p)=>u.ex.filter(r=>r.g===g&&r.dt===d&&r.conta&&(!p||r.p===p)).length;
