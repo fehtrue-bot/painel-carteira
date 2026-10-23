@@ -1537,7 +1537,7 @@ function contaTss(g,p,t){const u=ultF();const m=r=>r.g===g&&r.p===p&&(!t||r.tss=
   const ca=u.ca.filter(m);return {ent:u.ac.filter(r=>m(r)&&noDia(r)).length,exe:u.ex.filter(r=>m(r)&&noDia(r)&&exGeral(r)).length,cart:ca.length,fora:ca.filter(r=>r.fora).length};}
 function renderServ(){
   const g=servSel;
-  $("chipsServ").innerHTML=GRUPOS.map(x=>`<button type="button" class="chip" data-g="${x}" aria-pressed="${x===g}"><span class="cdot" style="--c:${COR[x]}"></span>${x}</button>`).join("");
+  $("chipsServ").innerHTML=GRUPOS_H.map(x=>`<button type="button" class="chip" data-g="${x}" aria-pressed="${x===g}"><span class="cdot" style="--c:${COR[x]}"></span>${x}</button>`).join("");
   const P=POLOS.map(p=>({p,...contaTss(g,p)}));const T=P.reduce((a,b)=>({ent:a.ent+b.ent,exe:a.exe+b.exe,cart:a.cart+b.cart,fora:a.fora+b.fora}),{ent:0,exe:0,cart:0,fora:0});
   const por=k=>P.map(x=>`${nf(x[k])} ${x.p}`).join(" · ");const saldo=T.ent-T.exe;
   $("kpisServ").innerHTML=[
@@ -1553,7 +1553,7 @@ function renderServ(){
   const ts=tssDoGrupo(g);const cab=["Entradas","Executadas","Carteira","Fora prazo"];const ks=["ent","exe","cart","fora"];const md=["entradas","execucoes","carteira","carteira"];
   let h=`<thead><tr><th rowspan="2">TSS</th>${POLOS.map(p=>`<th colspan="4" class="grp sep">${p}</th>`).join("")}</tr><tr>${POLOS.map(()=>cab.map((c,i)=>`<th class="r${i===0?" sep":""}">${c}</th>`).join("")).join("")}</tr></thead><tbody>`;
   const tot=POLOS.map(()=>({ent:0,exe:0,cart:0,fora:0}));
-  for(const t of ts){h+=`<tr><td>${esc(t)}</td>`+POLOS.map((p,pi)=>{const c=contaTss(g,p,t);ks.forEach(k=>tot[pi][k]+=c[k]);return ks.map((k,i)=>`<td class="r${i===0?" sep":""}${k==="fora"&&c[k]?" up":""}"${c[k]?go({modo:md[i],g,p,tss:t,prazo:k==="fora"?"fora":""}):""}>${nf(c[k])}</td>`).join("");}).join("")+"</tr>";}
+  for(const t of ts){h+=`<tr><td>${t?esc(t):"(sem TSS)"}</td>`+POLOS.map((p,pi)=>{const c=contaTss(g,p,t);ks.forEach(k=>tot[pi][k]+=c[k]);return ks.map((k,i)=>`<td class="r${i===0?" sep":""}${k==="fora"&&c[k]?" up":""}"${c[k]?go({modo:md[i],g,p,tss:t,prazo:k==="fora"?"fora":""}):""}>${nf(c[k])}</td>`).join("");}).join("")+"</tr>";}
   h+=`<tr class="total"><td>TOTAL</td>${tot.map(c=>ks.map((k,i)=>`<td class="r${i===0?" sep":""}">${nf(c[k])}</td>`).join("")).join("")}</tr></tbody>`;
   $("tbTss").innerHTML=ts.length?h:`<tbody><tr><td class="empty">Nenhuma OS de ${esc(g)} nos arquivos.</td></tr></tbody>`;}
 $("chipsServ").onclick=e=>{const b=e.target.closest("button");if(!b)return;servSel=b.dataset.g;renderServ();};
@@ -1790,7 +1790,7 @@ function renderLig(){
   const ts=tssDoGrupo(g);const cab=["Entradas","Executadas","Carteira","Fora prazo"];const ks=["ent","exe","cart","fora"];const md=["entradas","execucoes","carteira","carteira"];
   let h=`<thead><tr><th rowspan="2">TSS</th>${POLOS.map(p=>`<th colspan="4" class="grp sep">${p}</th>`).join("")}</tr><tr>${POLOS.map(()=>cab.map((c,i)=>`<th class="r${i===0?" sep":""}">${c}</th>`).join("")).join("")}</tr></thead><tbody>`;
   const tot=POLOS.map(()=>({ent:0,exe:0,cart:0,fora:0}));
-  for(const t of ts){h+=`<tr><td>${esc(t)}</td>`+POLOS.map((p,pi)=>{const c=contaTss(g,p,t);ks.forEach(k=>tot[pi][k]+=c[k]);return ks.map((k,i)=>`<td class="r${i===0?" sep":""}${k==="fora"&&c[k]?" up":""}"${c[k]?go({modo:md[i],g,p,tss:t,prazo:k==="fora"?"fora":"",nc:k==="exe"?"nao":""}):""}>${nf(c[k])}</td>`).join("");}).join("")+"</tr>";}
+  for(const t of ts){h+=`<tr><td>${t?esc(t):"(sem TSS)"}</td>`+POLOS.map((p,pi)=>{const c=contaTss(g,p,t);ks.forEach(k=>tot[pi][k]+=c[k]);return ks.map((k,i)=>`<td class="r${i===0?" sep":""}${k==="fora"&&c[k]?" up":""}"${c[k]?go({modo:md[i],g,p,tss:t,prazo:k==="fora"?"fora":"",nc:k==="exe"?"nao":""}):""}>${nf(c[k])}</td>`).join("");}).join("")+"</tr>";}
   h+=`<tr class="total"><td>TOTAL</td>${tot.map(c=>ks.map((k,i)=>`<td class="r${i===0?" sep":""}">${nf(c[k])}</td>`).join("")).join("")}</tr></tbody>`;
   $("tbLigTss").innerHTML=ts.length?h:`<tbody><tr><td class="empty">Nenhuma ligação de água nos arquivos.</td></tr></tbody>`;
   // dia a dia
