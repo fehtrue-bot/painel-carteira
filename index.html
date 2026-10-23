@@ -903,7 +903,7 @@ body.aba-rel .assina{display:block}
       <li>Escolha o dia no alto do painel para ver as entradas e execuções de cada um. Clique em qualquer número para ver as OS.</li>
       <li>Clique em <b>Baixar Excel</b> para ter o PAINEL, a Ligação de água, o Serviço por dia, o Histórico e as bases, no formato da sua planilha.</li>
     </ol>
-    <div class="note">As regras são as mesmas da sua planilha: ATC 923 é Interlagos; 929 e 299 são Grajaú. Os vazamentos de água são separados pelo TSS, os outros serviços pela família. Ligação de água conta só o Contrato Global (acatados, executados e carteira); os outros serviços contam todos os contratos. Só conta como executada a baixa em que o resultado é o próprio serviço: fim do dia, imóvel fechado, trata-se de outro serviço, duplicidade, continua, nada consta e parecidos não contam, em nenhum serviço. Meta: 80% no prazo.</div>
+    <div class="note">As regras são as mesmas da sua planilha: ATC 923 é Interlagos; 929 e 299 são Grajaú. Os vazamentos de água são separados pelo TSS, os outros serviços pela família. Ligação de água conta só o Contrato Global (acatados, executados e carteira); os outros serviços contam todos os contratos. Execuções contam tudo o que está no arquivo de executados, igual aos acatados. Só na Ligação de água as alegações (fim do dia, imóvel fechado, trata-se de outro serviço, duplicidade, continua, nada consta, sem aproveitamento e parecidos) não contam. Meta: 80% no prazo.</div>
     <div class="note">Os dados ficam guardados neste computador, no próprio navegador. Para usar em outro computador, leve a <b>Cópia de segurança</b>.</div>
   </section>
 
@@ -1215,7 +1215,7 @@ const GRUPOS=["Vazamento de água","Religação","Ligação de água","Ligação
 // tudo que não é dos 5 grupos entra no total geral como "Outros serviços"
 const OUT="Outros serviços",GRUPOS_H=GRUPOS.concat([OUT]);
 // execução: nos grupos só o serviço executado de verdade; no total geral e em outros serviços, todas as baixas
-const exGeral=(r,g)=>(r.g==="Ligação de água"||(g&&g!==OUT))?r.conta:true;
+const exGeral=r=>r.g==="Ligação de água"?r.conta:true; // só a Ligação de água tira alegações; os outros serviços contam tudo do arquivo de executados
 const COR={"Outros serviços":"#8A97A3","Vazamento de água":"#2A7FD4","Religação":"#0F9D8A","Ligação de água":"#E07B24","Ligação de esgoto":"#7A4FD6","Vazamento de esgoto":"#C2417A"};
 const COR_XL={"Outros serviços":"EEF1F4","Vazamento de água":"DCEBFA","Religação":"D5F2EE","Ligação de água":"FCE6D2","Ligação de esgoto":"E9E1FA","Vazamento de esgoto":"F8DDE8"};
 const VAZ=new Set(["CAVALETE QUEBRADO","CAVALETE VAZANDO","REGISTRO DO CAVALETE QUEBRADO","REGISTRO DO CAVALETE VAZANDO","TROCAR RAMAL DE ÁGUA","TROCAR RAMAL DE ÁGUA - VAZ NÃO VISIVEL","TROCAR RAMAL DE ÁGUA - VAZ NÃO VISÍVEL","VAZAMENTO DE ÁGUA COM INFILTRAÇÃO","VAZAMENTO DE ÁGUA LEITO PAVIMENTADO","VAZAMENTO DE ÁGUA NO PASSEIO","VAZAMENTO DE ÁGUA LEITO TERRA","ARREBENTADO DE REDE DE ÁGUA","VAZAMENTO DE ÁGUA NÃO VISÍVEL REDE","VAZAMENTO DE ÁGUA NÃO VISÍVEL RAMAL","VAZAMENTO DE ÁGUA NÃO VISÍVEL CAVALETE","VAZAMENTO DE ÁGUA EM RAMAL ABANDONADO","VAZAMENTO DE ÁGUA NA VÁLVULA","PESQUISAR VAZAMENTO"].map(U));
@@ -1259,7 +1259,7 @@ async function carregarLocal(){
 const hk=(d,p,g)=>d+"|"+p+"|"+g;
 function hset(d,p,g,i,v){const k=hk(d,p,g);const a=S.hist[k]||[null,null,null,null,null];a[i]=v;S.hist[k]=a;}
 function datasHist(){return [...new Set(Object.keys(S.hist).map(k=>k.slice(0,10)))].sort();}
-function somaHist(d,i,f){let t=null;const H=fornSel?((S.histF||{})[fornSel]||{}):S.hist;for(const p of POLOS)for(const g of GRUPOS_H){if(f&&!f(p,g))continue;const a=H[hk(d,p,g)];const v=a?(i===4&&a[4]==null?a[1]:a[i]):null;if(v!=null)t=(t||0)+v;}return t;}
+function somaHist(d,i,f){let t=null;const H=fornSel?((S.histF||{})[fornSel]||{}):S.hist;for(const p of POLOS)for(const g of GRUPOS_H){if(f&&!f(p,g))continue;const a=H[hk(d,p,g)];const ii=(i===1&&g!=="Ligação de água")?4:i;const v=a?(ii===4&&a[4]==null?a[1]:a[ii]):null;if(v!=null)t=(t||0)+v;}return t;}
 function diaAnterior(){const dc=S.ult.dc;const ds=datasHist().filter(d=>d<dc&&somaHist(d,3)!=null);return ds[ds.length-1]||"";}
 
 /* ================= leitura dos arquivos ================= */
@@ -1310,7 +1310,7 @@ function registros(raw,tipo){
     if(o.p==="Outro"){est.outroAtc++;continue;}
     // ligação de água de outro contrato não entra em lugar nenhum (nem no total geral)
     if(!o.g){const f=FAM[U(clean(o.fam))];if(f&&f[1]){est.ligOutroContrato++;continue;}est.outroServ++;o.g=OUT;}
-    else if(tipo==="ex"){if(o.conta)est.conta++;else est.alegacao++;}
+    else if(tipo==="ex"&&o.g==="Ligação de água"){if(o.conta)est.conta++;else est.alegacao++;}
     out.push(o);}
   if(tipo!=="ex")ajustarRel(out);
   return {recs:out,dias:[...dias].sort(),est};}
@@ -1360,8 +1360,8 @@ $("impOk").onclick=async()=>{
     RAW=novoRaw;
     if(res.ac)checks.push(check("good",nf(res.ac.recs.length),"Entradas (acatados)",`${res.ac.dias.map(d=>wd(d)+" "+dm(d)).join(" · ")}${res.ac.raw.rep?` · ${res.ac.raw.rep} repetidas tiradas`:""}`));
     if(res.ex)checks.push(check("good",nf(res.ex.recs.filter(r=>exGeral(r)).length),"Execuções (total geral)",`${res.ex.dias.map(d=>wd(d)+" "+dm(d)).join(" · ")}${res.ex.raw.rep?` · ${res.ex.raw.rep} repetidas tiradas`:""}`));
-    if(res.ex){const e=res.ex.est;const dR=diaRel();const relFora=res.ex.recs.filter(r=>r.g==="Religação"&&r.conta&&r.dt!==dR).length;
-      checks.push(check("warn",nf(e.linhas),"Linhas no arquivo de executados",`${nf(e.linhas-e.outroAtc-e.semTss-e.ligOutroContrato)} entram no total geral · nos 5 grupos: ${nf(e.conta)} executadas de fato e ${nf(e.alegacao)} alegações · ${nf(e.outroServ)} outros serviços · ${nf(e.ligOutroContrato)} ligação de água de outro contrato (fora) · ${nf(e.outroAtc)} de outro ATC (fora)${relFora?` · ${nf(relFora)} religações de outros dias (religação conta só ${dm(dR)})`:""}`));}
+    if(res.ex){const e=res.ex.est;const dR=diaRel();const relFora=res.ex.recs.filter(r=>r.g==="Religação"&&exGeral(r)&&r.dt!==dR).length;
+      checks.push(check("warn",nf(e.linhas),"Linhas no arquivo de executados",`${nf(e.linhas-e.outroAtc-e.semTss-e.ligOutroContrato)} entram no total geral · ligação de água: ${nf(e.conta)} executadas de fato e ${nf(e.alegacao)} alegações (fora) · os outros serviços contam tudo · ${nf(e.outroServ)} outros serviços · ${nf(e.ligOutroContrato)} ligação de água de outro contrato (fora) · ${nf(e.outroAtc)} de outro ATC (fora)${relFora?` · ${nf(relFora)} religações de outros dias (religação conta só ${dm(dR)})`:""}`));}
     if(res.ca)checks.push(check("good",nf(res.ca.recs.length),"Carteira de "+dm(dc),`${res.ca.recs.filter(r=>r.fora).length} fora do prazo`));
     const lidas=t=>res[t]?res[t].raw.rows.length-res[t].recs.length:0;
     const fora=lidas("ac")+lidas("ca");if(fora)checks.push(check("warn",nf(fora),"Linhas fora do painel","de outro ATC (fora de 923, 929 e 299) ou ligação de água de outro contrato"));
@@ -1514,7 +1514,7 @@ function renderEvo(){
   const f=(p,g)=>(poloSel==="Todos"||p===poloSel)&&(grupoEvo==="Todos"||g===grupoEvo);
   const dm2=ds.filter(d=>d.startsWith(mesSel));
   const evo=dm2.filter(d=>somaHist(d,2,f)!=null||somaHist(d,3,f)!=null).map(d=>({lab:dm(d),sub:wd(d),vals:[{v:somaHist(d,2,f)||0,c:"#2FA36B"},{v:somaHist(d,3,f)||0,c:"#D9534A"}]}));
-  const iX=grupoEvo==="Todos"?4:1;
+  const iX=1;
   const mov=dm2.filter(d=>somaHist(d,0,f)!=null||somaHist(d,iX,f)!=null).map(d=>({lab:dm(d),sub:wd(d),vals:[{v:somaHist(d,0,f),c:"#F0A23B"},{v:somaHist(d,iX,f),c:"#23824F"}]}));
   $("chartEvo").innerHTML=barras(evo,{empilhar:1});$("chartMov").innerHTML=barras(mov,{h:200});
   const pri=evo[0],ult=evo[evo.length-1];const tt=it=>it.vals[0].v+it.vals[1].v;
@@ -1530,7 +1530,7 @@ function tssDoGrupo(g){const c={};const u=ultF();for(const r of u.ca.concat(u.ac
   const ca={};for(const r of u.ca)if(r.g===g)ca[r.tss]=(ca[r.tss]||0)+1;
   return Object.keys(c).sort((a,b)=>(ca[b]||0)-(ca[a]||0)||c[b]-c[a]||a.localeCompare(b));}
 function contaTss(g,p,t){const u=ultF();const m=r=>r.g===g&&r.p===p&&(!t||r.tss===t);
-  const ca=u.ca.filter(m);return {ent:u.ac.filter(r=>m(r)&&noDia(r)).length,exe:u.ex.filter(r=>m(r)&&noDia(r)&&r.conta).length,cart:ca.length,fora:ca.filter(r=>r.fora).length};}
+  const ca=u.ca.filter(m);return {ent:u.ac.filter(r=>m(r)&&noDia(r)).length,exe:u.ex.filter(r=>m(r)&&noDia(r)&&exGeral(r)).length,cart:ca.length,fora:ca.filter(r=>r.fora).length};}
 function renderServ(){
   const g=servSel;
   $("chipsServ").innerHTML=GRUPOS.map(x=>`<button type="button" class="chip" data-g="${x}" aria-pressed="${x===g}"><span class="cdot" style="--c:${COR[x]}"></span>${x}</button>`).join("");
@@ -1615,7 +1615,7 @@ function renderRes(){
   h+=`</div>`;
   // ---- ligação de água (visual) ----
   {const g=LIG;const Pl=POLOS.slice().reverse();
-   const El=(d,p)=>u.ac.filter(r=>r.g===g&&r.dt===d&&(!p||r.p===p)).length,Xl=(d,p)=>u.ex.filter(r=>r.g===g&&r.dt===d&&r.conta&&(!p||r.p===p)).length;
+   const El=(d,p)=>u.ac.filter(r=>r.g===g&&r.dt===d&&(!p||r.p===p)).length,Xl=(d,p)=>u.ex.filter(r=>r.g===g&&r.dt===d&&exGeral(r)&&(!p||r.p===p)).length;
    const cl=p=>{const c=u.ca.filter(r=>r.g===g&&(!p||r.p===p));return {cart:c.length,fora:c.filter(r=>r.fora).length};};
    const te=ds.reduce((a,d)=>a+El(d),0),tx=ds.reduce((a,d)=>a+Xl(d),0),ct=cl();
    h+=`<div class="rsec pc-lig"><div class="rsech"><span class="rdot" style="--c:${COR[g]}"></span>Ligação de água<small>só Contrato Global · ${per}</small></div>
@@ -1623,12 +1623,12 @@ function renderRes(){
    const itL=ds.map(d=>({lab:dm(d),sub:wd(d),vals:[{v:El(d),c:"#F0A23B"},{v:Xl(d),c:"#23824F"}]}));
    const ca=u.ca.filter(r=>r.g===g);
    const fx=FX.map(([k,l,c])=>({l,c,n:ca.filter(r=>faixaDe(r)===k).length}));const mf=Math.max(1,...fx.map(f=>f.n));
-   const ts=tssDoGrupo(g).map(t=>({t,c:ca.filter(r=>r.tss===t).length,e:u.ac.filter(r=>r.g===g&&r.tss===t&&ds.includes(r.dt)).length,x:u.ex.filter(r=>r.g===g&&r.tss===t&&ds.includes(r.dt)&&r.conta).length})).filter(x=>x.c||x.e||x.x);
+   const ts=tssDoGrupo(g).map(t=>({t,c:ca.filter(r=>r.tss===t).length,e:u.ac.filter(r=>r.g===g&&r.tss===t&&ds.includes(r.dt)).length,x:u.ex.filter(r=>r.g===g&&r.tss===t&&ds.includes(r.dt)&&exGeral(r)).length})).filter(x=>x.c||x.e||x.x);
    const mt=Math.max(1,...ts.map(x=>x.c));
    h+=`<div class="r3"><div class="rg"><div class="rgt">Entradas × executadas por dia<span class="leg2"><span style="--c:#F0A23B">Entradas</span><span style="--c:#23824F">Executadas</span></span></div>${miniBarras(itL,{h:160})}</div>
      <div class="rg"><div class="rgt">Prazo da carteira de ligação</div><div class="hb">${fx.map(f=>`<div class="hr"><span>${f.l}</span><div><i style="width:${(f.n*100/mf).toFixed(1)}%;background:${f.c}"></i></div><b>${nf(f.n)}</b></div>`).join("")}</div></div>
      <div class="rg"><div class="rgt">Carteira por tipo de ligação</div><div class="hb tsb">${ts.slice(0,7).map(x=>`<div class="hr"><span title="${esc(x.t)}">${esc(x.t)}</span><div><i style="width:${(x.c*100/mt).toFixed(1)}%;background:${COR[g]}"></i></div><b>${nf(x.c)}</b></div>`).join("")}</div></div></div></div>`;}
-  h+=`<div class="rfoot"><span>Entradas = acatados pela data de inserção · Execuções no total = todas as baixas; nos serviços = só o serviço executado (fim do dia, imóvel fechado, outro serviço, duplicidade etc. não contam)</span><span>Gerado em ${new Date().toLocaleString("pt-BR",{dateStyle:"short",timeStyle:"short"})} · sistema desenvolvido por Fernanda</span></div>`;
+  h+=`<div class="rfoot"><span>Entradas = acatados pela data de inserção · Execuções = todas as baixas do arquivo de executados; na Ligação de água só o serviço executado (fim do dia, imóvel fechado, outro serviço, duplicidade etc. não contam)</span><span>Gerado em ${new Date().toLocaleString("pt-BR",{dateStyle:"short",timeStyle:"short"})} · sistema desenvolvido por Fernanda</span></div>`;
   $("resCard").innerHTML=ds.length||u.dc?h:`<div class="empty">Suba os arquivos do dia para montar o resumo.</div>`;}
 const modoPrint=q=>{document.body.classList.remove("print-cart","print-lig");if(q)document.body.classList.add(q);document.body.classList.add("printmode");window.scrollTo({top:0});};
 $("btnPrint").onclick=()=>modoPrint("");$("btnPrintCart").onclick=()=>modoPrint("print-cart");$("btnPrintLig").onclick=()=>modoPrint("print-lig");
@@ -1651,7 +1651,7 @@ function renderRel(){
   $("relHora").innerHTML=sn.length?barras(sn.map(x=>{const d=new Date(x.t);const sm=i=>ps.reduce((a,p)=>a+((x.p[p]||[])[i]||0),0);const p24=sm(2);
     return {lab:d.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"}),sub:d.toLocaleDateString("pt-BR",{day:"2-digit",month:"2-digit"}),vals:[{v:sm(0)-p24,c:"#12A386"},{v:p24,c:"#F29D0C"},{v:sm(1),c:"#E03E45"}]};}),{empilhar:1,wmin:420,h:175,rotular:1,bw:26}):`<div class="empty">A cada carteira que você subir, entra uma coluna aqui com o horário.</div>`;
   const g="Religação";const dR=diaRel();const pol=(poloSel==="Todos"?POLOS.slice().reverse():[poloSel]);
-  const E=p=>u.ac.filter(r=>r.g===g&&r.dt===dR&&r.p===p).length,X=p=>u.ex.filter(r=>r.g===g&&r.dt===dR&&r.conta&&r.p===p).length;
+  const E=p=>u.ac.filter(r=>r.g===g&&r.dt===dR&&r.p===p).length,X=p=>u.ex.filter(r=>r.g===g&&r.dt===dR&&exGeral(r)&&r.p===p).length;
   const itens=pol.map(p=>({lab:p,sub:"",vals:[{v:E(p),c:"#F0A23B"},{v:X(p),c:"#23824F"}]}));if(pol.length>1)itens.push({lab:"Total",sub:"",vals:[{v:pol.reduce((a,p)=>a+E(p),0),c:"#F0A23B"},{v:pol.reduce((a,p)=>a+X(p),0),c:"#23824F"}]});
   $("relDiaTit").textContent="Entradas × execuções · "+(dR?wd(dR)+" "+dmy(dR):"dia anterior");
   $("relDia").innerHTML=dR?barras(itens,{wmin:420,h:175,bw:34}):`<div class="empty">Sem acatados do dia anterior.</div>`;}
@@ -1673,7 +1673,7 @@ function renderMonRel(){
     <div class="rel"><small>ao vivo</small><b>${hora}</b></div>`;
   const m4=(c,l,v,e,goO,extra)=>`<div class="m4" style="--c:${c}"${go(goO)}><small>${l}</small><b>${v}</b><em>${e}</em>${extra||""}</div>`;
   const pv=tot?(tot-fo.length)/tot:0;const dR=diaRel();
-  const entR=u.ac.filter(r=>r.g===g&&fp(r)&&r.dt===dR).length,exeR=u.ex.filter(r=>r.g===g&&fp(r)&&r.dt===dR&&r.conta).length;
+  const entR=u.ac.filter(r=>r.g===g&&fp(r)&&r.dt===dR).length,exeR=u.ex.filter(r=>r.g===g&&fp(r)&&r.dt===dR&&exGeral(r)).length;
   $("monTop").innerHTML=[
     m4("#12A386","Dentro das 24h",nf(ok.length),`nosso controle · ${nf(em6)} passam de 24h em até 6h`,{modo:"carteira",prazo:"d24",g}),
     m4("#F29D0C","Passaram de 24h",nf(p24.length),"ainda no prazo de 48h · priorize",{modo:"carteira",prazo:"p24",g}),
@@ -1750,7 +1750,7 @@ function renderMonLig(){
   renderMon();
   const u=ultF();const GS=monLig==="ligacoes"?["Ligação de água","Ligação de esgoto"]:[monLig];
   $("monDiaNota").textContent=(monLig==="ligacoes"?"ligações de água e de esgoto":monLig.toLowerCase())+" · "+rotDias();
-  $("monDia").innerHTML=barras(u.dias.map(d=>({lab:dm(d),sub:wd(d),vals:[{v:u.ac.filter(r=>GS.includes(r.g)&&r.dt===d&&fp(r)).length,c:"#F0A23B"},{v:u.ex.filter(r=>GS.includes(r.g)&&r.dt===d&&fp(r)&&r.conta).length,c:"#23824F"}]})),{wmin:560,h:230,bw:26});
+  $("monDia").innerHTML=barras(u.dias.map(d=>({lab:dm(d),sub:wd(d),vals:[{v:u.ac.filter(r=>GS.includes(r.g)&&r.dt===d&&fp(r)).length,c:"#F0A23B"},{v:u.ex.filter(r=>GS.includes(r.g)&&r.dt===d&&fp(r)&&exGeral(r)).length,c:"#23824F"}]})),{wmin:560,h:230,bw:26});
   const agora=Date.now();const ca=u.ca.filter(r=>GS.includes(r.g)&&fp(r)).map(r=>({...r,...situAgora(r,agora)}));
   const F=[["Vencida","#E03E45",r=>r.h<0],["Vence hoje (até 24h)","#F97316",r=>r.h>=0&&r.h<=24],["Em 1 a 2 dias","#F29D0C",r=>r.h>24&&r.h<=48],["Em 3 a 7 dias","#7BC29A",r=>r.h>48&&r.h<=168],["Mais de 7 dias","#12A386",r=>r.h>168]];
   const mx=Math.max(1,...F.map(f=>ca.filter(f[2]).length));
@@ -1766,7 +1766,7 @@ function renderLig(){
   const g=LIG,u=ultF();
   const P=POLOS.map(p=>({p,...contaTss(g,p)}));const T=P.reduce((a,b)=>({ent:a.ent+b.ent,exe:a.exe+b.exe,cart:a.cart+b.cart,fora:a.fora+b.fora}),{ent:0,exe:0,cart:0,fora:0});
   const por=k=>P.map(x=>`${nf(x[k])} ${x.p}`).join(" · ");const saldo=T.ent-T.exe;
-  const ncTot=u.ex.filter(r=>r.g===g&&noDia(r)&&!r.conta).length;
+  const ncTot=u.ex.filter(r=>r.g===g&&noDia(r)&&!exGeral(r)).length;
   $("kpisLig").innerHTML=[
     kpi({l:"Entradas",v:nf(T.ent),s:por("ent"),ic:IC.ent,tone:"var(--orange)",soft:"var(--orange-soft)",go:{modo:"entradas",g,p:""}}),
     kpi({l:"Executadas",v:nf(T.exe),s:por("exe")+(ncTot?` · ${ncTot} ${ncTot>1?"baixas não contam":"baixa não conta"}`:""),ic:IC.exe,tone:"var(--green)",soft:"var(--green-soft)",go:{modo:"execucoes",g,p:"",nc:"nao"}}),
@@ -1790,12 +1790,12 @@ function renderLig(){
   h+=`<tr class="total"><td>TOTAL</td>${tot.map(c=>ks.map((k,i)=>`<td class="r${i===0?" sep":""}">${nf(c[k])}</td>`).join("")).join("")}</tr></tbody>`;
   $("tbLigTss").innerHTML=ts.length?h:`<tbody><tr><td class="empty">Nenhuma ligação de água nos arquivos.</td></tr></tbody>`;
   // dia a dia
-  const dd=u.dias;const c2=(d,p,t)=>t==="e"?u.ac.filter(r=>r.g===g&&r.dt===d&&(!p||r.p===p)).length:u.ex.filter(r=>r.g===g&&r.dt===d&&r.conta&&(!p||r.p===p)).length;
+  const dd=u.dias;const c2=(d,p,t)=>t==="e"?u.ac.filter(r=>r.g===g&&r.dt===d&&(!p||r.p===p)).length:u.ex.filter(r=>r.g===g&&r.dt===d&&exGeral(r)&&(!p||r.p===p)).length;
   $("tbLigDia").innerHTML=dd.length?`<thead><tr><th rowspan="2">Dia</th>${POLOS.concat(["Total"]).map(p=>`<th colspan="3" class="grp sep">${p}</th>`).join("")}</tr><tr>${POLOS.concat([""]).map(()=>`<th class="r sep">Entradas</th><th class="r">Executadas</th><th class="r">Saldo</th>`).join("")}</tr></thead><tbody>`+
     dd.map(d=>`<tr><td class="g">${wd(d)} ${dm(d)}</td>`+POLOS.concat([""]).map(p=>{const e=c2(d,p,"e"),x=c2(d,p,"x");return `<td class="r sep">${nf(e)}</td><td class="r">${nf(x)}</td><td class="r ${e-x>0?"up":e-x<0?"down":""}">${sgn(e-x)}</td>`;}).join("")+"</tr>").join("")+
     `<tr class="total"><td>TOTAL</td>`+POLOS.concat([""]).map(p=>{let e=0,x=0;dd.forEach(d=>{e+=c2(d,p,"e");x+=c2(d,p,"x");});return `<td class="r sep">${nf(e)}</td><td class="r">${nf(x)}</td><td class="r">${sgn(e-x)}</td>`;}).join("")+"</tr></tbody>":`<tbody><tr><td class="empty">Sem entradas e execuções.</td></tr></tbody>`;
   // baixas que não contam
-  const nc=u.ex.filter(r=>r.g===g&&noDia(r)&&!r.conta);const pc={};nc.forEach(r=>{const k=r.cod;pc[k]=pc[k]||{n:0,res:r.res};pc[k].n++;});
+  const nc=u.ex.filter(r=>r.g===g&&noDia(r)&&!exGeral(r));const pc={};nc.forEach(r=>{const k=r.cod;pc[k]=pc[k]||{n:0,res:r.res};pc[k].n++;});
   $("ligNc").innerHTML=nc.length?`<div class="at nc">${Object.entries(pc).sort((a,b)=>b[1].n-a[1].n).map(([k,v])=>`<div class="ai" style="--c:var(--orange)"${go({modo:"execucoes",g,nc:"sim",p:""})}><div class="t">${esc(v.res||"Resultado "+k)}<small>código ${esc(k)}</small></div><b>${nf(v.n)}</b></div>`).join("")}</div><div class="note">Essas baixas saem nos Executados, mas o resultado não é o serviço feito, então não contam como executada.</div>`:`<div class="empty">Nenhuma baixa fora da conta em ${esc(rotDias())}.</div>`;
   // evolução
   const ds=datasHist();const mes=(u.dc||ds[ds.length-1]||"").slice(0,7);const f=(p,gg)=>gg===g;
@@ -1813,7 +1813,7 @@ function miniDia(ds,E,X){if(!ds.length)return "";const W=220,H=74,bt=16,mx=Math.
 function cardsServ(ds,polo){const u=ultF();const fpo=r=>polo?r.p===polo:fp(r);
   const dsTodos=ds;
   return GRUPOS.map(g=>{const ds=g==="Religação"?[diaRel()].filter(Boolean):dsTodos;const ca=u.ca.filter(r=>r.g===g&&fpo(r)),t=ca.length,f=ca.filter(r=>r.fora).length,n=t-f;
-    const E=d=>u.ac.filter(r=>r.g===g&&r.dt===d&&fpo(r)).length,X=d=>u.ex.filter(r=>r.g===g&&r.dt===d&&r.conta&&fpo(r)).length;
+    const E=d=>u.ac.filter(r=>r.g===g&&r.dt===d&&fpo(r)).length,X=d=>u.ex.filter(r=>r.g===g&&r.dt===d&&exGeral(r)&&fpo(r)).length;
     const te=ds.reduce((a,d)=>a+E(d),0),tx=ds.reduce((a,d)=>a+X(d),0);const pv=t?n/t:null;
     return `<div class="c4" style="--c:${COR[g]}"><div class="h4"><b>${g}</b>${pp(pv,metaDe(g))}</div>
       <div class="big"><b>${nf(t)}</b><span>na carteira</span></div>
@@ -1825,7 +1825,7 @@ function abrirLista(o){const u=ultF();const modo=o.modo||"carteira";const agora=
   let L=(modo==="carteira"?u.ca:modo==="entradas"?u.ac:u.ex).filter(r=>(o.p?r.p===o.p:fp(r))&&(!o.g||r.g===o.g)&&(!o.gs||o.gs.includes(r.g))&&(!o.tss||r.tss===o.tss));
   const h24=r=>{const m=marca24(r);return m==null?null:(m-agora)/3600000;};
   if(modo==="carteira"){if(o.prazo==="fora")L=L.filter(r=>r.fora);else if(o.prazo==="no")L=L.filter(r=>!r.fora);else if(o.prazo==="p24")L=L.filter(r=>r.g==="Religação"&&!r.fora&&(h24(r)??1)<0);else if(o.prazo==="d24")L=L.filter(r=>r.g==="Religação"&&!r.fora&&(h24(r)??-1)>=0);if(o.fx)L=L.filter(r=>faixaDe(r)===o.fx);}
-  else{L=L.filter(r=>noDia(r));if(modo==="execucoes"){if(o.nc==="sim")L=L.filter(r=>!r.conta);else if(o.g&&o.g!==OUT)L=L.filter(r=>r.conta);}}
+  else{L=L.filter(r=>noDia(r));if(modo==="execucoes"){if(o.nc==="sim")L=L.filter(r=>!exGeral(r));else L=L.filter(r=>exGeral(r));}}
   const vc=r=>{const v=vencimento(r);return v==null?null:(v-agora)/3600000;};
   if(modo==="carteira")L.sort((a,b)=>(vc(a)??0)-(vc(b)??0));else L.sort((a,b)=>a.dt<b.dt?-1:1);
   $("mTit").textContent=(o.g||(o.gs?o.gs.join(" e "):"Todos os serviços"))+" · "+(modo==="carteira"?(o.prazo==="fora"?(o.g==="Religação"?"vencidas (passaram de 48h)":"fora do prazo"):o.prazo==="no"?"no prazo":o.prazo==="p24"?"passaram de 24h · vencem em 48h":o.prazo==="d24"?"dentro das 24h":"carteira"):modo==="entradas"?"entradas":"execuções");
@@ -1850,7 +1850,7 @@ document.addEventListener("keydown",e=>{if(e.key==="Escape")$("modal").hidden=tr
 const MODOS=[["carteira","Carteira"],["entradas","Entradas (acatados)"],["execucoes","Execuções"]];
 function baseModo(){const u=ultF();return osF.modo==="carteira"?u.ca:osF.modo==="entradas"?u.ac:u.ex;}
 function filtradosOS(semBusca){const q=U($("busca").value.trim());
-  return baseModo().filter(r=>fp(r)&&(!osF.g||r.g===osF.g)&&(!osF.tss||r.tss===osF.tss)&&(osF.modo==="carteira"?(!osF.prazo||(osF.prazo==="fora"?r.fora:!r.fora))&&(!osF.fx||faixaDe(r)===osF.fx):noDia(r))&&(!osF.nc||(osF.nc==="sim"?!r.conta:r.conta))&&
+  return baseModo().filter(r=>fp(r)&&(!osF.g||r.g===osF.g)&&(!osF.tss||r.tss===osF.tss)&&(osF.modo==="carteira"?(!osF.prazo||(osF.prazo==="fora"?r.fora:!r.fora))&&(!osF.fx||faixaDe(r)===osF.fx):noDia(r))&&(!osF.nc||(osF.nc==="sim"?!exGeral(r):exGeral(r)))&&
     (semBusca||!q||U([r.os,r.end,r.bai,r.mun,r.tss,r.eq,r.st,r.res].join(" ")).includes(q)));}
 function renderOS(){
   const u=ultF();
@@ -1873,9 +1873,9 @@ function renderOS(){
   else if(osF.modo==="entradas")h=`<table><thead><tr><th>OS</th><th>Serviço</th><th>Endereço</th><th>Polo</th><th>Dia</th><th>Inserção</th><th>Prazo fim</th><th>Status da operação</th></tr></thead><tbody>`+
     mostra.map(r=>`<tr><td class="os">${esc(r.os)}</td><td class="tss">${esc(r.tss)}<br>${tag(r)}</td>${endc(r)}<td>${r.p}</td><td class="mono"><b>${wd(r.dt)} ${dm(r.dt)}</b></td><td class="mono">${esc(r.ins)}</td><td class="mono">${esc(r.pf)}</td><td>${esc(r.st)}</td></tr>`).join("");
   else h=`<table><thead><tr><th>OS</th><th>Serviço</th><th>Endereço</th><th>Polo</th><th>Dia</th><th>Início · fim</th><th>Resultado</th><th>Equipe</th><th>Conta?</th></tr></thead><tbody>`+
-    mostra.map(r=>`<tr><td class="os">${esc(r.os)}</td><td class="tss">${esc(r.tss)}<br>${tag(r)}</td>${endc(r)}<td>${r.p}</td><td class="mono"><b>${wd(r.dt)} ${dm(r.dt)}</b></td><td class="mono">${esc(r.ini)}<br><small class="note">${esc(r.fim)}</small></td><td class="mne">${esc(r.cod)} ${esc(r.res)}</td><td class="mne">${esc(r.eq)}</td><td><span class="pill ${r.conta?"no":"nc"}">${r.conta?"Executada":"Não conta"}</span></td></tr>`).join("");
+    mostra.map(r=>`<tr><td class="os">${esc(r.os)}</td><td class="tss">${esc(r.tss)}<br>${tag(r)}</td>${endc(r)}<td>${r.p}</td><td class="mono"><b>${wd(r.dt)} ${dm(r.dt)}</b></td><td class="mono">${esc(r.ini)}<br><small class="note">${esc(r.fim)}</small></td><td class="mne">${esc(r.cod)} ${esc(r.res)}</td><td class="mne">${esc(r.eq)}</td><td><span class="pill ${exGeral(r)?"no":"nc"}">${exGeral(r)?"Executada":"Não conta"}</span></td></tr>`).join("");
   $("lista").innerHTML=L.length?h+"</tbody></table>":`<div class="empty">Nenhuma OS com esses filtros.</div>`;
-  $("rodape").textContent=`${nf(L.length)} OS${L.length>lim?` · mostrando as primeiras ${lim}; use a busca ou os filtros`:""}${osF.modo==="execucoes"?" · só conta como executada a baixa com resultado do próprio serviço (fim do dia, imóvel fechado, trata-se de outro serviço, duplicidade etc. aparecem como \"Não conta\")":""}`;
+  $("rodape").textContent=`${nf(L.length)} OS${L.length>lim?` · mostrando as primeiras ${lim}; use a busca ou os filtros`:""}${osF.modo==="execucoes"?" · todas as baixas contam; só na Ligação de água as alegações (fim do dia, imóvel fechado, outro serviço, duplicidade etc.) aparecem como \"Não conta\"":""}`;
   const lp=$("limpar");if(lp)lp.onclick=()=>{osF.g="";osF.tss="";osF.prazo="";osF.nc="";osF.fx="";poloSel="Todos";$("busca").value="";renderTudo();};}
 $("chipsModo").onclick=e=>{const b=e.target.closest("button");if(!b)return;osF.modo=b.dataset.m;renderOS();};
 $("fGrupo").onchange=e=>{osF.g=e.target.value;osF.tss="";renderOS();};
@@ -1959,7 +1959,7 @@ function exportarTudo(){
   for(const t of tssDoGrupo(g)){put(LA,rr,1,t,sL);POLOS.forEach((p,pi)=>{const c=contaTss(g,p,t);[c.ent,c.exe,c.cart,c.fora].forEach((v,k)=>{tts[pi][k]+=v;put(LA,rr,2+pi*4+k,v,sC);});});rr++;}
   put(LA,rr,1,"TOTAL",sTotL);tts.forEach((a,pi)=>a.forEach((v,k)=>put(LA,rr,2+pi*4+k,v,sTot)));
   rr+=2;put(LA,rr,1,"Dia a dia",sSec);rr++;put(LA,rr,1,"Dia",sHl);POLOS.forEach((p,pi)=>{put(LA,rr,2+pi*2,"Entradas "+p,sH);put(LA,rr,3+pi*2,"Executadas "+p,sH);});LA.heights[rr]=30;rr++;
-  for(const d of u.dias){put(LA,rr,1,wd(d)+" "+dmy(d),sL);POLOS.forEach((p,pi)=>{put(LA,rr,2+pi*2,u.ac.filter(x=>x.g===g&&x.dt===d&&x.p===p).length,sC);put(LA,rr,3+pi*2,u.ex.filter(x=>x.g===g&&x.dt===d&&x.p===p&&x.conta).length,sC);});rr++;}
+  for(const d of u.dias){put(LA,rr,1,wd(d)+" "+dmy(d),sL);POLOS.forEach((p,pi)=>{put(LA,rr,2+pi*2,u.ac.filter(x=>x.g===g&&x.dt===d&&x.p===p).length,sC);put(LA,rr,3+pi*2,u.ex.filter(x=>x.g===g&&x.dt===d&&x.p===p&&exGeral(x)).length,sC);});rr++;}
   rr++;put(LA,rr,1,"Prazo da carteira",sSec);rr++;put(LA,rr,1,"Faixa",sHl);POLOS.concat(["Total"]).forEach((p,i)=>put(LA,rr,2+i,p,sH));rr++;
   for(const [k,l] of FX){put(LA,rr,1,l,sL);const ca=u.ca.filter(x=>x.g===g&&faixaDe(x)===k);POLOS.forEach((p,i)=>put(LA,rr,2+i,ca.filter(x=>x.p===p).length,sC));put(LA,rr,2+POLOS.length,ca.length,sC);rr++;}
   sheets.push(LA);
