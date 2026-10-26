@@ -1032,7 +1032,7 @@ body.aba-rel .assina{display:block}
       <div class="filas f3">
         <div class="fila"><div class="fh2 ok"><b>Vão passar de 24h</b><span id="vaoSub">nosso controle · da que passa primeiro</span><em id="qtdVao"></em><button type="button" class="cpy" data-cpy="filaVao">📋 Copiar</button></div><div class="flist" id="filaVao"></div></div>
         <div class="fila"><div class="fh2"><b>Passaram de 24h · vencem em 48h</b><span>da que vence primeiro</span><em id="qtdP24"></em><button type="button" class="cpy" data-cpy="filaP24">📋 Copiar</button></div><div class="flist" id="filaP24"></div></div>
-        <div class="fila"><div class="fh2 red"><b>Vencidas · passaram de 48h</b><span>prazo oficial</span><em id="qtdVenc"></em><button type="button" class="cpy" data-cpy="filaVenc">📋 Copiar</button></div><div class="flist" id="filaVenc"></div></div>
+        <div class="fila"><div class="fh2 red"><b>Vencidas · passaram de 48h</b><span>prazo oficial · mais atrasadas primeiro</span><em id="qtdVenc"></em><button type="button" class="cpy" data-cpy="filaVenc">📋 Copiar</button></div><div class="flist" id="filaVenc"></div></div>
       </div>
       <div class="mfoot"><span id="monSub"></span><button type="button" id="monTela">Tela cheia</button></div>
     </div>
@@ -1762,16 +1762,17 @@ function renderMonRel(){
   $("monTop").innerHTML=[
     m4("#12A386","Dentro das 24h",nf(ok.length),`nosso controle · ${nf(em6)} passam de 24h em até 6h`,{modo:"carteira",prazo:"d24",g}),
     m4("#F29D0C","Passaram de 24h",nf(p24.length),"ainda no prazo de 48h · priorize",{modo:"carteira",prazo:"p24",g}),
-    m4("#E03E45","Vencidas · 48h",nf(fo.length),`prazo oficial · ${tot?pctTxt(fo.length,tot):"–"} da carteira de ${nf(tot)}`,{modo:"carteira",prazo:"fora",g}),
+    m4("#E03E45","Vencidas · 48h",nf(fo.length),`prazo oficial · ${tot?pctTxt(fo.length,tot):"–"} da carteira de ${nf(tot)}${fo.length?` · a mais antiga venceu há ${tempoTxt(Math.min(...fo.map(r=>r.h)))}`:""}`,{modo:"carteira",prazo:"fora",g}),
     m4(fo.length?"#E03E45":"#12A386","Meta: nenhuma vencida",fo.length?"Fora da meta":"Meta batida ✓",fo.length?`faltam ${nf(fo.length)} para zerar · ${(Math.round(pv*1000)/10).toLocaleString("pt-BR")}% no prazo`:"nenhuma religação passou de 48h",{modo:"carteira",prazo:"fora",g},
       `<div class="mb"><i style="width:${(pv*100).toFixed(1)}%"></i><s style="left:100%"></s></div>`)].join("");
   const linha=(r,chip,cl,sub)=>{const txt=`${r.end||"Sem endereço"} – ${r.bai||""} (${r.p}) · OS ${r.os} · ${r.tss} · ${chip}${sub?" · "+sub:""}`;
     return `<div class="fi" data-txt="${esc(txt)}"><span class="chip3 ${cl}">${chip}</span><div class="d"><b>${esc(r.end||"Sem endereço")} – ${esc(r.bai||"")}</b><small>${r.p} · OS ${esc(r.os)} · ${esc(r.tss)}${sub?" · "+sub:""}</small></div></div>`;};
-  const vao=ok.slice().sort((x,y)=>x.h24-y.h24),pa=p24.slice().sort((x,y)=>x.h-y.h),venc=fo.slice().sort((x,y)=>y.h-x.h);
+  const vao=ok.slice().sort((x,y)=>x.h24-y.h24),pa=p24.slice().sort((x,y)=>x.h-y.h),venc=fo.slice().sort((x,y)=>x.h-y.h);
   $("qtdVao").textContent=nf(vao.length);$("qtdP24").textContent=nf(pa.length);$("qtdVenc").textContent=nf(venc.length);
   $("filaVao").innerHTML=vao.length?vao.map(r=>linha(r,"24h em "+tempoTxt(r.h24),r.h24<=2?"c2":r.h24<=6?"c3":"c4","")).join(""):`<div class="fvazia">Nenhuma religação dentro das 24h.</div>`;
   $("filaP24").innerHTML=pa.length?pa.map(r=>linha(r,"vence em "+tempoTxt(r.h),r.h<=6?"c1":"c2","passou de 24h há "+tempoTxt(r.h24))).join(""):`<div class="fvazia">Nenhuma religação passou de 24h. 👏</div>`;
-  $("filaVenc").innerHTML=venc.length?venc.map(r=>linha(r,"há "+tempoTxt(r.h),"cv","")).join(""):`<div class="fvazia">Nenhuma vencida. 👏</div>`;
+  const hm=t=>{const d=new Date(t);return d.toLocaleDateString("pt-BR",{day:"2-digit",month:"2-digit"})+" "+d.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"});};
+  $("filaVenc").innerHTML=venc.length?venc.map(r=>{const v=vencimento(r);return linha(r,"venceu há "+tempoTxt(r.h),"cv",`48h venceram em ${v!=null?hm(v):"–"}${r.ins?" · inserida "+esc(r.ins):""}`);}).join(""):`<div class="fvazia">Nenhuma vencida. 👏</div>`;
   // por polo (agora)
   const rows=(poloSel==="Todos"?POLOS.slice().reverse():[poloSel]).map(p=>{const L=ca.filter(r=>r.p===p);return {p,t:L.length,o:L.filter(r=>r.sx==="ok").length,a:L.filter(r=>r.sx==="p24").length,f:L.filter(r=>r.sx==="fo").length};});
   const mx=Math.max(1,...rows.map(r=>r.t));
@@ -1812,7 +1813,7 @@ function renderMon(){
       `<div class="mb"><i style="width:${(pv*100).toFixed(1)}%"></i><s style="left:${META*100}%"></s></div>`)].join("");
   const item=(r,venc)=>{const cl=venc?"cv":r.h<=(REL?1:24)?"c1":r.h<=(REL?3:48)?"c2":r.h<=LIM?"c3":"c4";
     return `<div class="fi"><span class="chip3 ${cl}">${venc?"há "+tempoTxt(r.h):"em "+tempoTxt(r.h)}</span><div class="d"><b>${esc(r.end||"Sem endereço")} · ${esc(r.bai||"")}</b><small>OS ${esc(r.os)} · ${esc(r.tss)} · ${r.p}</small></div><span class="sv" style="--c:${COR[r.g]}">${esc(r.g)}</span></div>`;};
-  const vao=ca.filter(r=>r.h>=0&&r.h<=HOR).sort((x,y)=>x.h-y.h),venc=fo.slice().sort((x,y)=>y.h-x.h);
+  const vao=ca.filter(r=>r.h>=0&&r.h<=HOR).sort((x,y)=>x.h-y.h),venc=fo.slice().sort((x,y)=>x.h-y.h);
   $("vaoSub").textContent="da que vence primeiro · "+(REL?"próximas 24h":"próximos 3 dias");$("qtdVao").textContent=nf(vao.length)+" OS";$("qtdVenc").textContent=nf(venc.length)+" OS";
   $("filaVao").innerHTML=vao.length?vao.map(r=>item(r,false)).join(""):`<div class="fvazia">Nada vencendo ${REL?"nas próximas 24 horas":"nos próximos 3 dias"}.</div>`;
   $("filaVenc").innerHTML=venc.length?venc.map(r=>item(r,true)).join(""):`<div class="fvazia">Nenhuma OS vencida. 👏</div>`;
