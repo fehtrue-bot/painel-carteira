@@ -1259,16 +1259,16 @@ function minutosResid(s){const t=String(s||"").trim();const neg=t.startsWith("-"
 /* ================= regras (as mesmas da aba CONFIG) ================= */
 const POLOS=["Grajaú","Interlagos"];
 const ATC_POLO={"923":"Interlagos","929":"Grajaú","299":"Grajaú"};
-const GRUPOS=["Vazamento de água","Religação","Ligação de água","Ligação de esgoto","Vazamento de esgoto"];
+const GRUPOS=["Vazamento de água","Religação","Ligação de água","Ligação de esgoto","Desobstrução"];
 // tudo que não é dos 5 grupos entra no total geral como "Outros serviços"
 const OUT="Outros serviços",GRUPOS_H=GRUPOS.concat([OUT]);
 // execução: nos grupos só o serviço executado de verdade; no total geral e em outros serviços, todas as baixas
 const exGeral=r=>r.g==="Ligação de água"?(r.conta&&!r.lx):true;
 const exT=(r,g)=>g?exGeral(r):true; // sem serviço escolhido = total geral: entra tudo do arquivo // só a Ligação de água tira alegações; os outros serviços contam tudo do arquivo de executados
-const COR={"Outros serviços":"#8A97A3","Vazamento de água":"#2A7FD4","Religação":"#0F9D8A","Ligação de água":"#E07B24","Ligação de esgoto":"#7A4FD6","Vazamento de esgoto":"#C2417A"};
-const COR_XL={"Outros serviços":"EEF1F4","Vazamento de água":"DCEBFA","Religação":"D5F2EE","Ligação de água":"FCE6D2","Ligação de esgoto":"E9E1FA","Vazamento de esgoto":"F8DDE8"};
+const COR={"Outros serviços":"#8A97A3","Vazamento de água":"#2A7FD4","Religação":"#0F9D8A","Ligação de água":"#E07B24","Ligação de esgoto":"#7A4FD6","Desobstrução":"#C2417A"};
+const COR_XL={"Outros serviços":"EEF1F4","Vazamento de água":"DCEBFA","Religação":"D5F2EE","Ligação de água":"FCE6D2","Ligação de esgoto":"E9E1FA","Desobstrução":"F8DDE8"};
 const VAZ=new Set(["CAVALETE QUEBRADO","CAVALETE VAZANDO","REGISTRO DO CAVALETE QUEBRADO","REGISTRO DO CAVALETE VAZANDO","TROCAR RAMAL DE ÁGUA","TROCAR RAMAL DE ÁGUA - VAZ NÃO VISIVEL","TROCAR RAMAL DE ÁGUA - VAZ NÃO VISÍVEL","VAZAMENTO DE ÁGUA COM INFILTRAÇÃO","VAZAMENTO DE ÁGUA LEITO PAVIMENTADO","VAZAMENTO DE ÁGUA NO PASSEIO","VAZAMENTO DE ÁGUA LEITO TERRA","ARREBENTADO DE REDE DE ÁGUA","VAZAMENTO DE ÁGUA NÃO VISÍVEL REDE","VAZAMENTO DE ÁGUA NÃO VISÍVEL RAMAL","VAZAMENTO DE ÁGUA NÃO VISÍVEL CAVALETE","VAZAMENTO DE ÁGUA EM RAMAL ABANDONADO","VAZAMENTO DE ÁGUA NA VÁLVULA","PESQUISAR VAZAMENTO"].map(U));
-const FAM={[U("REATIV/RELIG/RESTAB")]:["Religação",false],[U("LIGAÇÃO DE ÁGUA")]:["Ligação de água",true],[U("LIGAÇÃO DE ESGOTO")]:["Ligação de esgoto",false],[U("DESOBSTRUÇÃO")]:["Vazamento de esgoto",false]};
+const FAM={[U("REATIV/RELIG/RESTAB")]:["Religação",false],[U("LIGAÇÃO DE ÁGUA")]:["Ligação de água",true],[U("LIGAÇÃO DE ESGOTO")]:["Ligação de esgoto",false],[U("DESOBSTRUÇÃO")]:["Desobstrução",false]};
 const CG=U("EMPRESA CONSORCIO GLOBAL INTERLAGOS/04576-050 SÃO PAULO");
 // Executado de verdade = o resultado é o próprio serviço (códigos de serviço, abaixo de 900000).
 // Fim do dia (FJL), imóvel fechado, trata-se de outro serviço, duplicidade, continua, nada consta etc. (900000 em diante) não contam.
@@ -1290,7 +1290,11 @@ let S=null,RAW=null,timerSalvar=null;
 function idb(){return new Promise((res,rej)=>{try{const r=indexedDB.open("painel-carteira-servicos",1);r.onupgradeneeded=()=>r.result.createObjectStore("d");r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error);}catch(e){rej(e);}});}
 async function idbGet(k){const d=await idb();return await new Promise((res,rej)=>{const q=d.transaction("d").objectStore("d").get(k);q.onsuccess=()=>res(q.result??null);q.onerror=()=>rej(q.error);});}
 async function idbSet(k,v){const d=await idb();return await new Promise((res,rej)=>{const t=d.transaction("d","readwrite");t.objectStore("d").put(v,k);t.oncomplete=()=>res();t.onerror=()=>rej(t.error);});}
-function normalizar(o){const s=Object.assign(vazio(),o||{});s.hist=s.hist||{};s.histF=s.histF||{};s.rel=s.rel||[];s.ult=Object.assign(vazio().ult,s.ult||{});s.ult.arq=Object.assign({ac:[],ex:[],ca:[]},s.ult.arq||{});return s;}
+function normalizar(o){const s=Object.assign(vazio(),o||{});s.hist=s.hist||{};s.histF=s.histF||{};
+  // o grupo "Vazamento de esgoto" passou a se chamar "Desobstrução"
+  {const VE="Vazamento de esgoto",DE="Desobstrução";const ren=H=>{for(const k of Object.keys(H))if(k.endsWith("|"+VE)){const n=k.slice(0,-VE.length)+DE;if(!H[n])H[n]=H[k];delete H[k];}};
+   ren(s.hist);for(const f of Object.keys(s.histF))ren(s.histF[f]);
+   if(s.ult)for(const t of ["ac","ex","ca"])for(const r of (s.ult[t]||[]))if(r.g===VE)r.g=DE;}s.rel=s.rel||[];s.ult=Object.assign(vazio().ult,s.ult||{});s.ult.arq=Object.assign({ac:[],ex:[],ca:[]},s.ult.arq||{});return s;}
 function setConn(estado,tit,sub){$("connDot").className="dot "+estado;$("connTit").textContent=tit;$("connSub").textContent=sub||"";}
 function statusGuardado(){setConn("on","Dados guardados neste computador",(S.ult.dc?"carteira de "+dmy(S.ult.dc)+" · ":"")+"salvo às "+new Date().toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"}));}
 async function salvar(){
@@ -1433,7 +1437,7 @@ $("fHist").onchange=async e=>{const f=e.target.files[0];if(!f)return;
     if(hi<0)throw new Error("não achei o cabeçalho Data / Polo / Grupo");
     const u=a[hi].map(c=>U(clean(c)));const c={d:u.indexOf("DATA"),p:u.indexOf("POLO"),g:u.indexOf("GRUPO"),ac:u.indexOf("ACATADOS"),ex:u.indexOf("EXECUTADOS"),np:u.findIndex(x=>x.startsWith("CARTEIRA NO")),fp:u.findIndex(x=>x.startsWith("CARTEIRA FORA"))};
     let n2=0;const num=v=>v===""||v==null||isNaN(Number(v))?null:Number(v);
-    for(const r of a.slice(hi+1)){const d=dataIso(r[c.d]);const p=POLOS.find(x=>U(x)===U(clean(r[c.p])));const g=GRUPOS.find(x=>U(x)===U(clean(r[c.g])));if(!d||!p||!g)continue;
+    for(const r of a.slice(hi+1)){const d=dataIso(r[c.d]);const p=POLOS.find(x=>U(x)===U(clean(r[c.p])));const g=GRUPOS.find(x=>U(x)===U(clean(r[c.g]).replace(/^VAZAMENTO DE ESGOTO$/i,"Desobstrução")));if(!d||!p||!g)continue;
       const k=hk(d,p,g);const cur=S.hist[k]||[null,null,null,null];const nv=[num(r[c.ac]),num(r[c.ex]),num(r[c.np]),num(r[c.fp])];
       S.hist[k]=cur.map((x,i)=>x==null?nv[i]:x);n2++;}
     await salvar();renderTudo();publicar(false);msg(`Histórico trazido: ${nf(n2)} linhas (o que já estava no painel foi mantido).`);
