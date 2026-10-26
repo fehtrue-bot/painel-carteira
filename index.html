@@ -1580,20 +1580,26 @@ function renderFam(){const u=ultF();const nd=r=>diasSel().includes(r.dt);
   $("tbFam").innerHTML=L.length?h:`<tbody><tr><td class="empty">Suba os arquivos do dia.</td></tr></tbody>`;
   $("famNota").textContent=`entradas e execuções: ${rotDias()} · carteira de ${dmy(S.ult.dc)} · clique na família para ver os TSS · clique nos números para ver as OS`;}
 document.addEventListener("click",e=>{if(e.target.closest("[data-go]"))return;const tr=e.target.closest("#tbFam tr.fam");if(!tr)return;const f=tr.dataset.fam;famAbertas.has(f)?famAbertas.delete(f):famAbertas.add(f);renderFam();});
-function renderEvoPolos(){const ds=datasHist();const mes=(S.ult.dc||ds[ds.length-1]||"").slice(0,7);
-  $("evoTit").textContent="Evolução da carteira em "+(MESES[Number(mes.slice(5,7))-1]||"")+" "+mes.slice(0,4);
+// período dos gráficos de evolução: "tudo" (todo o histórico), "30" (últimos 30 dias) ou um mês "aaaa-mm"
+function noPeriodo(d,per){if(per==="tudo")return true;if(per==="30"){const ref=S.ult.dc||datasHist().slice(-1)[0]||"";if(!ref)return true;const t=new Date(ref+"T12:00").getTime()-30*864e5;return new Date(d+"T12:00").getTime()>=t;}return d.startsWith(per);}
+const rotPer=per=>per==="tudo"?"todo o histórico":per==="30"?"últimos 30 dias":(MESES[Number(per.slice(5,7))-1]||"")+" "+per.slice(0,4);
+function rolarFim(){for(const id of ["evoGra","evoInt","chartEvo","chartMov"]){const e=$(id);if(e)e.scrollLeft=e.scrollWidth;}}
+function renderEvoPolos(){const ds=datasHist();if(!mesSel)mesSel="tudo";const mes=mesSel;
+  {const H=fornSel&&(S.histF||{})[fornSel];const d0=H?Object.keys(H).map(k=>k.slice(0,10)).sort()[0]:"";
+   $("evoTit").textContent="Evolução da carteira · "+rotPer(mes)+(fornSel?` · ${fornSel}${d0?" (separado por fornecedor desde "+dm(d0)+")":""}`:"");}
   for(const [p,id] of [["Grajaú","evoGra"],["Interlagos","evoInt"]]){const f=(pp,g)=>pp===p;
-    const it=ds.filter(d=>d.startsWith(mes)&&(somaHist(d,2,f)!=null||somaHist(d,3,f)!=null)).map(d=>({lab:dm(d),sub:wd(d),vals:[{v:somaHist(d,2,f)||0,c:"#2FA36B"},{v:somaHist(d,3,f)||0,c:"#D9534A"}]}));
-    $(id).innerHTML=barras(it,{empilhar:1,wmin:620,h:250,rotular:1,bw:34});}}
+    const it=ds.filter(d=>noPeriodo(d,mes)&&(somaHist(d,2,f)!=null||somaHist(d,3,f)!=null)).map(d=>({lab:dm(d),sub:wd(d),vals:[{v:somaHist(d,2,f)||0,c:"#2FA36B"},{v:somaHist(d,3,f)||0,c:"#D9534A"}]}));
+    $(id).innerHTML=barras(it,{empilhar:1,wmin:620,h:250,rotular:1,bw:34});}
+  setTimeout(rolarFim,0);}
 
 function barras(itens,o){
   // itens: [{lab,sub,vals:[{v,c}]}]; o.empilhar
-  const n=itens.length;if(!n)return `<div class="empty">Sem dados neste mês.</div>`;
+  const n=itens.length;if(!n)return `<div class="empty">Sem dados no período.</div>`;
   const bw=o.bw||(o.empilhar?30:15),gap=o.empilhar?18:16,grupoW=o.empilhar?bw:bw*itens[0].vals.length+3;
   const W=Math.max(o.wmin||1000,n*(grupoW+gap)+60),H=o.h||230,top=22,bot=40,left=36,ch=H-top-bot;
   const tot=it=>o.empilhar?it.vals.reduce((a,b)=>a+(b.v||0),0):Math.max(...it.vals.map(b=>b.v||0));
   const mx=Math.max(1,...itens.map(tot));const passo=(W-left-10)/n;
-  let s=`<svg viewBox="0 0 ${W} ${H}" role="img">`;
+  let s=`<svg viewBox="0 0 ${W} ${H}" role="img"${n>16?` style="min-width:${Math.round(W*.8)}px"`:""}>`;
   for(let k=0;k<=4;k++){const y=top+ch-ch*k/4;s+=`<line x1="${left}" x2="${W-6}" y1="${y}" y2="${y}" stroke="#E6ECF1"/><text x="${left-6}" y="${y+4}" text-anchor="end" font-size="10.5" fill="#7A8995">${Math.round(mx*k/4)}</text>`;}
   itens.forEach((it,i)=>{const cx=left+passo*i+passo/2;
     if(o.empilhar){let y=top+ch;it.vals.forEach(b=>{const hh=(b.v||0)*ch/mx;y-=hh;if(hh>0)s+=`<rect x="${cx-bw/2}" y="${y}" width="${bw}" height="${hh}" fill="${b.c}" rx="2"><title>${it.lab}: ${b.v}</title></rect>`;if(hh>15&&o.rotular)s+=`<text x="${cx}" y="${y+hh/2+4}" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">${b.v}</text>`;});
@@ -1603,22 +1609,22 @@ function barras(itens,o){
   return s+"</svg>";}
 function renderEvo(){
   const ds=datasHist();const meses=[...new Set(ds.map(d=>d.slice(0,7)))].sort().reverse();
-  if(!mesSel||!meses.includes(mesSel))mesSel=(S.ult.dc||ds[ds.length-1]||"").slice(0,7)||meses[0]||"";
-  $("selMes").innerHTML=meses.map(m=>`<option value="${m}"${m===mesSel?" selected":""}>${MESES[Number(m.slice(5,7))-1]} ${m.slice(0,4)}</option>`).join("");
+  if(!mesSel||(mesSel!=="tudo"&&mesSel!=="30"&&!meses.includes(mesSel)))mesSel="tudo";
+  $("selMes").innerHTML=`<option value="tudo"${mesSel==="tudo"?" selected":""}>Todo o histórico</option><option value="30"${mesSel==="30"?" selected":""}>Últimos 30 dias</option>`+meses.map(m=>`<option value="${m}"${m===mesSel?" selected":""}>${MESES[Number(m.slice(5,7))-1]} ${m.slice(0,4)}</option>`).join("");
   $("selGrupoEvo").innerHTML=["Todos"].concat(GRUPOS).map(g=>`<option value="${g}"${g===grupoEvo?" selected":""}>${g==="Todos"?"Todos os grupos":g}</option>`).join("");
   const f=(p,g)=>(poloSel==="Todos"||p===poloSel)&&(grupoEvo==="Todos"||g===grupoEvo);
-  const dm2=ds.filter(d=>d.startsWith(mesSel));
+  const dm2=ds.filter(d=>noPeriodo(d,mesSel));
   const evo=dm2.filter(d=>somaHist(d,2,f)!=null||somaHist(d,3,f)!=null).map(d=>({lab:dm(d),sub:wd(d),vals:[{v:somaHist(d,2,f)||0,c:"#2FA36B"},{v:somaHist(d,3,f)||0,c:"#D9534A"}]}));
   const iX=1;
   const mov=dm2.filter(d=>somaHist(d,0,f)!=null||somaHist(d,iX,f)!=null).map(d=>({lab:dm(d),sub:wd(d),vals:[{v:somaHist(d,0,f),c:"#F0A23B"},{v:somaHist(d,iX,f),c:"#23824F"}]}));
   $("chartEvo").innerHTML=barras(evo,{empilhar:1});$("chartMov").innerHTML=barras(mov,{h:200});
   const pri=evo[0],ult=evo[evo.length-1];const tt=it=>it.vals[0].v+it.vals[1].v;
-  $("evoNota").textContent=`${MESES[Number(mesSel.slice(5,7))-1]||""} · ${poloSel==="Todos"?"todos os polos":poloSel} · ${grupoEvo==="Todos"?"todos os grupos":grupoEvo}`+(pri&&ult&&pri!==ult?` · de ${nf(tt(pri))} (${pri.lab}) para ${nf(tt(ult))} (${ult.lab})`:"");
+  $("evoNota").textContent=`${rotPer(mesSel)} · ${poloSel==="Todos"?"todos os polos":poloSel} · ${grupoEvo==="Todos"?"todos os grupos":grupoEvo}`+(pri&&ult&&pri!==ult?` · de ${nf(tt(pri))} (${pri.lab}) para ${nf(tt(ult))} (${ult.lab})`:"");
   $("tbHist").innerHTML=`<thead><tr><th>Data</th><th class="r">Carteira</th><th class="r">No prazo</th><th class="r">Fora do prazo</th><th class="r">% no prazo</th><th class="r">Entradas</th><th class="r">Execuções</th></tr></thead><tbody>`+
-    ds.slice().reverse().filter(d=>d.startsWith(mesSel)).map(d=>{const np=somaHist(d,2,f),fo=somaHist(d,3,f),a=somaHist(d,0,f),x=somaHist(d,iX,f);const c=(np||0)+(fo||0);
+    ds.slice().reverse().filter(d=>noPeriodo(d,mesSel)).map(d=>{const np=somaHist(d,2,f),fo=somaHist(d,3,f),a=somaHist(d,0,f),x=somaHist(d,iX,f);const c=(np||0)+(fo||0);
       return `<tr><td>${wd(d)} ${dmy(d)}</td><td class="r">${np==null&&fo==null?"–":nf(c)}</td><td class="r">${np==null?"–":nf(np)}</td><td class="r">${fo==null?"–":nf(fo)}</td><td class="r">${np==null?"–":pctTxt(np,c)}</td><td class="r">${a==null?"–":nf(a)}</td><td class="r">${x==null?"–":nf(x)}</td></tr>`;}).join("")+"</tbody>";}
-$("selMes").onchange=e=>{mesSel=e.target.value;renderEvo();};
-$("selGrupoEvo").onchange=e=>{grupoEvo=e.target.value;renderEvo();};
+$("selMes").onchange=e=>{mesSel=e.target.value;renderEvo();renderEvoPolos();};
+$("selGrupoEvo").onchange=e=>{grupoEvo=e.target.value;renderEvo();setTimeout(rolarFim,0);};
 
 /* ================= por serviço ================= */
 function tssDoGrupo(g){const c={};const u=ultF();for(const r of u.ca.concat(u.ac,u.ex))if(r.g===g)c[r.tss]=(c[r.tss]||0)+1;
@@ -1701,10 +1707,10 @@ function renderRes(){
   const itD=ds.map(d=>({lab:dm(d),sub:wd(d),vals:[{v:E(d),c:"#F0A23B"},{v:X(d),c:"#23824F"}]}));
   const pzRows=(pol==="Todos"?POLOS.slice().reverse():[pol]).map(p=>({p,...conta({p})}));
   const dsH=datasHist();const mes=(u.dc||"").slice(0,7);const fH=(p,g)=>pol==="Todos"||p===pol;
-  const evo=dsH.filter(d=>d.startsWith(mes)&&(somaHist(d,2,fH)!=null||somaHist(d,3,fH)!=null)).slice(-10).map(d=>({lab:dm(d),sub:wd(d),vals:[{v:somaHist(d,2,fH)||0,c:"#2FA36B"},{v:somaHist(d,3,fH)||0,c:"#D9534A"}]}));
+  const evo=dsH.filter(d=>noPeriodo(d,"30")&&(somaHist(d,2,fH)!=null||somaHist(d,3,fH)!=null)).slice(-12).map(d=>({lab:dm(d),sub:wd(d),vals:[{v:somaHist(d,2,fH)||0,c:"#2FA36B"},{v:somaHist(d,3,fH)||0,c:"#D9534A"}]}));
   h+=`<div class="r3"><div class="rg"><div class="rgt">Entradas × execuções por dia<span class="leg2"><span style="--c:#F0A23B">Entradas</span><span style="--c:#23824F">Execuções</span></span></div>${miniBarras(itD,{h:170})}</div>
     <div class="rg"><div class="rgt">Prazo da carteira por polo<span class="leg2"><span style="--c:#2FA36B">No prazo</span><span style="--c:#D9534A">Fora</span></span></div>${pzBarras(pzRows)}</div>
-    <div class="rg"><div class="rgt">Evolução da carteira no mês<span class="leg2"><span style="--c:#2FA36B">No prazo</span><span style="--c:#D9534A">Fora</span></span></div>${evo.length?barras(evo,{empilhar:1,wmin:420,h:200,rotular:1,bw:26}):'<div class="empty">Sem histórico no mês.</div>'}</div></div>`;
+    <div class="rg"><div class="rgt">Evolução da carteira · últimos dias<span class="leg2"><span style="--c:#2FA36B">No prazo</span><span style="--c:#D9534A">Fora</span></span></div>${evo.length?barras(evo,{empilhar:1,wmin:420,h:200,rotular:1,bw:26}):'<div class="empty">Sem histórico ainda.</div>'}</div></div>`;
   // serviços em cartões
   h+=`<div class="rsv"><div class="svc4">${cardsServ(ds)}</div></div>`;
   h+=`</div>`;
@@ -1898,10 +1904,10 @@ function renderLig(){
   $("ligNc").innerHTML=nc.length?`<div class="at nc">${Object.entries(pc).sort((a,b)=>b[1].n-a[1].n).map(([k,v])=>`<div class="ai" style="--c:var(--orange)"${go({modo:"execucoes",g,nc:"sim",p:""})}><div class="t">${esc(v.res||"Resultado "+k)}<small>código ${esc(k)}</small></div><b>${nf(v.n)}</b></div>`).join("")}</div><div class="note">Essas baixas saem nos Executados, mas o resultado não é o serviço feito, então não contam como executada.</div>`:`<div class="empty">Nenhuma baixa fora da conta em ${esc(rotDias())}.</div>`;
   // evolução
   const ds=datasHist();const mes=(u.dc||ds[ds.length-1]||"").slice(0,7);const f=(p,gg)=>gg===g;
-  const dm2=ds.filter(d=>d.startsWith(mes));
+  const dm2=ds.filter(d=>noPeriodo(d,"tudo"));
   $("ligEvo").innerHTML=barras(dm2.filter(d=>somaHist(d,2,f)!=null||somaHist(d,3,f)!=null).map(d=>({lab:dm(d),sub:wd(d),vals:[{v:somaHist(d,2,f)||0,c:"#2FA36B"},{v:somaHist(d,3,f)||0,c:"#D9534A"}]})),{empilhar:1});
   $("ligMov").innerHTML=barras(dm2.filter(d=>somaHist(d,0,f)!=null||somaHist(d,1,f)!=null).map(d=>({lab:dm(d),sub:wd(d),vals:[{v:somaHist(d,0,f),c:"#F0A23B"},{v:somaHist(d,1,f),c:"#23824F"}]})),{h:200});
-  $("ligEvoNota").textContent=`${MESES[Number(mes.slice(5,7))-1]||""} ${mes.slice(0,4)} · os dois polos`;}
+  $("ligEvoNota").textContent="todo o histórico · os dois polos";}
 
 
 /* ================= cartões visuais por serviço ================= */
