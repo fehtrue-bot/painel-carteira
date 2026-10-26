@@ -1355,8 +1355,9 @@ function registros(raw,tipo){
     if(tipo==="ex"){o.dt=dataIso(g(r,"ini"));o.ini=txtData(g(r,"ini"));o.fim=txtData(g(r,"fim"));o.cod=clean(g(r,"cod")).split(".")[0];o.res=clean(g(r,"res"));o.eq=clean(g(r,"eq"));
       o.conta=executadoDeFato(o.cod,o.res);if(!o.tss)est.semTss++;}
     else{o.dt=dataIso(g(r,"ins"));o.ins=txtData(g(r,"ins"));o.pf=txtData(g(r,"pf"));o.tr=clean(g(r,"tr"));o.fora=o.tr.startsWith("-");o.st=clean(g(r,"st"));if(!o.tss)continue;
-      // carteira: OS com "CONTINUA" na Causa Resultado não entra na contagem
-      if(tipo==="ca"&&/CONTINUA/.test(U(g(r,"cr")))){est.continua++;continue;}}
+}
+    // "CONTINUA" e "FIM DO DIA" (Causa Resultado / Resultado) não entram em acatados, executados nem carteira
+    if(/CONTINUA|FIM DO DIA/.test(U(tipo==="ex"?o.res:g(r,"cr")))){est.continua++;continue;}
     if(o.dt)dias.add(o.dt);
     if(o.p==="Outro"){est.outroAtc++;continue;}
     // ligação de água de outro contrato não entra em lugar nenhum (nem no total geral)
@@ -1409,11 +1410,11 @@ $("impOk").onclick=async()=>{
     U2.dias=[...new Set(U2.ac.map(r=>r.dt).concat(U2.ex.map(r=>r.dt)))].filter(d=>(res.ac?res.ac.dias:[]).concat(res.ex?res.ex.dias:[]).includes(d)||!res.ac&&!res.ex).sort();
     if(!U2.dias.length)U2.dias=[...new Set(U2.ac.map(r=>r.dt).concat(U2.ex.map(r=>r.dt)))].sort();
     RAW=novoRaw;
-    if(res.ac)checks.push(check("good",nf(res.ac.recs.length),"Entradas (acatados)",`${res.ac.dias.map(d=>wd(d)+" "+dm(d)).join(" · ")}${res.ac.raw.rep?` · ${res.ac.raw.rep} repetidas tiradas`:""}`));
-    if(res.ex)checks.push(check("good",nf(res.ex.recs.length),"Execuções (total geral)",`${res.ex.dias.map(d=>wd(d)+" "+dm(d)).join(" · ")}${res.ex.raw.rep?` · ${res.ex.raw.rep} repetidas tiradas`:""}`));
+    if(res.ac)checks.push(check("good",nf(res.ac.recs.length),"Entradas (acatados)",`${res.ac.est.continua?nf(res.ac.est.continua)+" com continua / fim do dia ficaram fora · ":""}${res.ac.dias.map(d=>wd(d)+" "+dm(d)).join(" · ")}${res.ac.raw.rep?` · ${res.ac.raw.rep} repetidas tiradas`:""}`));
+    if(res.ex)checks.push(check("good",nf(res.ex.recs.length),"Execuções (total geral)",`${res.ex.est.continua?nf(res.ex.est.continua)+" com continua / fim do dia ficaram fora · ":""}${res.ex.dias.map(d=>wd(d)+" "+dm(d)).join(" · ")}${res.ex.raw.rep?` · ${res.ex.raw.rep} repetidas tiradas`:""}`));
     if(res.ex){const e=res.ex.est;const dR=diaRel();const relFora=res.ex.recs.filter(r=>r.g==="Religação"&&exGeral(r)&&r.dt!==dR).length;
-      checks.push(check("warn",nf(e.linhas),"Linhas no arquivo de executados",`${nf(e.linhas-e.outroAtc)} entram no total geral (todos os serviços) · no card da ligação de água: ${nf(e.conta)} executadas de fato; ficam fora dele ${nf(e.alegacao)} alegações e ${nf(e.ligOutroContrato)} de outro contrato · ${nf(e.outroServ)} outros serviços · ${nf(e.outroAtc)} de outro ATC (fora)${relFora?` · ${nf(relFora)} religações de outros dias (religação conta só ${dm(dR)})`:""}`));}
-    if(res.ca)checks.push(check("good",nf(res.ca.recs.length),"Carteira de "+dm(dc),`${res.ca.recs.filter(r=>r.fora).length} fora do prazo${res.ca.est.continua?` · ${nf(res.ca.est.continua)} com "continua" na Causa Resultado ficaram fora da contagem`:""}`));
+      checks.push(check("warn",nf(e.linhas),"Linhas no arquivo de executados",`${nf(e.linhas-e.outroAtc-e.continua)} entram no total geral (todos os serviços; continua e fim do dia ficam fora) · no card da ligação de água: ${nf(e.conta)} executadas de fato; ficam fora dele ${nf(e.alegacao)} alegações e ${nf(e.ligOutroContrato)} de outro contrato · ${nf(e.outroServ)} outros serviços · ${nf(e.outroAtc)} de outro ATC (fora)${relFora?` · ${nf(relFora)} religações de outros dias (religação conta só ${dm(dR)})`:""}`));}
+    if(res.ca)checks.push(check("good",nf(res.ca.recs.length),"Carteira de "+dm(dc),`${res.ca.recs.filter(r=>r.fora).length} fora do prazo${res.ca.est.continua?` · ${nf(res.ca.est.continua)} com continua / fim do dia ficaram fora`:""}`));
     const lidas=t=>res[t]?res[t].raw.rows.length-res[t].recs.length-(res[t].est.continua||0):0;
     const fora=lidas("ac")+lidas("ca");if(fora)checks.push(check("warn",nf(fora),"Linhas fora do painel","de outro ATC (fora de 923, 929 e 299) ou ligação de água de outro contrato"));
     $("impChecks").innerHTML=checks.join("");
