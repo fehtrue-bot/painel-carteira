@@ -2130,7 +2130,7 @@ $("pubCopiar").onclick=async()=>{const i=$("pubUrl");if(!i.value)return;try{awai
 let publicando=null;
 async function publicar(avisar){if(LEITOR)return false;if(publicando)return publicando;
   publicando=(async()=>{try{
-    const z=await compactar(JSON.stringify(S));const T=3000000,n=Math.max(1,Math.ceil(z.length/T));const v=Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+    const z=await compactar(JSON.stringify(RAW?Object.assign({},S,{_raw:RAW}):S));const T=3000000,n=Math.max(1,Math.ceil(z.length/T));const v=Date.now().toString(36)+Math.random().toString(36).slice(2,6);
     for(let i=0;i<n;i++)await apiC({acao:"parte",v,i,n,dados:z.slice(i*T,(i+1)*T),dc:S.ult.dc||""});return true;}
   catch(e){if(avisar)msg("Painel montado, mas o link da coordenação não atualizou: "+e.message);return false;}
   finally{publicando=null;}})();return publicando;}
@@ -2138,7 +2138,7 @@ let versaoLeitor=0;
 async function carregarLeitor(){const q="?k="+encodeURIComponent(SLUG);const m=await apiC(null,"GET",q);
   if(!m.em)throw new Error("O painel ainda não foi publicado. Tente mais tarde.");
   if(m.em===versaoLeitor)return false;let z="";for(let i=0;i<m.partes;i++){const j=await apiC(null,"GET",q+"&v="+m.v+"&i="+i);z+=j.dados;}
-  S=normalizar(JSON.parse(await descompactar(z)));ajustarRel(S.ult.ca);for(const r of S.ult.ex)r.conta=executadoDeFato(r.cod,r.res);versaoLeitor=m.em;
+  {const o=JSON.parse(await descompactar(z));RAW=o._raw||null;delete o._raw;S=normalizar(o);}ajustarRel(S.ult.ca);for(const r of S.ult.ex)r.conta=executadoDeFato(r.cod,r.res);versaoLeitor=m.em;
   setConn("on","Atualizado pela equipe em "+new Date(m.em).toLocaleString("pt-BR",{dateStyle:"short",timeStyle:"short"}),S.ult.dc?"carteira de "+dmy(S.ult.dc):"");return true;}
 async function iniciarLeitor(){document.body.classList.add("leitor");const ft=document.querySelector(".foot");if(ft)ft.textContent="Painel da Carteira de Serviços · Interlagos e Grajaú · só visualização";$("telaLogin").hidden=true;document.title="Carteira de Serviços · Interlagos e Grajaú";
   $("hSaudL").textContent="Carteira de Serviços · Interlagos e Grajaú";setConn("warn","Carregando o painel…","");
