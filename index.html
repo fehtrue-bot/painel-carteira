@@ -930,6 +930,12 @@ body.aba-rel .assina{display:block}
 
 .c4 [data-go]{cursor:pointer;border-radius:8px;transition:background .15s}.c4 [data-go]:hover{background:#EEF6FB}.c4 .big[data-go]:hover b,.c4 .ft4 [data-go]:hover b{text-decoration:underline}
 
+.hsaud small.hsub{display:block;font-size:14px;font-weight:600;color:var(--muted);margin-top:4px;letter-spacing:0}
+.hclock{display:flex;align-items:baseline;gap:12px;margin-top:10px;flex-wrap:wrap}
+.hclock b{font-family:var(--f-display);font-size:30px;font-weight:700;color:#00396F;font-variant-numeric:tabular-nums;line-height:1}
+.hclock span{font-size:14px;color:var(--muted);font-weight:600}
+@media (max-width:640px){.hclock b{font-size:22px}.hclock span{font-size:12px}.hsaud small.hsub{font-size:12px}}
+
 </style>
 </head>
 <body>
@@ -969,6 +975,7 @@ body.aba-rel .assina{display:block}
   <section class="hero">
     <div class="hl1">
       <div class="hsaud" id="hSaudL"><span id="hSaud">Bem-vinda</span>, Fernanda</div>
+      <div class="hclock" id="hClock" hidden><b id="hHora"></b><span id="hDia"></span></div>
       <div class="hdata" id="hData"></div>
       <div class="hres" id="hRes"></div>
     </div>
@@ -2198,7 +2205,8 @@ async function carregarLeitor(){const q="?k="+encodeURIComponent(SLUG);const m=a
   {const o=JSON.parse(await descompactar(z));RAW=o._raw||null;delete o._raw;S=normalizar(o);}ajustarRel(S.ult.ca);for(const r of S.ult.ex)r.conta=executadoDeFato(r.cod,r.res);versaoLeitor=m.em;
   setConn("on","Atualizado pela equipe em "+new Date(m.em).toLocaleString("pt-BR",{dateStyle:"short",timeStyle:"short"}),S.ult.dc?"carteira de "+dmy(S.ult.dc):"");return true;}
 async function iniciarLeitor(){document.body.classList.add("leitor");const ft=document.querySelector(".foot");if(ft)ft.textContent="Painel da Carteira de Serviços · Interlagos e Grajaú · só visualização";$("telaLogin").hidden=true;document.title="Carteira de Serviços · Interlagos e Grajaú";
-  $("hSaudL").textContent="Carteira de Serviços · Interlagos e Grajaú";setConn("warn","Carregando o painel…","");
+  $("hSaudL").innerHTML='Bem-vindo(a)<small class="hsub">Carteira de Serviços · Interlagos e Grajaú</small>';
+  {const tick=()=>{const d=new Date();$("hHora").textContent=d.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"});const t=d.toLocaleDateString("pt-BR",{weekday:"long",day:"2-digit",month:"long",year:"numeric"});$("hDia").textContent=t.charAt(0).toUpperCase()+t.slice(1);};$("hClock").hidden=false;tick();setInterval(tick,20000);}setConn("warn","Carregando o painel…","");
   try{await carregarLeitor();}catch(e){S=normalizar(null);setConn("off",e.message,"");$("hRes").textContent=e.message;window.__pronto=true;return;}
   let ab=lsg("carteira-aba");if(ab==="mon"||ab==="os")ab="rel";if(ab&&$("t-"+ab))aba(ab);else renderTudo();window.__pronto=true;
   setInterval(async()=>{if(document.hidden)return;try{if(await carregarLeitor())renderTudo();}catch(e){}},180000);}
