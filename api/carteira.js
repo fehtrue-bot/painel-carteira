@@ -54,7 +54,7 @@ module.exports = async (req, res) => {
     }
     if (b.acao === "parte") {
       const v = String(b.v || "").replace(/[^a-z0-9]/g, "").slice(0, 30), i = Number(b.i) | 0, n = Number(b.n) | 0;
-      if (!v || n < 1 || n > 20 || i < 0 || i >= n || typeof b.dados !== "string" || b.dados.length > 3300000) throw erro(400, "Envio inválido.");
+      if (!v || n < 1 || n > 60 || i < 0 || i >= n || typeof b.dados !== "string" || b.dados.length > 3300000) throw erro(400, "Envio inválido.");
       await cmd("SET", `cart:p:${v}:${i}`, b.dados, "EX", 60 * 60 * 24 * 60);
       if (i === n - 1) {
         const antiga = J(await cmd("GET", "cart:meta"), null);
