@@ -1053,7 +1053,7 @@ body.leitor .pubst{display:none}
     <div class="dash">
       <div id="poloCards" hidden></div>
       <div class="sect s12">Situação por serviço</div>
-<article class="card s12"><header class="ch"><div><h3>Situação por serviço</h3><p id="sitNota"></p></div><div class="leg2"><span style="--c:#2FA36B">No prazo</span><span style="--c:#D9534A">Fora</span><span style="--c:#F0A23B">Entradas</span><span style="--c:#23824F">Execuções</span></div></header><div class="svc4" id="tbGrupo"></div></article>
+<article class="card s12"><header class="ch"><div><h3>Situação por serviço</h3><p id="sitNota"></p></div><div class="seg2" id="segServPolo"></div><div class="leg2"><span style="--c:#2FA36B">No prazo</span><span style="--c:#D9534A">Fora</span><span style="--c:#F0A23B">Entradas</span><span style="--c:#23824F">Execuções</span></div></header><div class="svc4" id="tbGrupo"></div></article>
       <div class="sect s12">Carteira por grupo · hoje</div>
       <article class="card s6"><header class="ch"><div><h3>Grajaú</h3><p>no prazo × fora do prazo</p></div><div class="leg2 legpz"><span style="--c:#2FA36B" data-prazo="no" title="Clique para ver só o que está no prazo">No prazo</span><span style="--c:#D9534A" data-prazo="fora" title="Clique para ver só o que está fora do prazo">Fora do prazo</span></div></header><div id="cgGra"></div></article>
       <article class="card s6"><header class="ch"><div><h3>Interlagos</h3><p>no prazo × fora do prazo</p></div><div class="leg2 legpz"><span style="--c:#2FA36B" data-prazo="no" title="Clique para ver só o que está no prazo">No prazo</span><span style="--c:#D9534A" data-prazo="fora" title="Clique para ver só o que está fora do prazo">Fora do prazo</span></div></header><div id="cgInt"></div></article>
@@ -1515,7 +1515,7 @@ $("fRest").onchange=async e=>{const f=e.target.files[0];if(!f)return;try{const o
 $("btnAjuda").onclick=()=>{$("intro").hidden=!$("intro").hidden;};$("btnFecharAjuda").onclick=()=>{$("intro").hidden=true;};
 
 /* ================= filtros e contas ================= */
-let prazoSel="",poloSel="Todos",diaSel="todos",abaAtual="painel",servSel="Vazamento de água",grupoEvo="Todos",mesSel="";
+let servPolo="",prazoSel="",poloSel="Todos",diaSel="todos",abaAtual="painel",servSel="Vazamento de água",grupoEvo="Todos",mesSel="";
 const osF={modo:"carteira",g:"",tss:"",prazo:"",nc:"",fx:""};
 const fp=r=>poloSel==="Todos"||r.p===poloSel;
 const fpPolo=fp;
@@ -1571,6 +1571,7 @@ function renderFiltros(){
   $("dataCart").textContent=S.ult.dc?wd(S.ult.dc)+" "+dmy(S.ult.dc):"–";
   $("segPolo").closest(".fgrp").hidden=abaAtual==="serv"||abaAtual==="lig"||abaAtual==="rel";$("segDia").closest(".fgrp").hidden=abaAtual==="res";}
 $("segPolo").onclick=e=>{const b=e.target.closest("button");if(!b)return;poloSel=b.dataset.polo;renderTudo();};
+$("segServPolo").onclick=e=>{const b=e.target.closest("button");if(!b)return;servPolo=b.dataset.sp;$("segServPolo").querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",x===b));$("tbGrupo").innerHTML=cardsServ(diasSel(),servPolo||null);};
 $("segPrazo").onclick=e=>{const b=e.target.closest("button");if(!b)return;prazoSel=b.dataset.pz;renderTudo();};
 document.addEventListener("click",e=>{const k=e.target.closest("[data-prazo]");if(!k)return;const v=k.dataset.prazo;prazoSel=prazoSel===v?"":v;renderTudo();});
 $("segDia").onclick=e=>{const b=e.target.closest("button");if(!b)return;diaSel=b.dataset.dia;renderTudo();};
@@ -1595,7 +1596,9 @@ function render(){
   renderHero(T);$("fornPainel").innerHTML=baloesForn(diasSel(),fpPolo);
   // situação por serviço (cartões visuais)
   $("sitNota").textContent=`carteira de ${dmy(u.dc)} · entradas e execuções: ${rotDias()}${poloSel!=="Todos"?" · "+poloSel:""}`;
-  $("tbGrupo").innerHTML=cardsServ(diasSel());
+  if(servPolo&&poloSel!=="Todos"&&servPolo!==poloSel)servPolo="";
+  $("segServPolo").innerHTML=(poloSel==="Todos"?["","Interlagos","Grajaú"]:[""]).map(p=>`<button type="button" data-sp="${p}" aria-pressed="${p===servPolo}">${p||(poloSel==="Todos"?"Interlagos e Grajaú":poloSel)}</button>`).join("");
+  $("tbGrupo").innerHTML=cardsServ(diasSel(),servPolo||null);
   // dia a dia
   const linhasDia=u.dias.map(d=>{const e=u.ac.filter(r=>r.dt===d&&fp(r)).length,x=u.ex.filter(r=>r.dt===d&&fp(r)).length;return {d,e,x};});
   const mx=Math.max(1,...linhasDia.map(l=>Math.max(l.e,l.x)));
@@ -1981,18 +1984,17 @@ function miniDia(ds,E,X){if(!ds.length)return "";const W=220,H=74,bt=16,mx=Math.
   let s=`<svg viewBox="0 0 ${W} ${H}">`;ds.forEach((d,i)=>{const cx=i*gw+gw/2;[[E(d),"#F0A23B"],[X(d),"#23824F"]].forEach(([v,c],j)=>{const hh=v*(H-bt-12)/mx,x=cx-bw-1+j*(bw+2);
     s+=`<rect x="${x.toFixed(1)}" y="${(H-bt-hh).toFixed(1)}" width="${bw.toFixed(1)}" height="${Math.max(hh,1).toFixed(1)}" rx="2" fill="${c}"/>`;if(v)s+=`<text x="${(x+bw/2).toFixed(1)}" y="${(H-bt-hh-2).toFixed(1)}" text-anchor="middle" font-size="8.5" font-weight="700" fill="#33424E">${v}</text>`;});
     s+=`<text x="${cx.toFixed(1)}" y="${H-3}" text-anchor="middle" font-size="9" font-weight="600" fill="#5E6E7B">${ds.length>1?wd(d):dm(d)}</text>`;});return s+"</svg>";}
-function cardsServ(ds,polo){const u=ultF();const fpo=r=>polo?r.p===polo:fp(r);
+function cardsServ(ds,polo){const u=ultF();const PP=polo?{p:polo}:{};const fpo=r=>polo?r.p===polo:fp(r);
   const dsTodos=ds;
   return GRUPOS.map(g=>{const ds=g==="Religação"?[diaRel()].filter(Boolean):dsTodos;const ca=u.ca.filter(r=>r.g===g&&fpo(r)),t=ca.length,f=ca.filter(r=>r.fora).length,n=t-f;
     const E=d=>u.ac.filter(r=>r.g===g&&r.dt===d&&fpo(r)).length,X=d=>u.ex.filter(r=>r.g===g&&r.dt===d&&exGeral(r)&&fpo(r)).length;
     const te=ds.reduce((a,d)=>a+E(d),0),tx=ds.reduce((a,d)=>a+X(d),0);const pv=t?n/t:null;
     return `<div class="c4" style="--c:${COR[g]}"><div class="h4"><b>${g}</b>${pp(pv,metaDe(g))}</div>
-      <div class="big"${go({modo:"carteira",g})}><b>${nf(t)}</b><span>na carteira</span></div>
-      <div class="pz4"${go({modo:"carteira",g,prazo:"fora"})}>${t?`<i style="width:${(n*100/t).toFixed(1)}%;background:#2FA36B">${n&&n/t>.12?n:""}</i><i style="width:${(f*100/t).toFixed(1)}%;background:#D9534A">${f&&f/t>.12?f:""}</i>`:""}</div>
-      <div class="lg4"><span${go({modo:"carteira",g,prazo:"no"})}><b style="color:#2FA36B">${nf(n)}</b> no prazo</span>${g==="Religação"?`<span${go({modo:"carteira",g,prazo:"p24"})}><b style="color:#E8891A">${nf(ca.filter(r=>!r.fora&&(marca24(r)??Infinity)<Date.now()&&(vencimento(r)??0)>=Date.now()).length)}</b> +24h</span>`:""}<span${go({modo:"carteira",g,prazo:"fora"})}><b style="color:#D9534A">${nf(f)}</b> fora${g==="Religação"?" (48h)":""}</span></div>
-      <div class="pl4">${POLOS.slice().reverse().filter(p=>!polo&&(poloSel==="Todos"||p===poloSel)).map(p=>{const c=u.ca.filter(r=>r.g===g&&r.p===p),cf=c.filter(r=>r.fora).length;return `<span${go({modo:"carteira",g,p})} title="Ver as OS de ${g} em ${p}"><b>${p}</b><span class="pln"><i>${nf(c.length)}</i> <em${cf?go({modo:"carteira",g,p,prazo:"fora"}):""}>${nf(cf)} fora</em></span></span>`;}).join("")}</div>
+      <div class="big"${go({...PP,modo:"carteira",g})}><b>${nf(t)}</b><span>na carteira</span></div>
+      <div class="pz4"${go({...PP,modo:"carteira",g,prazo:"fora"})}>${t?`<i style="width:${(n*100/t).toFixed(1)}%;background:#2FA36B">${n&&n/t>.12?n:""}</i><i style="width:${(f*100/t).toFixed(1)}%;background:#D9534A">${f&&f/t>.12?f:""}</i>`:""}</div>
+      <div class="lg4"><span${go({...PP,modo:"carteira",g,prazo:"no"})}><b style="color:#2FA36B">${nf(n)}</b> no prazo</span>${g==="Religação"?`<span${go({...PP,modo:"carteira",g,prazo:"p24"})}><b style="color:#E8891A">${nf(ca.filter(r=>!r.fora&&(marca24(r)??Infinity)<Date.now()&&(vencimento(r)??0)>=Date.now()).length)}</b> +24h</span>`:""}<span${go({...PP,modo:"carteira",g,prazo:"fora"})}><b style="color:#D9534A">${nf(f)}</b> fora${g==="Religação"?" (48h)":""}</span></div>
       <div class="ch4">${miniDia(ds,E,X)}</div>
-      <div class="ft4"><div${go({modo:"entradas",g})}><small>Entradas</small><b style="color:#B9650F">${nf(te)}</b></div><div${go({modo:"execucoes",g})}><small>Execuções</small><b style="color:#1C7444">${nf(tx)}</b></div><div><small>Saldo</small><b class="${te-tx>0?"up":te-tx<0?"down":""}">${sgn(te-tx)}</b></div></div></div>`;}).join("");}
+      <div class="ft4"><div${go({...PP,modo:"entradas",g})}><small>Entradas</small><b style="color:#B9650F">${nf(te)}</b></div><div${go({...PP,modo:"execucoes",g})}><small>Execuções</small><b style="color:#1C7444">${nf(tx)}</b></div><div><small>Saldo</small><b class="${te-tx>0?"up":te-tx<0?"down":""}">${sgn(te-tx)}</b></div></div></div>`;}).join("");}
 function abrirLista(o){const u=ultF();const modo=o.modo||"carteira";const agora=Date.now();
   let L=(modo==="carteira"?u.ca:modo==="entradas"?u.ac:u.ex).filter(r=>(o.p?r.p===o.p:fp(r))&&(!o.g||r.g===o.g)&&(!o.gs||o.gs.includes(r.g))&&(!o.tss||r.tss===o.tss)&&(!o.fam||famDe(r)===o.fam));
   const h24=r=>{const m=marca24(r);return m==null?null:(m-agora)/3600000;};
