@@ -928,6 +928,8 @@ body.aba-rel .assina{display:block}
 }
 @media (max-width:640px){.kpi .kg{max-height:42px;overflow:hidden}.kpi .kg svg{max-height:42px}.kpi{padding:12px 13px!important;gap:4px!important}}
 
+.c4 [data-go]{cursor:pointer;border-radius:8px;transition:background .15s}.c4 [data-go]:hover{background:#EEF6FB}.c4 .big[data-go]:hover b,.c4 .ft4 [data-go]:hover b{text-decoration:underline}
+
 </style>
 </head>
 <body>
@@ -1028,6 +1030,9 @@ body.aba-rel .assina{display:block}
       <div class="sect s12">Carteira por grupo · hoje</div>
       <article class="card s6"><header class="ch"><div><h3>Grajaú</h3><p>no prazo × fora do prazo</p></div><div class="leg2 legpz"><span style="--c:#2FA36B" data-prazo="no" title="Clique para ver só o que está no prazo">No prazo</span><span style="--c:#D9534A" data-prazo="fora" title="Clique para ver só o que está fora do prazo">Fora do prazo</span></div></header><div id="cgGra"></div></article>
       <article class="card s6"><header class="ch"><div><h3>Interlagos</h3><p>no prazo × fora do prazo</p></div><div class="leg2 legpz"><span style="--c:#2FA36B" data-prazo="no" title="Clique para ver só o que está no prazo">No prazo</span><span style="--c:#D9534A" data-prazo="fora" title="Clique para ver só o que está fora do prazo">Fora do prazo</span></div></header><div id="cgInt"></div></article>
+      <div class="sect s12">Situação por serviço</div>
+<article class="card s12"><header class="ch"><div><h3>Situação por serviço</h3><p id="sitNota"></p></div><div class="leg2"><span style="--c:#2FA36B">No prazo</span><span style="--c:#D9534A">Fora</span><span style="--c:#F0A23B">Entradas</span><span style="--c:#23824F">Execuções</span></div></header><div class="svc4" id="tbGrupo"></div></article>
+      <article class="card s12"><header class="ch"><div><h3>Por polo</h3><p>carteira, prazo e movimento</p></div></header><div class="polos p2" id="poloCards"></div></article>
       <div class="sect s12">Carteira por família · todos os serviços</div>
       <article class="card s12"><header class="ch"><div><h3>Por família</h3><p id="famNota">clique na família para ver os TSS · clique nos números para ver as OS</p></div><div class="leg2 legpz"><span style="--c:#2FA36B" data-prazo="no">No prazo</span><span style="--c:#D9534A" data-prazo="fora">Fora do prazo</span></div></header><div class="scroll"><table class="tfam" id="tbFam"></table></div></article>
       <div class="sect s12" id="evoTit">Evolução da carteira no mês</div>
@@ -1041,9 +1046,6 @@ body.aba-rel .assina{display:block}
       <article class="card s12"><header class="ch"><div><h3>Evolução detalhada</h3><p id="evoNota"></p></div><div class="row" style="gap:8px"><select id="selGrupoEvo" aria-label="Grupo"></select><select id="selMes" aria-label="Mês"></select></div></header><div class="leg2"><span style="--c:#2FA36B">No prazo</span><span style="--c:#D9534A">Fora do prazo</span></div><div class="chart" id="chartEvo"></div>
         <div class="leg2" style="margin-top:6px"><span style="--c:#F0A23B">Entradas</span><span style="--c:#23824F">Execuções</span></div><div class="chart" id="chartMov"></div>
         <details class="hist"><summary>Ver tabela do histórico</summary><div class="scroll"><table id="tbHist"></table></div></details></article>
-      <div class="sect s12">Situação por serviço</div>
-<article class="card s12"><header class="ch"><div><h3>Situação por serviço</h3><p id="sitNota"></p></div><div class="leg2"><span style="--c:#2FA36B">No prazo</span><span style="--c:#D9534A">Fora</span><span style="--c:#F0A23B">Entradas</span><span style="--c:#23824F">Execuções</span></div></header><div class="svc4" id="tbGrupo"></div></article>
-      <article class="card s12"><header class="ch"><div><h3>Por polo</h3><p>carteira, prazo e movimento</p></div></header><div class="polos p2" id="poloCards"></div></article>
     </div>
   </section>
 
@@ -1961,11 +1963,11 @@ function cardsServ(ds,polo){const u=ultF();const fpo=r=>polo?r.p===polo:fp(r);
     const E=d=>u.ac.filter(r=>r.g===g&&r.dt===d&&fpo(r)).length,X=d=>u.ex.filter(r=>r.g===g&&r.dt===d&&exGeral(r)&&fpo(r)).length;
     const te=ds.reduce((a,d)=>a+E(d),0),tx=ds.reduce((a,d)=>a+X(d),0);const pv=t?n/t:null;
     return `<div class="c4" style="--c:${COR[g]}"><div class="h4"><b>${g}</b>${pp(pv,metaDe(g))}</div>
-      <div class="big"><b>${nf(t)}</b><span>na carteira</span></div>
+      <div class="big"${go({modo:"carteira",g})}><b>${nf(t)}</b><span>na carteira</span></div>
       <div class="pz4"${go({modo:"carteira",g,prazo:"fora"})}>${t?`<i style="width:${(n*100/t).toFixed(1)}%;background:#2FA36B">${n&&n/t>.12?n:""}</i><i style="width:${(f*100/t).toFixed(1)}%;background:#D9534A">${f&&f/t>.12?f:""}</i>`:""}</div>
-      <div class="lg4"><span><b style="color:#2FA36B">${nf(n)}</b> no prazo</span>${g==="Religação"?`<span${go({modo:"carteira",g,prazo:"p24"})}><b style="color:#E8891A">${nf(ca.filter(r=>!r.fora&&(marca24(r)??Infinity)<Date.now()&&(vencimento(r)??0)>=Date.now()).length)}</b> +24h</span>`:""}<span><b style="color:#D9534A">${nf(f)}</b> fora${g==="Religação"?" (48h)":""}</span></div>
+      <div class="lg4"><span${go({modo:"carteira",g,prazo:"no"})}><b style="color:#2FA36B">${nf(n)}</b> no prazo</span>${g==="Religação"?`<span${go({modo:"carteira",g,prazo:"p24"})}><b style="color:#E8891A">${nf(ca.filter(r=>!r.fora&&(marca24(r)??Infinity)<Date.now()&&(vencimento(r)??0)>=Date.now()).length)}</b> +24h</span>`:""}<span${go({modo:"carteira",g,prazo:"fora"})}><b style="color:#D9534A">${nf(f)}</b> fora${g==="Religação"?" (48h)":""}</span></div>
       <div class="ch4">${miniDia(ds,E,X)}</div>
-      <div class="ft4"><div><small>Entradas</small><b style="color:#B9650F">${nf(te)}</b></div><div><small>Execuções</small><b style="color:#1C7444">${nf(tx)}</b></div><div><small>Saldo</small><b class="${te-tx>0?"up":te-tx<0?"down":""}">${sgn(te-tx)}</b></div></div></div>`;}).join("");}
+      <div class="ft4"><div${go({modo:"entradas",g})}><small>Entradas</small><b style="color:#B9650F">${nf(te)}</b></div><div${go({modo:"execucoes",g})}><small>Execuções</small><b style="color:#1C7444">${nf(tx)}</b></div><div><small>Saldo</small><b class="${te-tx>0?"up":te-tx<0?"down":""}">${sgn(te-tx)}</b></div></div></div>`;}).join("");}
 function abrirLista(o){const u=ultF();const modo=o.modo||"carteira";const agora=Date.now();
   let L=(modo==="carteira"?u.ca:modo==="entradas"?u.ac:u.ex).filter(r=>(o.p?r.p===o.p:fp(r))&&(!o.g||r.g===o.g)&&(!o.gs||o.gs.includes(r.g))&&(!o.tss||r.tss===o.tss)&&(!o.fam||famDe(r)===o.fam));
   const h24=r=>{const m=marca24(r);return m==null?null:(m-agora)/3600000;};
