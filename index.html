@@ -951,6 +951,23 @@ body.leitor .pubst{display:none}
 .c4 .pl4 span i{font-style:normal;font-weight:700;font-size:13px;color:var(--ink)}
 .c4 .pl4 em{margin-left:0}
 .c4 .pl4 span.pln{all:unset;display:flex;align-items:baseline;gap:6px;white-space:nowrap}
+/* ===== ajustes de layout do painel ===== */
+.ch:has(.seg2){align-items:center}
+.ch:has(.seg2)>div:first-child{flex:1 1 260px}
+.ch .seg2{flex:none}
+.ch:has(.seg2) .leg2{flex:none}
+/* carteira por grupo em duas colunas quando ocupa a largura toda */
+@media (min-width:1000px){
+  #cgInt .cg{display:block;column-count:2;column-gap:36px;column-rule:1px solid var(--line-2)}
+  #cgInt .cg .r{break-inside:avoid;grid-template-columns:minmax(170px,240px) minmax(0,1fr) 46px 62px}
+  #cgInt .cg .r+.r{border-top:1px solid var(--line-2)}
+  #cgInt .cg .r.tot{column-span:all;margin-top:8px}
+}
+/* seletores com a cara do painel */
+#selMes,#selGrupoEvo{appearance:none;-webkit-appearance:none;border:1px solid var(--line);border-radius:8px;padding:7px 30px 7px 11px;font:600 12.5px var(--f-body);color:var(--ink);background:var(--surface) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%235E6E7B' stroke-width='1.6'/%3E%3C/svg%3E") no-repeat right 10px center;cursor:pointer}
+#selMes:hover,#selGrupoEvo:hover{border-color:#12A5D6}
+/* barra de filtros numa linha só no computador */
+@media (min-width:1560px){.fbar2{flex-wrap:nowrap;gap:12px 16px}.fbar2 .fgrp{flex:none}.fdata{margin-left:auto;white-space:nowrap}}
 
 </style>
 </head>
@@ -1053,7 +1070,7 @@ body.leitor .pubst{display:none}
     <div class="dash">
       <div id="poloCards" hidden></div>
       <div class="sect s12">Situação por serviço</div>
-<article class="card s12"><header class="ch"><div><h3>Situação por serviço</h3><p id="sitNota"></p></div><div class="seg2" id="segServPolo"></div><div class="leg2"><span style="--c:#2FA36B">No prazo</span><span style="--c:#D9534A">Fora</span><span style="--c:#F0A23B">Entradas</span><span style="--c:#23824F">Execuções</span></div></header><div class="svc4" id="tbGrupo"></div></article>
+<article class="card s12"><header class="ch"><div><h3>Por serviço</h3><p id="sitNota"></p></div><div class="seg2" id="segServPolo"></div><div class="leg2"><span style="--c:#2FA36B">No prazo</span><span style="--c:#D9534A">Fora</span><span style="--c:#F0A23B">Entradas</span><span style="--c:#23824F">Execuções</span></div></header><div class="svc4" id="tbGrupo"></div></article>
       <div class="sect s12">Carteira por grupo · hoje</div>
       <article class="card s12"><header class="ch"><div><h3 id="cgTit">Interlagos e Grajaú</h3><p>no prazo × fora do prazo</p></div><div class="seg2" id="segGrpPolo"></div><div class="leg2 legpz"><span style="--c:#2FA36B" data-prazo="no" title="Clique para ver só o que está no prazo">No prazo</span><span style="--c:#D9534A" data-prazo="fora" title="Clique para ver só o que está fora do prazo">Fora do prazo</span></div></header><div id="cgInt"></div><div id="cgGra" hidden></div></article>
       <div class="sect s12">Carteira por família · todos os serviços</div>
