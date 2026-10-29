@@ -1203,6 +1203,44 @@ body.aba-rt .wrap{max-width:1500px}
 .rx-seq{flex-wrap:nowrap;overflow:hidden}
 .rx-v small{opacity:.7;font-weight:600}
 .rx-gap::before,.rx-gap::after{width:6px}
+/* ===== dashboard do retrabalho ===== */
+.rx-tiles{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px}
+.rx-tile{background:#fff;border:1px solid #DCE4EB;border-radius:9px;padding:12px 14px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.rx-tile span{font-size:12px;color:#5E6E7B;font-weight:600}
+.rx-tile b{font-family:var(--f-display);font-size:26px;font-weight:700;color:#00396F;font-variant-numeric:tabular-nums;line-height:1.15}
+.rx-tile small{font-size:11px;color:#8A97A3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rx-tile.t1{background:#00396F;border-color:#00396F}.rx-tile.t1 span,.rx-tile.t1 small{color:#BFD9EA}.rx-tile.t1 b{color:#fff;font-size:30px}
+.rx-tile.t2 b{color:#F08C00}
+.rx-dg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.rx-w2{grid-column:span 2}
+.rx-dg .rx-box>div{padding:12px 14px}
+.rx-donutw{display:flex;align-items:center;gap:14px}
+.rx-donut{width:150px;flex:none}.rx-donut .c1{font-size:20px;font-weight:800;fill:#00396F;font-family:var(--f-display)}.rx-donut .c2{font-size:10px;fill:#8A97A3}
+.rx-dleg{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px;min-width:0}
+.rx-dleg li{display:grid;grid-template-columns:12px minmax(0,1fr) auto;gap:2px 8px;align-items:center;font-size:12.5px}
+.rx-dleg i{width:12px;height:12px;border-radius:3px}.rx-dleg b{font-variant-numeric:tabular-nums;color:#00396F}
+.rx-dleg small{grid-column:2/-1;font-size:11px;color:#8A97A3}
+.rx-hist2{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;align-items:end;height:170px}
+.rx-hist2 .hb{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;gap:4px}
+.rx-hist2 .hb b{font-size:12px;color:#00396F;font-variant-numeric:tabular-nums}
+.rx-hist2 .hb i{width:70%;min-height:3px;border-radius:5px 5px 2px 2px;background:#A9DBF0}.rx-hist2 .hb i.q{background:#F08C00}
+.rx-hist2 .hb span{font-size:10.5px;color:#5E6E7B;text-align:center;line-height:1.2;min-height:26px}
+.rx-nota{margin:8px 0 0;font-size:11.5px;color:#8A97A3}
+.rx-tss b small{font-size:10.5px;color:#8A97A3;margin-left:4px}
+.rx-tss.eq li span{font-size:12.5px}
+.rx-mini{display:flex;flex-direction:column;gap:3px;margin-top:10px;border-top:1px solid #EEF2F5;padding-top:8px}
+.rx-mini div{display:flex;justify-content:space-between;gap:8px;font-size:12px}.rx-mini span{color:#3E5163;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.rx-mini b{color:#00396F}
+.rx-v{font-size:11.5px;letter-spacing:.01em}
+@media (max-width:1250px){.rx-tiles{grid-template-columns:repeat(3,minmax(0,1fr))}.rx-dg{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:760px){.rx-tiles{grid-template-columns:repeat(2,minmax(0,1fr))}.rx-dg{grid-template-columns:1fr}.rx-w2{grid-column:auto}}
+.rx-main>#rtFil{display:flex;flex-direction:row;flex-wrap:wrap;align-items:center;gap:8px 12px}.rx-main>#rtFil[hidden]{display:none}#rtFil .rx-srv{flex:1 1 280px;height:auto}
+.rx-donut .c1{font-size:16px}
+#rdRes{display:flex;gap:24px;align-items:center;flex-wrap:wrap}#rdRes .rx-mini{flex:1 1 260px;margin:0;border:0;padding:0}
+/* barras finas embaixo do nome (estilo sistema) */
+.rx-tss li{flex-wrap:wrap;padding:7px 8px 10px;border-radius:6px}
+.rx-tss li i{top:auto;bottom:4px;left:8px;height:4px;border-radius:2px;background:#12A5D6;max-width:calc(100% - 16px)}
+.rx-tss li:hover{background:#F3F8FB;outline:0}.rx-tss li.sel{background:#E4F4FB;outline:0}
+.rx-tss.eq li i{background:#00396F}
 
 </style>
 </head>
@@ -1385,12 +1423,24 @@ body.aba-rt .wrap{max-width:1500px}
         <div class="rx-base"><span>Base</span><b id="rtBaseN">–</b><small id="rtInfo"></small></div>
       </aside>
       <div class="rx-main">
-    <div id="rtV1">
-      <div class="rx-fil">
+      <div class="rx-fil" id="rtFil">
         <div class="seg2" id="rtPolo"></div><div class="seg2" id="rtPer"></div><div class="seg2" id="rtModo"></div>
         <label class="rtck"><input type="checkbox" id="rtPde"> só o mesmo PDE</label>
         <div class="rx-srv"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input type="search" id="rtTss" list="rtTssL" placeholder="Digite o serviço — ex.: hidrômetro, cavalete, esgoto" aria-label="Serviço" autocomplete="off"><datalist id="rtTssL"></datalist></div>
       </div>
+    <div id="rtV0" hidden>
+      <div class="rx-tiles" id="rdTiles"></div>
+      <div class="rx-dg">
+        <article class="rx-box rx-w2"><h3>Retrabalho mês a mês</h3><div id="rdMes"></div></article>
+        <article class="rx-box"><h3>Por polo</h3><div id="rdPolo"></div></article>
+        <article class="rx-box"><h3>Quanto tempo até voltar</h3><div id="rdDias"></div></article>
+        <article class="rx-box"><h3>Serviços que mais voltam</h3><div id="rdTss"></div></article>
+        <article class="rx-box"><h3>Equipes do serviço que voltou</h3><div id="rdEq"></div></article>
+        <article class="rx-box"><h3>Bairros com mais retrabalho</h3><div id="rdBai"></div></article>
+        <article class="rx-box rx-w2"><h3>Como voltou</h3><div id="rdRes"></div></article>
+      </div>
+    </div>
+    <div id="rtV1">
       <section class="rx-head" id="rtKpis"></section>
       <div class="rx-2">
         <article class="rx-box"><h3>O que mais volta</h3><p class="rx-sub">retrabalhos por serviço — clique para ver só ele</p><div id="rtTbTss"></div></article>
@@ -2620,26 +2670,26 @@ function rtSelo(r){const h=rtHistCart(r);if(!h.length)return "";const ult=h[h.le
 function rtChip(r,ale){const D=RB.D;return `<i class="${ale?"al":""}" title="OS ${esc(r[0])} · ${esc(D.r[r[9]])}${D.q[r[10]]?" · "+esc(D.q[r[10]]):""}">${rtDm(r[12])}</i>`;}
 
 // ---------- tela ----------
-var rtView="geral",rtCper="90";
-var RT_IC={"geral": "<rect x=\"3\" y=\"3\" width=\"7\" height=\"9\" rx=\"1.5\"/><rect x=\"14\" y=\"3\" width=\"7\" height=\"5\" rx=\"1.5\"/><rect x=\"14\" y=\"12\" width=\"7\" height=\"9\" rx=\"1.5\"/><rect x=\"3\" y=\"16\" width=\"7\" height=\"5\" rx=\"1.5\"/>", "busca": "<circle cx=\"11\" cy=\"11\" r=\"7\"/><path d=\"m20 20-3.5-3.5\"/>", "cart": "<path d=\"M9 17H7A5 5 0 0 1 7 7h2M15 7h2a5 5 0 0 1 0 10h-2M8 12h8\"/>"};
+var rtView="dash",rtCper="90";
+var RT_IC=Object.assign({dash:'<path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/>'},{"geral": "<rect x=\"3\" y=\"3\" width=\"7\" height=\"9\" rx=\"1.5\"/><rect x=\"14\" y=\"3\" width=\"7\" height=\"5\" rx=\"1.5\"/><rect x=\"14\" y=\"12\" width=\"7\" height=\"9\" rx=\"1.5\"/><rect x=\"3\" y=\"16\" width=\"7\" height=\"5\" rx=\"1.5\"/>", "busca": "<circle cx=\"11\" cy=\"11\" r=\"7\"/><path d=\"m20 20-3.5-3.5\"/>", "cart": "<path d=\"M9 17H7A5 5 0 0 1 7 7h2M15 7h2a5 5 0 0 1 0 10h-2M8 12h8\"/>"});
 function renderRt(){
   const sem=!RB||!RB.R||!RB.R.length;
   $("rtBase").hidden=LEITOR;$("rtAtual").hidden=LEITOR;
-  $("rtSub").innerHTML=[["geral","Visão geral"],["busca","Pesquisar endereço"],["cart","Carteira de hoje"]].map(([k,l])=>`<button type="button" data-rv="${k}" aria-pressed="${rtView===k}"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${RT_IC[k]}</svg>${l}</button>`).join("");
-  $("rtV1").hidden=rtView!=="geral";$("rtV2").hidden=rtView!=="busca";$("rtV3").hidden=rtView!=="cart";
+  $("rtSub").innerHTML=[["dash","Dashboard"],["geral","Endereços que voltam"],["busca","Pesquisar endereço"],["cart","Carteira de hoje"]].map(([k,l])=>`<button type="button" data-rv="${k}" aria-pressed="${rtView===k}"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${RT_IC[k]}</svg>${l}</button>`).join("");
+  $("rtV0").hidden=rtView!=="dash";$("rtV1").hidden=rtView!=="geral";$("rtFil").hidden=!(rtView==="dash"||rtView==="geral");$("rtV2").hidden=rtView!=="busca";$("rtV3").hidden=rtView!=="cart";
   if(sem){$("rtBaseN").textContent="vazia";$("rtInfo").textContent=LEITOR?"A base de retrabalho ainda não foi publicada.":"Ainda não há base. Use Importar base (arquivo .json.gz) ou Atualizar com executados.";
     ["rtKpis","rtTbTss","rtMes","rtLista","rtRes","rtCkpi","rtClista","rtCond"].forEach(i=>$(i).innerHTML="");return;}
   $("rtBaseN").textContent=nf(RB.R.length)+" serviços";$("rtInfo").innerHTML=`de ${dmy(RB.ini)} a ${dmy(RB.fim)}${RB.em?`<br>atualizada em ${new Date(RB.em).toLocaleString("pt-BR",{dateStyle:"short",timeStyle:"short"})}`:""}<em>Sem fim do dia e continua. A mesma OS conta uma vez.</em>`;
-  if(rtView==="geral")rtGeral();else if(rtView==="busca")rtBuscar();else rtCarteira();}
+  if(rtView==="dash"){rtFiltros();rtDash();}else if(rtView==="geral")rtGeral();else if(rtView==="busca")rtBuscar();else rtCarteira();}
 
 function rtPctModo(m){const old=rtModo;rtModo=m;const F=rtFiltrar();rtModo=old;return F.serv?F.eventos/F.serv:0;}
-function rtGeral(){const D=RB.D;
+function rtFiltros(){const D=RB.D,C=rtCalc();
   $("rtPolo").innerHTML=["Todos","Interlagos","Grajaú"].map(p=>`<button type="button" data-rpo="${p}" aria-pressed="${poloSel===p}">${p==="Todos"?"Os dois polos":p}</button>`).join("");
   $("rtPer").innerHTML=[["tudo","Toda a base"],["15","15 dias"],["30","30 dias"],["90","90 dias"]].map(([k,l])=>`<button type="button" data-rp="${k}" aria-pressed="${rtPer===k}">${l}</button>`).join("");
   $("rtModo").innerHTML=[["todas","Todas as baixas"],["exec","Só executadas"]].map(([k,l])=>`<button type="button" data-rm="${k}" aria-pressed="${rtModo===k}" title="${k==="exec"?"tira imóvel fechado, outro serviço, duplicidade, nada consta, cancelado e parecidos":"tira só fim do dia e continua"}">${l}</button>`).join("");
-  const F=rtFiltrar(),C=rtCalc(),pde=$("rtPde").checked;
   const todosT=[...new Set(C.grupos.map(g=>D.t[g.L[0][1]]))].sort();
-  $("rtTssL").innerHTML=todosT.map(t=>`<option value="${esc(t)}">`).join("");if(document.activeElement!==$("rtTss"))$("rtTss").value=rtTssSel;
+  $("rtTssL").innerHTML=todosT.map(t=>`<option value="${esc(t)}">`).join("");if(document.activeElement!==$("rtTss"))$("rtTss").value=rtTssSel;}
+function rtGeral(){rtFiltros();const D=RB.D,F=rtFiltrar(),C=rtCalc(),pde=$("rtPde").checked;
   // condomínio: mesmo número com PDEs diferentes (fora da lista principal)
   const pdesDe=L=>new Set(L.map(r=>r[7]).filter(Boolean)).size;
   const lote=L=>{const d=new Set(L.map(r=>rtIso(r[12])));return L.length>=4&&d.size<=2;}; // muitas OS no mesmo dia: lote / cavalete múltiplo
@@ -2667,6 +2717,49 @@ function rtGeral(){const D=RB.D;
   $("rtCondBox").hidden=!cond.length;$("rtCondN").textContent=cond.length?nf(cond.length)+" endereços":"";
   $("rtCond").innerHTML=cond.length?`<div class="rx-rows">`+cond.slice(0,30).map(x=>rtLinha(x.g.key,x.g.L,C.ale,T0,T1)).join("")+`</div>`:"";}
 
+// ---------- dashboard ----------
+function rtBarras(L,o){o=o||{};const mx=Math.max(1,...L.map(x=>x.v));if(!L.length)return `<div class="rtvazio">Sem dados.</div>`;
+  return `<ol class="rx-tss${o.cls?" "+o.cls:""}">`+L.map(x=>`<li${x.go?` data-rtt="${esc(x.go)}"`:""}${x.go&&x.go===rtTssSel?' class="sel"':""} title="${esc(x.l)}"><span>${esc(x.l)}</span><b>${nf(x.v)}${x.s?`<small>${x.s}</small>`:""}</b><i style="width:${(x.v*100/mx).toFixed(1)}%"></i></li>`).join("")+`</ol>`;}
+function rtDonut(parts,centro,sub){const tot=parts.reduce((a,p)=>a+p.v,0)||1;let ang=-Math.PI/2;const R=62,r=40,cx=80,cy=80;
+  let sv=`<svg viewBox="0 0 160 160" class="rx-donut">`;for(const p of parts){const a2=ang+2*Math.PI*p.v/tot;const big=a2-ang>Math.PI?1:0;
+    const P=(a,rr)=>[cx+rr*Math.cos(a),cy+rr*Math.sin(a)];const [x1,y1]=P(ang,R),[x2,y2]=P(a2-0.0001,R),[x3,y3]=P(a2-0.0001,r),[x4,y4]=P(ang,r);
+    sv+=`<path d="M${x1},${y1}A${R},${R} 0 ${big} 1 ${x2},${y2}L${x3},${y3}A${r},${r} 0 ${big} 0 ${x4},${y4}Z" fill="${p.c}"><title>${p.l}: ${nf(p.v)}</title></path>`;ang=a2;}
+  sv+=`<text x="80" y="78" text-anchor="middle" class="c1">${centro}</text><text x="80" y="96" text-anchor="middle" class="c2">${sub}</text></svg>`;
+  return `<div class="rx-donutw">${sv}<ul class="rx-dleg">${parts.map(p=>`<li><i style="background:${p.c}"></i><span>${p.l}</span><b>${nf(p.v)}</b>${p.s?`<small>${p.s}</small>`:""}</li>`).join("")}</ul></div>`;}
+function rtMesDados(F,C){const D=RB.D,pm=new Map(),sm=new Map();
+  for(const x of F.out)for(const r of x.g.L.slice(1)){if(F.J&&(r[12]<F.J[0]||r[12]>F.J[1]))continue;const m=rtIso(r[12]).slice(0,7);pm.set(m,(pm.get(m)||0)+1);}
+  for(const r of RB.R){if(rtModo==="exec"&&C.ale[r[9]])continue;if(rtTssSel&&!U(D.t[r[1]]).includes(U(rtTssSel)))continue;if(poloSel!=="Todos"&&RT_POLO[D.a[r[8]]]!==poloSel)continue;if(F.J&&(r[12]<F.J[0]||r[12]>F.J[1]))continue;const m=rtIso(r[12]).slice(0,7);sm.set(m,(sm.get(m)||0)+1);}
+  return [...pm.keys()].sort().map(m=>({m,v:pm.get(m),p:sm.get(m)?pm.get(m)/sm.get(m):0}));}
+function rtDash(){const D=RB.D,F=rtFiltrar(),C=rtCalc();
+  const ev=[];for(const x of F.out){const L=x.g.L;for(let i=1;i<L.length;i++){const r=L[i];if(F.J&&(r[12]<F.J[0]||r[12]>F.J[1]))continue;ev.push({r,p:L[i-1],d:Math.max(0,Math.round((r[12]-L[i-1][12])/1440))});}}
+  const pct=F.serv?ev.length/F.serv:0,f1=v=>(Math.round(v*1000)/10).toLocaleString("pt-BR")+"%";
+  const ds=ev.map(e=>e.d).sort((a,b)=>a-b),med=ds.length?ds[Math.floor(ds.length/2)]:null,ate30=ds.filter(d=>d<=30).length;
+  const tile=(l,v,s,c)=>`<div class="rx-tile${c?" "+c:""}"><span>${l}</span><b>${v}</b><small>${s||""}</small></div>`;
+  $("rdTiles").innerHTML=tile("% de retrabalho",f1(pct),"retrabalhos ÷ serviços","t1")+tile("Retrabalhos",nf(ev.length),"vezes que o serviço voltou","t2")+tile("Serviços executados",nf(F.serv),F.J?`${rtDm(F.J[0])} a ${rtDm(F.J[1])}`:`${dmy(RB.ini)} a ${dmy(RB.fim)}`)+
+    tile("Endereços com retrabalho",nf(F.out.length),"")+tile("Voltaram em até 30 dias",ds.length?Math.round(ate30*100/ds.length)+"%":"–",nf(ate30)+" retrabalhos")+tile("Tempo típico até voltar",med==null?"–":med+(med===1?" dia":" dias"),"metade volta antes disso");
+  $("rdMes").innerHTML=rtMesSvg(rtMesDados(F,C));
+  // polo
+  const servP={Interlagos:0,"Grajaú":0};for(const r of RB.R){if(rtModo==="exec"&&C.ale[r[9]])continue;if(rtTssSel&&!U(D.t[r[1]]).includes(U(rtTssSel)))continue;if(F.J&&(r[12]<F.J[0]||r[12]>F.J[1]))continue;const p=RT_POLO[D.a[r[8]]];if(p in servP)servP[p]++;}
+  const evP={Interlagos:0,"Grajaú":0};for(const e of ev){const p=RT_POLO[D.a[e.r[8]]];if(p in evP)evP[p]++;}
+  $("rdPolo").innerHTML=rtDonut([{l:"Interlagos",v:evP.Interlagos,c:"#00396F",s:servP.Interlagos?f1(evP.Interlagos/servP.Interlagos)+" dos serviços":""},{l:"Grajaú",v:evP["Grajaú"],c:"#12A5D6",s:servP["Grajaú"]?f1(evP["Grajaú"]/servP["Grajaú"])+" dos serviços":""}],nf(ev.length),"retrabalhos");
+  // dias até voltar
+  const B=[["mesmo dia",0,0],["1 a 7 dias",1,7],["8 a 30 dias",8,30],["31 a 90 dias",31,90],["91 a 180 dias",91,180],["mais de 180",181,1e9]];
+  const bc=B.map(([l,a,b])=>({l,v:ds.filter(d=>d>=a&&d<=b).length}));const mxb=Math.max(1,...bc.map(x=>x.v));
+  $("rdDias").innerHTML=`<div class="rx-hist2">${bc.map((x,i)=>`<div class="hb"><b>${nf(x.v)}</b><i style="height:${(x.v*100/mxb).toFixed(1)}%" class="${i<=2?"q":""}"></i><span>${x.l}</span></div>`).join("")}</div><p class="rx-nota">Em laranja: voltou em até 30 dias — o mais provável de ser serviço mal feito.</p>`;
+  // serviços
+  const t=new Map();for(const e of ev){const k=D.t[e.r[1]];t.set(k,(t.get(k)||0)+1);}
+  $("rdTss").innerHTML=rtBarras([...t].sort((a,b)=>b[1]-a[1]).slice(0,8).map(([k,v])=>({l:k.charAt(0)+k.slice(1).toLowerCase(),v,go:k})));
+  // equipes (quem fez o serviço que voltou)
+  const q=new Map();for(const e of ev){const k=D.q[e.p[10]]||"(sem equipe)";q.set(k,(q.get(k)||0)+1);}
+  $("rdEq").innerHTML=rtBarras([...q].sort((a,b)=>b[1]-a[1]).slice(0,8).map(([k,v])=>({l:k,v})),{cls:"eq"});
+  // bairros
+  const b=new Map();for(const e of ev){const k=D.b[e.r[5]]+" · "+(RT_POLO[D.a[e.r[8]]]||"");b.set(k,(b.get(k)||0)+1);}
+  $("rdBai").innerHTML=rtBarras([...b].sort((a,b)=>b[1]-a[1]).slice(0,8).map(([k,v])=>({l:k,v})));
+  // como voltou
+  const al=ev.filter(e=>C.ale[e.r[9]]).length;const rs=new Map();for(const e of ev){const k=D.r[e.r[9]];rs.set(k,(rs.get(k)||0)+1);}
+  $("rdRes").innerHTML=rtDonut([{l:"Serviço executado",v:ev.length-al,c:"#F08C00"},{l:"Alegação (imóvel fechado etc.)",v:al,c:"#B7C3CC"}],ev.length?Math.round((ev.length-al)*100/ev.length)+"%":"–","executado")+
+    `<div class="rx-mini">${[...rs].sort((a,b)=>b[1]-a[1]).slice(0,4).map(([k,v])=>`<div><span>${esc(k.charAt(0)+k.slice(1).toLowerCase())}</span><b>${nf(v)}</b></div>`).join("")}</div>`;}
+
 function rtMesSvg(it){if(!it.length)return `<div class="rtvazio">Sem retrabalhos no período.</div>`;
   const MES=["jan","fev","mar","abr","mai","jun","jul","ago","set","out","nov","dez"];const W=Math.max(560,it.length*52),H=230,pl=8,pr=8,pt=30,pb=40,n=it.length,bw=(W-pl-pr)/n;
   const mx=Math.max(...it.map(x=>x.v))*1.1||1,mp=Math.max(...it.map(x=>x.p))*1.25||1;const y=v=>pt+(H-pt-pb)*(1-v/mx),yp=v=>pt+(H-pt-pb)*(1-v/mp);
@@ -2681,7 +2774,7 @@ function rtLinha(key,L,ale,T0,T1){const D=RB.D,r0=L[0],ab=rtAbertos.has(key);
   // visitas agrupadas por dia, na ordem, com o intervalo entre uma e outra
   const V=[];L.forEach((r,i)=>{const d=rtIso(r[12]);const u=V[V.length-1];const al=!!(ale&&ale[r[9]]);
     if(u&&u.d===d){u.n++;if(!al)u.al=false;}else V.push({d,m:r[12],n:1,first:i===0,al});});
-  const vis=o=>`<span class="rx-v ${o.first?"v1":o.al?"v3":"v2"}" title="${rtDm(o.m)}${o.n>1?" — "+o.n+" vezes no dia":""}${o.al?" — alegação":""}">${rtDm(o.m).slice(0,5)}<small>/${o.d.slice(2,4)}</small>${o.n>1?`<em>×${o.n}</em>`:""}</span>`;
+  const vis=o=>`<span class="rx-v ${o.first?"v1":o.al?"v3":"v2"}" title="${rtDm(o.m)}${o.n>1?" — "+o.n+" vezes no dia":""}${o.al?" — alegação":""}">${rtDm(o.m)}${o.n>1?`<em>×${o.n}</em>`:""}</span>`;
   const gap=(a,b)=>{const dd=Math.round((b.m-a.m)/1440);return `<span class="rx-gap${dd<=30?" curto":dd>90?" longo":""}">${dd<=0?"mesmo dia":"+"+dd+"d"}</span>`;};
   let seq="";const MAXV=4;
   const mostra=V.length<=MAXV?V.map((o,k)=>k):[0,-1,V.length-2,V.length-1];
