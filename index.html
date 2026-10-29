@@ -1483,26 +1483,19 @@ body.aba-rt .wrap{max-width:1500px}
         <label class="rtck"><input type="checkbox" id="rtPde"> só o mesmo PDE</label>
         <div class="rx-srv"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input type="search" id="rtTss" list="rtTssL" placeholder="Digite o serviço — ex.: hidrômetro, cavalete, esgoto" aria-label="Serviço" autocomplete="off"><datalist id="rtTssL"></datalist></div>
       </div>
-    <div id="rtV0" hidden>
+    <div id="rtV1">
       <div class="rx-atal" id="rdAtal"></div>
       <div class="rx-tiles" id="rdTiles"></div>
       <div class="rx-dg">
         <article class="rx-box rx-w2"><h3>Evolução mês a mês</h3><div id="rdMes"></div></article>
         <article class="rx-box"><h3>Por polo</h3><div id="rdPolo"></div></article>
-        <article class="rx-box"><h3>Quanto tempo até voltar</h3><div id="rdDias"></div></article>
-        <article class="rx-box"><h3>Serviços que mais voltam</h3><div id="rdTss"></div></article>
-        <article class="rx-box"><h3>Equipes do serviço que voltou</h3><div id="rdEq"></div></article>
-        <article class="rx-box"><h3>Bairros com mais retrabalho</h3><div id="rdBai"></div></article>
-        <article class="rx-box rx-w2"><h3>Como voltou</h3><div id="rdRes"></div></article>
+        <article class="rx-box"><h3>Intervalo até a reincidência</h3><div id="rdDias"></div></article>
+        <article class="rx-box"><h3>Serviços com maior reincidência</h3><div id="rdTss"></div></article>
+        <article class="rx-box"><h3>Equipe da execução anterior</h3><div id="rdEq"></div></article>
+        <article class="rx-box"><h3>Bairros com maior reincidência</h3><div id="rdBai"></div></article>
+        <article class="rx-box rx-w2"><h3>Tipo de baixa na reincidência</h3><div id="rdRes"></div></article>
       </div>
-    </div>
-    <div id="rtV1">
-      <section class="rx-head" id="rtKpis"></section>
-      <div class="rx-2">
-        <article class="rx-box"><h3>O que mais volta</h3><p class="rx-sub">retrabalhos por serviço — clique para ver só ele</p><div id="rtTbTss"></div></article>
-        <article class="rx-box"><h3>Mês a mês</h3><p class="rx-sub">retrabalhos e % sobre os serviços do mês</p><div id="rtMes"></div></article>
-      </div>
-      <article class="rx-box"><div class="rx-boxh"><div><h3>Endereços que mais voltam</h3><p class="rx-sub" id="rtListaNota"></p></div><div class="rx-leg"><span><i class="d1"></i>1ª vez</span><span><i class="d2"></i>voltou</span><span><i class="d3"></i>alegação (imóvel fechado etc.)</span><span><b class="rx-gl">+12d</b> voltou em até 30 dias</span></div></div><div id="rtLista"></div></article>
+      <article class="rx-box" id="rtListaBox"><div class="rx-boxh"><div><h3>Endereços com maior reincidência</h3><p class="rx-sub" id="rtListaNota"></p></div><div class="rx-leg"><span><i class="d1"></i>1ª vez</span><span><i class="d2"></i>reincidência</span><span><i class="d3"></i>alegação (imóvel fechado etc.)</span><span><b class="rx-gl">+12d</b> reincidência em até 30 dias</span></div></div><div id="rtLista"></div></article>
       <details class="rx-box rx-cond" id="rtCondBox"><summary><b>Possível condomínio ou lote</b> <span id="rtCondN"></span><small>mesmo número com PDEs diferentes, ou várias OS no mesmo dia (cavalete múltiplo, ligações novas) — normalmente não é retrabalho</small></summary><div id="rtCond"></div></details>
     </div>
     <div id="rtV2" hidden>
@@ -2726,19 +2719,19 @@ function rtSelo(r){const h=rtHistCart(r);if(!h.length)return "";const ult=h[h.le
 function rtChip(r,ale){const D=RB.D;return `<i class="${ale?"al":""}" title="OS ${esc(r[0])} · ${esc(D.r[r[9]])}${D.q[r[10]]?" · "+esc(D.q[r[10]]):""}">${rtDm(r[12])}</i>`;}
 
 // ---------- tela ----------
-var rtView="dash",rtCper="90";
+var rtView="geral",rtCper="90";
 var RT_IC=Object.assign({dash:'<path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/>'},{"geral": "<rect x=\"3\" y=\"3\" width=\"7\" height=\"9\" rx=\"1.5\"/><rect x=\"14\" y=\"3\" width=\"7\" height=\"5\" rx=\"1.5\"/><rect x=\"14\" y=\"12\" width=\"7\" height=\"9\" rx=\"1.5\"/><rect x=\"3\" y=\"16\" width=\"7\" height=\"5\" rx=\"1.5\"/>", "busca": "<circle cx=\"11\" cy=\"11\" r=\"7\"/><path d=\"m20 20-3.5-3.5\"/>", "cart": "<path d=\"M9 17H7A5 5 0 0 1 7 7h2M15 7h2a5 5 0 0 1 0 10h-2M8 12h8\"/>"});
 function renderRt(){
   const sem=!RB||!RB.R||!RB.R.length;
   $("rtBase").hidden=LEITOR;$("rtAtual").hidden=LEITOR;
-  $("rtSub").innerHTML=[["dash","Dashboard"],["geral","Endereços que voltam"],["busca","Pesquisar endereço"],["cart","Carteira de hoje"]].map(([k,l])=>`<button type="button" data-rv="${k}" aria-pressed="${rtView===k}"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${RT_IC[k]}</svg>${l}</button>`).join("");
-  $("rtV0").hidden=rtView!=="dash";$("rtV1").hidden=rtView!=="geral";$("rtFil").hidden=!(rtView==="dash"||rtView==="geral");$("rtV2").hidden=rtView!=="busca";$("rtV3").hidden=rtView!=="cart";
+  $("rtSub").innerHTML=[["geral","Análise de reincidência"],["busca","Consulta por endereço"],["cart","Carteira do dia"]].map(([k,l])=>`<button type="button" data-rv="${k}" aria-pressed="${rtView===k}"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${(k==="geral"?RT_IC.dash:RT_IC[k])}</svg>${l}</button>`).join("");
+  $("rtV1").hidden=rtView!=="geral";$("rtFil").hidden=rtView!=="geral";$("rtV2").hidden=rtView!=="busca";$("rtV3").hidden=rtView!=="cart";
   if(sem){$("rxOla").innerHTML=LEITOR?"Olá, <b>coordenação</b>":"Olá, <b>Fernanda</b>";$("rxPill").textContent="";$("rxData").textContent=new Date().toLocaleDateString("pt-BR");$("rtBaseN").textContent="vazia";$("rtInfo").textContent=LEITOR?"A base de retrabalho ainda não foi publicada.":"Ainda não há base. Use Importar base (arquivo .json.gz) ou Atualizar com executados.";
-    ["rtKpis","rtTbTss","rtMes","rtLista","rtRes","rtCkpi","rtClista","rtCond"].forEach(i=>$(i).innerHTML="");return;}
+    ["rdAtal","rdTiles","rdMes","rdPolo","rdDias","rdTss","rdEq","rdBai","rdRes","rtLista","rtRes","rtCkpi","rtClista","rtCond"].forEach(i=>$(i).innerHTML="");return;}
   $("rtBaseN").textContent=nf(RB.R.length)+" serviços";$("rtInfo").innerHTML=`de ${dmy(RB.ini)} a ${dmy(RB.fim)}${RB.em?`<br>atualizada em ${new Date(RB.em).toLocaleString("pt-BR",{dateStyle:"short",timeStyle:"short"})}`:""}<em>Sem fim do dia e continua. A mesma OS conta uma vez.</em>`;
   {const ag=new Date();$("rxOla").innerHTML=LEITOR?"Olá, <b>coordenação</b>":"Olá, <b>Fernanda</b>";$("rxData").textContent=ag.toLocaleDateString("pt-BR");
    const prox=RB.em?new Date(RB.em+15*864e5):null;$("rxPill").innerHTML=`<i></i>Base atualizada em <b>${RB.em?new Date(RB.em).toLocaleString("pt-BR",{dateStyle:"short",timeStyle:"short"}):"–"}</b>${prox?` · próxima atualização <b>${prox.toLocaleDateString("pt-BR")}</b>`:""}`;}
-  if(rtView==="dash"){rtFiltros();rtDash();}else if(rtView==="geral")rtGeral();else if(rtView==="busca")rtBuscar();else rtCarteira();}
+  if(rtView==="geral"){rtFiltros();rtDash();rtGeral();}else if(rtView==="busca")rtBuscar();else rtCarteira();}
 
 function rtPctModo(m){const old=rtModo;rtModo=m;const F=rtFiltrar();rtModo=old;return F.serv?F.eventos/F.serv:0;}
 function rtFiltros(){const D=RB.D,C=rtCalc();
@@ -2753,25 +2746,10 @@ function rtGeral(){rtFiltros();const D=RB.D,F=rtFiltrar(),C=rtCalc(),pde=$("rtPd
   const lote=L=>{const d=new Set(L.map(r=>rtIso(r[12])));return L.length>=4&&d.size<=2;}; // muitas OS no mesmo dia: lote / cavalete múltiplo
   const ehCond=L=>pdesDe(L)>1||lote(L);
   const cond=pde?[]:F.out.filter(x=>ehCond(x.g.L)),princ=pde?F.out:F.out.filter(x=>!ehCond(x.g.L));
-  // voltas em até 30 dias
-  let ev30=0,evT=0;for(const x of F.out){const L=x.g.L;for(let i=1;i<L.length;i++){if(F.J&&(L[i][12]<F.J[0]||L[i][12]>F.J[1]))continue;evT++;if(L[i][12]-L[i-1][12]<=30*1440)ev30++;}}
-  const pct=F.serv?F.eventos/F.serv:0,um=pct?Math.max(2,Math.round(1/pct)):0;
-  const pT=rtPctModo("todas"),pE=rtPctModo("exec"),f1=v=>(Math.round(v*1000)/10).toLocaleString("pt-BR")+"%";
-  $("rtKpis").innerHTML=`<div class="rx-big"><div class="rx-pct">${f1(pct)}</div><div class="rx-frase">${um?`De cada <b>${um}</b> serviços, <b>1</b> volta ao mesmo endereço`:"Nenhum serviço voltou ao mesmo endereço"}${rtTssSel?` nos serviços com “<b>${esc(rtTssSel.toLowerCase())}</b>”`:""}.<small>${F.J?`De ${rtDm(F.J[0])} a ${rtDm(F.J[1])}. `:""}Com todas as baixas dá ${f1(pT)}; contando só as executadas, ${f1(pE)}.</small></div></div>
-    <dl class="rx-stats"><div><dt>Serviços executados</dt><dd>${nf(F.serv)}</dd></div><div><dt>Retrabalhos</dt><dd class="r">${nf(F.eventos)}</dd></div><div><dt>Endereços</dt><dd>${nf(F.out.length)}</dd></div><div><dt>Voltaram em até 30 dias</dt><dd>${evT?Math.round(ev30*100/evT)+"%":"–"}</dd></div></dl>`;
-  // por serviço
-  const porT=new Map();for(const x of F.out){const t=D.t[x.g.L[0][1]];const o=porT.get(t)||{t,ev:0};o.ev+=x.ev;porT.set(t,o);}
-  const tl=[...porT.values()].sort((a,b)=>b.ev-a.ev),mx=Math.max(1,...tl.map(o=>o.ev));
-  $("rtTbTss").innerHTML=(rtTssSel?`<button type="button" class="rx-limpa" data-rtt="">Ver todos os serviços</button>`:"")+`<ol class="rx-tss">`+tl.slice(0,10).map(o=>`<li data-rtt="${esc(o.t)}"${o.t===rtTssSel?' class="sel"':""}><span>${esc(o.t.charAt(0)+o.t.slice(1).toLowerCase())}</span><b>${nf(o.ev)}</b><i style="width:${(o.ev*100/mx).toFixed(1)}%"></i></li>`).join("")+`</ol>`;
-  // mês a mês com %
-  const pm=new Map(),sm=new Map();
-  for(const x of F.out)for(const r of x.g.L.slice(1)){if(F.J&&(r[12]<F.J[0]||r[12]>F.J[1]))continue;const m=rtIso(r[12]).slice(0,7);pm.set(m,(pm.get(m)||0)+1);}
-  for(const r of RB.R){if(rtModo==="exec"&&C.ale[r[9]])continue;if(rtTssSel&&!U(D.t[r[1]]).includes(U(rtTssSel)))continue;if(poloSel!=="Todos"&&RT_POLO[D.a[r[8]]]!==poloSel)continue;if(F.J&&(r[12]<F.J[0]||r[12]>F.J[1]))continue;const m=rtIso(r[12]).slice(0,7);sm.set(m,(sm.get(m)||0)+1);}
-  $("rtMes").innerHTML=rtMesSvg([...pm.keys()].sort().map(m=>({m,v:pm.get(m),p:sm.get(m)?pm.get(m)/sm.get(m):0})));
   // endereços
-  const lim=40;$("rtListaNota").textContent=`${nf(princ.length)} endereços${princ.length>lim?`, os ${lim} que mais voltaram`:""} — clique para ver as OS`;
+  const lim=40;$("rtListaNota").textContent=`${nf(princ.length)} endereços${princ.length>lim?`, os ${lim} com maior reincidência`:""} — clique para ver as OS`;
   const T0=F.J?F.J[0]:rtMin(dmy(RB.ini)+" 00:00"),T1=F.J?F.J[1]:rtMin(dmy(RB.fim)+" 23:59");
-  $("rtLista").innerHTML=princ.length?`<div class="rx-rows"><div class="rx-colh"><span>Vezes</span><span>Endereço</span><span>Serviço</span><span>Quando foi feito (e quantos dias depois voltou)</span><span>Menor intervalo</span></div>`+princ.slice(0,lim).map(x=>rtLinha(x.g.key,x.g.L,C.ale,T0,T1)).join("")+`</div>`:`<div class="rtvazio">Nenhum retrabalho com esses filtros.</div>`;
+  $("rtLista").innerHTML=princ.length?`<div class="rx-rows"><div class="rx-colh"><span>Vezes</span><span>Endereço</span><span>Serviço</span><span>Datas de execução (intervalo entre elas)</span><span>Menor intervalo</span></div>`+princ.slice(0,lim).map(x=>rtLinha(x.g.key,x.g.L,C.ale,T0,T1)).join("")+`</div>`:`<div class="rtvazio">Nenhum retrabalho com esses filtros.</div>`;
   $("rtCondBox").hidden=!cond.length;$("rtCondN").textContent=cond.length?nf(cond.length)+" endereços":"";
   $("rtCond").innerHTML=cond.length?`<div class="rx-rows">`+cond.slice(0,30).map(x=>rtLinha(x.g.key,x.g.L,C.ale,T0,T1)).join("")+`</div>`:"";}
 
@@ -2806,7 +2784,7 @@ function rtDash(){const D=RB.D,F=rtFiltrar(),C=rtCalc();
   // atalhos (como os cartões grandes coloridos do exemplo, em tons claros)
   const nCart=(()=>{try{const l90=rtMin(new Date(Date.now()-90*864e5).toLocaleDateString("pt-BR")+" 00:00");let n=0;for(const r of ultF().ca)if(fp(r)&&rtHistCart(r).some(x=>x[12]>=l90))n++;return n;}catch(e){return 0;}})();
   const atal=(k,cls,ic,t,sub)=>`<button type="button" class="rx-at ${cls}" data-rv="${k}"><span class="ai"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${ic}</svg></span><b>${t}</b><small>${sub}</small></button>`;
-  $("rdAtal").innerHTML=atal("geral","a1",RT_IC.geral,"Endereços que voltam",`${nf(F.out.length)} endereços com o mesmo serviço repetido`)+atal("busca","a2",RT_IC.busca,"Pesquisar endereço","Todo o histórico de uma rua ou número")+atal("cart","a3",RT_IC.cart,"Carteira de hoje",`${nf(nCart)} OS da carteira já foram feitas no endereço nos últimos 90 dias`);
+  $("rdAtal").innerHTML=atal("lista","a1",RT_IC.geral,"Endereços reincidentes",`${nf(F.out.length)} endereços com o mesmo serviço executado mais de uma vez`)+atal("busca","a2",RT_IC.busca,"Consulta por endereço","Histórico completo de um logradouro ou número")+atal("cart","a3",RT_IC.cart,"Carteira do dia",`${nf(nCart)} OS da carteira já foram feitas no endereço nos últimos 90 dias`);
   // comparação com o período anterior
   const fimB=rtMin(dmy(RB.fim)+" 23:59"),dur=F.J?F.J[1]-F.J[0]:30*1440,b1=F.J?F.J[1]:fimB,a1=b1-dur,b0=a1-1,a0=b0-dur;const AT=rtJanelaConta(a1,b1),AN=rtJanelaConta(a0,b0);
   const cmp=F.J?"vs período anterior":"últimos 30 dias vs 30 antes";
@@ -2816,8 +2794,8 @@ function rtDash(){const D=RB.D,F=rtFiltrar(),C=rtCalc();
   $("rdTiles").innerHTML=tile("% de retrabalho",f1(pct),rtDelta(AT.p,AN.p),cmp,[["Todas as baixas",f1(rtPctModo("todas"))],["Só executadas",f1(rtPctModo("exec"))]],"t1")+
     tile("Retrabalhos",nf(ev.length),rtDelta(AT.ev,AN.ev),cmp,pp.map(([a,b])=>[a,nf(b)]),"t2")+
     tile("Serviços executados",nf(F.serv),rtDelta(AT.sv,AN.sv,true),F.J?`${rtDm(F.J[0])} a ${rtDm(F.J[1])}`:`${dmy(RB.ini)} a ${dmy(RB.fim)}`,[["Endereços com retrabalho",nf(F.out.length)]])+
-    tile("Voltaram em até 30 dias",ds.length?Math.round(ate30*100/ds.length)+"%":"–","",nf(ate30)+" retrabalhos",[["Mesmo dia",nf(ds.filter(d=>d===0).length)],["1 a 7 dias",nf(ds.filter(d=>d>=1&&d<=7).length)]])+
-    tile("Tempo típico até voltar",med==null?"–":med+(med===1?" dia":" dias"),"","metade volta antes disso",[["Mais de 90 dias",nf(ds.filter(d=>d>90).length)]]);
+    tile("Reincidência em até 30 dias",ds.length?Math.round(ate30*100/ds.length)+"%":"–","",nf(ate30)+" retrabalhos",[["Mesmo dia",nf(ds.filter(d=>d===0).length)],["1 a 7 dias",nf(ds.filter(d=>d>=1&&d<=7).length)]])+
+    tile("Intervalo mediano",med==null?"–":med+(med===1?" dia":" dias"),"","metade ocorre antes disso",[["Mais de 90 dias",nf(ds.filter(d=>d>90).length)]]);
   {const MD=rtMesDados(F,C).slice(-12);$("rdMes").innerHTML=`<div class="rx-areas"><div><h4>Retrabalhos <small>últimos ${MD.length} meses</small></h4>${rtArea(MD,"v","#F08C00",v=>nf(v))}</div><div><h4>% de retrabalho <small>últimos ${MD.length} meses</small></h4>${rtArea(MD,"p","#0096D6",v=>Math.round(v*100)+"%")}</div></div>`;}
   // polo
   const servP={Interlagos:0,"Grajaú":0};for(const r of RB.R){if(rtModo==="exec"&&C.ale[r[9]])continue;if(rtTssSel&&!U(D.t[r[1]]).includes(U(rtTssSel)))continue;if(F.J&&(r[12]<F.J[0]||r[12]>F.J[1]))continue;const p=RT_POLO[D.a[r[8]]];if(p in servP)servP[p]++;}
@@ -2826,7 +2804,7 @@ function rtDash(){const D=RB.D,F=rtFiltrar(),C=rtCalc();
   // dias até voltar
   const B=[["mesmo dia",0,0],["1 a 7 dias",1,7],["8 a 30 dias",8,30],["31 a 90 dias",31,90],["91 a 180 dias",91,180],["mais de 180",181,1e9]];
   const bc=B.map(([l,a,b])=>({l,v:ds.filter(d=>d>=a&&d<=b).length}));const mxb=Math.max(1,...bc.map(x=>x.v));
-  $("rdDias").innerHTML=`<div class="rx-hist2">${bc.map((x,i)=>`<div class="hb"><b>${nf(x.v)}</b><i style="height:${(x.v*100/mxb).toFixed(1)}%" class="${i<=2?"q":""}"></i><span>${x.l}</span></div>`).join("")}</div><p class="rx-nota">Em laranja: voltou em até 30 dias — o mais provável de ser serviço mal feito.</p>`;
+  $("rdDias").innerHTML=`<div class="rx-hist2">${bc.map((x,i)=>`<div class="hb"><b>${nf(x.v)}</b><i style="height:${(x.v*100/mxb).toFixed(1)}%" class="${i<=2?"q":""}"></i><span>${x.l}</span></div>`).join("")}</div><p class="rx-nota">Em laranja: reincidência em até 30 dias — o mais provável de ser serviço mal feito.</p>`;
   // serviços
   const t=new Map();for(const e of ev){const k=D.t[e.r[1]];t.set(k,(t.get(k)||0)+1);}
   $("rdTss").innerHTML=rtBarras([...t].sort((a,b)=>b[1]-a[1]).slice(0,8).map(([k,v])=>({l:k.charAt(0)+k.slice(1).toLowerCase(),v,go:k})));
@@ -2868,7 +2846,7 @@ function rtLinha(key,L,ale,T0,T1){const D=RB.D,r0=L[0],ab=rtAbertos.has(key);
     <div class="rx-e"><b>${esc(D.e[r0[3]])}, ${esc(r0[4])}</b><small>${esc(D.b[r0[5]])}, ${esc(RT_POLO[D.a[r0[8]]]||"")}</small></div>
     <div class="rx-s">${esc(D.t[r0[1]].charAt(0)+D.t[r0[1]].slice(1).toLowerCase())}</div>
     <div class="rx-hist">${dots}</div>
-    <div class="rx-g">${md==null?"":md===0?"<b>mesmo dia</b>":`voltou em <b>${md} ${md===1?"dia":"dias"}</b>`}</div></div>`+(ab?rtTabela(L):"")+`</div>`;}
+    <div class="rx-g">${md==null?"":md===0?"<b>mesmo dia</b>":`reincidiu em <b>${md} ${md===1?"dia":"dias"}</b>`}</div></div>`+(ab?rtTabela(L):"")+`</div>`;}
 function rtTabela(L){const D=RB.D;return `<table class="rtdet"><thead><tr><th>Vez</th><th>Data</th><th>OS</th><th>PDE</th><th>Resultado</th><th>Equipe</th><th>Dias desde a anterior</th></tr></thead><tbody>${L.map((r,i)=>`<tr><td>${i+1}ª</td><td>${rtDm(r[12])} ${rtData(r[12]).toTimeString().slice(0,5)}</td><td class="mono">${esc(r[0])}</td><td class="mono">${esc(r[7])}</td><td>${esc(D.r[r[9]])}</td><td>${esc(D.q[r[10]])}</td><td>${i?Math.round((r[12]-L[i-1][12])/1440):"–"}</td></tr>`).join("")}</tbody></table>`;}
 
 // ---------- pesquisa por endereço ----------
@@ -2905,7 +2883,7 @@ function rtCarteira(){const D=RB.D;const agora=Date.now();const lim90=rtMin(new 
 
 // ---------- eventos ----------
 document.addEventListener("click",e=>{
-  const v=e.target.closest("[data-rv]");if(v){rtView=v.dataset.rv;renderRt();if(rtView==="busca")setTimeout(()=>$("rtBusca").focus(),0);return;}
+  const v=e.target.closest("[data-rv]");if(v&&v.dataset.rv==="lista"){const x=$("rtListaBox");if(x)x.scrollIntoView({behavior:"smooth",block:"start"});return;}if(v){rtView=v.dataset.rv;renderRt();if(rtView==="busca")setTimeout(()=>$("rtBusca").focus(),0);return;}
   const p=e.target.closest("[data-rp]");if(p){rtPer=p.dataset.rp;renderRt();return;}
   const m=e.target.closest("[data-rm]");if(m){rtModo=m.dataset.rm;renderRt();return;}
   const po=e.target.closest("[data-rpo]");if(po){poloSel=po.dataset.rpo;renderTudo();return;}
