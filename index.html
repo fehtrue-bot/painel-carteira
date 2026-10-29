@@ -1509,6 +1509,47 @@ body.aba-rt .app>.wrap{max-width:1440px!important}
 .app>.wrap,body.aba-rt .app>.wrap{max-width:none!important;margin:0!important}
 @media (max-width:1000px){.app{box-shadow:none}}
 
+/* ===== menu no alto; lateral só no Retrabalho ===== */
+.app{display:block!important;max-width:none!important;box-shadow:none!important}
+.sb{position:sticky!important;top:0;height:auto!important;overflow:visible!important;flex-direction:row!important;flex-wrap:nowrap;align-items:center;gap:18px!important;padding:0 28px!important;border-right:0!important;border-bottom:1px solid #E3E9EF;background:#fff;box-shadow:0 1px 3px rgba(16,40,64,.04)}
+.sb>*{order:0}
+.sb-brand .brand{border:0!important;padding:10px 0!important;margin:0!important}
+.sb-brand .brand-s{display:block!important}
+.sb .tabs.sb-nav{flex-direction:row!important;flex:1 1 auto!important;width:auto!important;gap:2px!important;overflow-x:auto;align-self:stretch;align-items:stretch;order:0!important}
+.sb .tab{width:auto!important;white-space:nowrap;padding:0 14px!important;border-radius:0!important;background:none!important;box-shadow:none!important;border-bottom:3px solid transparent!important;flex:none}
+.sb .tab:hover{background:#F6FAFC!important}
+.sb .tab[aria-selected="true"]{background:none!important;color:#00396F!important;border-bottom-color:#0096D6!important;box-shadow:none!important}
+.sb-sp,.sb-lbl{display:none!important}
+.sb .hbt.sb-tools{flex-direction:row!important;border:0!important;padding:0!important;margin:0!important;gap:2px!important;flex-wrap:nowrap}
+.sb .hbt.sb-tools button{width:auto!important;padding:7px 9px!important;font-size:12.5px!important;gap:6px!important;white-space:nowrap}
+.sb .hbt.sb-tools button:not(.lnk){font-size:0!important;gap:0!important}
+.sb .hbt.sb-tools button svg{width:17px;height:17px}
+.sb .hquem{display:flex!important;margin:0!important;padding:4px!important;border:0!important;background:none!important}
+.sb .hquem>div,.sb .hquem .on{display:none}
+.sb .hquem .av{width:32px;height:32px}
+.app>.wrap,body.aba-rt .app>.wrap{max-width:1440px!important;margin:0 auto!important}
+/* retrabalho com lateral própria */
+.app .rx-body{display:grid!important;grid-template-columns:220px minmax(0,1fr);gap:18px;align-items:start}
+.app .rx-side{display:flex;flex-direction:column;gap:12px;background:#fff;border:1px solid #E3E9EF;border-radius:12px;padding:12px;position:sticky;top:76px}
+.app .rx-side .rx-nav{display:flex;flex-direction:column;gap:2px}
+.app .rx-side .rx-nav button{all:unset;box-sizing:border-box;display:flex;align-items:center;gap:9px;padding:9px 11px;border-radius:9px;font-size:13px;font-weight:600;color:#4A5D6E;cursor:pointer}
+.app .rx-side .rx-nav button svg{color:#9AA9B6;flex:none}
+.app .rx-side .rx-nav button:hover{background:#F2F7FB;color:#00396F}
+.app .rx-side .rx-nav button[aria-pressed="true"]{background:linear-gradient(90deg,#E4F4FB,#F2FAFE);color:#00396F;box-shadow:inset 3px 0 0 #0096D6}
+.app .rx-side .rx-nav button[aria-pressed="true"] svg{color:#0096D6}
+.app .rx-side .rx-base{margin:0;position:static}
+@media (max-width:1000px){
+  .sb{flex-wrap:wrap!important;padding:8px 12px!important;gap:6px 10px!important}
+  .sb .tabs.sb-nav{order:3!important;flex:1 1 100%!important}
+  .sb .tab{padding:8px 12px!important}
+  .sb-brand .brand-s{display:none!important}
+  .sb .hbt.sb-tools{margin-left:auto!important}.sb .hbt.sb-tools button.lnk{font-size:0!important;gap:0!important}
+  .app .rx-body{grid-template-columns:1fr}
+  .app .rx-side{position:static}.app .rx-side .rx-nav{flex-direction:row;overflow-x:auto}.app .rx-side .rx-nav button{white-space:nowrap}
+}
+.app .rx-side>*{position:static!important}
+.app .rx-side{position:static!important;top:auto!important}
+
 </style>
 </head>
 <body>
@@ -1531,7 +1572,7 @@ body.aba-rt .app>.wrap{max-width:1440px!important}
 <div class="app">
 <aside class="sb" id="sb">
   <div class="sb-brand"><div class="brand"><span class="gota"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2.5c-3.6 4.4-6.5 8-6.5 11.6a6.5 6.5 0 0 0 13 0C18.5 10.5 15.6 6.9 12 2.5Z" fill="#fff"/><path d="M9 14.5a3 3 0 0 0 3 3" stroke="#0093C9" stroke-width="1.8" stroke-linecap="round"/></svg></span><div style="min-width:0"><div class="brand-t">Carteira de Serviços</div><div class="brand-s" id="sub">Interlagos · Grajaú</div></div></div></div>
-  <nav class="tabs sb-nav" role="tablist"><span class="sb-lbl">Menu</span>
+  <nav class="tabs sb-nav" role="tablist">
     <button class="tab" role="tab" id="t-painel" aria-selected="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg> Painel</button>
     <button class="tab" role="tab" id="t-res" aria-selected="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="12" cy="12" r="3"/><path d="M8 5l1.5-2h5L16 5"/></svg> Resumo</button>
     <button class="tab" role="tab" id="t-rel" aria-selected="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2M9 2h6"/></svg> Religação ao vivo</button>
@@ -1539,12 +1580,10 @@ body.aba-rt .app>.wrap{max-width:1440px!important}
     <button class="tab" role="tab" id="t-lig" aria-selected="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9h7a3 3 0 0 1 3 3v9"/><path d="M3 6v6M18 4c-1.6 2-3 3.7-3 5.3a3 3 0 0 0 6 0C21 7.7 19.6 6 18 4Z"/></svg> Ligação de água</button>
     <button class="tab" role="tab" id="t-serv" aria-selected="false" hidden><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg> Outros serviços</button>
     <button class="tab" role="tab" id="t-rt" aria-selected="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 0 1 15.5-6.2L21 8M21 3v5h-5M21 12a9 9 0 0 1-15.5 6.2L3 16M3 21v-5h5"/></svg> Retrabalho</button>
-    <div class="sb-sub" id="rtSub"></div>
     <button class="tab" role="tab" id="t-os" aria-selected="false" hidden><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M9 6h12M9 12h12M9 18h12M4 6h.01M4 12h.01M4 18h.01"/></svg> OS</button>
   </nav>
   <div class="sb-sp"></div>
-  <div class="rx-base sb-rt"><span>Base de executados</span><b id="rtBaseN">–</b><small id="rtInfo"></small></div>
-  <div class="hbt sb-tools"><span class="sb-lbl">Ferramentas</span><button type="button" id="btnLink" class="lnk"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 17H7A5 5 0 0 1 7 7h2M15 7h2a5 5 0 0 1 0 10h-2M8 12h8"/></svg> Link da coordenação</button><button type="button" id="btnAjuda"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6V14M12 17.5h.01"/></svg> Como usar</button><button type="button" id="btnBackup" title="Baixa um arquivo com o histórico, para levar a outro computador"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg> Cópia de segurança</button><button type="button" id="btnTrancar" title="Fecha o painel e pede a senha de novo"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 4h4v16h-4M10 8l-4 4 4 4M6 12h11"/></svg> Sair</button></div>
+  <div class="hbt sb-tools"><button type="button" id="btnLink" class="lnk"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 17H7A5 5 0 0 1 7 7h2M15 7h2a5 5 0 0 1 0 10h-2M8 12h8"/></svg> Link da coordenação</button><button type="button" id="btnAjuda" title="Como usar"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6V14M12 17.5h.01"/></svg> Como usar</button><button type="button" id="btnBackup" title="Cópia de segurança: baixa um arquivo com o histórico, para levar a outro computador"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg> Cópia de segurança</button><button type="button" id="btnTrancar" title="Sair: fecha o painel e pede a senha de novo"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 4h4v16h-4M10 8l-4 4 4 4M6 12h11"/></svg> Sair</button></div>
   <div class="hquem"><span class="av">F</span><div><b>Fernanda</b><small>Analista · conectada</small></div><span class="on"></span></div>
 </aside>
 <div class="wrap">
@@ -1683,6 +1722,7 @@ body.aba-rt .app>.wrap{max-width:1440px!important}
   <section id="v-rt" class="view" hidden>
    <div class="rx-app">
     <div class="rx-body">
+      <aside class="rx-side"><nav class="rx-nav" id="rtSub"></nav><div class="rx-base"><span>Base de executados</span><b id="rtBaseN">–</b><small id="rtInfo"></small></div></aside>
       <div class="rx-main">
       <div class="rx-topo"><div class="rx-ola"><h2 id="rxOla" hidden>Olá</h2><span class="rx-pill" id="rxPill"></span></div><div class="rx-topd"><span class="rx-date" id="rxData" hidden></span><div class="rx-acts"><button type="button" id="rtAtual" class="primary" title="Juntar o arquivo de executados do sistema na base"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V4M6 10l6-6 6 6M4 20h16"/></svg> Atualizar</button><button type="button" id="rtBase" title="Importar a base completa (.json.gz)"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h10"/></svg> Importar base</button><button type="button" id="rtXls" title="Baixar o que está na tela em Excel"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v12M6 10l6 6 6-6M4 20h16"/></svg> Excel</button>
         <input type="file" id="rtArq" multiple accept=".xlsx,.xls,.csv,.txt,.htm,.html,.xml" hidden><input type="file" id="rtArqBase" accept=".gz,.json" hidden></div></div></div>
