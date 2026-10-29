@@ -1241,6 +1241,63 @@ body.aba-rt .wrap{max-width:1500px}
 .rx-tss li i{top:auto;bottom:4px;left:8px;height:4px;border-radius:2px;background:#12A5D6;max-width:calc(100% - 16px)}
 .rx-tss li:hover{background:#F3F8FB;outline:0}.rx-tss li.sel{background:#E4F4FB;outline:0}
 .rx-tss.eq li i{background:#00396F}
+/* ===== retrabalho: layout no estilo do exemplo, versão clara ===== */
+.rx-app{background:#F3F6FA;border:1px solid #D9E2EA;border-radius:16px;box-shadow:0 12px 36px rgba(10,37,64,.10)}
+.rx-bar{display:none}
+.rx-body{grid-template-columns:232px minmax(0,1fr);min-height:760px}
+.rx-side{background:#fff;border-right:1px solid #E3E9EF;padding:18px 14px;gap:18px}
+.rx-side .rx-brand{display:flex;align-items:center;gap:10px;padding:2px 6px 14px;border-bottom:1px solid #EEF2F5;position:static}
+.rx-side .rx-logo{width:38px;height:38px;border-radius:11px;background:linear-gradient(135deg,#12D1FE,#0096D6);color:#fff;display:grid;place-items:center}
+.rx-side .rx-brand b{display:block;font-size:15px;font-weight:800;letter-spacing:.06em;color:#00396F}
+.rx-side .rx-brand small{display:block;font-size:11px;color:#8A97A3}
+.rx-side .rx-nav button{padding:11px 12px;border-radius:10px;border-left:0;font-size:13.5px;color:#4A5D6E}
+.rx-side .rx-nav button[aria-pressed="true"]{background:linear-gradient(90deg,#E4F4FB,#F2FAFE);color:#00396F;box-shadow:inset 3px 0 0 #0096D6}
+.rx-side .rx-nav button[aria-pressed="true"] svg{color:#0096D6}
+.rx-base{margin-top:auto;background:linear-gradient(160deg,#00396F,#0A5A9C);color:#fff;border:0;border-radius:12px;padding:14px;line-height:1.45}
+.rx-base span{color:#9FC6E4;font-size:11.5px}.rx-base b{color:#fff;font-size:18px}.rx-base small{color:#D7E9F5}.rx-base em{color:#9FC6E4}
+.rx-main{padding:18px 22px 22px;gap:14px}
+.rx-topo{display:flex!important;flex-direction:row!important;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap}
+.rx-ola h2{margin:0;font-family:var(--f-display);font-size:24px;font-weight:600;color:#14212B}.rx-ola h2 b{color:#0096D6;font-weight:700}
+.rx-pill{display:inline-flex;align-items:center;gap:6px;margin-top:8px;padding:5px 12px;border-radius:999px;background:#fff;border:1px solid #DCE6EE;font-size:12px;color:#5E6E7B}
+.rx-pill i{width:8px;height:8px;border-radius:50%;background:#2FA36B;box-shadow:0 0 0 3px #E3F4EA}.rx-pill b{color:#14212B}
+.rx-topd{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.rx-date{display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border-radius:9px;background:#fff;border:1px solid #DCE6EE;font-size:12.5px;font-weight:600;color:#3E5163}
+.rx-date::before{content:"";width:12px;height:12px;border:2px solid #8A97A3;border-radius:3px;border-top-width:3px}
+.rx-topd .rx-acts{display:flex;gap:6px}
+.rx-topd .rx-acts button{display:inline-flex;align-items:center;gap:6px;background:#fff;border:1px solid #DCE6EE;color:#3E5163;font-size:12.5px;font-weight:600;padding:7px 11px;border-radius:9px;box-shadow:none}
+.rx-topd .rx-acts button:hover{border-color:#0096D6;color:#00396F}.rx-topd .rx-acts button.primary{background:#0096D6;border-color:#0096D6;color:#fff}
+.rx-fil{border-radius:12px;border-color:#E3E9EF}
+/* atalhos grandes coloridos (claros) */
+.rx-atal{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;flex-direction:row!important}
+.rx-at{display:flex;flex-direction:column;align-items:flex-start;gap:4px;text-align:left;border:0;border-radius:14px;padding:18px 18px 16px;cursor:pointer;box-shadow:none;min-height:118px;transition:transform .12s,box-shadow .12s}
+.rx-at:hover{transform:translateY(-2px);box-shadow:0 10px 22px rgba(10,37,64,.12)}
+.rx-at .ai{width:40px;height:40px;border-radius:11px;display:grid;place-items:center;background:rgba(255,255,255,.65);margin-bottom:8px}
+.rx-at b{font-size:16px}.rx-at small{font-size:12.5px;opacity:.85}
+.rx-at.a1{background:linear-gradient(135deg,#DDF3E6,#BFE8D1);color:#145C36}
+.rx-at.a2{background:linear-gradient(135deg,#DDF2FA,#B9E3F5);color:#00466F}
+.rx-at.a3{background:linear-gradient(135deg,#FFF0D6,#FBDDA8);color:#7A4A00}
+/* painéis de números */
+.rx-tiles{grid-template-columns:repeat(5,minmax(0,1fr))}
+.rx-tile{border-radius:12px;border-color:#E3E9EF;padding:14px 16px;gap:4px}
+.rx-tile>span{font-size:11.5px;font-weight:700;color:#8A97A3;letter-spacing:.02em}
+.rx-tv{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.rx-tile .rx-tv b{font-size:26px}
+.rx-dl{font-style:normal;font-size:11px;font-weight:700;padding:2px 7px;border-radius:999px;background:#EEF2F5;color:#5E6E7B}
+.rx-dl.ok{background:#E3F4EA;color:#1C7444}.rx-dl.ru{background:#FDEBDD;color:#B4540A}
+.rx-tile ul{list-style:none;margin:8px 0 0;padding:8px 0 0;border-top:1px solid #EEF2F5;display:flex;flex-direction:column;gap:3px}
+.rx-tile li{display:flex;justify-content:space-between;gap:8px;font-size:11.5px;color:#5E6E7B}.rx-tile li b{color:#14212B;font-size:12px}
+.rx-tile.t1{background:linear-gradient(150deg,#00396F,#0A5A9C)}.rx-tile.t1>span,.rx-tile.t1 small{color:#B9D6EC}.rx-tile.t1 ul{border-color:rgba(255,255,255,.18)}.rx-tile.t1 li{color:#B9D6EC}.rx-tile.t1 li b{color:#fff}
+.rx-tile.t1 .rx-dl{background:rgba(255,255,255,.16);color:#fff}.rx-tile.t1 .rx-dl.ok{background:#2FA36B;color:#fff}.rx-tile.t1 .rx-dl.ru{background:#F08C00;color:#fff}
+.rx-box{border-radius:12px;border-color:#E3E9EF}
+.rx-box>h3{background:#fff;border-bottom:1px solid #EEF2F5;font-size:14px}
+/* gráficos de área */
+.rx-areas{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.rx-areas h4{margin:0 0 6px;font-size:13px;color:#14212B}.rx-areas h4 small{font-weight:500;color:#8A97A3;margin-left:6px}
+.rx-area{width:100%;height:170px;display:block}
+.rx-area text.m{font-size:11px;fill:#8A97A3}.rx-area text.v{font-size:13px;font-weight:800;fill:#14212B}
+@media (max-width:1250px){.rx-tiles{grid-template-columns:repeat(3,minmax(0,1fr))}.rx-atal{grid-template-columns:1fr}}
+@media (max-width:760px){.rx-areas{grid-template-columns:1fr}.rx-tiles{grid-template-columns:1fr 1fr}}
+.rx-tile li b{font-size:12px!important;color:inherit}.rx-tile li b{color:#14212B}.rx-tile.t1 li b{color:#fff}.rx-area{height:auto}
 
 </style>
 </head>
@@ -1412,26 +1469,25 @@ body.aba-rt .wrap{max-width:1500px}
 
   <section id="v-rt" class="view" hidden>
    <div class="rx-app">
-    <div class="rx-bar">
-      <div class="rx-brand"><span class="rx-logo"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 0 1 15.5-6.2L21 8M21 3v5h-5M21 12a9 9 0 0 1-15.5 6.2L3 16M3 21v-5h5"/></svg></span><div><b>Retrabalho</b><small>Carteira de Serviços · Interlagos e Grajaú</small></div></div>
-      <div class="rx-acts"><button type="button" id="rtAtual" class="primary" title="Juntar o arquivo de executados do sistema na base"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V4M6 10l6-6 6 6M4 20h16"/></svg> Atualizar</button><button type="button" id="rtBase" title="Importar a base completa (.json.gz)"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h10"/></svg> Importar base</button><button type="button" id="rtXls" title="Baixar o que está na tela em Excel"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v12M6 10l6 6 6-6M4 20h16"/></svg> Excel</button>
-        <input type="file" id="rtArq" multiple accept=".xlsx,.xls,.csv,.txt,.htm,.html,.xml" hidden><input type="file" id="rtArqBase" accept=".gz,.json" hidden></div>
-    </div>
     <div class="rx-body">
       <aside class="rx-side">
+        <div class="rx-brand"><span class="rx-logo"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 0 1 15.5-6.2L21 8M21 3v5h-5M21 12a9 9 0 0 1-15.5 6.2L3 16M3 21v-5h5"/></svg></span><div><b>RETRABALHO</b><small>Carteira de Serviços</small></div></div>
         <nav class="rx-nav" id="rtSub"></nav>
-        <div class="rx-base"><span>Base</span><b id="rtBaseN">–</b><small id="rtInfo"></small></div>
+        <div class="rx-base"><span>Base de executados</span><b id="rtBaseN">–</b><small id="rtInfo"></small></div>
       </aside>
       <div class="rx-main">
+      <div class="rx-topo"><div class="rx-ola"><h2 id="rxOla">Olá</h2><span class="rx-pill" id="rxPill"></span></div><div class="rx-topd"><span class="rx-date" id="rxData"></span><div class="rx-acts"><button type="button" id="rtAtual" class="primary" title="Juntar o arquivo de executados do sistema na base"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V4M6 10l6-6 6 6M4 20h16"/></svg> Atualizar</button><button type="button" id="rtBase" title="Importar a base completa (.json.gz)"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h10"/></svg> Importar base</button><button type="button" id="rtXls" title="Baixar o que está na tela em Excel"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v12M6 10l6 6 6-6M4 20h16"/></svg> Excel</button>
+        <input type="file" id="rtArq" multiple accept=".xlsx,.xls,.csv,.txt,.htm,.html,.xml" hidden><input type="file" id="rtArqBase" accept=".gz,.json" hidden></div></div></div>
       <div class="rx-fil" id="rtFil">
         <div class="seg2" id="rtPolo"></div><div class="seg2" id="rtPer"></div><div class="seg2" id="rtModo"></div>
         <label class="rtck"><input type="checkbox" id="rtPde"> só o mesmo PDE</label>
         <div class="rx-srv"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input type="search" id="rtTss" list="rtTssL" placeholder="Digite o serviço — ex.: hidrômetro, cavalete, esgoto" aria-label="Serviço" autocomplete="off"><datalist id="rtTssL"></datalist></div>
       </div>
     <div id="rtV0" hidden>
+      <div class="rx-atal" id="rdAtal"></div>
       <div class="rx-tiles" id="rdTiles"></div>
       <div class="rx-dg">
-        <article class="rx-box rx-w2"><h3>Retrabalho mês a mês</h3><div id="rdMes"></div></article>
+        <article class="rx-box rx-w2"><h3>Evolução mês a mês</h3><div id="rdMes"></div></article>
         <article class="rx-box"><h3>Por polo</h3><div id="rdPolo"></div></article>
         <article class="rx-box"><h3>Quanto tempo até voltar</h3><div id="rdDias"></div></article>
         <article class="rx-box"><h3>Serviços que mais voltam</h3><div id="rdTss"></div></article>
@@ -2677,9 +2733,11 @@ function renderRt(){
   $("rtBase").hidden=LEITOR;$("rtAtual").hidden=LEITOR;
   $("rtSub").innerHTML=[["dash","Dashboard"],["geral","Endereços que voltam"],["busca","Pesquisar endereço"],["cart","Carteira de hoje"]].map(([k,l])=>`<button type="button" data-rv="${k}" aria-pressed="${rtView===k}"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${RT_IC[k]}</svg>${l}</button>`).join("");
   $("rtV0").hidden=rtView!=="dash";$("rtV1").hidden=rtView!=="geral";$("rtFil").hidden=!(rtView==="dash"||rtView==="geral");$("rtV2").hidden=rtView!=="busca";$("rtV3").hidden=rtView!=="cart";
-  if(sem){$("rtBaseN").textContent="vazia";$("rtInfo").textContent=LEITOR?"A base de retrabalho ainda não foi publicada.":"Ainda não há base. Use Importar base (arquivo .json.gz) ou Atualizar com executados.";
+  if(sem){$("rxOla").innerHTML=LEITOR?"Olá, <b>coordenação</b>":"Olá, <b>Fernanda</b>";$("rxPill").textContent="";$("rxData").textContent=new Date().toLocaleDateString("pt-BR");$("rtBaseN").textContent="vazia";$("rtInfo").textContent=LEITOR?"A base de retrabalho ainda não foi publicada.":"Ainda não há base. Use Importar base (arquivo .json.gz) ou Atualizar com executados.";
     ["rtKpis","rtTbTss","rtMes","rtLista","rtRes","rtCkpi","rtClista","rtCond"].forEach(i=>$(i).innerHTML="");return;}
   $("rtBaseN").textContent=nf(RB.R.length)+" serviços";$("rtInfo").innerHTML=`de ${dmy(RB.ini)} a ${dmy(RB.fim)}${RB.em?`<br>atualizada em ${new Date(RB.em).toLocaleString("pt-BR",{dateStyle:"short",timeStyle:"short"})}`:""}<em>Sem fim do dia e continua. A mesma OS conta uma vez.</em>`;
+  {const ag=new Date();$("rxOla").innerHTML=LEITOR?"Olá, <b>coordenação</b>":"Olá, <b>Fernanda</b>";$("rxData").textContent=ag.toLocaleDateString("pt-BR");
+   const prox=RB.em?new Date(RB.em+15*864e5):null;$("rxPill").innerHTML=`<i></i>Base atualizada em <b>${RB.em?new Date(RB.em).toLocaleString("pt-BR",{dateStyle:"short",timeStyle:"short"}):"–"}</b>${prox?` · próxima atualização <b>${prox.toLocaleDateString("pt-BR")}</b>`:""}`;}
   if(rtView==="dash"){rtFiltros();rtDash();}else if(rtView==="geral")rtGeral();else if(rtView==="busca")rtBuscar();else rtCarteira();}
 
 function rtPctModo(m){const old=rtModo;rtModo=m;const F=rtFiltrar();rtModo=old;return F.serv?F.eventos/F.serv:0;}
@@ -2730,14 +2788,37 @@ function rtMesDados(F,C){const D=RB.D,pm=new Map(),sm=new Map();
   for(const x of F.out)for(const r of x.g.L.slice(1)){if(F.J&&(r[12]<F.J[0]||r[12]>F.J[1]))continue;const m=rtIso(r[12]).slice(0,7);pm.set(m,(pm.get(m)||0)+1);}
   for(const r of RB.R){if(rtModo==="exec"&&C.ale[r[9]])continue;if(rtTssSel&&!U(D.t[r[1]]).includes(U(rtTssSel)))continue;if(poloSel!=="Todos"&&RT_POLO[D.a[r[8]]]!==poloSel)continue;if(F.J&&(r[12]<F.J[0]||r[12]>F.J[1]))continue;const m=rtIso(r[12]).slice(0,7);sm.set(m,(sm.get(m)||0)+1);}
   return [...pm.keys()].sort().map(m=>({m,v:pm.get(m),p:sm.get(m)?pm.get(m)/sm.get(m):0}));}
+function rtJanelaConta(a,b){const D=RB.D,C=rtCalc();const okP=r=>poloSel==="Todos"||RT_POLO[D.a[r[8]]]===poloSel;const okT=r=>!rtTssSel||U(D.t[r[1]]).includes(U(rtTssSel));
+  let ev=0,sv=0;for(const g of C.grupos){const r0=g.L[0];if(!okP(r0)||!okT(r0))continue;for(let i=1;i<g.L.length;i++){const m=g.L[i][12];if(m>=a&&m<=b)ev++;}}
+  for(const r of RB.R){if(!okP(r)||!okT(r))continue;if(rtModo==="exec"&&C.ale[r[9]])continue;if(r[12]>=a&&r[12]<=b)sv++;}return {ev,sv,p:sv?ev/sv:0};}
+function rtDelta(atual,ant,inv){if(!ant)return "";const d=(atual-ant)/ant;const bom=inv?d>0:d<0;return `<em class="rx-dl ${Math.abs(d)<0.005?"":bom?"ok":"ru"}">${d>0?"▲":"▼"} ${Math.abs(Math.round(d*1000)/10).toLocaleString("pt-BR")}%</em>`;}
+function rtArea(it,k,cor,fmt){if(!it.length)return `<div class="rtvazio">Sem dados.</div>`;const MES=["jan","fev","mar","abr","mai","jun","jul","ago","set","out","nov","dez"];
+  const W=600,H=170,pl=6,pr=6,pt=22,pb=26,n=it.length,mx=Math.max(...it.map(x=>x[k]))*1.15||1,X=i=>pl+(n===1?(W-pl-pr)/2:i*(W-pl-pr)/(n-1)),Y=v=>pt+(H-pt-pb)*(1-v/mx);
+  const pts=it.map((x,i)=>`${X(i).toFixed(1)},${Y(x[k]).toFixed(1)}`).join(" ");const id="g"+k+Math.random().toString(36).slice(2,6);
+  let sv=`<svg viewBox="0 0 ${W} ${H}" class="rx-area"><defs><linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${cor}" stop-opacity=".28"/><stop offset="1" stop-color="${cor}" stop-opacity="0"/></linearGradient></defs>`;
+  sv+=`<polygon points="${X(0)},${H-pb} ${pts} ${X(n-1)},${H-pb}" fill="url(#${id})"/><polyline points="${pts}" fill="none" stroke="${cor}" stroke-width="2.4" stroke-linejoin="round"/>`;
+  it.forEach((x,i)=>{sv+=`<circle cx="${X(i)}" cy="${Y(x[k])}" r="3" fill="#fff" stroke="${cor}" stroke-width="2"><title>${MES[Number(x.m.slice(5))-1]}/${x.m.slice(2,4)}: ${fmt(x[k])}</title></circle>`;if(i===n-1||i%2===0)sv+=`<text x="${X(i)}" y="${H-8}" text-anchor="middle" class="m">${MES[Number(x.m.slice(5))-1]}</text>`;});
+  const u=it[n-1];sv+=`<text x="${X(n-1)-4}" y="${Y(u[k])-9}" text-anchor="end" class="v">${fmt(u[k])}</text></svg>`;return sv;}
 function rtDash(){const D=RB.D,F=rtFiltrar(),C=rtCalc();
   const ev=[];for(const x of F.out){const L=x.g.L;for(let i=1;i<L.length;i++){const r=L[i];if(F.J&&(r[12]<F.J[0]||r[12]>F.J[1]))continue;ev.push({r,p:L[i-1],d:Math.max(0,Math.round((r[12]-L[i-1][12])/1440))});}}
   const pct=F.serv?ev.length/F.serv:0,f1=v=>(Math.round(v*1000)/10).toLocaleString("pt-BR")+"%";
   const ds=ev.map(e=>e.d).sort((a,b)=>a-b),med=ds.length?ds[Math.floor(ds.length/2)]:null,ate30=ds.filter(d=>d<=30).length;
-  const tile=(l,v,s,c)=>`<div class="rx-tile${c?" "+c:""}"><span>${l}</span><b>${v}</b><small>${s||""}</small></div>`;
-  $("rdTiles").innerHTML=tile("% de retrabalho",f1(pct),"retrabalhos ÷ serviços","t1")+tile("Retrabalhos",nf(ev.length),"vezes que o serviço voltou","t2")+tile("Serviços executados",nf(F.serv),F.J?`${rtDm(F.J[0])} a ${rtDm(F.J[1])}`:`${dmy(RB.ini)} a ${dmy(RB.fim)}`)+
-    tile("Endereços com retrabalho",nf(F.out.length),"")+tile("Voltaram em até 30 dias",ds.length?Math.round(ate30*100/ds.length)+"%":"–",nf(ate30)+" retrabalhos")+tile("Tempo típico até voltar",med==null?"–":med+(med===1?" dia":" dias"),"metade volta antes disso");
-  $("rdMes").innerHTML=rtMesSvg(rtMesDados(F,C));
+  // atalhos (como os cartões grandes coloridos do exemplo, em tons claros)
+  const nCart=(()=>{try{const l90=rtMin(new Date(Date.now()-90*864e5).toLocaleDateString("pt-BR")+" 00:00");let n=0;for(const r of ultF().ca)if(fp(r)&&rtHistCart(r).some(x=>x[12]>=l90))n++;return n;}catch(e){return 0;}})();
+  const atal=(k,cls,ic,t,sub)=>`<button type="button" class="rx-at ${cls}" data-rv="${k}"><span class="ai"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${ic}</svg></span><b>${t}</b><small>${sub}</small></button>`;
+  $("rdAtal").innerHTML=atal("geral","a1",RT_IC.geral,"Endereços que voltam",`${nf(F.out.length)} endereços com o mesmo serviço repetido`)+atal("busca","a2",RT_IC.busca,"Pesquisar endereço","Todo o histórico de uma rua ou número")+atal("cart","a3",RT_IC.cart,"Carteira de hoje",`${nf(nCart)} OS da carteira já foram feitas no endereço nos últimos 90 dias`);
+  // comparação com o período anterior
+  const fimB=rtMin(dmy(RB.fim)+" 23:59"),dur=F.J?F.J[1]-F.J[0]:30*1440,b1=F.J?F.J[1]:fimB,a1=b1-dur,b0=a1-1,a0=b0-dur;const AT=rtJanelaConta(a1,b1),AN=rtJanelaConta(a0,b0);
+  const cmp=F.J?"vs período anterior":"últimos 30 dias vs 30 antes";
+  const porPolo=k=>["Interlagos","Grajaú"].map(p=>{let n=0;for(const e of ev)if(RT_POLO[D.a[e.r[8]]]===p)n++;return [p,n];});
+  const tile=(l,v,dl,s,lista,c)=>`<div class="rx-tile${c?" "+c:""}"><span>${l}</span><div class="rx-tv"><b>${v}</b>${dl||""}</div><small>${s||""}</small>${lista?`<ul>${lista.map(([a,b])=>`<li><span>${esc(a)}</span><b>${b}</b></li>`).join("")}</ul>`:""}</div>`;
+  const pp=porPolo();
+  $("rdTiles").innerHTML=tile("% de retrabalho",f1(pct),rtDelta(AT.p,AN.p),cmp,[["Todas as baixas",f1(rtPctModo("todas"))],["Só executadas",f1(rtPctModo("exec"))]],"t1")+
+    tile("Retrabalhos",nf(ev.length),rtDelta(AT.ev,AN.ev),cmp,pp.map(([a,b])=>[a,nf(b)]),"t2")+
+    tile("Serviços executados",nf(F.serv),rtDelta(AT.sv,AN.sv,true),F.J?`${rtDm(F.J[0])} a ${rtDm(F.J[1])}`:`${dmy(RB.ini)} a ${dmy(RB.fim)}`,[["Endereços com retrabalho",nf(F.out.length)]])+
+    tile("Voltaram em até 30 dias",ds.length?Math.round(ate30*100/ds.length)+"%":"–","",nf(ate30)+" retrabalhos",[["Mesmo dia",nf(ds.filter(d=>d===0).length)],["1 a 7 dias",nf(ds.filter(d=>d>=1&&d<=7).length)]])+
+    tile("Tempo típico até voltar",med==null?"–":med+(med===1?" dia":" dias"),"","metade volta antes disso",[["Mais de 90 dias",nf(ds.filter(d=>d>90).length)]]);
+  {const MD=rtMesDados(F,C).slice(-12);$("rdMes").innerHTML=`<div class="rx-areas"><div><h4>Retrabalhos <small>últimos ${MD.length} meses</small></h4>${rtArea(MD,"v","#F08C00",v=>nf(v))}</div><div><h4>% de retrabalho <small>últimos ${MD.length} meses</small></h4>${rtArea(MD,"p","#0096D6",v=>Math.round(v*100)+"%")}</div></div>`;}
   // polo
   const servP={Interlagos:0,"Grajaú":0};for(const r of RB.R){if(rtModo==="exec"&&C.ale[r[9]])continue;if(rtTssSel&&!U(D.t[r[1]]).includes(U(rtTssSel)))continue;if(F.J&&(r[12]<F.J[0]||r[12]>F.J[1]))continue;const p=RT_POLO[D.a[r[8]]];if(p in servP)servP[p]++;}
   const evP={Interlagos:0,"Grajaú":0};for(const e of ev){const p=RT_POLO[D.a[e.r[8]]];if(p in evP)evP[p]++;}
