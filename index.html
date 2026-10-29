@@ -1757,6 +1757,13 @@ body.printmode .vz,body.printmode .tabbar{display:none}
 .sb-title small .sep{width:1px;height:12px;background:#D3DCE3}
 .tabbar{border-top:0}
 @media (max-width:1000px){.sb-title small{justify-content:flex-start}.sb-title b{font-size:16px!important}.sb::after{display:none}}
+.sb-brand{visibility:hidden}
+.sb-title{display:flex;align-items:center;gap:14px}
+.sb-tt{display:flex;flex-direction:column;align-items:flex-start;text-align:left}
+.sb-title small{justify-content:flex-start!important}
+.sb-logo{width:46px;height:46px;border-radius:13px;background:linear-gradient(135deg,#12D1FE,#0096D6);display:grid;place-items:center;flex:none;box-shadow:0 4px 12px rgba(0,150,214,.25)}
+.sb-logo svg{width:24px;height:24px}
+@media (max-width:1000px){.sb-brand{display:none}.sb-logo{width:36px;height:36px}}
 
 </style>
 </head>
@@ -1779,7 +1786,7 @@ body.printmode .vz,body.printmode .tabbar{display:none}
 </div>
 <div class="app">
 <aside class="sb" id="sb">
-  <div class="sb-title"><span class="sb-over">Polos Grajaú e Interlagos</span><b>Gestão da Carteira de Serviços</b><small id="sbData"></small></div>
+  <div class="sb-title"><span class="gota sb-logo"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2.5c-3.6 4.4-6.5 8-6.5 11.6a6.5 6.5 0 0 0 13 0C18.5 10.5 15.6 6.9 12 2.5Z" fill="#fff"/><path d="M9 14.5a3 3 0 0 0 3 3" stroke="#0093C9" stroke-width="1.8" stroke-linecap="round"/></svg></span><div class="sb-tt"><span class="sb-over">Polos Grajaú e Interlagos</span><b>Gestão da Carteira de Serviços</b><small id="sbData"></small></div></div>
   <div class="sb-brand"><div class="brand"><span class="gota"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2.5c-3.6 4.4-6.5 8-6.5 11.6a6.5 6.5 0 0 0 13 0C18.5 10.5 15.6 6.9 12 2.5Z" fill="#fff"/><path d="M9 14.5a3 3 0 0 0 3 3" stroke="#0093C9" stroke-width="1.8" stroke-linecap="round"/></svg></span><div style="min-width:0"><div class="brand-t">Carteira de Serviços</div><div class="brand-s" id="sub">Interlagos · Grajaú</div></div></div></div>
 
   <div class="sb-sp"></div>
