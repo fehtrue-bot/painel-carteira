@@ -1106,6 +1106,50 @@ body.aba-rt .hero,body.aba-rt #filtros{display:none!important}
 @media (max-width:640px){.rx-top{grid-template-columns:1fr;padding:14px 14px 0}.rx-pct{font-size:44px}.rx-big{padding:16px;gap:14px}.rx-frase{font-size:14.5px}}
 .rx-dot{box-shadow:0 0 0 1.5px #fff}
 body.aba-rt #msg{display:none}
+/* ===== retrabalho: cara de software ===== */
+#v-rt{gap:0}
+.rx-app{display:flex;flex-direction:column;background:#F4F7FA;border:1px solid #CFD9E2;border-radius:12px;overflow:hidden;box-shadow:0 10px 30px rgba(10,37,64,.10)}
+.rx-bar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding:10px 14px;background:#0B2545;color:#fff}
+.rx-brand{display:flex;align-items:center;gap:10px}.rx-logo{width:34px;height:34px;border-radius:9px;background:#12A5D6;display:grid;place-items:center;color:#fff}
+.rx-brand b{display:block;font-size:15px;letter-spacing:.01em}.rx-brand small{display:block;font-size:11.5px;color:#9FB6CC}
+.rx-bar .rx-acts{display:flex;gap:6px}
+.rx-bar .rx-acts button{display:inline-flex;align-items:center;gap:6px;background:#173A62;border:1px solid #2A507C;color:#E6EEF6;font-size:12.5px;font-weight:600;padding:7px 11px;border-radius:7px;box-shadow:none}
+.rx-bar .rx-acts button:hover{background:#21497A}.rx-bar .rx-acts button.primary{background:#12A5D6;border-color:#12A5D6;color:#fff}
+.rx-body{display:grid;grid-template-columns:210px minmax(0,1fr);min-height:640px}
+.rx-side{background:#fff;border-right:1px solid #DCE4EB;padding:12px 10px;display:flex;flex-direction:column;gap:14px}
+.rx-side .rx-nav{display:flex;flex-direction:column;gap:2px;margin:0;border:0}
+.rx-side .rx-nav button{display:flex;align-items:center;gap:10px;width:100%;text-align:left;border:0;border-radius:8px;padding:10px 11px;font-size:13.5px;font-weight:600;color:#3E5163;background:none;box-shadow:none;border-left:3px solid transparent}
+.rx-side .rx-nav button:hover{background:#F0F5F9;color:#0B2545}
+.rx-side .rx-nav button[aria-pressed="true"]{background:#E6F4FA;color:#0B2545;border-left-color:#12A5D6}
+.rx-side .rx-nav svg{flex:none;opacity:.85}
+.rx-base{margin-top:auto;border-top:1px solid #E6ECF1;padding:12px 6px 4px;font-size:12px;color:#5E6E7B;line-height:1.5}
+.rx-base span{display:block;font-size:11.5px;color:#8A97A3}.rx-base b{display:block;font-size:15px;color:#0B2545}
+.rx-base em{display:block;font-style:normal;margin-top:6px;font-size:11px;color:#8A97A3}
+.rx-main{padding:14px 16px 18px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.rx-main>div{display:flex;flex-direction:column;gap:12px}.rx-main>div[hidden]{display:none}
+.rx-fil{background:#fff;border:1px solid #DCE4EB;border-radius:9px;padding:8px 10px}
+.rx-fil .seg2{background:#F0F4F8;border-color:#DCE4EB}
+.rx-head{border-radius:9px;border-color:#DCE4EB}
+.rx-big{padding:16px 20px}.rx-pct{font-size:52px}.rx-frase{font-size:15.5px}
+.rx-stats dd{font-size:22px}.rx-stats>div{padding:11px 16px}
+.rx-box{border-radius:9px;border-color:#DCE4EB;padding:0;overflow:hidden}
+.rx-box>h3,.rx-box>.rx-boxh{margin:0;padding:10px 14px;background:#F7F9FB;border-bottom:1px solid #E6ECF1}
+.rx-box>h3{font-size:13.5px;font-weight:700;color:#0B2545}.rx-box>.rx-sub{display:none}
+.rx-box>.rx-boxh h3{font-size:13.5px;font-weight:700;color:#0B2545}.rx-box>.rx-boxh .rx-sub{margin:1px 0 0;font-size:11.5px}
+.rx-box>div:not(.rx-boxh),.rx-box>ol{padding:12px 14px}
+.rx-box #rtTbTss,.rx-box #rtMes,.rx-box #rtLista,.rx-box #rtClista,.rx-box #rtCond{padding:10px 14px 12px}
+.rx-cond{padding:12px 14px}.rx-cond>div{padding:0!important}
+.rx-colh{display:grid;grid-template-columns:52px minmax(170px,1.1fr) minmax(140px,.9fr) minmax(200px,1.6fr) 120px;gap:14px;padding:6px 4px 8px;border-bottom:1px solid #E6ECF1;font-size:11.5px;font-weight:600;color:#8A97A3}
+.rx-colh span:first-child{text-align:center}.rx-colh span:last-child{text-align:right}
+.rx-row{border-top:1px solid #EEF2F5}.rx-colh+.rx-row{border-top:0}
+.rx-status{display:flex;align-items:center;gap:8px;padding:6px 14px;background:#fff;border-top:1px solid #DCE4EB;font-size:12px;color:#5E6E7B;min-height:30px}
+.rx-led{width:8px;height:8px;border-radius:50%;background:#2FA36B;box-shadow:0 0 0 3px #E3F4EA}
+.rx-status.err .rx-led{background:#C2362B;box-shadow:0 0 0 3px #FCE9E8}.rx-status.err{color:#B0302A}
+.rtbusca{border-width:1px;border-color:#9CC9E0;box-shadow:none;border-radius:9px}
+.rtend{border-radius:9px;border-color:#DCE4EB;box-shadow:none}
+body.aba-rt .wrap{max-width:1500px}
+@media (max-width:900px){.rx-body{grid-template-columns:1fr}.rx-side{border-right:0;border-bottom:1px solid #DCE4EB}.rx-side .rx-nav{flex-direction:row;overflow-x:auto}.rx-side .rx-nav button{white-space:nowrap;border-left:0;border-bottom:3px solid transparent}.rx-side .rx-nav button[aria-pressed="true"]{border-bottom-color:#12A5D6}.rx-base{display:none}.rx-colh{display:none}}
+.rx-side>*{position:sticky;top:70px}.rx-side .rx-base{top:auto;position:static}
 
 </style>
 </head>
@@ -1276,13 +1320,18 @@ body.aba-rt #msg{display:none}
   </section>
 
   <section id="v-rt" class="view" hidden>
-    <header class="rx-top">
-      <div class="rx-tit"><h2>Retrabalho</h2><p id="rtInfo"></p></div>
-      <div class="rx-acts"><button type="button" id="rtAtual" class="primary">Atualizar com executados</button><button type="button" id="rtBase">Importar base</button><button type="button" id="rtXls">Baixar Excel</button>
+   <div class="rx-app">
+    <div class="rx-bar">
+      <div class="rx-brand"><span class="rx-logo"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 0 1 15.5-6.2L21 8M21 3v5h-5M21 12a9 9 0 0 1-15.5 6.2L3 16M3 21v-5h5"/></svg></span><div><b>Retrabalho</b><small>Carteira de Serviços · Interlagos e Grajaú</small></div></div>
+      <div class="rx-acts"><button type="button" id="rtAtual" class="primary" title="Juntar o arquivo de executados do sistema na base"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V4M6 10l6-6 6 6M4 20h16"/></svg> Atualizar</button><button type="button" id="rtBase" title="Importar a base completa (.json.gz)"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h10"/></svg> Importar base</button><button type="button" id="rtXls" title="Baixar o que está na tela em Excel"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v12M6 10l6 6 6-6M4 20h16"/></svg> Excel</button>
         <input type="file" id="rtArq" multiple accept=".xlsx,.xls,.csv,.txt,.htm,.html,.xml" hidden><input type="file" id="rtArqBase" accept=".gz,.json" hidden></div>
-      <nav class="rx-nav" id="rtSub"></nav>
-    </header>
-    <div class="note" id="rtMsg"></div>
+    </div>
+    <div class="rx-body">
+      <aside class="rx-side">
+        <nav class="rx-nav" id="rtSub"></nav>
+        <div class="rx-base"><span>Base</span><b id="rtBaseN">–</b><small id="rtInfo"></small></div>
+      </aside>
+      <div class="rx-main">
     <div id="rtV1">
       <div class="rx-fil">
         <div class="seg2" id="rtPolo"></div><div class="seg2" id="rtPer"></div><div class="seg2" id="rtModo"></div>
@@ -1305,6 +1354,10 @@ body.aba-rt #msg{display:none}
       <section class="rx-head" id="rtCkpi"></section>
       <article class="rx-box"><div class="rx-boxh"><div><h3>OS da carteira que já foram feitas no mesmo endereço</h3><p class="rx-sub" id="rtCnota"></p></div><div class="seg2" id="rtCper"></div></div><div id="rtClista"></div></article>
     </div>
+      </div>
+    </div>
+    <div class="rx-status"><span class="rx-led"></span><span id="rtMsg">Pronto.</span></div>
+   </div>
   </section>
 
   <section id="v-serv" class="view" hidden>
@@ -2479,7 +2532,7 @@ async function rtLerArquivo(file){const w=await abrirPlanilha(file);let aoa=null
 
 async function rtCarregarLocal(){try{RB=await idbGet("retrab");}catch(e){RB=null;}rtCache=null;}
 async function rtSalvar(){try{await idbSet("retrab",RB);}catch(e){rtAviso("Não consegui guardar a base neste computador: "+e.message,"err");}}
-function rtAviso(t,c){const m=$("rtMsg");if(m){m.textContent=t||"";m.className="note "+(c||"");}}
+function rtAviso(t,c){const m=$("rtMsg");if(m){m.textContent=t||"Pronto.";m.parentElement.className="rx-status "+(c||"");}}
 
 // ---------- cálculo ----------
 function rtCalc(){const k=rtModo+"|"+($("rtPde")&&$("rtPde").checked?1:0);if(rtCache&&rtCache.k===k&&rtCache.em===RB.em)return rtCache;
@@ -2515,14 +2568,15 @@ function rtChip(r,ale){const D=RB.D;return `<i class="${ale?"al":""}" title="OS 
 
 // ---------- tela ----------
 var rtView="geral",rtCper="90";
+var RT_IC={"geral": "<rect x=\"3\" y=\"3\" width=\"7\" height=\"9\" rx=\"1.5\"/><rect x=\"14\" y=\"3\" width=\"7\" height=\"5\" rx=\"1.5\"/><rect x=\"14\" y=\"12\" width=\"7\" height=\"9\" rx=\"1.5\"/><rect x=\"3\" y=\"16\" width=\"7\" height=\"5\" rx=\"1.5\"/>", "busca": "<circle cx=\"11\" cy=\"11\" r=\"7\"/><path d=\"m20 20-3.5-3.5\"/>", "cart": "<path d=\"M9 17H7A5 5 0 0 1 7 7h2M15 7h2a5 5 0 0 1 0 10h-2M8 12h8\"/>"};
 function renderRt(){
   const sem=!RB||!RB.R||!RB.R.length;
   $("rtBase").hidden=LEITOR;$("rtAtual").hidden=LEITOR;
-  $("rtSub").innerHTML=[["geral","Visão geral"],["busca","Pesquisar endereço"],["cart","Carteira de hoje"]].map(([k,l])=>`<button type="button" data-rv="${k}" aria-pressed="${rtView===k}">${l}</button>`).join("");
+  $("rtSub").innerHTML=[["geral","Visão geral"],["busca","Pesquisar endereço"],["cart","Carteira de hoje"]].map(([k,l])=>`<button type="button" data-rv="${k}" aria-pressed="${rtView===k}"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${RT_IC[k]}</svg>${l}</button>`).join("");
   $("rtV1").hidden=rtView!=="geral";$("rtV2").hidden=rtView!=="busca";$("rtV3").hidden=rtView!=="cart";
-  if(sem){$("rtInfo").textContent=LEITOR?"A base de retrabalho ainda não foi publicada.":"Ainda não há base. Use Importar base (arquivo .json.gz) ou Atualizar com executados.";
+  if(sem){$("rtBaseN").textContent="vazia";$("rtInfo").textContent=LEITOR?"A base de retrabalho ainda não foi publicada.":"Ainda não há base. Use Importar base (arquivo .json.gz) ou Atualizar com executados.";
     ["rtKpis","rtTbTss","rtMes","rtLista","rtRes","rtCkpi","rtClista","rtCond"].forEach(i=>$(i).innerHTML="");return;}
-  $("rtInfo").textContent=`Serviços executados de ${dmy(RB.ini)} a ${dmy(RB.fim)}, sem fim do dia e continua. A mesma OS conta uma vez.${RB.em?` Atualizada em ${new Date(RB.em).toLocaleString("pt-BR",{dateStyle:"short",timeStyle:"short"})}.`:""}`;
+  $("rtBaseN").textContent=nf(RB.R.length)+" serviços";$("rtInfo").innerHTML=`de ${dmy(RB.ini)} a ${dmy(RB.fim)}${RB.em?`<br>atualizada em ${new Date(RB.em).toLocaleString("pt-BR",{dateStyle:"short",timeStyle:"short"})}`:""}<em>Sem fim do dia e continua. A mesma OS conta uma vez.</em>`;
   if(rtView==="geral")rtGeral();else if(rtView==="busca")rtBuscar();else rtCarteira();}
 
 function rtPctModo(m){const old=rtModo;rtModo=m;const F=rtFiltrar();rtModo=old;return F.serv?F.eventos/F.serv:0;}
@@ -2556,7 +2610,7 @@ function rtGeral(){const D=RB.D;
   // endereços
   const lim=40;$("rtListaNota").textContent=`${nf(princ.length)} endereços${princ.length>lim?`, os ${lim} que mais voltaram`:""} — clique para ver as OS`;
   const T0=F.J?F.J[0]:rtMin(dmy(RB.ini)+" 00:00"),T1=F.J?F.J[1]:rtMin(dmy(RB.fim)+" 23:59");
-  $("rtLista").innerHTML=princ.length?`<div class="rx-rows">`+princ.slice(0,lim).map(x=>rtLinha(x.g.key,x.g.L,C.ale,T0,T1)).join("")+`</div>`:`<div class="rtvazio">Nenhum retrabalho com esses filtros.</div>`;
+  $("rtLista").innerHTML=princ.length?`<div class="rx-rows"><div class="rx-colh"><span>Vezes</span><span>Endereço</span><span>Serviço</span><span>Linha do tempo (${rtDm(T0)} a ${rtDm(T1)})</span><span>Menor intervalo</span></div>`+princ.slice(0,lim).map(x=>rtLinha(x.g.key,x.g.L,C.ale,T0,T1)).join("")+`</div>`:`<div class="rtvazio">Nenhum retrabalho com esses filtros.</div>`;
   $("rtCondBox").hidden=!cond.length;$("rtCondN").textContent=cond.length?nf(cond.length)+" endereços":"";
   $("rtCond").innerHTML=cond.length?`<div class="rx-rows">`+cond.slice(0,30).map(x=>rtLinha(x.g.key,x.g.L,C.ale,T0,T1)).join("")+`</div>`:"";}
 
