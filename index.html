@@ -1550,6 +1550,32 @@ body.aba-rt .app>.wrap{max-width:1440px!important}
 .app .rx-side>*{position:static!important}
 .app .rx-side{position:static!important;top:auto!important}
 
+/* ===== cartões do retrabalho no padrão do painel ===== */
+.sb{padding-left:max(28px,calc((100% - 1440px)/2 + 28px))!important;padding-right:max(28px,calc((100% - 1440px)/2 + 28px))!important}
+#v-rt .rx-tiles{gap:12px;align-items:stretch}
+#v-rt .rx-kc{cursor:pointer;height:100%}
+#v-rt .rx-kc.rx-ttop{cursor:default}
+#v-rt .rx-kc .kc-v{font-size:28px}
+#v-rt .rx-kc .kc-f{margin-top:auto;padding-top:10px}
+#v-rt .rx-dl{font-size:10.5px;padding:2px 7px}
+.rk-seg{display:flex;gap:4px;background:#F1F5F8;border-radius:8px;padding:3px}
+.rk-seg button{all:unset;cursor:pointer;flex:1;text-align:center;font-size:11px;font-weight:600;color:#5E6E7B;padding:4px 6px;border-radius:6px;white-space:nowrap}
+.rk-seg button b{color:#14212B;margin-left:2px}
+.rk-seg button.on{background:#fff;color:#00396F;box-shadow:0 1px 3px rgba(16,40,64,.12)}
+.rk-leg{display:flex;justify-content:space-between;gap:6px;margin-top:6px;font-size:11px;color:#5E6E7B}
+.rk-leg span{cursor:pointer;white-space:nowrap;border-radius:4px;padding:1px 4px;margin:0 -4px}.rk-leg span:hover,.rk-leg span.on{background:#EEF6FB;color:#00396F}
+.rk-leg i{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:4px}
+.rk-leg b{color:#14212B}
+#v-rt .rx-spk{height:32px}
+#v-rt .rx-ttop .rx-top{margin-top:8px}
+#v-rt .rx-tiles{grid-template-columns:repeat(4,minmax(0,1fr))!important}
+.rx-evorow{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:12px;align-items:stretch;margin-bottom:14px}
+.rx-evorow .rx-evo{margin:0!important}
+#rdTop .rx-ttop{height:100%}
+#rdTop .rx-top{gap:10px}
+#v-rt .kc-vr{flex-wrap:nowrap}#v-rt .rx-dl{white-space:nowrap}
+@media (max-width:1250px){#v-rt .rx-tiles{grid-template-columns:repeat(2,minmax(0,1fr))!important}.rx-evorow{grid-template-columns:1fr}}
+
 </style>
 </head>
 <body>
@@ -1733,7 +1759,10 @@ body.aba-rt .app>.wrap{max-width:1440px!important}
       </div>
     <div id="rtV1">
       <div class="rx-tiles" id="rdTiles"></div>
-      <article class="rx-box rx-evo"><h3>Evolução mês a mês</h3><div id="rdMes"></div></article>
+      <div class="rx-evorow">
+        <article class="rx-box rx-evo"><h3>Evolução mês a mês</h3><div id="rdMes"></div></article>
+        <div id="rdTop"></div>
+      </div>
       <article class="rx-box" id="rtListaBox"><div class="rx-boxh"><div><h3>Endereços com maior reincidência</h3><p class="rx-sub" id="rtListaNota"></p></div><div class="rx-leg"><span><i class="d1"></i>1ª vez</span><span><i class="d2"></i>reincidência</span><span><i class="d3"></i>alegação (imóvel fechado etc.)</span><span><b class="rx-gl">+12d</b> reincidência em até 30 dias</span></div></div><div id="rtLista"></div></article>
       <details class="rx-box rx-cond" id="rtCondBox"><summary><b>Possível condomínio ou lote</b> <span id="rtCondN"></span><small>mesmo número com PDEs diferentes, ou várias OS no mesmo dia (cavalete múltiplo, ligações novas) — normalmente não é retrabalho</small></summary><div id="rtCond"></div></details>
     </div>
@@ -2973,7 +3002,7 @@ function renderRt(){
   $("rtSub").innerHTML=[["geral","Análise de reincidência"],["busca","Consulta por endereço"],["cart","Carteira do dia"]].map(([k,l])=>`<button type="button" data-rv="${k}" aria-pressed="${rtView===k}"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${(k==="geral"?RT_IC.dash:RT_IC[k])}</svg>${l}</button>`).join("");
   $("rtV1").hidden=rtView!=="geral";$("rtFil").hidden=rtView!=="geral";$("rtV2").hidden=rtView!=="busca";$("rtV3").hidden=rtView!=="cart";
   if(sem){$("rxOla").innerHTML=LEITOR?"Olá, <b>coordenação</b>":"Olá, <b>Fernanda</b>";$("rxPill").textContent="";$("rxData").textContent=new Date().toLocaleDateString("pt-BR");$("rtBaseN").textContent="vazia";$("rtInfo").textContent=LEITOR?"A base de retrabalho ainda não foi publicada.":"Ainda não há base. Use Importar base (arquivo .json.gz) ou Atualizar com executados.";
-    ["rdTiles","rdMes","rtLista","rtRes","rtCkpi","rtClista","rtCond"].forEach(i=>$(i).innerHTML="");return;}
+    ["rdTiles","rdMes","rdTop","rtLista","rtRes","rtCkpi","rtClista","rtCond"].forEach(i=>$(i).innerHTML="");return;}
   $("rtBaseN").textContent=nf(RB.R.length)+" serviços";$("rtInfo").innerHTML=`de ${dmy(RB.ini)} a ${dmy(RB.fim)}${RB.em?`<br>atualizada em ${new Date(RB.em).toLocaleString("pt-BR",{dateStyle:"short",timeStyle:"short"})}`:""}<em>Sem fim do dia e continua. A mesma OS conta uma vez.</em>`;
   {const ag=new Date();$("rxOla").innerHTML=LEITOR?"Olá, <b>coordenação</b>":"Olá, <b>Fernanda</b>";$("rxData").textContent=ag.toLocaleDateString("pt-BR");
    const prox=RB.em?new Date(RB.em+15*864e5):null;$("rxPill").innerHTML=`<i></i>Base atualizada em <b>${RB.em?new Date(RB.em).toLocaleString("pt-BR",{dateStyle:"short",timeStyle:"short"}):"–"}</b>${prox?` · próxima atualização <b>${prox.toLocaleDateString("pt-BR")}</b>`:""}`;}
@@ -3038,21 +3067,22 @@ function rtDash(){const D=RB.D,F=rtFiltrar(),C=rtCalc();
   const cmp=F.J?"vs período anterior":"últimos 30 dias vs 30 antes";
   const porPolo=k=>["Interlagos","Grajaú"].map(p=>{let n=0;for(const e of ev)if(RT_POLO[D.a[e.r[8]]]===p)n++;return [p,n];});
   const pp=porPolo(),pE=rtPctModo("exec"),pT=rtPctModo("todas");
-  const tile=(l,v,dl,vis,c,tip,go)=>`<div class="rx-tile rx-clk${c?" "+c:""}"${go?` data-rgo="${go}"`:""} role="button" tabindex="0"${tip?` title="${esc(tip)}"`:""}><span>${l}</span><div class="rx-tv"><b>${v}</b>${dl||""}</div><div class="rx-vis">${vis}</div></div>`;
-  const barra=(l,v,mx,cor,m)=>`<div class="rx-hb${rtModo===m?" on":""}" data-rm="${m}"><em>${l}</em><i><u style="width:${Math.min(100,v*100/(mx||1)).toFixed(1)}%;background:${cor}"></u></i><strong>${f1(v)}</strong></div>`;
+  const SV=p=>`<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">${p}</svg>`;
+  const ICT={pct:SV('<path d="M19 5 5 19"/><circle cx="7" cy="7" r="2.5"/><circle cx="17" cy="17" r="2.5"/>'),ret:SV('<path d="M3 12a9 9 0 0 1 15.5-6.2L21 8M21 3v5h-5M21 12a9 9 0 0 1-15.5 6.2L3 16M3 21v-5h5"/>'),exe:SV('<path d="m5 12 5 5 9-10"/>'),rel:SV('<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>'),top:SV('<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>')};
+  const tile=o=>`<div class="kc rx-kc rx-clk${o.on?" sel":""}"${o.go?` data-rgo="${o.go}"`:""} role="button" tabindex="0" style="--c:${o.c}"${o.tip?` title="${esc(o.tip)}"`:""}><div class="kc-h"><span class="kc-ic">${o.ic}</span><span class="kc-l">${o.l}</span></div><div class="kc-vr"><span class="kc-v"${o.vc?` style="color:${o.vc}"`:""}>${o.v}</span>${o.dl||""}</div><div class="kc-s">${o.s||""}</div><div class="kc-f">${o.f||""}</div></div>`;
   const tP=pp[0][1]+pp[1][1]||1;
-  const split=`<div class="rx-split"><i data-rpo="Interlagos" style="width:${(pp[0][1]*100/tP).toFixed(1)}%" title="Interlagos ${nf(pp[0][1])}"></i><i data-rpo="Grajaú" style="width:${(pp[1][1]*100/tP).toFixed(1)}%" title="Grajaú ${nf(pp[1][1])}"></i></div><div class="rx-splitl"><span data-rpo="Interlagos"${poloSel==="Interlagos"?' class="on"':""}><i class="c1"></i>Interlagos ${Math.round(pp[0][1]*100/tP)}%</span><span data-rpo="Grajaú"${poloSel==="Grajaú"?' class="on"':""}><i class="c2"></i>Grajaú ${Math.round(pp[1][1]*100/tP)}%</span></div>`;
-  const anel=(v,cor)=>{const R=22,C=2*Math.PI*R;return `<svg viewBox="0 0 56 56" class="rx-ring"><circle cx="28" cy="28" r="${R}" fill="none" stroke="#EEF2F5" stroke-width="7"/><circle cx="28" cy="28" r="${R}" fill="none" stroke="${cor}" stroke-width="7" stroke-linecap="round" stroke-dasharray="${(C*v).toFixed(1)} ${C.toFixed(1)}" transform="rotate(-90 28 28)"/></svg>`;};
-  const MDs=rtMesDados(F,C).slice(-12);const spk=(()=>{if(MDs.length<2)return "";const vs=MDs.map(x=>x.p?x.v/x.p:0),mx=Math.max(...vs)||1,mn=Math.min(...vs)*.8;const W=160,H=34;const P=vs.map((v,i)=>`${(i*W/(vs.length-1)).toFixed(1)},${(H-2-(H-6)*(v-mn)/(mx-mn||1)).toFixed(1)}`).join(" ");return `<svg viewBox="0 0 ${W} ${H}" class="rx-spk" preserveAspectRatio="none"><polygon points="0,${H} ${P} ${W},${H}" fill="#0096D6" opacity=".12"/><polyline points="${P}" fill="none" stroke="#0096D6" stroke-width="2" vector-effect="non-scaling-stroke"/></svg>`;})();
-  const BK=[["0",0,0],["1-7",1,7],["8-30",8,30],["31-90",31,90],["90+",91,1e9]].map(([l,a,b])=>({l,v:ds.filter(d=>d>=a&&d<=b).length}));const mxk=Math.max(1,...BK.map(x=>x.v));
-  const hist=`<div class="rx-mh">${BK.map((x,i)=>`<div title="${x.l==="0"?"mesmo dia":x.l+" dias"}: ${nf(x.v)}"><i style="height:${Math.max(4,x.v*100/mxk).toFixed(0)}%" class="${i<3?"q":""}"></i><span>${x.l==="0"?"0d":x.l}</span></div>`).join("")}</div>`;
+  const modoSeg=`<div class="rk-seg">${[["todas","Todas",pT],["exec","Executadas",pE]].map(([m,l,v])=>`<button type="button" data-rm="${m}" class="${rtModo===m?"on":""}">${l} <b>${f1(v)}</b></button>`).join("")}</div>`;
+  const split=`<div class="kc-bar"><i data-rpo="Interlagos" style="width:${(pp[0][1]*100/tP).toFixed(1)}%;background:#00396F;cursor:pointer" title="Interlagos ${nf(pp[0][1])}"></i><i data-rpo="Grajaú" style="width:${(pp[1][1]*100/tP).toFixed(1)}%;background:#12A5D6;cursor:pointer" title="Grajaú ${nf(pp[1][1])}"></i></div><div class="rk-leg"><span data-rpo="Interlagos" class="${poloSel==="Interlagos"?"on":""}"><i style="background:#00396F"></i>Interlagos <b>${Math.round(pp[0][1]*100/tP)}%</b></span><span data-rpo="Grajaú" class="${poloSel==="Grajaú"?"on":""}"><i style="background:#12A5D6"></i>Grajaú <b>${Math.round(pp[1][1]*100/tP)}%</b></span></div>`;
+  const MDs=rtMesDados(F,C).slice(-12);const spk=(()=>{if(MDs.length<2)return "";const vs=MDs.map(x=>x.p?x.v/x.p:0),mx=Math.max(...vs)||1,mn=Math.min(...vs)*.8;const W=160,H=30;const P=vs.map((v,i)=>`${(i*W/(vs.length-1)).toFixed(1)},${(H-2-(H-6)*(v-mn)/(mx-mn||1)).toFixed(1)}`).join(" ");return `<svg viewBox="0 0 ${W} ${H}" class="rx-spk" preserveAspectRatio="none"><polygon points="0,${H} ${P} ${W},${H}" fill="#00396F" opacity=".08"/><polyline points="${P}" fill="none" stroke="#00396F" stroke-width="2" vector-effect="non-scaling-stroke"/></svg>`;})();
   const r30=ds.length?ate30/ds.length:0;
-  $("rdTiles").innerHTML=tile("% de retrabalho",f1(pct),rtDelta(AT.p,AN.p),barra("Todas",pT,Math.max(pT,pE)*1.2,"#7FC8EA","todas")+barra("Executadas",pE,Math.max(pT,pE)*1.2,"#fff","exec"),"t1",cmp+" · clique para alternar todas as baixas / só executadas","modo")+
-    tile("Retrabalhos",nf(ev.length),rtDelta(AT.ev,AN.ev),split,"t2",cmp+" · clique no polo para filtrar","lista")+
-    tile("Serviços executados",nf(F.serv),rtDelta(AT.sv,AN.sv,true),spk,"",(F.J?`${rtDm(F.J[0])} a ${rtDm(F.J[1])}`:`${dmy(RB.ini)} a ${dmy(RB.fim)}`)+" · "+nf(F.out.length)+" endereços com retrabalho · clique para ver a evolução","evo")+
-    tile("Em até 30 dias",ds.length?Math.round(r30*100)+"%":"–","",`<div class="rx-ringw">${anel(r30,"#F08C00")}<small>${nf(ate30)}<br>de ${nf(ds.length)}</small></div>`,rt30?"on":"",nf(ate30)+" reincidências em até 30 dias · clique para listar só esses endereços","r30")+
-    `<div class="rx-tile rx-ttop" title="Clique no serviço para filtrar o painel"><span>Serviços com mais reincidência</span><div class="rx-top">${(()=>{const t=new Map();for(const e of ev){const k=D.t[e.r[1]];t.set(k,(t.get(k)||0)+1);}const L=[...t].sort((a,b)=>b[1]-a[1]).slice(0,4),mx=L.length?L[0][1]:1;return L.length?L.map(([k,v])=>`<button type="button" data-rtt="${esc(k)}"${k===rtTssSel?' class="sel"':""} title="${esc(k)}: ${nf(v)} — clique para filtrar"><em>${esc(k.charAt(0)+k.slice(1).toLowerCase())}</em><strong>${nf(v)}</strong><i style="width:${(v*100/mx).toFixed(1)}%"></i></button>`).join(""):`<small>Sem reincidências.</small>`;})()}</div></div>`;
-  {const MD=rtMesDados(F,C).slice(-12);$("rdMes").innerHTML=`<p class="rx-sub">retrabalhos por mês — últimos ${MD.length} meses (passe o mouse para ver o %)</p>`+rtArea(MD,"v","#F08C00",v=>nf(v),1200,200);}}
+  const per=F.J?`${rtDm(F.J[0])} a ${rtDm(F.J[1])}`:`${dmy(RB.ini)} a ${dmy(RB.fim)}`,cmpC=F.J?"vs período anterior":"últimos 30 dias vs 30 antes";
+  $("rdTiles").innerHTML=tile({l:"% de retrabalho",c:"#0096D6",ic:ICT.pct,v:f1(pct),dl:rtDelta(AT.p,AN.p),s:rtModo==="exec"?"só executadas":"todas as baixas",f:modoSeg,tip:cmpC+" · clique para alternar","go":"modo"})+
+    tile({l:"Retrabalhos",c:"#F08C00",ic:ICT.ret,v:nf(ev.length),vc:"#E07F00",dl:rtDelta(AT.ev,AN.ev),s:`${nf(F.out.length)} endereços`,f:split,tip:cmpC+" · clique no polo para filtrar",go:"lista"})+
+    tile({l:"Serviços executados",c:"#00396F",ic:ICT.exe,v:nf(F.serv),dl:rtDelta(AT.sv,AN.sv,true),s:per,f:spk,tip:"clique para ver a evolução",go:"evo"})+
+    tile({l:"Reincidência em até 30 dias",c:"#D9534A",ic:ICT.rel,v:ds.length?Math.round(r30*100)+"%":"–",s:`${nf(ate30)} de ${nf(ds.length)} retrabalhos`,f:`<div class="kc-bar"><i style="width:${(r30*100).toFixed(1)}%;background:#D9534A"></i></div>`,on:rt30,tip:"clique para listar só esses endereços",go:"r30"});
+  $("rdTop").innerHTML=
+    `<div class="kc rx-kc rx-ttop" style="--c:#F08C00" title="Clique no serviço para filtrar o painel"><div class="kc-h"><span class="kc-ic">${ICT.top}</span><span class="kc-l">Serviços com mais reincidência</span></div><div class="rx-top">${(()=>{const t=new Map();for(const e of ev){const k=D.t[e.r[1]];t.set(k,(t.get(k)||0)+1);}const L=[...t].sort((a,b)=>b[1]-a[1]).slice(0,4),mx=L.length?L[0][1]:1;return L.length?L.map(([k,v])=>`<button type="button" data-rtt="${esc(k)}"${k===rtTssSel?' class="sel"':""} title="${esc(k)}: ${nf(v)} — clique para filtrar"><em>${esc(k.charAt(0)+k.slice(1).toLowerCase())}</em><strong>${nf(v)}</strong><i style="width:${(v*100/mx).toFixed(1)}%"></i></button>`).join(""):`<small>Sem reincidências.</small>`;})()}</div></div>`;
+  {const MD=rtMesDados(F,C).slice(-12);$("rdMes").innerHTML=`<p class="rx-sub">retrabalhos por mês — últimos ${MD.length} meses (passe o mouse para ver o %)</p>`+rtArea(MD,"v","#F08C00",v=>nf(v),860,230);}}
 
 function rtMesSvg(it){if(!it.length)return `<div class="rtvazio">Sem retrabalhos no período.</div>`;
   const MES=["jan","fev","mar","abr","mai","jun","jul","ago","set","out","nov","dez"];const W=Math.max(560,it.length*52),H=230,pl=8,pr=8,pt=30,pb=40,n=it.length,bw=(W-pl-pr)/n;
