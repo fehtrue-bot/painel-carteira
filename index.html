@@ -1764,6 +1764,9 @@ body.printmode .vz,body.printmode .tabbar{display:none}
 .sb-logo{width:46px;height:46px;border-radius:13px;background:linear-gradient(135deg,#12D1FE,#0096D6);display:grid;place-items:center;flex:none;box-shadow:0 4px 12px rgba(0,150,214,.25)}
 .sb-logo svg{width:24px;height:24px}
 @media (max-width:1000px){.sb-brand{display:none}.sb-logo{width:36px;height:36px}}
+.rk-hist{display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap}
+.rk-hist label{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#8A97A3}
+.rk-hist select{font:600 14px var(--f-body);color:#00396F;background:#fff;border:1px solid #C9E4F4;border-radius:9px;padding:7px 12px;min-width:260px}
 
 </style>
 </head>
@@ -1968,6 +1971,7 @@ body.printmode .vz,body.printmode .tabbar{display:none}
       <div id="rtRes"></div>
     </div>
     <div id="rtV3" hidden>
+      <div class="rk-hist" id="rtChist"></div>
       <div class="kcs k4" id="rtCkpi"></div>
       <article class="rx-box"><div class="rx-boxh"><div><h3>Já feitas no mesmo endereço</h3><p class="rx-sub" id="rtCnota"></p></div><div class="rk-tools"><div class="seg2" id="rtCper"></div></div></div><div class="rk-chips" id="rtCfil"></div><div id="rtClista"></div></article>
     </div>
@@ -2346,7 +2350,9 @@ $("impOk").onclick=async()=>{
     const lidas=t=>res[t]?res[t].raw.rows.length-res[t].recs.length-(res[t].est.continua||0):0;
     const fora=lidas("ac")+lidas("ca");if(fora)checks.push(check("warn",nf(fora),"Linhas fora do painel","de outro ATC (fora de 923, 929 e 299) ou ligação de água de outro contrato"));
     $("impChecks").innerHTML=checks.join("");
+    const exArq=impArq.ex.slice();
     diaSel="todos";await salvar();renderTudo();
+    if(typeof rtAlimentar==="function")rtAlimentar(exArq).then(t=>{if(t&&(t.novos||t.trocados))msg($("msg").textContent+` Retrabalho: ${nf(t.novos)} serviços novos guardados no histórico.`);});
     msg((avisos.length?avisos.join(" ")+" ":"")+"Painel montado com os arquivos do dia. Atualizando o link da coordenação…");
     publicar(true).then(ok=>{if(ok)msg((avisos.length?avisos.join(" ")+" ":"")+"Painel montado e link da coordenação atualizado.");});
     setTimeout(()=>{$("imp").hidden=true;for(const t of ["ac","ex","ca"]){impArq[t]=[];$(SLOT[t][0]).value="";marcaSlot(t);}},1600);
@@ -3193,7 +3199,7 @@ function rtSepEnd(e){const m=String(e||"").match(/^(.*),\s*([^,]*)$/);return m?[
 // OS da carteira: quantas vezes o mesmo serviço já foi feito naquele endereço
 function rtHistCart(r){if(!RB||!RB.R||!RB.R.length)return [];const [e,n]=rtSepEnd(r.end);const L=rtIndice().get(rtAddrK(e,n));if(!L)return [];const t=U(r.tss);return L.filter(x=>U(RB.D.t[x[1]])===t&&x[0]!==r.os);}
 function rtSelo(r){const h=rtHistCart(r);if(!h.length)return "";const ult=h[h.length-1];return ` <span class="rtselo" title="Já feito ${h.length}x neste endereço · última em ${rtDm(ult[12])}">↻ já feito ${h.length}x</span>`;}
-function rtChip(r,ale){const D=RB.D;return `<i class="${ale?"al":""}" title="OS ${esc(r[0])} · ${esc(D.r[r[9]])}${D.q[r[10]]?" · "+esc(D.q[r[10]]):""}">${rtDm(r[12])}</i>`;}
+function rtChip(r,ale){const D=RB.D;return `<i class="${ale?"al":""}" title="OS ${esc(r[0])} · ${esc(r.rs!=null?r.rs:D.r[r[9]])}${D.q[r[10]]?" · "+esc(D.q[r[10]]):""}">${rtDm(r[12])}</i>`;}
 
 // ---------- tela ----------
 var rtView="geral",rtCper="90",rt30=false;
@@ -3343,11 +3349,22 @@ function rtBuscar(){const D=RB.D,q=U(($("rtBusca").value||"").trim());const ale=
       `<table class="rtts"><tbody>${ts.map(([t,x])=>`<tr class="${x.length>1?"rep":""}"><td class="n">${x.length}x</td><td class="t">${esc(t)}</td><td><div class="rtd">${x.map(r=>rtChip(r,ale[r[9]])).join("")}</div></td></tr>`).join("")}</tbody></table></div>`;}).join("");}
 
 // ---------- carteira × retrabalho ----------
-var rtCfil="";
-function rtCarteira(){const D=RB.D;const agora=Date.now();const lim90=rtMin(new Date(agora-90*864e5).toLocaleDateString("pt-BR")+" 00:00");
+var rtCfil="",rtCdc="";
+// histórico das carteiras: guarda, para cada carteira montada, as OS que já tinham o mesmo serviço feito no endereço
+function rtSnapCarteira(){if(!RB||!RB.R||!RB.R.length||!S||!S.ult||!S.ult.dc||!S.ult.ca)return false;const ale=rtCalc().ale;const it=[];
+  for(const r of S.ult.ca){const h=rtHistCart(r);if(h.length)it.push({os:r.os,end:r.end,bai:r.bai,p:r.p,tss:r.tss,fora:r.fora?1:0,h:h.map(x=>[x[0],x[12],ale[x[9]]?1:0,RB.D.r[x[9]]||""])});}
+  const sn={dc:S.ult.dc,em:S.ult.em||Date.now(),n:S.ult.ca.length,np:{},it};for(const p of POLOS)sn.np[p]=S.ult.ca.filter(r=>r.p===p).length;
+  RB.CH=(RB.CH||[]).filter(x=>x.dc!==sn.dc).concat([sn]).sort((a,b)=>a.dc<b.dc?-1:1).slice(-180);return true;}
+function rtCarteira(){const D=RB.D;
+  if(!LEITOR&&S.ult.dc&&!(RB.CH||[]).some(x=>x.dc===S.ult.dc)){if(rtSnapCarteira())rtSalvar();}
+  const CH=(RB.CH||[]).slice().reverse();const snap=rtCdc?CH.find(x=>x.dc===rtCdc):null;if(rtCdc&&!snap)rtCdc="";
+  $("rtChist").innerHTML=`<label>Carteira de</label><select id="rtCsel"><option value="">${S.ult.dc?"Hoje · "+dmy(S.ult.dc):"Hoje"}</option>${CH.filter(x=>x.dc!==S.ult.dc).map(x=>`<option value="${x.dc}"${rtCdc===x.dc?" selected":""}>${wd(x.dc)} ${dmy(x.dc)} · ${nf(x.it.length)} em risco</option>`).join("")}</select><span class="note">${nf(CH.length)} ${CH.length===1?"carteira guardada":"carteiras guardadas"}</span>`;
+  const agora=snap?new Date(snap.dc+"T23:59").getTime():Date.now();const lim90=rtMin(new Date(agora-90*864e5).toLocaleDateString("pt-BR")+" 00:00");
   $("rtCper").innerHTML=[["90","90 dias"],["tudo","Qualquer tempo"]].map(([k,l])=>`<button type="button" data-rcp="${k}" aria-pressed="${rtCper===k}">${l}</button>`).join("");
-  const ca=ultF().ca.filter(r=>fp(r));const itens=[];
-  for(const r of ca){let h=rtHistCart(r);if(rtCper==="90")h=h.filter(x=>x[12]>=lim90);if(h.length)itens.push({r,h});}
+  const fpS=x=>poloSel==="Todos"||x.p===poloSel;
+  const ca=snap?{length:poloSel==="Todos"?snap.n:(snap.np||{})[poloSel]||0}:ultF().ca.filter(r=>fp(r));const itens=[];
+  if(snap){for(const x of snap.it){if(!fpS(x))continue;let h=x.h.map(a=>{const z=[];z[0]=a[0];z[12]=a[1];z.al=a[2];z.rs=a[3];return z;});if(rtCper==="90")h=h.filter(z=>z[12]>=lim90);if(h.length)itens.push({r:x,h});}}
+  else for(const r of ca){let h=rtHistCart(r);if(rtCper==="90")h=h.filter(x=>x[12]>=lim90);if(h.length)itens.push({r,h});}
   itens.sort((a,b)=>(b.r.fora-a.r.fora)||b.h.length-a.h.length||b.h[b.h.length-1][12]-a.h[a.h.length-1][12]);
   const fora=itens.filter(x=>x.r.fora).length,noP=itens.length-fora;
   const SV=p=>`<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">${p}</svg>`;
@@ -3358,15 +3375,15 @@ function rtCarteira(){const D=RB.D;const agora=Date.now();const lim90=rtMin(new 
   if(rtCfil&&!tT.has(rtCfil))rtCfil="";
   const cap=t=>t.charAt(0)+t.slice(1).toLowerCase();
   $("rtCkpi").innerHTML=
-    rkCard({l:"Risco de retrabalho",c:"#F08C00",v:nf(itens.length),vc:"#E07F00",s:`OS de ${nf(ca.length)} na carteira`,g:rkRing([[pc,"#F08C00"]],ca.length?Math.round(pc*100)+"%":""),attr:` data-rcf=""`,tip:"OS da carteira em endereço onde o mesmo serviço já foi feito · clique para ver todas"})+
+    rkCard({l:"Risco de retrabalho",c:"#F08C00",v:nf(itens.length),vc:"#E07F00",s:`OS de ${nf(ca.length)} na carteira${snap?" de "+dm(snap.dc):""}`,g:rkRing([[pc,"#F08C00"]],ca.length?Math.round(pc*100)+"%":""),attr:` data-rcf=""`,tip:"OS da carteira em endereço onde o mesmo serviço já foi feito · clique para ver todas"})+
     (top?rkCard({l:"Serviço que mais aparece",c:"#0096D6",v:`${nf(top[1])} <small>OS</small>`,s:`<span class="k2-srv">${esc(cap(top[0]))}</span>`,g:rkRing([[itens.length?top[1]/itens.length:0,"#0096D6"]],itens.length?Math.round(top[1]*100/itens.length)+"%":""),sel:rtCfil===top[0],attr:` data-rcf="${esc(top[0])}"`,tip:"clique para ver só esse serviço"}):"")+
     rkCard({l:"Por polo",c:"#00396F",v:`${nf(pI)} <small>·</small> ${nf(pG)}`,s:`<i class="dI"></i>Interlagos <i class="dG"></i>Grajaú`,g:rkRing([[itens.length?pI/itens.length:0,"#00396F"],[itens.length?pG/itens.length:0,"#12A5D6"]]),attr:go({modo:"carteira"}),tip:"clique para abrir a carteira"});
   $("rtCfil").innerHTML=`<button type="button" data-rcf="" class="${rtCfil?"":"on"}">Todos <b>${nf(itens.length)}</b></button>`+tops.slice(0,6).map(([k,n])=>`<button type="button" data-rcf="${esc(k)}" class="${rtCfil===k?"on":""}" title="${esc(k)}">${esc(cap(k).length>34?cap(k).slice(0,32)+"…":cap(k))} <b>${nf(n)}</b></button>`).join("");
   const L=itens.filter(x=>!rtCfil||(x.r.tss||"(sem TSS)")===rtCfil).sort((a,b)=>b.h.length-a.h.length||b.h[b.h.length-1][12]-a.h[a.h.length-1][12]);
   $("rtCnota").textContent=`${nf(L.length)} OS · se executar de novo, vira retrabalho`;
-  const hoje=rtMin(new Date().toLocaleDateString("pt-BR")+" 12:00");
+  const hoje=rtMin(new Date(agora).toLocaleDateString("pt-BR")+" 12:00");
   $("rtClista").innerHTML=L.length?`<div class="rk-list">${L.slice(0,400).map(({r,h})=>{const ul=h[h.length-1];const dd=Math.round((hoje-ul[12])/1440);const ale=rtCalc().ale;
-    return `<div class="rk-row"><div class="rk-n"><b>${h.length}x</b><small>feito</small></div><div class="rk-e"><b>${esc(r.end)}</b><small>${esc(r.bai)} · ${r.p} · OS ${esc(r.os)}</small></div><div class="rk-s">${esc(r.tss)}</div><div class="rk-d"><div class="rtd">${h.slice(-3).map(x=>rtChip(x,ale[x[9]])).join("")}${h.length>3?`<em>+${h.length-3}</em>`:""}</div><small>há ${dd} ${dd===1?"dia":"dias"}</small></div></div>`;}).join("")}</div>${L.length>400?`<div class="note">mostrando 400 de ${nf(L.length)}</div>`:""}`:`<div class="rtvazio">Nenhuma OS nessa condição.</div>`;}
+    return `<div class="rk-row"><div class="rk-n"><b>${h.length}x</b><small>feito</small></div><div class="rk-e"><b>${esc(r.end)}</b><small>${esc(r.bai)} · ${r.p} · OS ${esc(r.os)}</small></div><div class="rk-s">${esc(r.tss)}</div><div class="rk-d"><div class="rtd">${h.slice(-3).map(x=>rtChip(x,x.al||ale[x[9]])).join("")}${h.length>3?`<em>+${h.length-3}</em>`:""}</div><small>há ${dd} ${dd===1?"dia":"dias"}</small></div></div>`;}).join("")}</div>${L.length>400?`<div class="note">mostrando 400 de ${nf(L.length)}</div>`:""}`:`<div class="rtvazio">Nenhuma OS nessa condição.</div>`;}
 
 // ---------- eventos ----------
 document.addEventListener("click",e=>{
@@ -3382,6 +3399,7 @@ document.addEventListener("click",e=>{
   const c=e.target.closest("[data-rcp]");if(c){rtCper=c.dataset.rcp;renderRt();return;}
   const t=e.target.closest("[data-rtt]");if(t&&t.closest("#v-rt")){rtTssSel=(t.dataset.rtt===rtTssSel?"":t.dataset.rtt);renderRt();return;}
   const k=e.target.closest(".rx-row .rtl1");if(k){const key=k.parentElement.dataset.rtk;rtAbertos.has(key)?rtAbertos.delete(key):rtAbertos.add(key);renderRt();}});
+document.addEventListener("change",e=>{if(e.target&&e.target.id==="rtCsel"){rtCdc=e.target.value;rtCfil="";renderRt();}});
 {let tt=null;$("rtTss").addEventListener("input",e=>{clearTimeout(tt);tt=setTimeout(()=>{rtTssSel=e.target.value.trim();renderRt();},300);});}
 $("rtPde").onchange=()=>{rtCache=null;renderRt();};
 {let tb=null;$("rtBusca").addEventListener("input",()=>{clearTimeout(tb);tb=setTimeout(()=>{if(RB&&RB.R&&RB.R.length)rtBuscar();},250);});}
@@ -3431,6 +3449,12 @@ $("rtXls").onclick=()=>{if(!RB||!RB.R.length){rtAviso("Ainda não há base.");re
 (async()=>{if(LEITOR){if(await rtCarregarLeitor()&&abaAtual==="rt")renderRt();setInterval(async()=>{if(!document.hidden&&await rtCarregarLeitor()&&abaAtual==="rt")renderRt();},600000);}
   else{await rtCarregarLocal();if(abaAtual==="rt")renderRt();}})();
 document.addEventListener("keydown",e=>{if(e.key==="Enter"&&e.target.classList&&e.target.classList.contains("rx-clk"))e.target.click();});
+
+// arquivos do dia → base do retrabalho (guarda o histórico sozinho)
+async function rtAlimentar(exFiles){try{if(!RB){await rtCarregarLocal();}if(!RB)RB=rtVazio();let tot={novos:0,trocados:0};
+  for(const f of exFiles||[]){try{const {out}=await rtLerArquivo(f);const r=rtJuntar(RB,out);tot.novos+=r.novos;tot.trocados+=r.trocados;}catch(e){console.warn("retrabalho: não li",f.name,e);}}
+  rtCache=null;rtSnapCarteira();await rtSalvar();if(abaAtual==="rt")renderRt();await rtPublicar();return tot;}catch(e){console.error(e);return null;}}
+window.__rt=()=>RB;
 
 })();
 </script>
