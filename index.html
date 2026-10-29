@@ -1629,6 +1629,9 @@ body.printmode .vz,body.printmode .tabbar{display:none}
 .tabbar .tab{border-radius:0!important;background:none!important}
 .tabbar .tab:hover{background:#F6FAFC!important;color:#00396F!important}
 .tabbar .tab[aria-selected="true"]{background:none!important;color:#00396F!important;border-bottom:3px solid #0096D6!important}
+.vz{padding-top:14px;padding-bottom:14px}
+.vz-in{gap:12px}
+.vz-h{margin:0;font-family:var(--f-display);font-size:24px;font-weight:700;letter-spacing:.01em;color:#fff}
 
 </style>
 </head>
@@ -2793,15 +2796,7 @@ document.addEventListener("click",e=>{const el=e.target.closest("[data-go]");if(
   const d=e.target.closest("#diaDia .r[data-dia],#tbGrupo th[data-dia]");if(d){diaSel=diaSel===d.dataset.dia?"todos":d.dataset.dia;renderTudo();}});
 function aba(n){abaAtual=n;document.body.classList.toggle("aba-rel",n==="rel");document.body.classList.toggle("aba-rt",n==="rt");if(n!=="os")lss("carteira-aba",n);document.body.classList.remove("printmode");for(const k of ["painel","mon","res","rel","lig","serv","rt","os"]){$("t-"+k).setAttribute("aria-selected",k===n);$("v-"+k).hidden=k!==n;}renderTudo();}
 $("t-painel").onclick=()=>aba("painel");$("t-lig").onclick=()=>aba("lig");$("t-mon").onclick=()=>aba("mon");$("t-rel").onclick=()=>aba("rel");$("t-res").onclick=()=>aba("res");$("t-serv").onclick=()=>aba("serv");$("t-rt").onclick=()=>aba("rt");$("t-os").onclick=()=>aba("os");
-function renderVz(){const el=$("vzBand");if(!el)return;const G="Vazamento de água";const ca=ultF().ca.filter(r=>r.g===G);const t=ca.length,f=ca.filter(r=>r.fora).length,n=t-f,pv=t?n/t:null,meta=metaDe(G);
-  const pf=v=>v==null?"–":(Math.round(v*1000)/10).toLocaleString("pt-BR")+"%";
-  const polo=p=>{const c=ca.filter(r=>r.p===p),tt=c.length,ff=c.filter(r=>r.fora).length;return `<div class="vz-p"${go({p,modo:"carteira",g:G})}><span>${p}</span><b>${nf(tt)}</b><div class="kc-bar"><i style="width:${tt?((tt-ff)*100/tt).toFixed(1):0}%;background:#2FA36B"></i><i style="width:${tt?(ff*100/tt).toFixed(1):0}%;background:#D9534A"></i></div><small><em class="g">${nf(tt-ff)}</em> no prazo · <em class="r">${nf(ff)}</em> fora</small></div>`;};
-  el.innerHTML=t||S.ult.dc?`<div class="vz-in"><div class="vz-t"><span class="vz-ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2.5c-3.6 4.4-6.5 8-6.5 11.6a6.5 6.5 0 0 0 13 0C18.5 10.5 15.6 6.9 12 2.5Z" fill="currentColor"/></svg></span><div><b>Carteira de vazamentos</b><small>${S.ult.dc?"carteira de "+wd(S.ult.dc)+" "+dmy(S.ult.dc):""}</small></div></div>
-    <div class="vz-main"${go({modo:"carteira",g:G})}><b>${nf(t)}</b><span>na carteira</span></div>
-    <div class="vz-k"${go({modo:"carteira",g:G,prazo:"no"})}><span>No prazo</span><b class="g">${nf(n)}</b></div>
-    <div class="vz-k"${go({modo:"carteira",g:G,prazo:"fora"})}><span>Fora do prazo</span><b class="r">${nf(f)}</b></div>
-    <div class="vz-k"><span>% no prazo</span><b class="${pv!=null&&pv>=meta?"g":"r"}">${pf(pv)}</b><small>meta ${Math.round(meta*100)}%</small></div>
-    <div class="vz-ps">${polo("Interlagos")}${polo("Grajaú")}</div></div>`:"";}
+function renderVz(){const el=$("vzBand");if(!el||el.dataset.ok)return;el.dataset.ok=1;el.innerHTML=`<div class="vz-in"><span class="vz-ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2.5c-3.6 4.4-6.5 8-6.5 11.6a6.5 6.5 0 0 0 13 0C18.5 10.5 15.6 6.9 12 2.5Z" fill="currentColor"/></svg></span><h1 class="vz-h">Carteira de Vazamentos</h1></div>`;}
 function renderTudo(){renderFiltros();renderVz();if(abaAtual==="painel")render();else if(abaAtual==="serv")renderServ();else if(abaAtual==="lig")renderLig();else if(abaAtual==="mon")renderMonLig();else if(abaAtual==="rel")renderRel();else if(abaAtual==="res")renderRes();else if(abaAtual==="rt")renderRt();else renderOS();}
 
 /* ================= Excel ================= */
