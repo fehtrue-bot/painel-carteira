@@ -2782,12 +2782,12 @@ function rtJanelaConta(a,b){const D=RB.D,C=rtCalc();const okP=r=>poloSel==="Todo
   for(const r of RB.R){if(!okP(r)||!okT(r))continue;if(rtModo==="exec"&&C.ale[r[9]])continue;if(r[12]>=a&&r[12]<=b)sv++;}return {ev,sv,p:sv?ev/sv:0};}
 function rtDelta(atual,ant,inv){if(!ant)return "";const d=(atual-ant)/ant;const bom=inv?d>0:d<0;return `<em class="rx-dl ${Math.abs(d)<0.005?"":bom?"ok":"ru"}">${d>0?"▲":"▼"} ${Math.abs(Math.round(d*1000)/10).toLocaleString("pt-BR")}%</em>`;}
 function rtArea(it,k,cor,fmt,WW,HH){if(!it.length)return `<div class="rtvazio">Sem dados.</div>`;const MES=["jan","fev","mar","abr","mai","jun","jul","ago","set","out","nov","dez"];
-  const W=WW||600,H=HH||170,pl=WW?24:6,pr=WW?24:6,pt=22,pb=26,n=it.length,mx=Math.max(...it.map(x=>x[k]))*1.15||1,X=i=>pl+(n===1?(W-pl-pr)/2:i*(W-pl-pr)/(n-1)),Y=v=>pt+(H-pt-pb)*(1-v/mx);
+  const W=WW||600,H=HH||170,pl=WW?24:6,pr=WW?24:6,pt=WW?30:22,pb=26,n=it.length,mx=Math.max(...it.map(x=>x[k]))*1.15||1,X=i=>pl+(n===1?(W-pl-pr)/2:i*(W-pl-pr)/(n-1)),Y=v=>pt+(H-pt-pb)*(1-v/mx);
   const pts=it.map((x,i)=>`${X(i).toFixed(1)},${Y(x[k]).toFixed(1)}`).join(" ");const id="g"+k+Math.random().toString(36).slice(2,6);
   let sv=`<svg viewBox="0 0 ${W} ${H}" class="rx-area"><defs><linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${cor}" stop-opacity=".28"/><stop offset="1" stop-color="${cor}" stop-opacity="0"/></linearGradient></defs>`;
   sv+=`<polygon points="${X(0)},${H-pb} ${pts} ${X(n-1)},${H-pb}" fill="url(#${id})"/><polyline points="${pts}" fill="none" stroke="${cor}" stroke-width="2.4" stroke-linejoin="round"/>`;
   it.forEach((x,i)=>{sv+=`<circle cx="${X(i)}" cy="${Y(x[k])}" r="3" fill="#fff" stroke="${cor}" stroke-width="2"><title>${MES[Number(x.m.slice(5))-1]}/${x.m.slice(2,4)}: ${fmt(x[k])}${x.p!=null?" · "+(Math.round(x.p*1000)/10).toLocaleString("pt-BR")+"%":""}</title></circle>`;if(true)sv+=`<text x="${X(i)}" y="${H-8}" text-anchor="middle" class="m">${MES[Number(x.m.slice(5))-1]}</text>`;});
-  const u=it[n-1];sv+=`<text x="${X(n-1)-4}" y="${Y(u[k])-9}" text-anchor="end" class="v">${fmt(u[k])}</text></svg>`;return sv;}
+  if(WW){it.forEach((x,i)=>{sv+=`<text x="${X(i)}" y="${Y(x[k])-10}" text-anchor="middle" class="v">${fmt(x[k])}</text>`;});sv+=`</svg>`;}else{const u=it[n-1];sv+=`<text x="${X(n-1)-4}" y="${Y(u[k])-9}" text-anchor="end" class="v">${fmt(u[k])}</text></svg>`;}return sv;}
 function rtDash(){const D=RB.D,F=rtFiltrar(),C=rtCalc();
   const ev=[];for(const x of F.out){const L=x.g.L;for(let i=1;i<L.length;i++){const r=L[i];if(F.J&&(r[12]<F.J[0]||r[12]>F.J[1]))continue;ev.push({r,p:L[i-1],d:Math.max(0,Math.round((r[12]-L[i-1][12])/1440))});}}
   const pct=F.serv?ev.length/F.serv:0,f1=v=>(Math.round(v*1000)/10).toLocaleString("pt-BR")+"%";
