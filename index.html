@@ -1182,6 +1182,27 @@ body.aba-rt .wrap{max-width:1500px}
 .rtct td b.vm{color:var(--rx-lj)}
 .rx-status .rx-led{background:var(--rx-az);box-shadow:0 0 0 3px var(--rx-sf)}
 #v-rt .rx-srv input#rtTss{border:0!important;max-width:none!important;width:100%;padding:9px 0!important;background:none!important;box-shadow:none!important;outline:0}
+/* histórico de visitas (substitui a linha do tempo) */
+.rx-hist{min-width:0}
+.rx-seq{display:flex;align-items:center;flex-wrap:wrap;gap:4px 0}
+.rx-v{position:relative;display:inline-flex;align-items:baseline;gap:2px;padding:3px 8px;border-radius:7px;font-size:12px;font-weight:700;font-variant-numeric:tabular-nums;line-height:1.25;white-space:nowrap}
+.rx-v small{font-size:9.5px;font-weight:600;opacity:.75}
+.rx-v em{font-style:normal;font-size:10.5px;margin-left:3px;padding:0 4px;border-radius:5px;background:rgba(255,255,255,.35)}
+.rx-v.v1{background:#00396F;color:#fff}
+.rx-v.v2{background:#F08C00;color:#fff}
+.rx-v.v3{background:#fff;color:#5E6E7B;box-shadow:inset 0 0 0 1.5px #B7C3CC}.rx-v.v3 em{background:#EEF2F5}
+.rx-gap{display:inline-flex;align-items:center;font-size:10.5px;font-weight:700;color:#8A97A3;padding:0 4px;white-space:nowrap}
+.rx-gap::before,.rx-gap::after{content:"";width:8px;height:1.5px;background:#C9D3DB;margin:0 3px}
+.rx-gap.curto{color:#C26A00}.rx-gap.curto::before,.rx-gap.curto::after{background:#F3C27A}
+.rx-gap.longo{color:#A9B5BF}
+.rx-gap:empty::before{width:14px}.rx-gap:empty::after{display:none}
+.rx-mais{font-size:11px;font-weight:700;color:#5E6E7B;background:#EEF2F5;border-radius:7px;padding:3px 8px;margin:0 2px}
+.rx-gl{font-size:11px;color:#C26A00}
+.rx-leg i.d1,.rx-leg i.d2,.rx-leg i.d3{border-radius:3px;width:14px;height:10px}
+.rtl1.rx-l,.rx-colh{grid-template-columns:52px minmax(170px,1fr) minmax(130px,.8fr) minmax(260px,2fr) 110px}
+.rx-seq{flex-wrap:nowrap;overflow:hidden}
+.rx-v small{opacity:.7;font-weight:600}
+.rx-gap::before,.rx-gap::after{width:6px}
 
 </style>
 </head>
@@ -1375,7 +1396,7 @@ body.aba-rt .wrap{max-width:1500px}
         <article class="rx-box"><h3>O que mais volta</h3><p class="rx-sub">retrabalhos por serviço — clique para ver só ele</p><div id="rtTbTss"></div></article>
         <article class="rx-box"><h3>Mês a mês</h3><p class="rx-sub">retrabalhos e % sobre os serviços do mês</p><div id="rtMes"></div></article>
       </div>
-      <article class="rx-box"><div class="rx-boxh"><div><h3>Endereços que mais voltam</h3><p class="rx-sub" id="rtListaNota"></p></div><div class="rx-leg"><span><i class="d1"></i>1ª vez</span><span><i class="d2"></i>voltou</span><span><i class="d3"></i>alegação</span></div></div><div id="rtLista"></div></article>
+      <article class="rx-box"><div class="rx-boxh"><div><h3>Endereços que mais voltam</h3><p class="rx-sub" id="rtListaNota"></p></div><div class="rx-leg"><span><i class="d1"></i>1ª vez</span><span><i class="d2"></i>voltou</span><span><i class="d3"></i>alegação (imóvel fechado etc.)</span><span><b class="rx-gl">+12d</b> voltou em até 30 dias</span></div></div><div id="rtLista"></div></article>
       <details class="rx-box rx-cond" id="rtCondBox"><summary><b>Possível condomínio ou lote</b> <span id="rtCondN"></span><small>mesmo número com PDEs diferentes, ou várias OS no mesmo dia (cavalete múltiplo, ligações novas) — normalmente não é retrabalho</small></summary><div id="rtCond"></div></details>
     </div>
     <div id="rtV2" hidden>
@@ -2642,7 +2663,7 @@ function rtGeral(){const D=RB.D;
   // endereços
   const lim=40;$("rtListaNota").textContent=`${nf(princ.length)} endereços${princ.length>lim?`, os ${lim} que mais voltaram`:""} — clique para ver as OS`;
   const T0=F.J?F.J[0]:rtMin(dmy(RB.ini)+" 00:00"),T1=F.J?F.J[1]:rtMin(dmy(RB.fim)+" 23:59");
-  $("rtLista").innerHTML=princ.length?`<div class="rx-rows"><div class="rx-colh"><span>Vezes</span><span>Endereço</span><span>Serviço</span><span>Linha do tempo (${rtDm(T0)} a ${rtDm(T1)})</span><span>Menor intervalo</span></div>`+princ.slice(0,lim).map(x=>rtLinha(x.g.key,x.g.L,C.ale,T0,T1)).join("")+`</div>`:`<div class="rtvazio">Nenhum retrabalho com esses filtros.</div>`;
+  $("rtLista").innerHTML=princ.length?`<div class="rx-rows"><div class="rx-colh"><span>Vezes</span><span>Endereço</span><span>Serviço</span><span>Quando foi feito (e quantos dias depois voltou)</span><span>Menor intervalo</span></div>`+princ.slice(0,lim).map(x=>rtLinha(x.g.key,x.g.L,C.ale,T0,T1)).join("")+`</div>`:`<div class="rtvazio">Nenhum retrabalho com esses filtros.</div>`;
   $("rtCondBox").hidden=!cond.length;$("rtCondN").textContent=cond.length?nf(cond.length)+" endereços":"";
   $("rtCond").innerHTML=cond.length?`<div class="rx-rows">`+cond.slice(0,30).map(x=>rtLinha(x.g.key,x.g.L,C.ale,T0,T1)).join("")+`</div>`:"";}
 
@@ -2657,17 +2678,22 @@ function rtMesSvg(it){if(!it.length)return `<div class="rtvazio">Sem retrabalhos
 
 // uma linha por endereço, com a linha do tempo das vezes que o serviço foi feito
 function rtLinha(key,L,ale,T0,T1){const D=RB.D,r0=L[0],ab=rtAbertos.has(key);
-  const span=Math.max(1,T1-T0);
-  // junta as vezes que ficam muito perto na linha do tempo num ponto só (com o número)
-  const cl=[];L.forEach((r,i)=>{const x=Math.max(0,Math.min(100,(r[12]-T0)*100/span));const u=cl[cl.length-1];const al=!!(ale&&ale[r[9]]);
-    if(u&&x-u.x0<3.6){u.n++;u.x=(u.x*(u.n-1)+x)/u.n;if(!al)u.al=false;u.m2=r[12];}else cl.push({x0:x,x,n:1,first:i===0,al,m:r[12],m2:r[12]});});
-  const dots=cl.map(o=>{const x=o.x;return `<span class="rx-dot ${o.first?"d1":o.al?"d3":"d2"}${o.n>1?" n":""}" style="left:${x.toFixed(2)}%" title="${rtDm(o.m)}${o.m2!==o.m?" a "+rtDm(o.m2):""}${o.n>1?" — "+o.n+" vezes":""}">${o.n>1?o.n:""}</span>`;}).join("");
+  // visitas agrupadas por dia, na ordem, com o intervalo entre uma e outra
+  const V=[];L.forEach((r,i)=>{const d=rtIso(r[12]);const u=V[V.length-1];const al=!!(ale&&ale[r[9]]);
+    if(u&&u.d===d){u.n++;if(!al)u.al=false;}else V.push({d,m:r[12],n:1,first:i===0,al});});
+  const vis=o=>`<span class="rx-v ${o.first?"v1":o.al?"v3":"v2"}" title="${rtDm(o.m)}${o.n>1?" — "+o.n+" vezes no dia":""}${o.al?" — alegação":""}">${rtDm(o.m).slice(0,5)}<small>/${o.d.slice(2,4)}</small>${o.n>1?`<em>×${o.n}</em>`:""}</span>`;
+  const gap=(a,b)=>{const dd=Math.round((b.m-a.m)/1440);return `<span class="rx-gap${dd<=30?" curto":dd>90?" longo":""}">${dd<=0?"mesmo dia":"+"+dd+"d"}</span>`;};
+  let seq="";const MAXV=4;
+  const mostra=V.length<=MAXV?V.map((o,k)=>k):[0,-1,V.length-2,V.length-1];
+  mostra.forEach((k,idx)=>{if(k===-1){seq+=`<span class="rx-mais" title="${V.slice(1,-2).map(o=>rtDm(o.m)+(o.n>1?" ×"+o.n:"")).join(", ")}">+${V.length-3} vezes</span>`;return;}
+    const prev=idx>0?mostra[idx-1]:null;if(prev!=null&&prev!==-1)seq+=gap(V[prev],V[k]);else if(prev===-1)seq+=`<span class="rx-gap"></span>`;seq+=vis(V[k]);});
+  const dots=`<div class="rx-seq">${seq}</div>`;
   let menor=Infinity;for(let i=1;i<L.length;i++)menor=Math.min(menor,L[i][12]-L[i-1][12]);const md=isFinite(menor)?Math.round(menor/1440):null;
   return `<div class="rx-row${ab?" ab":""}" data-rtk="${esc(key)}"><div class="rtl1 rx-l">
     <span class="rx-n">${L.length}<small>vezes</small></span>
     <div class="rx-e"><b>${esc(D.e[r0[3]])}, ${esc(r0[4])}</b><small>${esc(D.b[r0[5]])}, ${esc(RT_POLO[D.a[r0[8]]]||"")}</small></div>
     <div class="rx-s">${esc(D.t[r0[1]].charAt(0)+D.t[r0[1]].slice(1).toLowerCase())}</div>
-    <div class="rx-tl">${dots}</div>
+    <div class="rx-hist">${dots}</div>
     <div class="rx-g">${md==null?"":md===0?"<b>mesmo dia</b>":`voltou em <b>${md} ${md===1?"dia":"dias"}</b>`}</div></div>`+(ab?rtTabela(L):"")+`</div>`;}
 function rtTabela(L){const D=RB.D;return `<table class="rtdet"><thead><tr><th>Vez</th><th>Data</th><th>OS</th><th>PDE</th><th>Resultado</th><th>Equipe</th><th>Dias desde a anterior</th></tr></thead><tbody>${L.map((r,i)=>`<tr><td>${i+1}ª</td><td>${rtDm(r[12])} ${rtData(r[12]).toTimeString().slice(0,5)}</td><td class="mono">${esc(r[0])}</td><td class="mono">${esc(r[7])}</td><td>${esc(D.r[r[9]])}</td><td>${esc(D.q[r[10]])}</td><td>${i?Math.round((r[12]-L[i-1][12])/1440):"–"}</td></tr>`).join("")}</tbody></table>`;}
 
