@@ -968,6 +968,10 @@ body.leitor .pubst{display:none}
 #selMes:hover,#selGrupoEvo:hover{border-color:#12A5D6}
 /* barra de filtros numa linha só no computador */
 @media (min-width:1560px){.fbar2{flex-wrap:nowrap;gap:12px 16px}.fbar2 .fgrp{flex:none}.fdata{margin-left:auto;white-space:nowrap}}
+/* 6 serviços (com Reposição) numa linha só */
+@media (min-width:1100px){.svc4{grid-template-columns:repeat(6,minmax(0,1fr))!important;gap:10px}.c4{padding-left:10px!important;padding-right:10px!important}.c4 .big b{font-size:30px}.c4 .ft4 b{font-size:15px}.c4 .ft4 small{font-size:9px;letter-spacing:.02em}.c4 .lg4{font-size:10.5px}}
+@media (min-width:700px) and (max-width:1099px){.svc4{grid-template-columns:repeat(3,minmax(0,1fr))!important}}
+@media (min-width:1100px){.c4 .h4 b{font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}.c4 .h4{gap:6px}}
 
 </style>
 </head>
@@ -2006,17 +2010,18 @@ function miniDia(ds,E,X){if(!ds.length)return "";const W=220,H=74,bt=16,mx=Math.
   let s=`<svg viewBox="0 0 ${W} ${H}">`;ds.forEach((d,i)=>{const cx=i*gw+gw/2;[[E(d),"#F0A23B"],[X(d),"#23824F"]].forEach(([v,c],j)=>{const hh=v*(H-bt-12)/mx,x=cx-bw-1+j*(bw+2);
     s+=`<rect x="${x.toFixed(1)}" y="${(H-bt-hh).toFixed(1)}" width="${bw.toFixed(1)}" height="${Math.max(hh,1).toFixed(1)}" rx="2" fill="${c}"/>`;if(v)s+=`<text x="${(x+bw/2).toFixed(1)}" y="${(H-bt-hh-2).toFixed(1)}" text-anchor="middle" font-size="8.5" font-weight="700" fill="#33424E">${v}</text>`;});
     s+=`<text x="${cx.toFixed(1)}" y="${H-3}" text-anchor="middle" font-size="9" font-weight="600" fill="#5E6E7B">${ds.length>1?wd(d):dm(d)}</text>`;});return s+"</svg>";}
+const REP="Reposição";
 function cardsServ(ds,polo){const u=ultF();const PP=polo?{p:polo}:{};const fpo=r=>polo?r.p===polo:fp(r);
   const dsTodos=ds;
-  return GRUPOS.map(g=>{const ds=g==="Religação"?[diaRel()].filter(Boolean):dsTodos;const ca=u.ca.filter(r=>r.g===g&&fpo(r)),t=ca.length,f=ca.filter(r=>r.fora).length,n=t-f;
-    const E=d=>u.ac.filter(r=>r.g===g&&r.dt===d&&fpo(r)).length,X=d=>u.ex.filter(r=>r.g===g&&r.dt===d&&exGeral(r)&&fpo(r)).length;
+  return GRUPOS.concat([REP]).map(g=>{const ehR=g===REP,mg=r=>ehR?famDe(r)==="REPOSICAO":r.g===g,GG=ehR?{fam:"REPOSICAO",nome:REP}:{g};const ds=g==="Religação"?[diaRel()].filter(Boolean):dsTodos;const ca=u.ca.filter(r=>mg(r)&&fpo(r)),t=ca.length,f=ca.filter(r=>r.fora).length,n=t-f;
+    const E=d=>u.ac.filter(r=>mg(r)&&r.dt===d&&fpo(r)).length,X=d=>u.ex.filter(r=>mg(r)&&r.dt===d&&exGeral(r)&&fpo(r)).length;
     const te=ds.reduce((a,d)=>a+E(d),0),tx=ds.reduce((a,d)=>a+X(d),0);const pv=t?n/t:null;
-    return `<div class="c4" style="--c:${COR[g]}"><div class="h4"><b>${g}</b>${pp(pv,metaDe(g))}</div>
-      <div class="big"${go({...PP,modo:"carteira",g})}><b>${nf(t)}</b><span>na carteira</span></div>
-      <div class="pz4"${go({...PP,modo:"carteira",g,prazo:"fora"})}>${t?`<i style="width:${(n*100/t).toFixed(1)}%;background:#2FA36B">${n&&n/t>.12?n:""}</i><i style="width:${(f*100/t).toFixed(1)}%;background:#D9534A">${f&&f/t>.12?f:""}</i>`:""}</div>
-      <div class="lg4"><span${go({...PP,modo:"carteira",g,prazo:"no"})}><b style="color:#2FA36B">${nf(n)}</b> no prazo</span>${g==="Religação"?`<span${go({...PP,modo:"carteira",g,prazo:"p24"})}><b style="color:#E8891A">${nf(ca.filter(r=>!r.fora&&(marca24(r)??Infinity)<Date.now()&&(vencimento(r)??0)>=Date.now()).length)}</b> +24h</span>`:""}<span${go({...PP,modo:"carteira",g,prazo:"fora"})}><b style="color:#D9534A">${nf(f)}</b> fora${g==="Religação"?" (48h)":""}</span></div>
+    return `<div class="c4" style="--c:${COR[g]||"#8A6D3B"}"><div class="h4"><b>${g}</b>${pp(pv,metaDe(g))}</div>
+      <div class="big"${go({...PP,modo:"carteira",...GG})}><b>${nf(t)}</b><span>na carteira</span></div>
+      <div class="pz4"${go({...PP,modo:"carteira",...GG,prazo:"fora"})}>${t?`<i style="width:${(n*100/t).toFixed(1)}%;background:#2FA36B">${n&&n/t>.12?n:""}</i><i style="width:${(f*100/t).toFixed(1)}%;background:#D9534A">${f&&f/t>.12?f:""}</i>`:""}</div>
+      <div class="lg4"><span${go({...PP,modo:"carteira",...GG,prazo:"no"})}><b style="color:#2FA36B">${nf(n)}</b> no prazo</span>${g==="Religação"?`<span${go({...PP,modo:"carteira",...GG,prazo:"p24"})}><b style="color:#E8891A">${nf(ca.filter(r=>!r.fora&&(marca24(r)??Infinity)<Date.now()&&(vencimento(r)??0)>=Date.now()).length)}</b> +24h</span>`:""}<span${go({...PP,modo:"carteira",...GG,prazo:"fora"})}><b style="color:#D9534A">${nf(f)}</b> fora${g==="Religação"?" (48h)":""}</span></div>
       <div class="ch4">${miniDia(ds,E,X)}</div>
-      <div class="ft4"><div${go({...PP,modo:"entradas",g})}><small>Entradas</small><b style="color:#B9650F">${nf(te)}</b></div><div${go({...PP,modo:"execucoes",g})}><small>Execuções</small><b style="color:#1C7444">${nf(tx)}</b></div><div><small>Saldo</small><b class="${te-tx>0?"up":te-tx<0?"down":""}">${sgn(te-tx)}</b></div></div></div>`;}).join("");}
+      <div class="ft4"><div${go({...PP,modo:"entradas",...GG})}><small>Entradas</small><b style="color:#B9650F">${nf(te)}</b></div><div${go({...PP,modo:"execucoes",...GG})}><small>Execuções</small><b style="color:#1C7444">${nf(tx)}</b></div><div><small>Saldo</small><b class="${te-tx>0?"up":te-tx<0?"down":""}">${sgn(te-tx)}</b></div></div></div>`;}).join("");}
 function abrirLista(o){const u=ultF();const modo=o.modo||"carteira";const agora=Date.now();
   let L=(modo==="carteira"?u.ca:modo==="entradas"?u.ac:u.ex).filter(r=>(o.p?r.p===o.p:fp(r))&&(!o.g||r.g===o.g)&&(!o.gs||o.gs.includes(r.g))&&(!o.tss||r.tss===o.tss)&&(!o.fam||famDe(r)===o.fam));
   const h24=r=>{const m=marca24(r);return m==null?null:(m-agora)/3600000;};
@@ -2024,7 +2029,7 @@ function abrirLista(o){const u=ultF();const modo=o.modo||"carteira";const agora=
   else{L=L.filter(r=>noDiaG(r,o.g));if(modo==="execucoes"){if(o.nc==="sim")L=L.filter(r=>!exGeral(r));else if(o.g)L=L.filter(r=>exGeral(r));}}
   const vc=r=>{const v=vencimento(r);return v==null?null:(v-agora)/3600000;};
   if(modo==="carteira")L.sort((a,b)=>(vc(a)??0)-(vc(b)??0));else L.sort((a,b)=>a.dt<b.dt?-1:1);
-  $("mTit").textContent=(o.tss||(o.fam?"Família "+o.fam:"")||o.g||(o.gs?o.gs.join(" e "):"Todos os serviços"))+" · "+(modo==="carteira"?(o.prazo==="fora"?(o.g==="Religação"?"vencidas (passaram de 48h)":"fora do prazo"):o.prazo==="no"?"no prazo":o.prazo==="p24"?"passaram de 24h · vencem em 48h":o.prazo==="d24"?"dentro das 24h":"carteira"):modo==="entradas"?"entradas":"execuções");
+  $("mTit").textContent=(o.nome||o.tss||(o.fam?"Família "+o.fam:"")||o.g||(o.gs?o.gs.join(" e "):"Todos os serviços"))+" · "+(modo==="carteira"?(o.prazo==="fora"?(o.g==="Religação"?"vencidas (passaram de 48h)":"fora do prazo"):o.prazo==="no"?"no prazo":o.prazo==="p24"?"passaram de 24h · vencem em 48h":o.prazo==="d24"?"dentro das 24h":"carteira"):modo==="entradas"?"entradas":"execuções");
   $("mSub").textContent=`${nf(L.length)} endereço${L.length===1?"":"s"}${o.p?" · "+o.p:poloSel!=="Todos"?" · "+poloSel:""}${modo!=="carteira"?" · "+(o.g==="Religação"?"só "+wd(diaRel())+" "+dmy(diaRel())+" (dia anterior)":rotDias()):""}`;
   $("mLista").innerHTML=L.length?`<table><thead><tr><th>Endereço</th><th>Bairro</th><th>Tipo</th><th>Polo</th><th>${modo==="carteira"?"Prazo":"Dia"}</th></tr></thead><tbody>`+L.slice(0,800).map(r=>{const h=vc(r);
     const k24=r.g==="Religação"?h24(r):null;
