@@ -994,6 +994,59 @@ body.leitor .pubst{display:none}
 .rtdet td{padding:5px 8px;border-bottom:1px solid var(--line-2)}
 body.leitor #rtAtual,body.leitor #rtBase{display:none!important}
 @media (max-width:640px){.rtl1{grid-template-columns:44px minmax(0,1fr)}.rtd{grid-column:1/-1}}
+/* ===== retrabalho v2 ===== */
+.rthead{display:none}
+.rthero{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;padding:18px 22px;border-radius:16px;color:#fff;background:linear-gradient(120deg,#00396F 0%,#0A5A9C 55%,#12A5D6 100%);box-shadow:0 10px 26px rgba(0,57,111,.22)}
+.rth1{display:flex;align-items:center;gap:14px}.rtic{width:48px;height:48px;border-radius:14px;background:rgba(255,255,255,.16);display:grid;place-items:center;flex:none}
+.rthero h2{font-family:var(--f-display);font-size:24px;margin:0;color:#fff}.rthero p{margin:3px 0 0;font-size:12.5px;color:#DCEFFA}.rthero p b{color:#fff}
+.rthero .rtacts button{background:rgba(255,255,255,.14);color:#fff;border:1px solid rgba(255,255,255,.35)}.rthero .rtacts button:hover{background:rgba(255,255,255,.26)}
+.rthero #rtAtual{background:#fff;color:#00396F;border-color:#fff}
+.rtsub{display:flex;gap:8px;flex-wrap:wrap}
+.rtsub button{border-radius:999px;padding:9px 16px;font-size:13.5px;background:var(--surface);border:1px solid var(--line);color:var(--muted);font-weight:700}
+.rtsub button[aria-pressed="true"]{background:#00396F;color:#fff;border-color:#00396F;box-shadow:0 4px 12px rgba(0,57,111,.2)}
+.rtk{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.rkc{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px 16px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+.rkc::before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--k,#00396F)}
+.rkc small{display:block;font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+.rkc b{display:block;font-family:var(--f-display);font-size:32px;font-weight:700;color:var(--k,#00396F);line-height:1.15;margin:4px 0 2px}
+.rkc em{font-style:normal;font-size:12px;color:var(--muted)}
+.rkc.az{--k:#00396F}.rkc.vm{--k:#C2362B}.rkc.lj{--k:#D9711C}.rkc.pc{--k:#7A2E8E}
+.rkbar{height:8px;border-radius:5px;background:var(--line-2);overflow:hidden;margin:4px 0 6px}.rkbar i{display:block;height:100%;background:linear-gradient(90deg,#E8891A,#C2362B)}
+.rtbars{display:flex;flex-direction:column;gap:3px}
+.rtb{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr) 54px;gap:10px;align-items:center;padding:5px 6px;border-radius:8px;cursor:pointer;font-size:12.5px}
+.rtb:hover{background:#F2F8FB}.rtb.sel{background:#E6F4FA}.rtb span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:600}
+.rtb div{height:12px;border-radius:6px;background:var(--line-2);overflow:hidden}.rtb i{display:block;height:100%;border-radius:6px;background:linear-gradient(90deg,#F0A23B,#C2362B)}
+.rtb b{text-align:right;font-variant-numeric:tabular-nums;color:#C2362B}
+.rtlimpa{font-size:12px;padding:5px 10px;margin-bottom:8px;border-radius:999px;background:#E6F4FA;border-color:#9CD3EA}
+.rtgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:10px}
+.rtcard{border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:#fff;transition:box-shadow .15s}
+.rtcard:hover{box-shadow:0 6px 16px rgba(16,32,48,.08)}.rtcard.ab{grid-column:1/-1;border-color:#9CD3EA}
+.rtcard .rtl1{display:flex;gap:12px;align-items:flex-start;cursor:pointer;padding:0;background:none}
+.rtn{flex:none;width:56px;height:56px;border-radius:12px;background:#FCE9E8;color:#C2362B;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:var(--f-display);font-size:22px;font-weight:800;line-height:1}
+.rtn small{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-top:2px}
+.rte{min-width:0}.rte b{display:block;font-size:13.5px;color:#00396F}.rte small{display:block;font-size:11.5px;color:var(--muted)}
+.rttss{display:inline-block;margin-top:4px;font-size:11px;font-weight:700;color:#0A5A9C;background:#E6F4FA;border-radius:6px;padding:2px 7px}
+.rtw{display:block;font-style:normal;font-size:11px;color:#B9650F;font-weight:700;margin-top:3px}
+.rtcard .rtd{margin-top:8px}
+.rtd{display:flex;flex-wrap:wrap;gap:4px}.rtd i{font-style:normal;font-size:11px;font-weight:600;padding:2px 7px;border-radius:6px;background:#FCE9E8;color:#B0302A;font-variant-numeric:tabular-nums}.rtd i.al{background:#EEF1F4;color:#6B7A86}
+.rtbusca{display:flex;align-items:center;gap:10px;background:var(--surface);border:2px solid #12A5D6;border-radius:14px;padding:6px 16px;box-shadow:0 6px 18px rgba(18,165,214,.15);color:#0A5A9C}
+.rtbusca input{flex:1;border:0;outline:0;font:600 17px var(--f-body);padding:10px 0;background:none;color:var(--ink)}
+.rtvazio{background:var(--surface);border:1px dashed var(--line);border-radius:12px;padding:22px;text-align:center;color:var(--muted);font-size:14px}
+.rtend{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px 16px;box-shadow:var(--shadow);margin-bottom:12px}
+.rtendh{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:center;border-bottom:1px solid var(--line-2);padding-bottom:10px;margin-bottom:8px}
+.rtendh b{font-size:16px;color:#00396F}.rtendh small{display:block;font-size:12px;color:var(--muted)}
+.rtendk{display:flex;gap:8px;flex-wrap:wrap}.rtendk span{background:var(--sunk);border:1px solid var(--line);border-radius:10px;padding:6px 12px;font-size:12px;color:var(--muted)}
+.rtendk span b{font-size:16px;color:var(--ink);margin-right:3px}.rtendk span.vm b{color:#C2362B}.rtendk span.lj b{color:#D9711C}
+.rtab{display:flex;flex-direction:column;gap:4px;background:#FFF6E8;border:1px solid #F3D9BF;border-radius:10px;padding:8px 12px;margin-bottom:8px;font-size:12.5px}
+.vm{color:#C2362B}.lj{color:#D9711C}
+.rtts{width:100%;border-collapse:collapse}.rtts td{padding:6px 8px;border-bottom:1px solid var(--line-2);vertical-align:middle;font-size:12.5px}
+.rtts td.n{width:44px;font-weight:800;color:var(--muted);text-align:center}.rtts tr.rep td.n{color:#C2362B}.rtts td.t{width:34%;font-weight:600}.rtts tr.rep td.t{color:#00396F}
+.rtts tr:not(.rep) .rtd i{background:#EEF6EF;color:#23824F}
+.rtct{width:100%;border-collapse:collapse;font-size:12.5px}.rtct th{font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);text-align:left;padding:7px 8px;border-bottom:1px solid var(--line);background:var(--sunk)}
+.rtct td{padding:7px 8px;border-bottom:1px solid var(--line-2);vertical-align:top}.rtct td small{display:block;font-size:11px;color:var(--muted)}.rtct td b.vm{font-size:15px}
+.rtselo{display:inline-block;margin-left:6px;font-size:10.5px;font-weight:800;color:#C2362B;background:#FCE9E8;border-radius:6px;padding:1px 6px;white-space:nowrap}
+@media (max-width:900px){.rtk{grid-template-columns:repeat(2,minmax(0,1fr))}.rtgrid{grid-template-columns:1fr}}
+.rtct .tg5{display:inline-block;font-size:11px;font-weight:700;border-radius:6px;padding:2px 8px;white-space:nowrap}.rtct .tg5.n{background:#E8F6EE;color:#23824F}.rtct .tg5.f{background:#FCE9E8;color:#C2362B}
 
 </style>
 </head>
@@ -1164,24 +1217,35 @@ body.leitor #rtAtual,body.leitor #rtBase{display:none!important}
   </section>
 
   <section id="v-rt" class="view" hidden>
-    <div class="rthead">
-      <div><h2>Retrabalho</h2><p id="rtInfo">mesmo serviço (TSS) executado de novo no mesmo endereço</p></div>
-      <div class="rtacts"><button type="button" id="rtAtual" class="primary">⬆ Atualizar com executados</button><button type="button" id="rtBase">Importar base completa</button><button type="button" id="rtXls">⬇ Baixar Excel</button>
+    <div class="rthero">
+      <div class="rth1"><span class="rtic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 15.5-6.2L21 8M21 3v5h-5M21 12a9 9 0 0 1-15.5 6.2L3 16M3 21v-5h5"/></svg></span>
+        <div><h2>Retrabalho</h2><p id="rtInfo">mesmo serviço (TSS) executado de novo no mesmo endereço</p></div></div>
+      <div class="rtacts"><button type="button" id="rtAtual">⬆ Atualizar com executados</button><button type="button" id="rtBase">Importar base</button><button type="button" id="rtXls">⬇ Excel</button>
         <input type="file" id="rtArq" multiple accept=".xlsx,.xls,.csv,.txt,.htm,.html,.xml" hidden><input type="file" id="rtArqBase" accept=".gz,.json" hidden></div>
     </div>
     <div class="note" id="rtMsg"></div>
-    <div class="toolbar rtfil">
-      <div class="fgrp"><span class="lbl">Retrabalhos de</span><div class="seg2" id="rtPer"></div></div>
-      <div class="fgrp"><span class="lbl">Contar</span><div class="seg2" id="rtModo"></div></div>
-      <label class="rtck"><input type="checkbox" id="rtPde"> só mesmo PDE (fornecimento)</label>
-      <select id="rtTss" aria-label="TSS"></select>
-      <input type="search" id="rtBusca" placeholder="Pesquisar endereço…" aria-label="Pesquisar endereço">
+    <div class="rtsub" id="rtSub"></div>
+    <div id="rtV1">
+      <div class="toolbar rtfil">
+        <div class="fgrp"><span class="lbl">Período</span><div class="seg2" id="rtPer"></div></div>
+        <div class="fgrp"><span class="lbl">Contar</span><div class="seg2" id="rtModo"></div></div>
+        <label class="rtck"><input type="checkbox" id="rtPde"> só mesmo PDE</label>
+        <select id="rtTss" aria-label="TSS"></select>
+      </div>
+      <div class="rtk" id="rtKpis"></div>
+      <div class="dash">
+        <article class="card s5"><header class="ch"><div><h3>Serviços que mais voltam</h3><p>retrabalhos por TSS · clique para filtrar</p></div></header><div id="rtTbTss"></div></article>
+        <article class="card s7"><header class="ch"><div><h3>Retrabalhos por mês</h3><p>mês em que o serviço voltou</p></div><div class="leg2" id="rtMesLeg"></div></header><div class="chart" id="rtMes"></div></article>
+        <article class="card s12"><header class="ch"><div><h3>Endereços que mais repetem</h3><p id="rtListaNota"></p></div></header><div id="rtLista"></div></article>
+      </div>
     </div>
-    <div class="kpis k5" id="rtKpis"></div>
-    <div class="dash">
-      <article class="card s5"><header class="ch"><div><h3>Por TSS</h3><p>clique para ver só o TSS</p></div></header><div class="scroll rtscroll"><table class="tg rtt" id="rtTbTss"></table></div></article>
-      <article class="card s7"><header class="ch"><div><h3>Retrabalhos por mês</h3><p>mês em que o serviço voltou</p></div></header><div class="chart" id="rtMes"></div></article>
-      <article class="card s12"><header class="ch"><div><h3>Endereços com retrabalho</h3><p id="rtListaNota"></p></div></header><div id="rtLista"></div></article>
+    <div id="rtV2" hidden>
+      <div class="rtbusca"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input type="search" id="rtBusca" placeholder="Digite a rua e, se quiser, o número — ex.: guaruva 120" aria-label="Pesquisar endereço"></div>
+      <div id="rtRes"></div>
+    </div>
+    <div id="rtV3" hidden>
+      <div class="rtk" id="rtCkpi"></div>
+      <article class="card"><header class="ch"><div><h3>OS da carteira de hoje que já foram feitas no mesmo endereço</h3><p id="rtCnota"></p></div><div class="seg2" id="rtCper"></div></header><div id="rtClista"></div></article>
     </div>
   </section>
 
@@ -2080,7 +2144,7 @@ function abrirLista(o){const u=ultF();const modo=o.modo||"carteira";const agora=
     const k24=r.g==="Religação"?h24(r):null;
     const sit=modo==="carteira"?(r.g==="Religação"&&h!=null&&h>=0&&k24!=null&&k24<0?`<span class="tg5 a">passou de 24h · vence 48h em ${tempoTxt(h)}</span>`:r.fora||(h!=null&&h<0)?`<span class="tg5 f">${h!=null&&h<0?"venceu há "+tempoTxt(h):"fora do prazo"}</span>`:`<span class="tg5 n">${h!=null?"vence em "+tempoTxt(h):"no prazo"}</span>`):`${wd(r.dt)} ${dm(r.dt)}`;
     const txt=`${r.end||"–"} – ${r.bai||""} (${r.p}) · OS ${r.os} · ${r.tss}`;
-    return `<tr data-txt="${esc(txt)}"><td class="e5">${esc(r.end||"–")}</td><td>${esc(r.bai||"")}</td><td>${esc(r.tss)}</td><td>${r.p}</td><td>${sit}</td></tr>`;}).join("")+"</tbody></table>":`<div class="fvazia">Nenhum endereço.</div>`;
+    return `<tr data-txt="${esc(txt)}"><td class="e5">${esc(r.end||"–")}</td><td>${esc(r.bai||"")}</td><td>${esc(r.tss)}${modo==="carteira"?rtSelo(r):""}</td><td>${r.p}</td><td>${sit}</td></tr>`;}).join("")+"</tbody></table>":`<div class="fvazia">Nenhum endereço.</div>`;
   $("modal").hidden=false;}
 $("mFechar").onclick=()=>{$("modal").hidden=true;};
 async function copiarTexto(t,bt){try{await navigator.clipboard.writeText(t);}catch(e){const a=document.createElement("textarea");a.value=t;document.body.appendChild(a);a.select();document.execCommand("copy");a.remove();}
@@ -2369,7 +2433,7 @@ function rtCalc(){const k=rtModo+"|"+($("rtPde")&&$("rtPde").checked?1:0);if(rtC
   for(const [key,L] of G){total+=L.length;if(L.length<2)continue;L.sort((a,b)=>a[12]-b[12]);grupos.push({key,L});}
   rtCache={k,em:RB.em,grupos,total,ale};return rtCache;}
 function rtJanela(){if(rtPer==="tudo"||!RB.fim)return null;const f=rtMin(RB.fim.split("-").reverse().join("/")+" 23:59");const d={"15":15,"30":30,"90":90}[rtPer];return [f-d*1440,f];}
-function rtFiltrar(){const C=rtCalc(),D=RB.D,J=rtJanela(),q=U(($("rtBusca").value||"").trim()),pol=poloSel;
+function rtFiltrar(){const C=rtCalc(),D=RB.D,J=rtJanela(),q="",pol=poloSel;
   const okP=r=>pol==="Todos"||RT_POLO[D.a[r[8]]]===pol;
   const out=[];let eventos=0;
   for(const g of C.grupos){const r0=g.L[0];if(!okP(r0))continue;if(rtTssSel&&D.t[r0[1]]!==rtTssSel)continue;
@@ -2379,49 +2443,98 @@ function rtFiltrar(){const C=rtCalc(),D=RB.D,J=rtJanela(),q=U(($("rtBusca").valu
   out.sort((a,b)=>b.g.L.length-a.g.L.length||b.ev-a.ev||b.g.L[b.g.L.length-1][12]-a.g.L[a.g.L.length-1][12]);
   return {out,eventos,serv,J};}
 
+// ---------- índice por endereço (para a pesquisa e para ligar com a carteira) ----------
+var rtIdxCache=null;
+function rtAddrK(end,num){return rtEndK(end)+"|"+rtNumK(num);}
+function rtIndice(){if(rtIdxCache&&rtIdxCache.em===RB.em)return rtIdxCache.M;const M=new Map(),D=RB.D;
+  for(const r of RB.R){const k=rtAddrK(D.e[r[3]],r[4]);let L=M.get(k);if(!L){L=[];M.set(k,L);}L.push(r);}
+  for(const L of M.values())L.sort((a,b)=>a[12]-b[12]);rtIdxCache={em:RB.em,M};return M;}
+function rtSepEnd(e){const m=String(e||"").match(/^(.*),\s*([^,]*)$/);return m?[m[1],m[2]]:[e||"",""];}
+// OS da carteira: quantas vezes o mesmo serviço já foi feito naquele endereço
+function rtHistCart(r){if(!RB||!RB.R||!RB.R.length)return [];const [e,n]=rtSepEnd(r.end);const L=rtIndice().get(rtAddrK(e,n));if(!L)return [];const t=U(r.tss);return L.filter(x=>U(RB.D.t[x[1]])===t&&x[0]!==r.os);}
+function rtSelo(r){const h=rtHistCart(r);if(!h.length)return "";const ult=h[h.length-1];return ` <span class="rtselo" title="Já feito ${h.length}x neste endereço · última em ${rtDm(ult[12])}">↻ já feito ${h.length}x</span>`;}
+function rtChip(r,ale){const D=RB.D;return `<i class="${ale?"al":""}" title="OS ${esc(r[0])} · ${esc(D.r[r[9]])}${D.q[r[10]]?" · "+esc(D.q[r[10]]):""}">${rtDm(r[12])}</i>`;}
+
 // ---------- tela ----------
+var rtView="geral",rtCper="90";
 function renderRt(){
   const sem=!RB||!RB.R||!RB.R.length;
   $("rtBase").hidden=LEITOR;$("rtAtual").hidden=LEITOR;
-  if(sem){$("rtInfo").textContent=LEITOR?"A base de retrabalho ainda não foi publicada.":"Ainda não há base. Clique em Importar base completa (o arquivo .json.gz) ou em Atualizar com executados.";
-    ["rtKpis","rtTbTss","rtMes","rtLista"].forEach(i=>$(i).innerHTML="");$("rtTss").innerHTML="";$("rtPer").innerHTML="";$("rtModo").innerHTML="";return;}
-  const D=RB.D;
-  $("rtInfo").innerHTML=`Baixas de <b>${dmy(RB.ini)}</b> a <b>${dmy(RB.fim)}</b> · ${nf(RB.R.length)} serviços na base · fim do dia e continua não entram · a mesma OS conta uma vez só${RB.em?` · atualizada em ${new Date(RB.em).toLocaleString("pt-BR",{dateStyle:"short",timeStyle:"short"})}`:""}`;
-  $("rtPer").innerHTML=[["tudo","Tudo"],["15","Últimos 15 dias"],["30","30 dias"],["90","90 dias"]].map(([k,l])=>`<button type="button" data-rp="${k}" aria-pressed="${rtPer===k}">${l}</button>`).join("");
+  $("rtSub").innerHTML=[["geral","📊 Visão geral"],["busca","🔎 Pesquisar endereço"],["cart","🔗 Carteira × retrabalho"]].map(([k,l])=>`<button type="button" data-rv="${k}" aria-pressed="${rtView===k}">${l}</button>`).join("");
+  $("rtV1").hidden=rtView!=="geral";$("rtV2").hidden=rtView!=="busca";$("rtV3").hidden=rtView!=="cart";
+  if(sem){$("rtInfo").textContent=LEITOR?"A base de retrabalho ainda não foi publicada.":"Ainda não há base: clique em Importar base (o arquivo .json.gz) ou em Atualizar com executados.";
+    ["rtKpis","rtTbTss","rtMes","rtLista","rtRes","rtCkpi","rtClista"].forEach(i=>$(i).innerHTML="");return;}
+  $("rtInfo").innerHTML=`Base de <b>${dmy(RB.ini)}</b> a <b>${dmy(RB.fim)}</b> · ${nf(RB.R.length)} serviços · sem fim do dia e continua · a mesma OS conta uma vez${RB.em?` · atualizada em ${new Date(RB.em).toLocaleString("pt-BR",{dateStyle:"short",timeStyle:"short"})}`:""}`;
+  if(rtView==="geral")rtGeral();else if(rtView==="busca")rtBuscar();else rtCarteira();}
+
+function rtGeral(){const D=RB.D;
+  $("rtPer").innerHTML=[["tudo","Tudo"],["15","15 dias"],["30","30 dias"],["90","90 dias"]].map(([k,l])=>`<button type="button" data-rp="${k}" aria-pressed="${rtPer===k}">${l}</button>`).join("");
   $("rtModo").innerHTML=[["todas","Todas as baixas"],["exec","Só executadas"]].map(([k,l])=>`<button type="button" data-rm="${k}" aria-pressed="${rtModo===k}" title="${k==="exec"?"tira imóvel fechado, outro serviço, duplicidade, nada consta, cancelado…":"só tira fim do dia e continua"}">${l}</button>`).join("");
-  const F=rtFiltrar();const C=rtCalc();
-  // TSS
+  const F=rtFiltrar(),C=rtCalc();
   const porT=new Map();for(const x of F.out){const t=D.t[x.g.L[0][1]];const o=porT.get(t)||{t,end:0,ev:0};o.end++;o.ev+=x.ev;porT.set(t,o);}
   const tl=[...porT.values()].sort((a,b)=>b.ev-a.ev);
   const todosT=[...new Set(C.grupos.map(g=>D.t[g.L[0][1]]))].sort();
   $("rtTss").innerHTML=`<option value="">Todos os TSS</option>`+todosT.map(t=>`<option${t===rtTssSel?" selected":""}>${esc(t)}</option>`).join("");
-  const pde=$("rtPde").checked;
-  $("rtKpis").innerHTML=[
-    kpi({l:"Serviços executados",v:nf(F.serv),s:F.J?`${rtDm(F.J[0])} a ${rtDm(F.J[1])}`:"toda a base",ic:IC.exe,tone:"var(--green)",soft:"var(--green-soft)"}),
-    kpi({hl:1,l:"Retrabalhos",v:nf(F.eventos),s:"vezes que o serviço voltou",ic:IC.saldo}),
-    kpi({l:"Endereços com retrabalho",v:nf(F.out.length),s:pde?"mesmo endereço e mesmo PDE":"mesmo endereço e mesmo TSS",ic:IC.cart,tone:"var(--orange)",soft:"var(--orange-soft)"}),
-    kpi({l:"% de retrabalho",v:F.serv?(Math.round(F.eventos*1000/F.serv)/10).toLocaleString("pt-BR")+"%":"–",s:"retrabalhos ÷ serviços",ic:IC.pct,tone:"var(--red)",soft:"var(--red-soft)"}),
-    kpi({l:"Mais repetido",v:F.out.length?nf(F.out[0].g.L.length)+"x":"–",s:F.out.length?esc(D.e[F.out[0].g.L[0][3]]+", "+F.out[0].g.L[0][4]):"",ic:IC.fora,tone:"var(--red)",soft:"var(--red-soft)"})].join("");
-  $("rtTbTss").innerHTML=`<thead><tr><th>TSS</th><th class="r">Endereços</th><th class="r">Retrabalhos</th></tr></thead><tbody>`+(rtTssSel?`<tr class="rtsel"><td colspan="3"><button type="button" data-rtt="">✕ Ver todos os TSS</button></td></tr>`:"")+
-    tl.slice(0,60).map(o=>`<tr data-rtt="${esc(o.t)}"${o.t===rtTssSel?' class="rtsel"':""}><td>${esc(o.t)}</td><td class="r">${nf(o.end)}</td><td class="r"><b>${nf(o.ev)}</b></td></tr>`).join("")+`</tbody>`;
-  // por mês
+  const pct=F.serv?F.eventos/F.serv:0;
+  const card=(cls,l,v,s)=>`<div class="rkc ${cls}"><small>${l}</small><b>${v}</b><em>${s}</em></div>`;
+  $("rtKpis").innerHTML=card("az","Serviços executados",nf(F.serv),F.J?`${rtDm(F.J[0])} a ${rtDm(F.J[1])}`:"toda a base")+card("vm","Retrabalhos",nf(F.eventos),"vezes que o serviço voltou")+
+    card("lj","Endereços com retrabalho",nf(F.out.length),$("rtPde").checked?"mesmo endereço e PDE":"mesmo endereço e TSS")+
+    `<div class="rkc pc"><small>% de retrabalho</small><b>${(Math.round(pct*1000)/10).toLocaleString("pt-BR")}%</b><div class="rkbar"><i style="width:${Math.min(100,pct*100*2).toFixed(1)}%"></i></div><em>retrabalhos ÷ serviços</em></div>`;
+  const mx=Math.max(1,...tl.map(o=>o.ev));
+  $("rtTbTss").innerHTML=(rtTssSel?`<button type="button" class="rtlimpa" data-rtt="">✕ ${esc(rtTssSel)}</button>`:"")+`<div class="rtbars">`+tl.slice(0,14).map(o=>`<div class="rtb${o.t===rtTssSel?" sel":""}" data-rtt="${esc(o.t)}" title="${esc(o.t)}"><span>${esc(o.t)}</span><div><i style="width:${(o.ev*100/mx).toFixed(1)}%"></i></div><b>${nf(o.ev)}</b></div>`).join("")+`</div>`+(tl.length>14?`<div class="note" style="margin-top:6px">e mais ${tl.length-14} TSS · use o seletor de TSS</div>`:"");
   const pm=new Map();for(const x of F.out)for(const r of x.g.L.slice(1)){if(F.J&&(r[12]<F.J[0]||r[12]>F.J[1]))continue;const m=rtIso(r[12]).slice(0,7);pm.set(m,(pm.get(m)||0)+1);}
-  const ms=[...pm.keys()].sort();$("rtMes").innerHTML=barras(ms.map(m=>({lab:m.slice(5)+"/"+m.slice(2,4),sub:"",vals:[{v:pm.get(m),c:"#C2362B"}]})),{h:220,bw:30,wmin:520});
-  // lista
-  const lim=200;$("rtListaNota").textContent=`${nf(F.out.length)} endereços${F.out.length>lim?` · mostrando os ${lim} que mais repetiram (use a pesquisa ou o TSS)`:""} · clique para ver as datas e as OS`;
-  $("rtLista").innerHTML=F.out.length?`<div class="rtl">`+F.out.slice(0,lim).map(x=>{const L=x.g.L,r0=L[0],ab=rtAbertos.has(x.g.key);const pdes=new Set(L.map(r=>r[7]).filter(Boolean)).size;
-    return `<div class="rtr${ab?" ab":""}" data-rtk="${esc(x.g.key)}"><div class="rtl1"><span class="rtn">${L.length}x</span><div class="rte"><b>${esc(D.e[r0[3]])}, ${esc(r0[4])}</b><small>${esc(D.b[r0[5]])} · ${esc(RT_POLO[D.a[r0[8]]]||"")} · ${esc(D.t[r0[1]])}${pdes>1?` · <em class="rtw">${pdes} PDEs diferentes</em>`:""}</small></div><div class="rtd">${L.map(r=>`<i${C.ale[r[9]]?' class="al" title="'+esc(D.r[r[9]])+'"':""}>${rtDm(r[12])}</i>`).join("")}</div></div>`+
-      (ab?`<table class="rtdet"><thead><tr><th>#</th><th>Data</th><th>OS</th><th>PDE</th><th>Resultado</th><th>Equipe</th><th>Dias desde a anterior</th></tr></thead><tbody>${L.map((r,i)=>`<tr><td>${i+1}</td><td>${rtDm(r[12])} ${rtData(r[12]).toTimeString().slice(0,5)}</td><td class="mono">${esc(r[0])}</td><td class="mono">${esc(r[7])}</td><td>${esc(D.r[r[9]])}</td><td>${esc(D.q[r[10]])}</td><td>${i?Math.round((r[12]-L[i-1][12])/1440):"–"}</td></tr>`).join("")}</tbody></table>`:"")+`</div>`;}).join("")+`</div>`:`<div class="empty">Nenhum retrabalho com esses filtros.</div>`;}
+  const ms=[...pm.keys()].sort();const MES=["jan","fev","mar","abr","mai","jun","jul","ago","set","out","nov","dez"];
+  $("rtMes").innerHTML=barras(ms.map(m=>({lab:MES[Number(m.slice(5))-1],sub:m.slice(0,4),vals:[{v:pm.get(m),c:"#C2362B"}]})),{h:230,bw:30,wmin:560});$("rtMesLeg").innerHTML="";
+  const lim=60;$("rtListaNota").textContent=`${nf(F.out.length)} endereços · mostrando os ${Math.min(lim,F.out.length)} que mais repetiram · clique para ver as OS`;
+  $("rtLista").innerHTML=F.out.length?`<div class="rtgrid">`+F.out.slice(0,lim).map(x=>rtCard(x.g.key,x.g.L,C.ale)).join("")+`</div>`:`<div class="empty">Nenhum retrabalho com esses filtros.</div>`;}
+function rtCard(key,L,ale){const D=RB.D,r0=L[0],ab=rtAbertos.has(key);const pdes=new Set(L.map(r=>r[7]).filter(Boolean)).size;
+  return `<div class="rtcard${ab?" ab":""}" data-rtk="${esc(key)}"><div class="rtl1"><span class="rtn">${L.length}<small>vezes</small></span><div class="rte"><b>${esc(D.e[r0[3]])}, ${esc(r0[4])}</b><small>${esc(D.b[r0[5]])} · ${esc(RT_POLO[D.a[r0[8]]]||"")}</small><span class="rttss">${esc(D.t[r0[1]])}</span>${pdes>1?`<em class="rtw">⚠ ${pdes} PDEs diferentes (pode ser condomínio)</em>`:""}</div></div>
+    <div class="rtd">${L.map(r=>rtChip(r,ale&&ale[r[9]])).join("")}</div>`+(ab?rtTabela(L):"")+`</div>`;}
+function rtTabela(L){const D=RB.D;return `<table class="rtdet"><thead><tr><th>#</th><th>Data</th><th>OS</th><th>PDE</th><th>Resultado</th><th>Equipe</th><th>Dias desde a anterior</th></tr></thead><tbody>${L.map((r,i)=>`<tr><td>${i+1}</td><td>${rtDm(r[12])} ${rtData(r[12]).toTimeString().slice(0,5)}</td><td class="mono">${esc(r[0])}</td><td class="mono">${esc(r[7])}</td><td>${esc(D.r[r[9]])}</td><td>${esc(D.q[r[10]])}</td><td>${i?Math.round((r[12]-L[i-1][12])/1440):"–"}</td></tr>`).join("")}</tbody></table>`;}
+
+// ---------- pesquisa por endereço ----------
+function rtBuscar(){const D=RB.D,q=U(($("rtBusca").value||"").trim());const ale=rtCalc().ale;
+  if(q.length<3){$("rtRes").innerHTML=`<div class="rtvazio">Digite pelo menos 3 letras do endereço. Aparecem <b>todos os serviços</b> feitos ali, separados por TSS, com as datas — e se tem OS aberta na carteira agora.</div>`;return;}
+  const toks=q.split(" ").filter(Boolean);const num=/^\d+$/.test(toks[toks.length-1])&&toks.length>1?toks.pop():"";
+  const M=rtIndice();const achados=[];
+  for(const [k,L] of M){const [e,n]=k.split("|");const txt=e+" "+U(D.b[L[0][5]]);if(!toks.every(t=>txt.includes(t)))continue;if(num&&n!==num)continue;if(poloSel!=="Todos"&&RT_POLO[D.a[L[0][8]]]!==poloSel)continue;achados.push([k,L]);}
+  achados.sort((a,b)=>b[1].length-a[1].length);
+  // OS abertas na carteira por endereço
+  const cart=new Map();for(const r of ultF().ca){const [e,n]=rtSepEnd(r.end);const k=rtAddrK(e,n);let L=cart.get(k);if(!L){L=[];cart.set(k,L);}L.push(r);}
+  if(!achados.length){$("rtRes").innerHTML=`<div class="rtvazio">Nenhum endereço encontrado com "${esc(q)}".</div>`;return;}
+  const lim=25;
+  $("rtRes").innerHTML=`<div class="note" style="margin:2px 0 10px">${nf(achados.length)} endereço${achados.length>1?"s":""}${achados.length>lim?` · mostrando ${lim} (digite o número para achar o exato)`:""}</div>`+achados.slice(0,lim).map(([k,L])=>{
+    const r0=L[0];const porT=new Map();for(const r of L){const t=D.t[r[1]];if(!porT.has(t))porT.set(t,[]);porT.get(t).push(r);}
+    const ts=[...porT.entries()].sort((a,b)=>b[1].length-a[1].length);const ab=cart.get(k)||[];
+    const retr=ts.reduce((a,[,x])=>a+Math.max(0,x.length-1),0);
+    return `<div class="rtend"><div class="rtendh"><div><b>${esc(D.e[r0[3]])}, ${esc(r0[4])}</b><small>${esc(D.b[r0[5]])} · ${esc(D.m[r0[6]])} · ${esc(RT_POLO[D.a[r0[8]]]||"")}</small></div><div class="rtendk"><span><b>${nf(L.length)}</b> serviços</span><span class="${retr?"vm":""}"><b>${nf(retr)}</b> retrabalhos</span><span class="${ab.length?"lj":""}"><b>${nf(ab.length)}</b> na carteira agora</span></div></div>`+
+      (ab.length?`<div class="rtab">${ab.map(c=>`<span>🔗 Na carteira: <b>OS ${esc(c.os)}</b> · ${esc(c.tss)} · <em class="${c.fora?"vm":""}">${c.fora?"fora do prazo":"no prazo"}</em>${porT.has(c.tss)||[...porT.keys()].some(t=>U(t)===U(c.tss))?" · <b class='vm'>já feito antes</b>":""}</span>`).join("")}</div>`:"")+
+      `<table class="rtts"><tbody>${ts.map(([t,x])=>`<tr class="${x.length>1?"rep":""}"><td class="n">${x.length}x</td><td class="t">${esc(t)}</td><td><div class="rtd">${x.map(r=>rtChip(r,ale[r[9]])).join("")}</div></td></tr>`).join("")}</tbody></table></div>`;}).join("");}
+
+// ---------- carteira × retrabalho ----------
+function rtCarteira(){const D=RB.D;const agora=Date.now();const lim90=rtMin(new Date(agora-90*864e5).toLocaleDateString("pt-BR")+" 00:00");
+  $("rtCper").innerHTML=[["90","feitas nos últimos 90 dias"],["tudo","qualquer tempo"]].map(([k,l])=>`<button type="button" data-rcp="${k}" aria-pressed="${rtCper===k}">${l}</button>`).join("");
+  const ca=ultF().ca.filter(r=>fp(r));const itens=[];
+  for(const r of ca){let h=rtHistCart(r);if(rtCper==="90")h=h.filter(x=>x[12]>=lim90);if(h.length)itens.push({r,h});}
+  itens.sort((a,b)=>b.h.length-a.h.length||b.h[b.h.length-1][12]-a.h[a.h.length-1][12]);
+  const fora=itens.filter(x=>x.r.fora).length;
+  const card=(cls,l,v,s)=>`<div class="rkc ${cls}"><small>${l}</small><b>${v}</b><em>${s}</em></div>`;
+  $("rtCkpi").innerHTML=card("az","OS na carteira",nf(ca.length),"carteira de "+dmy(S.ult.dc))+card("vm","Já feitas no mesmo endereço",nf(itens.length),ca.length?pctTxt(itens.length,ca.length)+" da carteira":"")+card("lj","Dessas, fora do prazo",nf(fora),"")+card("az","Endereços",nf(new Set(itens.map(x=>x.r.end)).size),"com retrabalho a caminho");
+  $("rtCnota").textContent=`o mesmo serviço (TSS) já foi executado nesse endereço ${rtCper==="90"?"nos últimos 90 dias":"alguma vez na base"} · se executar de novo, vira retrabalho`;
+  $("rtClista").innerHTML=itens.length?`<table class="rtct"><thead><tr><th>OS na carteira</th><th>Endereço</th><th>Serviço</th><th>Prazo</th><th class="r">Já feito</th><th>Quando foi feito</th></tr></thead><tbody>${itens.slice(0,400).map(({r,h})=>{const ul=h[h.length-1];const dd=Math.round((rtMin(new Date().toLocaleDateString("pt-BR")+" 12:00")-ul[12])/1440);
+    return `<tr><td class="mono">${esc(r.os)}</td><td><b>${esc(r.end)}</b><small>${esc(r.bai)} · ${r.p}</small></td><td>${esc(r.tss)}</td><td><span class="tg5 ${r.fora?"f":"n"}">${r.fora?"fora do prazo":"no prazo"}</span></td><td class="r"><b class="vm">${h.length}x</b></td><td><div class="rtd">${h.map(x=>rtChip(x,rtCalc().ale[x[9]])).join("")}</div><small>última há ${dd} dias</small></td></tr>`;}).join("")}</tbody></table>${itens.length>400?`<div class="note">mostrando 400 de ${nf(itens.length)}</div>`:""}`:`<div class="rtvazio">Nenhuma OS da carteira tem o mesmo serviço feito antes no endereço.</div>`;}
 
 // ---------- eventos ----------
 document.addEventListener("click",e=>{
+  const v=e.target.closest("[data-rv]");if(v){rtView=v.dataset.rv;renderRt();if(rtView==="busca")setTimeout(()=>$("rtBusca").focus(),0);return;}
   const p=e.target.closest("[data-rp]");if(p){rtPer=p.dataset.rp;renderRt();return;}
   const m=e.target.closest("[data-rm]");if(m){rtModo=m.dataset.rm;renderRt();return;}
+  const c=e.target.closest("[data-rcp]");if(c){rtCper=c.dataset.rcp;renderRt();return;}
   const t=e.target.closest("[data-rtt]");if(t&&t.closest("#v-rt")){rtTssSel=t.dataset.rtt;renderRt();return;}
-  const k=e.target.closest(".rtl1");if(k){const key=k.parentElement.dataset.rtk;rtAbertos.has(key)?rtAbertos.delete(key):rtAbertos.add(key);renderRt();}});
+  const k=e.target.closest(".rtcard .rtl1");if(k){const key=k.parentElement.dataset.rtk;rtAbertos.has(key)?rtAbertos.delete(key):rtAbertos.add(key);renderRt();}});
 $("rtTss").onchange=e=>{rtTssSel=e.target.value;renderRt();};
 $("rtPde").onchange=()=>{rtCache=null;renderRt();};
-{let tb=null;$("rtBusca").addEventListener("input",()=>{clearTimeout(tb);tb=setTimeout(renderRt,250);});}
+{let tb=null;$("rtBusca").addEventListener("input",()=>{clearTimeout(tb);tb=setTimeout(()=>{if(RB&&RB.R&&RB.R.length)rtBuscar();},250);});}
 $("rtAtual").onclick=()=>$("rtArq").click();$("rtBase").onclick=()=>$("rtArqBase").click();
 $("rtArq").onchange=async e=>{const fs=[...e.target.files];e.target.value="";if(!fs.length)return;rtAviso("Lendo os arquivos… (arquivo grande pode levar alguns minutos)");
   try{if(!RB)RB=rtVazio();let tot={novos:0,trocados:0,fora:0},E={linhas:0,ok:0,fimdia:0,outroAtc:0,semData:0};
