@@ -1457,6 +1457,50 @@ body.leitor .topo-r #hData{display:none!important}
 .app{background:linear-gradient(90deg,#fff 0,#fff 240px,transparent 240px)}
 @media (max-width:1000px){.app{background:none}}
 
+/* ===== cartões de números (simples) ===== */
+.kcs{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px}
+.kc{background:#fff;border:1px solid #E3E9EF;border-radius:12px;padding:14px 16px;display:flex;flex-direction:column;gap:4px;min-width:0;cursor:pointer;transition:border-color .15s,box-shadow .15s,transform .15s}
+.kc:hover{border-color:#B9DDF0;box-shadow:0 6px 18px rgba(16,40,64,.08);transform:translateY(-1px)}
+.kc.sel{border-color:var(--c);box-shadow:0 0 0 2px color-mix(in srgb,var(--c) 25%,transparent)}
+.kc-h{display:flex;align-items:center;gap:8px;min-height:26px}
+.kc-ic{width:26px;height:26px;border-radius:8px;display:grid;place-items:center;color:var(--c);background:color-mix(in srgb,var(--c) 12%,#fff);flex:none}
+.kc-ic svg{width:15px;height:15px}
+.kc-l{font-size:12.5px;font-weight:600;color:#5E6E7B;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.kc-bd{margin-left:auto;font-size:10.5px;font-weight:700;padding:2px 7px;border-radius:999px;background:#EEF2F5;color:#5E6E7B;white-space:nowrap}
+.kc-bd.ok{background:#E3F4EA;color:#1C7444}.kc-bd.ru{background:#FDE8E6;color:#B53A31}
+.kc-v{font-family:var(--f-display);font-size:30px;font-weight:700;line-height:1.15;color:#14212B;font-variant-numeric:tabular-nums;margin-top:4px}
+.kc.red .kc-v{color:#C9423A}.kc.green .kc-v{color:#1C7444}
+.kc-s{font-size:12px;color:#8A97A3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.kc-s b{font-weight:700}.kc-s b.g{color:#1C7444}.kc-s b.r{color:#C9423A}
+.kc-f{margin-top:auto;padding-top:8px}
+.kc-bar{display:flex;height:6px;border-radius:99px;overflow:hidden;background:#EEF2F5;gap:2px;position:relative}
+.kc-bar i{display:block;height:100%;border-radius:99px}
+.kc-bar.m{overflow:visible}.kc-bar.m em{position:absolute;top:-3px;bottom:-3px;width:2px;background:#14212B;border-radius:2px}
+@media (max-width:1250px){.kcs{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (max-width:640px){.kcs{grid-template-columns:repeat(2,minmax(0,1fr))}.kc-v{font-size:24px}}
+
+/* fornecedores (simples) */
+.app .fornp{padding:14px 16px}
+.bfw .bft{font-size:12.5px;font-weight:700;color:#14212B;text-transform:none;letter-spacing:0;margin-bottom:10px}
+.bfw .bft span{font-weight:400;color:#8A97A3;margin-left:6px}
+.bfs{display:grid!important;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px}
+.bfo2{all:unset;box-sizing:border-box;cursor:pointer;display:flex;flex-direction:column;gap:6px;padding:12px 14px;border:1px solid #E3E9EF;border-radius:10px;background:#fff;min-width:0;transition:border-color .15s,box-shadow .15s}
+.bfo2:hover{border-color:#B9DDF0;box-shadow:0 4px 14px rgba(16,40,64,.07)}
+.bfo2.sel{border-color:#0096D6;box-shadow:0 0 0 2px rgba(0,150,214,.18)}
+.bfo2.apag{opacity:.55}
+.bfo2.tot{background:#F6F9FB}
+.bf-n{font-size:11.5px;font-weight:700;color:#3E5163;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:.01em}
+.bf-v{display:flex;align-items:baseline;gap:6px;flex-wrap:wrap}
+.bf-v b{font-family:var(--f-display);font-size:24px;font-weight:700;color:#14212B;line-height:1.1}
+.bf-v small{font-size:11.5px;color:#8A97A3}
+.bf-v em{font-style:normal;margin-left:auto;font-size:10.5px;font-weight:700;color:#B53A31;background:#FDE8E6;padding:2px 7px;border-radius:999px}
+.bf-m{display:flex;justify-content:space-between;gap:8px;font-size:11.5px;color:#8A97A3}
+.bf-m b{color:#14212B;font-weight:700;margin-left:3px}
+.kc-vr{display:flex;align-items:center;gap:8px;margin-top:4px;min-width:0}
+.kc-vr .kc-v{margin:0}.kc-vr .kc-bd{margin-left:0}
+#fornPainel .bfw{border:0!important;background:none!important;padding:0!important;box-shadow:none!important}
+.bf-m span{white-space:nowrap}.bf-m{font-size:11px}
+
 </style>
 </head>
 <body>
@@ -1556,7 +1600,7 @@ body.leitor .topo-r #hData{display:none!important}
   </div>
 
   <section id="v-painel" class="view">
-    <div class="kpis k5" id="kpis"></div>
+    <div class="kcs" id="kpis"></div>
     <div class="pzaviso" id="pzAviso" hidden></div>
     <div class="fornp" id="fornPainel"></div>
     <div class="dash">
@@ -2129,12 +2173,18 @@ function render(){
   $("sub").innerHTML=`Interlagos · Grajaú${u.dc?` · carteira de <b>${dmy(u.dc)}</b>`:""}`;
   const tend=T.ent>T.exe?"carteira tende a subir":T.ent<T.exe?"carteira tende a cair":"equilibrado";
   const SH=serieHist();const DD=diasSel().map(d=>({d,e:u.ac.filter(r=>r.dt===d&&fp(r)).length,x:u.ex.filter(r=>r.dt===d&&fp(r)).length}));
-  $("kpis").innerHTML=[
-    kpi({hl:1,l:"Carteira",v:nf(T.cart),s:`${nf(T.no)} no prazo`,ic:IC.cart,go:{modo:"carteira"},g:miniG([{v:SH.map(x=>x.np+x.fp),c:"#fff",t:SH.map(x=>dm(x.d))}])}),
-    kpi({l:"Fora do prazo",v:nf(T.fora),s:T.dFora==null?"sem dia anterior salvo":`<span class="delta ${T.dFora>0?"up":T.dFora<0?"down":""}">${T.dFora>0?"▲ "+nf(T.dFora):T.dFora<0?"▼ "+nf(-T.dFora):"= 0"}</span> vs ${dm(da)}`,ic:IC.fora,tone:"var(--red)",soft:"var(--red-soft)",pz:"fora",g:miniG([{v:SH.map(x=>x.fp),c:"#D9534A",t:SH.map(x=>dm(x.d))}])}),
-    kpi({l:"% no prazo",v:T.cart?(Math.round(T.no*1000/T.cart)/10).toLocaleString("pt-BR")+"%":"–",s:`meta ${Math.round(META*100)}% ${T.cart?(T.no/T.cart>=META?'<span class="delta down">dentro da meta</span>':'<span class="delta up">abaixo da meta</span>'):""}`,ic:IC.pct,tone:"var(--green)",soft:"var(--green-soft)",pz:"no",g:`<div class="pbar"><i style="width:${T.cart?(T.no*100/T.cart).toFixed(1):0}%"></i><em style="left:${META*100}%"></em><span style="left:${META*100}%">meta</span></div>`}),
-    kpi({l:"Entradas × execuções",v:`${nf(T.ent)} <span style="font-size:.6em;color:var(--muted)">×</span> ${nf(T.exe)}`,s:esc(rotDias()),ic:IC.mov,tone:"var(--orange)",soft:"var(--orange-soft)",go:{modo:"entradas"},g:miniG([{v:DD.map(x=>x.e),c:"#F0A23B",t:DD.map(x=>dm(x.d))},{v:DD.map(x=>x.x),c:"#23824F",t:DD.map(x=>dm(x.d))}])}),
-    kpi({l:"Saldo",v:sgn(T.saldo),s:tend,ic:IC.saldo,tone:T.saldo>0?"var(--red)":"var(--green)",soft:T.saldo>0?"var(--red-soft)":"var(--green-soft)",go:{modo:"execucoes"},g:miniG([{v:DD.map(x=>x.e-x.x),c:v=>v>0?"#D9534A":"#2FA36B",t:DD.map(x=>dm(x.d))}])})].join("");
+  {const pct=T.cart?T.no/T.cart:null,pf=v=>(Math.round(v*1000)/10).toLocaleString("pt-BR")+"%";
+   const kc=o=>`<div class="kc${o.cls?" "+o.cls:""}${o.pz!=null&&prazoSel===o.pz?" sel":""}"${o.pz!=null?` data-prazo="${o.pz}" title="Clique para filtrar o painel"`:o.go?go(o.go):""} style="--c:${o.c}"><div class="kc-h"><span class="kc-ic">${o.ic}</span><span class="kc-l">${o.l}</span></div><div class="kc-vr"><span class="kc-v">${o.v}</span>${o.bd||""}</div><div class="kc-s">${o.s||""}</div>${o.f?`<div class="kc-f">${o.f}</div>`:""}</div>`;
+   const barra=(a,b,ca,cb)=>{const t=a+b||1;return `<div class="kc-bar"><i style="width:${(a*100/t).toFixed(1)}%;background:${ca}"></i><i style="width:${(b*100/t).toFixed(1)}%;background:${cb}"></i></div>`;};
+   const dF=T.dFora==null?"":`<span class="kc-bd ${T.dFora>0?"ru":T.dFora<0?"ok":""}" title="vs ${dm(da)}">${T.dFora>0?"▲ "+nf(T.dFora):T.dFora<0?"▼ "+nf(-T.dFora):"= 0"}</span>`;
+   const nd=diasSel().length,curD=nd>1?`em ${nd} dias`:nd?`em ${wd(diasSel()[0])} ${dm(diasSel()[0])}`:"";
+   $("kpis").innerHTML=
+    kc({l:"Carteira",c:"#0096D6",ic:IC.cart,v:nf(T.cart),s:`<b class="g">${nf(T.no)}</b> no prazo · <b class="r">${nf(T.fora)}</b> fora`,f:barra(T.no,T.fora,"#2FA36B","#D9534A"),go:{modo:"carteira"}})+
+    kc({l:"Fora do prazo",c:"#D9534A",ic:IC.fora,v:nf(T.fora),bd:dF,s:T.dFora==null?"hoje":`vs ${dm(da)}`,pz:"fora",cls:"red"})+
+    kc({l:"% no prazo",c:"#2FA36B",ic:IC.pct,v:pct==null?"–":pf(pct),s:`meta ${Math.round(META*100)}%${pct==null?"":pct>=META?' · <b class="g">na meta</b>':' · <b class="r">abaixo</b>'}`,f:`<div class="kc-bar m"><i style="width:${pct==null?0:(pct*100).toFixed(1)}%;background:${pct!=null&&pct>=META?"#2FA36B":"#F0A23B"}"></i><em style="left:${META*100}%"></em></div>`,pz:"no"})+
+    kc({l:"Entradas",c:"#F0A23B",ic:IC.ent,v:nf(T.ent),s:curD,go:{modo:"entradas"}})+
+    kc({l:"Execuções",c:"#23824F",ic:IC.exe,v:nf(T.exe),s:curD,go:{modo:"execucoes"}})+
+    kc({l:"Saldo",c:T.saldo>0?"#D9534A":"#2FA36B",ic:IC.saldo,v:sgn(T.saldo),s:T.saldo>0?"carteira tende a subir":T.saldo<0?"carteira tende a cair":"equilibrado",cls:T.saldo>0?"red":"green"});}
   {const av=$("pzAviso");av.hidden=!prazoSel;if(prazoSel)av.innerHTML=`<span class="pzt ${prazoSel}">Mostrando só a carteira <b>${prazoSel==="fora"?"fora do prazo":"no prazo"}</b>: ${nf(prazoSel==="fora"?T.fora:T.no)} OS</span><span class="note">clique num serviço ou família para ver os endereços</span><button type="button" data-prazo="${prazoSel}">✕ Tirar o filtro</button>`;}
   renderHero(T);$("fornPainel").innerHTML=baloesForn(diasSel(),fpPolo);
   // situação por serviço (cartões visuais)
@@ -2302,8 +2352,8 @@ function baloesForn(ds,fpp){const u=S.ult;let h="";
    if(fornSel&&!F[fornSel]){fornSel="";lss("carteira-forn",null);}
    const tot=L.reduce((a,x)=>({ent:a.ent+x.ent,exe:a.exe+x.exe,cart:a.cart+x.cart,fora:a.fora+x.fora}),{ent:0,exe:0,cart:0,fora:0});
    const curto=n=>n.length>34?n.slice(0,32)+"…":n;
-   const bal=(x,cls,chave)=>{const sel=chave===""?!fornSel:fornSel===chave;
-     return `<button type="button" class="bfo${cls?" "+cls:""}${ehCG(x.n)?" cg":""}${sel?" sel":""}${fornSel&&!sel?" apag":""}" data-forn="${esc(chave)}" title="${chave?"Ver o painel só com "+esc(x.n):"Ver todos os fornecedores"}"><div class="bfn">${ehCG(x.n)?"★ ":""}${esc(curto(x.n))}</div><div class="bfc"><b>${nf(x.cart)}</b><span>na carteira${x.fora?` · <em>${nf(x.fora)} fora</em>`:""}</span></div><div class="bfm"><span><small>Entradas</small><b>${nf(x.ent)}</b></span><span><small>Execuções</small><b>${nf(x.exe)}</b></span></div></button>`;};
+   const bal=(x,cls,chave)=>{const sel=chave===""?!fornSel:fornSel===chave;const no=x.cart-x.fora,t=x.cart||1;
+     return `<button type="button" class="bfo2${cls?" "+cls:""}${sel?" sel":""}${fornSel&&!sel?" apag":""}" data-forn="${esc(chave)}" title="${chave?"Ver o painel só com "+esc(x.n):"Ver todos os fornecedores"}"><span class="bf-n">${ehCG(x.n)?"★ ":""}${esc(curto(x.n))}</span><span class="bf-v"><b>${nf(x.cart)}</b><small>na carteira</small>${x.fora?`<em>${nf(x.fora)} fora</em>`:""}</span><span class="kc-bar"><i style="width:${(no*100/t).toFixed(1)}%;background:#2FA36B"></i><i style="width:${(x.fora*100/t).toFixed(1)}%;background:#D9534A"></i></span><span class="bf-m"><span>Entradas <b>${nf(x.ent)}</b></span><span>Execuções <b>${nf(x.exe)}</b></span></span></button>`;};
    if(L.length&&!(L.length===1&&L[0].n==="Sem fornecedor"))h+=`<div class="bfw"><div class="bft">Por fornecedor <span>${fornSel?`mostrando só <b>${esc(fornSel)}</b> · clique em Total para ver todos`:"clique num fornecedor para ver o painel só dele"}</span></div><div class="bfs">${L.map(x=>bal(x,"",x.n)).join("")}${bal({n:"Total",...tot},"tot","")}</div></div>`;return h;}
 document.addEventListener("click",e=>{const b=e.target.closest(".bfo[data-forn]");if(!b)return;const k=b.dataset.forn;fornSel=fornSel===k?"":k;lss("carteira-forn",fornSel||null);renderTudo();});
 /* ================= resumo para print ================= */
