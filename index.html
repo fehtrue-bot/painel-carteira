@@ -1825,6 +1825,16 @@ body.printmode .nfaixa,body.printmode .ncab{display:none}
 .tb-r .hbt button.lnk{font-size:12.5px!important}
 .tb-r .hbt button{padding:6px 7px!important}
 .tabbar .tab{font-size:13px!important}
+/* título primeiro, menor, sem horário */
+.ncab-w{background:#fff;border-bottom:1px solid #E3E9EF;padding:12px max(20px,calc((100% - 1440px)/2 + 20px))}
+.ncab-w .ncab{border:0;box-shadow:none;border-radius:0;padding:0;background:none}
+.ncab .marca{font-size:28px!important;gap:12px}
+.ncab .marca .mt span{font-size:10.5px!important;letter-spacing:.28em;margin-top:4px}
+.ncab .gota{width:42px!important;height:42px!important;border-radius:12px!important}.ncab .gota svg{width:24px;height:24px}
+.ncab .rel .nbv{margin-top:0;font-size:14px}
+.ncab .nst{font-size:13.5px;padding:6px 12px}.ncab .nst small{font-size:11.5px}
+.tabbar{position:sticky;top:0}
+@media (max-width:1000px){.ncab .marca{font-size:20px!important}}
 
 </style>
 </head>
@@ -1845,8 +1855,8 @@ body.printmode .nfaixa,body.printmode .ncab{display:none}
     <div class="tlreset" id="tlReset" hidden>Para criar outra senha, o painel apaga os dados guardados neste computador (o histórico e os arquivos do dia). Depois é só subir os arquivos de novo.<button type="button" id="tlApagar">Apagar dados e criar nova senha</button></div>
   </div>
 </div>
-<div class="nfaixa"><span>PAINEL DA CARTEIRA DE SERVIÇOS</span><span>GRAJAÚ · INTERLAGOS</span></div>
 <div class="app">
+<div class="ncab-w"><div class="ncab"><div class="rel"><div class="nbv" id="nBv">Bem-vinda, <b>Fernanda</b></div></div><div class="marca"><span class="gota"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2.5c-3.6 4.4-6.5 8-6.5 11.6a6.5 6.5 0 0 0 13 0C18.5 10.5 15.6 6.9 12 2.5Z" fill="#fff"/><path d="M9 14.5a3 3 0 0 0 3 3" stroke="#0B2545" stroke-width="1.8" stroke-linecap="round"/></svg></span><div class="mt">CARTEIRA DE SERVIÇOS<span>INTERLAGOS · GRAJAÚ</span></div></div><div class="nst" id="nSt">–<small>carteira</small></div></div></div>
 <aside class="sb" id="sb">
   <div class="sb-title"><span class="gota sb-logo"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2.5c-3.6 4.4-6.5 8-6.5 11.6a6.5 6.5 0 0 0 13 0C18.5 10.5 15.6 6.9 12 2.5Z" fill="#fff"/><path d="M9 14.5a3 3 0 0 0 3 3" stroke="#0093C9" stroke-width="1.8" stroke-linecap="round"/></svg></span><div class="sb-tt"><span class="sb-over">Polos Grajaú e Interlagos</span><b>Gestão da Carteira de Serviços</b><small id="sbData"></small></div></div>
   <div class="sb-brand"><div class="brand"><span class="gota"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2.5c-3.6 4.4-6.5 8-6.5 11.6a6.5 6.5 0 0 0 13 0C18.5 10.5 15.6 6.9 12 2.5Z" fill="#fff"/><path d="M9 14.5a3 3 0 0 0 3 3" stroke="#0093C9" stroke-width="1.8" stroke-linecap="round"/></svg></span><div style="min-width:0"><div class="brand-t">Carteira de Serviços</div><div class="brand-s" id="sub">Interlagos · Grajaú</div></div></div></div>
@@ -1871,7 +1881,6 @@ body.printmode .nfaixa,body.printmode .ncab{display:none}
   </div><div class="hbt sb-tools"><button type="button" id="btnLink" class="lnk"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 17H7A5 5 0 0 1 7 7h2M15 7h2a5 5 0 0 1 0 10h-2M8 12h8"/></svg> Link da coordenação</button><button type="button" id="btnAjuda" title="Como usar"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6V14M12 17.5h.01"/></svg> Como usar</button><button type="button" id="btnBackup" title="Cópia de segurança: baixa um arquivo com o histórico, para levar a outro computador"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg> Cópia de segurança</button><button type="button" id="btnTrancar" title="Sair: fecha o painel e pede a senha de novo"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 4h4v16h-4M10 8l-4 4 4 4M6 12h11"/></svg> Sair</button></div><div class="hquem"><span class="av">F</span><div><b>Fernanda</b><small>Analista · conectada</small></div><span class="on"></span></div></div>
 </div>
 <div class="wrap">
-  <div class="ncab"><div class="rel"><b id="nHora">--:--:--</b><small id="nData"></small><div class="nbv" id="nBv">Bem-vinda, <b>Fernanda</b></div></div><div class="marca"><span class="gota"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2.5c-3.6 4.4-6.5 8-6.5 11.6a6.5 6.5 0 0 0 13 0C18.5 10.5 15.6 6.9 12 2.5Z" fill="#fff"/><path d="M9 14.5a3 3 0 0 0 3 3" stroke="#0B2545" stroke-width="1.8" stroke-linecap="round"/></svg></span><div class="mt">CARTEIRA DE SERVIÇOS<span>INTERLAGOS · GRAJAÚ</span></div></div><div class="nst" id="nSt">–<small>carteira</small></div></div>
   <header class="topo">
     <div class="topo-l">
       <div class="hsaud" id="hSaudL"><span id="hSaud">Bem-vinda</span>, Fernanda</div>
