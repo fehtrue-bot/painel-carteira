@@ -1636,18 +1636,18 @@ body.printmode .vz,body.printmode .tabbar{display:none}
 /* ===== cartões: azul claro; clicado/selecionado: azul escuro ===== */
 .kc,.bfo2,.c4,.app .kpi{background:#EAF5FC!important;border-color:#C9E4F4!important;cursor:pointer}
 .kc:hover,.bfo2:hover,.c4:hover,.app .kpi:hover{border-color:#7CC4EA!important}
-.kc.ativo,.kc.sel,.bfo2.ativo,.bfo2.sel,.c4.ativo,.app .kpi.ativo,#v-rt .rx-kc.sel{background:linear-gradient(120deg,#00396F 0%,#0A5A9C 55%,#0096D6 100%)!important;border-color:transparent!important;box-shadow:0 8px 22px rgba(0,57,111,.25)!important;color:#fff}
-:is(.kc,.bfo2,.c4,.kpi):is(.ativo,.sel) :is(.kc-l,.kc-s,.bf-n,.bf-v small,.bf-m,.lg4,.lbl,small,span){color:#CFE6F5!important}
-:is(.kc,.bfo2,.c4,.kpi):is(.ativo,.sel) :is(.kc-v,.bf-v b,.bf-m b,.big b,.h4 b,b){color:#fff!important}
-:is(.kc,.bfo2,.c4,.kpi):is(.ativo,.sel) .kc-ic{background:rgba(255,255,255,.18)!important;color:#fff!important}
-:is(.kc,.bfo2,.c4,.kpi):is(.ativo,.sel) .kc-bar{background:rgba(255,255,255,.22)}
-:is(.kc,.bfo2,.c4,.kpi):is(.ativo,.sel) .kc-s b.g,:is(.kc,.bfo2):is(.ativo,.sel) em.g{color:#7CE3A8!important}
-:is(.kc,.bfo2,.c4,.kpi):is(.ativo,.sel) .kc-s b.r{color:#FFB3AC!important}
-:is(.kc,.bfo2):is(.ativo,.sel) .bf-v em{background:rgba(255,255,255,.18);color:#fff!important}
-:is(.kc):is(.ativo,.sel) .rx-spk polyline{stroke:#fff}:is(.kc):is(.ativo,.sel) .rx-spk polygon{fill:#fff;opacity:.15}
-:is(.kc):is(.ativo,.sel) .rk-seg{background:rgba(255,255,255,.15)}:is(.kc):is(.ativo,.sel) .rk-seg button{color:#CFE6F5!important}:is(.kc):is(.ativo,.sel) .rk-seg button.on{background:#fff;color:#00396F!important}:is(.kc):is(.ativo,.sel) .rk-seg button.on b{color:#00396F!important}
-:is(.kc):is(.ativo,.sel) .rx-dl{background:rgba(255,255,255,.18)!important;color:#fff!important}
-:is(.kc):is(.ativo,.sel) .kc-bar.m em{background:#fff}
+.kc.ativo,.bfo2.ativo,.c4.ativo,.app .kpi.ativo{background:linear-gradient(120deg,#00396F 0%,#0A5A9C 55%,#0096D6 100%)!important;border-color:transparent!important;box-shadow:0 8px 22px rgba(0,57,111,.25)!important;color:#fff}
+:is(.kc,.bfo2,.c4,.kpi):is(.ativo) :is(.kc-l,.kc-s,.bf-n,.bf-v small,.bf-m,.lg4,.lbl,small,span){color:#CFE6F5!important}
+:is(.kc,.bfo2,.c4,.kpi):is(.ativo) :is(.kc-v,.bf-v b,.bf-m b,.big b,.h4 b,b){color:#fff!important}
+:is(.kc,.bfo2,.c4,.kpi):is(.ativo) .kc-ic{background:rgba(255,255,255,.18)!important;color:#fff!important}
+:is(.kc,.bfo2,.c4,.kpi):is(.ativo) .kc-bar{background:rgba(255,255,255,.22)}
+:is(.kc,.bfo2,.c4,.kpi):is(.ativo) .kc-s b.g,:is(.kc,.bfo2):is(.ativo) em.g{color:#7CE3A8!important}
+:is(.kc,.bfo2,.c4,.kpi):is(.ativo) .kc-s b.r{color:#FFB3AC!important}
+:is(.kc,.bfo2):is(.ativo) .bf-v em{background:rgba(255,255,255,.18);color:#fff!important}
+:is(.kc):is(.ativo) .rx-spk polyline{stroke:#fff}:is(.kc):is(.ativo) .rx-spk polygon{fill:#fff;opacity:.15}
+:is(.kc):is(.ativo) .rk-seg{background:rgba(255,255,255,.15)}:is(.kc):is(.ativo) .rk-seg button{color:#CFE6F5!important}:is(.kc):is(.ativo) .rk-seg button.on{background:#fff;color:#00396F!important}:is(.kc):is(.ativo) .rk-seg button.on b{color:#00396F!important}
+:is(.kc):is(.ativo) .rx-dl{background:rgba(255,255,255,.18)!important;color:#fff!important}
+:is(.kc):is(.ativo) .kc-bar.m em{background:#fff}
 #rdTop .rx-ttop{cursor:default}
 .c4 .pz4{border-radius:6px}
 
@@ -1663,13 +1663,13 @@ body.printmode .vz,body.printmode .tabbar{display:none}
 .k2-ring{width:64px;height:64px}.k2-ring .trk{stroke:#D6E8F3}
 .k2-ring text{font:700 13px var(--f-display);fill:#14212B}
 .k2-ic{width:52px;height:52px;border-radius:14px;background:#D6E8F3;color:#00396F;display:grid;place-items:center}
-.kc2:is(.ativo,.sel) .k2-l,.kc2:is(.ativo,.sel) .k2-s{color:#CFE6F5!important}
-.kc2:is(.ativo,.sel) .k2-v{color:#fff!important}
-.kc2:is(.ativo,.sel) .k2-ring .trk{stroke:rgba(255,255,255,.22)}
-.kc2:is(.ativo,.sel) .k2-ring text{fill:#fff}
-.kc2:is(.ativo,.sel) .k2-ring circle:not(.trk){stroke:#fff}
-.kc2:is(.ativo,.sel) .k2-ic{background:rgba(255,255,255,.18);color:#fff}
-.kc2:is(.ativo,.sel) .k2-s i.dI{background:#fff}
+.kc2:is(.ativo) .k2-l,.kc2:is(.ativo) .k2-s{color:#CFE6F5!important}
+.kc2:is(.ativo) .k2-v{color:#fff!important}
+.kc2:is(.ativo) .k2-ring .trk{stroke:rgba(255,255,255,.22)}
+.kc2:is(.ativo) .k2-ring text{fill:#fff}
+.kc2:is(.ativo) .k2-ring circle:not(.trk){stroke:#fff}
+.kc2:is(.ativo) .k2-ic{background:rgba(255,255,255,.18);color:#fff}
+.kc2:is(.ativo) .k2-s i.dI{background:#fff}
 #rtCkpi.kcs.k4{gap:12px}
 .k2-pl{display:flex;flex-direction:column;gap:1px}.k2-pl span{white-space:nowrap}.k2-s i{margin-right:4px!important}
 
@@ -1717,6 +1717,10 @@ body.printmode .vz,body.printmode .tabbar{display:none}
 @media (max-width:1150px){.kcs.k5l{grid-template-columns:repeat(3,minmax(0,1fr))}.lg-row{grid-template-columns:1fr}}
 @media (max-width:640px){.kcs.k5l{grid-template-columns:repeat(2,minmax(0,1fr))}.lg-polos{grid-template-columns:1fr}.lg-tr{grid-template-columns:minmax(0,1fr) repeat(4,44px)}.lg-tb{display:none}.lg-fr{grid-template-columns:120px 1fr 32px}}
 .k2-ring text{font-size:11.5px}
+
+/* selecionado por filtro: só contorno; azul escuro só no último clicado */
+.kc.sel:not(.ativo),.bfo2.sel:not(.ativo),#v-rt .rx-kc.sel:not(.ativo),.rx-tile.on:not(.ativo){background:#EAF5FC!important;border-color:#0096D6!important;box-shadow:0 0 0 2px rgba(0,150,214,.18)!important}
+.kc.sel:not(.ativo) *,.bfo2.sel:not(.ativo) *{}
 
 </style>
 </head>
@@ -2888,7 +2892,7 @@ function renderVz(){const el=$("vzBand");if(!el||el.dataset.ok)return;el.dataset
 const CARD_SEL=".kc,.bfo2,.c4,.kpi";let cardAtivo="";
 function chaveCard(el){const d=el.dataset;const lb=el.querySelector(".kc-l,.bf-n,.h4 b,.lbl");return [d.go,d.prazo,d.forn,d.rgo,d.rcf,lb?lb.textContent.trim():""].map(x=>x??"").join("|")+"|"+((el.closest("section")||{}).id||"");}
 function marcarCards(){document.querySelectorAll(CARD_SEL).forEach(el=>el.classList.toggle("ativo",!!cardAtivo&&chaveCard(el)===cardAtivo));}
-document.addEventListener("click",e=>{if(e.target.closest("#modal"))return;const c=e.target.closest(CARD_SEL);if(!c)return;const k=chaveCard(c);cardAtivo=cardAtivo===k?"":k;setTimeout(marcarCards,0);},true);
+document.addEventListener("click",e=>{if(e.target.closest("#modal"))return;const c=e.target.closest(CARD_SEL);if(!c){if(cardAtivo){cardAtivo="";setTimeout(marcarCards,0);}return;}const k=chaveCard(c);cardAtivo=cardAtivo===k?"":k;setTimeout(marcarCards,0);},true);
 function renderTudo(){setTimeout(marcarCards,0);renderFiltros();renderVz();if(abaAtual==="painel")render();else if(abaAtual==="serv")renderServ();else if(abaAtual==="lig")renderLig();else if(abaAtual==="mon")renderMonLig();else if(abaAtual==="rel")renderRel();else if(abaAtual==="res")renderRes();else if(abaAtual==="rt")renderRt();else renderOS();}
 
 /* ================= Excel ================= */
