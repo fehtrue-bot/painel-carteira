@@ -1299,6 +1299,9 @@ body.aba-rt .wrap{max-width:1500px}
 @media (max-width:760px){.rx-areas{grid-template-columns:1fr}.rx-tiles{grid-template-columns:1fr 1fr}}
 .rx-tile li b{font-size:12px!important;color:inherit}.rx-tile li b{color:#14212B}.rx-tile.t1 li b{color:#fff}.rx-area{height:auto}
 
+/* evolução única */
+#v-rt .rx-evo{margin-bottom:14px}#v-rt .rx-evo #rdMes{padding:4px 16px 12px}#v-rt .rx-evo .rx-sub{margin:0 0 6px}#v-rt .rx-evo .rx-area .m{font-size:12px}#v-rt .rx-evo .rx-area .v{font-size:13px}
+
 </style>
 </head>
 <body>
@@ -1486,15 +1489,7 @@ body.aba-rt .wrap{max-width:1500px}
     <div id="rtV1">
       <div class="rx-atal" id="rdAtal"></div>
       <div class="rx-tiles" id="rdTiles"></div>
-      <div class="rx-dg">
-        <article class="rx-box rx-w2"><h3>Evolução mês a mês</h3><div id="rdMes"></div></article>
-        <article class="rx-box"><h3>Por polo</h3><div id="rdPolo"></div></article>
-        <article class="rx-box"><h3>Intervalo até a reincidência</h3><div id="rdDias"></div></article>
-        <article class="rx-box"><h3>Serviços com maior reincidência</h3><div id="rdTss"></div></article>
-        <article class="rx-box"><h3>Equipe da execução anterior</h3><div id="rdEq"></div></article>
-        <article class="rx-box"><h3>Bairros com maior reincidência</h3><div id="rdBai"></div></article>
-        <article class="rx-box rx-w2"><h3>Tipo de baixa na reincidência</h3><div id="rdRes"></div></article>
-      </div>
+      <article class="rx-box rx-evo"><h3>Evolução mês a mês</h3><div id="rdMes"></div></article>
       <article class="rx-box" id="rtListaBox"><div class="rx-boxh"><div><h3>Endereços com maior reincidência</h3><p class="rx-sub" id="rtListaNota"></p></div><div class="rx-leg"><span><i class="d1"></i>1ª vez</span><span><i class="d2"></i>reincidência</span><span><i class="d3"></i>alegação (imóvel fechado etc.)</span><span><b class="rx-gl">+12d</b> reincidência em até 30 dias</span></div></div><div id="rtLista"></div></article>
       <details class="rx-box rx-cond" id="rtCondBox"><summary><b>Possível condomínio ou lote</b> <span id="rtCondN"></span><small>mesmo número com PDEs diferentes, ou várias OS no mesmo dia (cavalete múltiplo, ligações novas) — normalmente não é retrabalho</small></summary><div id="rtCond"></div></details>
     </div>
@@ -2727,7 +2722,7 @@ function renderRt(){
   $("rtSub").innerHTML=[["geral","Análise de reincidência"],["busca","Consulta por endereço"],["cart","Carteira do dia"]].map(([k,l])=>`<button type="button" data-rv="${k}" aria-pressed="${rtView===k}"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${(k==="geral"?RT_IC.dash:RT_IC[k])}</svg>${l}</button>`).join("");
   $("rtV1").hidden=rtView!=="geral";$("rtFil").hidden=rtView!=="geral";$("rtV2").hidden=rtView!=="busca";$("rtV3").hidden=rtView!=="cart";
   if(sem){$("rxOla").innerHTML=LEITOR?"Olá, <b>coordenação</b>":"Olá, <b>Fernanda</b>";$("rxPill").textContent="";$("rxData").textContent=new Date().toLocaleDateString("pt-BR");$("rtBaseN").textContent="vazia";$("rtInfo").textContent=LEITOR?"A base de retrabalho ainda não foi publicada.":"Ainda não há base. Use Importar base (arquivo .json.gz) ou Atualizar com executados.";
-    ["rdAtal","rdTiles","rdMes","rdPolo","rdDias","rdTss","rdEq","rdBai","rdRes","rtLista","rtRes","rtCkpi","rtClista","rtCond"].forEach(i=>$(i).innerHTML="");return;}
+    ["rdAtal","rdTiles","rdMes","rtLista","rtRes","rtCkpi","rtClista","rtCond"].forEach(i=>$(i).innerHTML="");return;}
   $("rtBaseN").textContent=nf(RB.R.length)+" serviços";$("rtInfo").innerHTML=`de ${dmy(RB.ini)} a ${dmy(RB.fim)}${RB.em?`<br>atualizada em ${new Date(RB.em).toLocaleString("pt-BR",{dateStyle:"short",timeStyle:"short"})}`:""}<em>Sem fim do dia e continua. A mesma OS conta uma vez.</em>`;
   {const ag=new Date();$("rxOla").innerHTML=LEITOR?"Olá, <b>coordenação</b>":"Olá, <b>Fernanda</b>";$("rxData").textContent=ag.toLocaleDateString("pt-BR");
    const prox=RB.em?new Date(RB.em+15*864e5):null;$("rxPill").innerHTML=`<i></i>Base atualizada em <b>${RB.em?new Date(RB.em).toLocaleString("pt-BR",{dateStyle:"short",timeStyle:"short"}):"–"}</b>${prox?` · próxima atualização <b>${prox.toLocaleDateString("pt-BR")}</b>`:""}`;}
@@ -2770,12 +2765,12 @@ function rtJanelaConta(a,b){const D=RB.D,C=rtCalc();const okP=r=>poloSel==="Todo
   let ev=0,sv=0;for(const g of C.grupos){const r0=g.L[0];if(!okP(r0)||!okT(r0))continue;for(let i=1;i<g.L.length;i++){const m=g.L[i][12];if(m>=a&&m<=b)ev++;}}
   for(const r of RB.R){if(!okP(r)||!okT(r))continue;if(rtModo==="exec"&&C.ale[r[9]])continue;if(r[12]>=a&&r[12]<=b)sv++;}return {ev,sv,p:sv?ev/sv:0};}
 function rtDelta(atual,ant,inv){if(!ant)return "";const d=(atual-ant)/ant;const bom=inv?d>0:d<0;return `<em class="rx-dl ${Math.abs(d)<0.005?"":bom?"ok":"ru"}">${d>0?"▲":"▼"} ${Math.abs(Math.round(d*1000)/10).toLocaleString("pt-BR")}%</em>`;}
-function rtArea(it,k,cor,fmt){if(!it.length)return `<div class="rtvazio">Sem dados.</div>`;const MES=["jan","fev","mar","abr","mai","jun","jul","ago","set","out","nov","dez"];
-  const W=600,H=170,pl=6,pr=6,pt=22,pb=26,n=it.length,mx=Math.max(...it.map(x=>x[k]))*1.15||1,X=i=>pl+(n===1?(W-pl-pr)/2:i*(W-pl-pr)/(n-1)),Y=v=>pt+(H-pt-pb)*(1-v/mx);
+function rtArea(it,k,cor,fmt,WW,HH){if(!it.length)return `<div class="rtvazio">Sem dados.</div>`;const MES=["jan","fev","mar","abr","mai","jun","jul","ago","set","out","nov","dez"];
+  const W=WW||600,H=HH||170,pl=WW?24:6,pr=WW?24:6,pt=22,pb=26,n=it.length,mx=Math.max(...it.map(x=>x[k]))*1.15||1,X=i=>pl+(n===1?(W-pl-pr)/2:i*(W-pl-pr)/(n-1)),Y=v=>pt+(H-pt-pb)*(1-v/mx);
   const pts=it.map((x,i)=>`${X(i).toFixed(1)},${Y(x[k]).toFixed(1)}`).join(" ");const id="g"+k+Math.random().toString(36).slice(2,6);
   let sv=`<svg viewBox="0 0 ${W} ${H}" class="rx-area"><defs><linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${cor}" stop-opacity=".28"/><stop offset="1" stop-color="${cor}" stop-opacity="0"/></linearGradient></defs>`;
   sv+=`<polygon points="${X(0)},${H-pb} ${pts} ${X(n-1)},${H-pb}" fill="url(#${id})"/><polyline points="${pts}" fill="none" stroke="${cor}" stroke-width="2.4" stroke-linejoin="round"/>`;
-  it.forEach((x,i)=>{sv+=`<circle cx="${X(i)}" cy="${Y(x[k])}" r="3" fill="#fff" stroke="${cor}" stroke-width="2"><title>${MES[Number(x.m.slice(5))-1]}/${x.m.slice(2,4)}: ${fmt(x[k])}</title></circle>`;if(i===n-1||i%2===0)sv+=`<text x="${X(i)}" y="${H-8}" text-anchor="middle" class="m">${MES[Number(x.m.slice(5))-1]}</text>`;});
+  it.forEach((x,i)=>{sv+=`<circle cx="${X(i)}" cy="${Y(x[k])}" r="3" fill="#fff" stroke="${cor}" stroke-width="2"><title>${MES[Number(x.m.slice(5))-1]}/${x.m.slice(2,4)}: ${fmt(x[k])}${x.p!=null?" · "+(Math.round(x.p*1000)/10).toLocaleString("pt-BR")+"%":""}</title></circle>`;if(true)sv+=`<text x="${X(i)}" y="${H-8}" text-anchor="middle" class="m">${MES[Number(x.m.slice(5))-1]}</text>`;});
   const u=it[n-1];sv+=`<text x="${X(n-1)-4}" y="${Y(u[k])-9}" text-anchor="end" class="v">${fmt(u[k])}</text></svg>`;return sv;}
 function rtDash(){const D=RB.D,F=rtFiltrar(),C=rtCalc();
   const ev=[];for(const x of F.out){const L=x.g.L;for(let i=1;i<L.length;i++){const r=L[i];if(F.J&&(r[12]<F.J[0]||r[12]>F.J[1]))continue;ev.push({r,p:L[i-1],d:Math.max(0,Math.round((r[12]-L[i-1][12])/1440))});}}
@@ -2796,28 +2791,7 @@ function rtDash(){const D=RB.D,F=rtFiltrar(),C=rtCalc();
     tile("Serviços executados",nf(F.serv),rtDelta(AT.sv,AN.sv,true),F.J?`${rtDm(F.J[0])} a ${rtDm(F.J[1])}`:`${dmy(RB.ini)} a ${dmy(RB.fim)}`,[["Endereços com retrabalho",nf(F.out.length)]])+
     tile("Reincidência em até 30 dias",ds.length?Math.round(ate30*100/ds.length)+"%":"–","",nf(ate30)+" retrabalhos",[["Mesmo dia",nf(ds.filter(d=>d===0).length)],["1 a 7 dias",nf(ds.filter(d=>d>=1&&d<=7).length)]])+
     tile("Intervalo mediano",med==null?"–":med+(med===1?" dia":" dias"),"","metade ocorre antes disso",[["Mais de 90 dias",nf(ds.filter(d=>d>90).length)]]);
-  {const MD=rtMesDados(F,C).slice(-12);$("rdMes").innerHTML=`<div class="rx-areas"><div><h4>Retrabalhos <small>últimos ${MD.length} meses</small></h4>${rtArea(MD,"v","#F08C00",v=>nf(v))}</div><div><h4>% de retrabalho <small>últimos ${MD.length} meses</small></h4>${rtArea(MD,"p","#0096D6",v=>Math.round(v*100)+"%")}</div></div>`;}
-  // polo
-  const servP={Interlagos:0,"Grajaú":0};for(const r of RB.R){if(rtModo==="exec"&&C.ale[r[9]])continue;if(rtTssSel&&!U(D.t[r[1]]).includes(U(rtTssSel)))continue;if(F.J&&(r[12]<F.J[0]||r[12]>F.J[1]))continue;const p=RT_POLO[D.a[r[8]]];if(p in servP)servP[p]++;}
-  const evP={Interlagos:0,"Grajaú":0};for(const e of ev){const p=RT_POLO[D.a[e.r[8]]];if(p in evP)evP[p]++;}
-  $("rdPolo").innerHTML=rtDonut([{l:"Interlagos",v:evP.Interlagos,c:"#00396F",s:servP.Interlagos?f1(evP.Interlagos/servP.Interlagos)+" dos serviços":""},{l:"Grajaú",v:evP["Grajaú"],c:"#12A5D6",s:servP["Grajaú"]?f1(evP["Grajaú"]/servP["Grajaú"])+" dos serviços":""}],nf(ev.length),"retrabalhos");
-  // dias até voltar
-  const B=[["mesmo dia",0,0],["1 a 7 dias",1,7],["8 a 30 dias",8,30],["31 a 90 dias",31,90],["91 a 180 dias",91,180],["mais de 180",181,1e9]];
-  const bc=B.map(([l,a,b])=>({l,v:ds.filter(d=>d>=a&&d<=b).length}));const mxb=Math.max(1,...bc.map(x=>x.v));
-  $("rdDias").innerHTML=`<div class="rx-hist2">${bc.map((x,i)=>`<div class="hb"><b>${nf(x.v)}</b><i style="height:${(x.v*100/mxb).toFixed(1)}%" class="${i<=2?"q":""}"></i><span>${x.l}</span></div>`).join("")}</div><p class="rx-nota">Em laranja: reincidência em até 30 dias — o mais provável de ser serviço mal feito.</p>`;
-  // serviços
-  const t=new Map();for(const e of ev){const k=D.t[e.r[1]];t.set(k,(t.get(k)||0)+1);}
-  $("rdTss").innerHTML=rtBarras([...t].sort((a,b)=>b[1]-a[1]).slice(0,8).map(([k,v])=>({l:k.charAt(0)+k.slice(1).toLowerCase(),v,go:k})));
-  // equipes (quem fez o serviço que voltou)
-  const q=new Map();for(const e of ev){const k=D.q[e.p[10]]||"(sem equipe)";q.set(k,(q.get(k)||0)+1);}
-  $("rdEq").innerHTML=rtBarras([...q].sort((a,b)=>b[1]-a[1]).slice(0,8).map(([k,v])=>({l:k,v})),{cls:"eq"});
-  // bairros
-  const b=new Map();for(const e of ev){const k=D.b[e.r[5]]+" · "+(RT_POLO[D.a[e.r[8]]]||"");b.set(k,(b.get(k)||0)+1);}
-  $("rdBai").innerHTML=rtBarras([...b].sort((a,b)=>b[1]-a[1]).slice(0,8).map(([k,v])=>({l:k,v})));
-  // como voltou
-  const al=ev.filter(e=>C.ale[e.r[9]]).length;const rs=new Map();for(const e of ev){const k=D.r[e.r[9]];rs.set(k,(rs.get(k)||0)+1);}
-  $("rdRes").innerHTML=rtDonut([{l:"Serviço executado",v:ev.length-al,c:"#F08C00"},{l:"Alegação (imóvel fechado etc.)",v:al,c:"#B7C3CC"}],ev.length?Math.round((ev.length-al)*100/ev.length)+"%":"–","executado")+
-    `<div class="rx-mini">${[...rs].sort((a,b)=>b[1]-a[1]).slice(0,4).map(([k,v])=>`<div><span>${esc(k.charAt(0)+k.slice(1).toLowerCase())}</span><b>${nf(v)}</b></div>`).join("")}</div>`;}
+  {const MD=rtMesDados(F,C).slice(-12);$("rdMes").innerHTML=`<p class="rx-sub">retrabalhos por mês — últimos ${MD.length} meses (passe o mouse para ver o %)</p>`+rtArea(MD,"v","#F08C00",v=>nf(v),1200,200);}}
 
 function rtMesSvg(it){if(!it.length)return `<div class="rtvazio">Sem retrabalhos no período.</div>`;
   const MES=["jan","fev","mar","abr","mai","jun","jul","ago","set","out","nov","dez"];const W=Math.max(560,it.length*52),H=230,pl=8,pr=8,pt=30,pb=40,n=it.length,bw=(W-pl-pr)/n;
