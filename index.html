@@ -972,6 +972,28 @@ body.leitor .pubst{display:none}
 @media (min-width:1100px){.svc4{grid-template-columns:repeat(6,minmax(0,1fr))!important;gap:10px}.c4{padding-left:10px!important;padding-right:10px!important}.c4 .big b{font-size:30px}.c4 .ft4 b{font-size:15px}.c4 .ft4 small{font-size:9px;letter-spacing:.02em}.c4 .lg4{font-size:10.5px}}
 @media (min-width:700px) and (max-width:1099px){.svc4{grid-template-columns:repeat(3,minmax(0,1fr))!important}}
 @media (min-width:1100px){.c4 .h4 b{font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}.c4 .h4{gap:6px}}
+/* ===== retrabalho ===== */
+.rthead{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px 18px;box-shadow:var(--shadow)}
+.rthead h2{font-family:var(--f-display);font-size:22px;color:#00396F;margin:0}.rthead p{margin:2px 0 0;font-size:13px;color:var(--muted)}
+.rtacts{display:flex;gap:8px;flex-wrap:wrap}
+.rtfil{gap:10px 18px}.rtck{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:var(--ink);cursor:pointer}
+#rtTss{border:1px solid var(--line);border-radius:8px;padding:8px 10px;font:600 13px var(--f-body);max-width:280px}
+#rtBusca{flex:1 1 220px;border:1px solid var(--line);border-radius:8px;padding:9px 12px;font:14px var(--f-body)}
+.s5{grid-column:span 5}.s7{grid-column:span 7}@media (max-width:1150px){.s5,.s7{grid-column:span 12}}
+.rtscroll{max-height:330px;overflow:auto}.rtt tr[data-rtt]{cursor:pointer}.rtt tr[data-rtt]:hover td{background:#F2F8FB}.rtt tr.rtsel td{background:#E6F4FA;font-weight:700}
+.rtt td{font-size:12.5px}.rtt button{font-size:12px;padding:5px 10px}
+.rtl{display:flex;flex-direction:column}
+.rtr{border-top:1px solid var(--line-2)}.rtr:first-child{border-top:0}
+.rtl1{display:grid;grid-template-columns:54px minmax(0,1fr) minmax(0,1.1fr);gap:12px;align-items:center;padding:9px 6px;cursor:pointer;border-radius:8px}
+.rtl1:hover{background:#F2F8FB}.rtr.ab .rtl1{background:#EEF6FB}
+.rtn{font-family:var(--f-display);font-weight:800;font-size:20px;color:#C2362B;text-align:center}
+.rte b{display:block;font-size:13.5px;color:#00396F}.rte small{font-size:11.5px;color:var(--muted)}.rtw{font-style:normal;color:#B9650F;font-weight:700}
+.rtd{display:flex;flex-wrap:wrap;gap:4px}.rtd i{font-style:normal;font-size:11px;font-weight:600;padding:2px 6px;border-radius:6px;background:#FCE9E8;color:#B0302A;font-variant-numeric:tabular-nums}
+.rtd i.al{background:#EEF1F4;color:#5E6E7B}
+.rtdet{width:100%;border-collapse:collapse;font-size:12px;margin:4px 0 10px}.rtdet th{font-size:10.5px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);text-align:left;padding:5px 8px;border-bottom:1px solid var(--line)}
+.rtdet td{padding:5px 8px;border-bottom:1px solid var(--line-2)}
+body.leitor #rtAtual,body.leitor #rtBase{display:none!important}
+@media (max-width:640px){.rtl1{grid-template-columns:44px minmax(0,1fr)}.rtd{grid-column:1/-1}}
 
 </style>
 </head>
@@ -1001,6 +1023,7 @@ body.leitor .pubst{display:none}
     <button class="tab" role="tab" id="t-mon" aria-selected="false" hidden><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="13" rx="2"/><path d="M8 21h8M12 17v4M6 13l3-3 3 2 4-4"/></svg> Monitor das ligações</button>
     <button class="tab" role="tab" id="t-lig" aria-selected="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9h7a3 3 0 0 1 3 3v9"/><path d="M3 6v6M18 4c-1.6 2-3 3.7-3 5.3a3 3 0 0 0 6 0C21 7.7 19.6 6 18 4Z"/></svg> Ligação de água</button>
     <button class="tab" role="tab" id="t-serv" aria-selected="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg> Outros serviços</button>
+    <button class="tab" role="tab" id="t-rt" aria-selected="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 0 1 15.5-6.2L21 8M21 3v5h-5M21 12a9 9 0 0 1-15.5 6.2L3 16M3 21v-5h5"/></svg> Retrabalho</button>
     <button class="tab" role="tab" id="t-os" aria-selected="false" hidden><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M9 6h12M9 12h12M9 18h12M4 6h.01M4 12h.01M4 18h.01"/></svg> OS</button>
   </nav>
   <div class="actions">
@@ -1137,6 +1160,28 @@ body.leitor .pubst{display:none}
       <article class="card s4"><header class="ch"><div><h3>Baixas que não contam</h3><p>resultados que não são o serviço executado</p></div></header><div id="ligNc"></div></article>
       <article class="card s12"><header class="ch"><div><h3>Por tipo de ligação (TSS)</h3><p>entradas, executadas, carteira e fora do prazo por polo</p></div></header><div class="scroll"><table class="tg tss" id="tbLigTss"></table></div></article>
       <article class="card s12"><header class="ch"><div><h3>Dia a dia</h3><p>entradas × executadas de ligação de água por polo</p></div></header><div class="scroll"><table class="tg" id="tbLigDia"></table></div></article>
+    </div>
+  </section>
+
+  <section id="v-rt" class="view" hidden>
+    <div class="rthead">
+      <div><h2>Retrabalho</h2><p id="rtInfo">mesmo serviço (TSS) executado de novo no mesmo endereço</p></div>
+      <div class="rtacts"><button type="button" id="rtAtual" class="primary">⬆ Atualizar com executados</button><button type="button" id="rtBase">Importar base completa</button><button type="button" id="rtXls">⬇ Baixar Excel</button>
+        <input type="file" id="rtArq" multiple accept=".xlsx,.xls,.csv,.txt,.htm,.html,.xml" hidden><input type="file" id="rtArqBase" accept=".gz,.json" hidden></div>
+    </div>
+    <div class="note" id="rtMsg"></div>
+    <div class="toolbar rtfil">
+      <div class="fgrp"><span class="lbl">Retrabalhos de</span><div class="seg2" id="rtPer"></div></div>
+      <div class="fgrp"><span class="lbl">Contar</span><div class="seg2" id="rtModo"></div></div>
+      <label class="rtck"><input type="checkbox" id="rtPde"> só mesmo PDE (fornecimento)</label>
+      <select id="rtTss" aria-label="TSS"></select>
+      <input type="search" id="rtBusca" placeholder="Pesquisar endereço…" aria-label="Pesquisar endereço">
+    </div>
+    <div class="kpis k5" id="rtKpis"></div>
+    <div class="dash">
+      <article class="card s5"><header class="ch"><div><h3>Por TSS</h3><p>clique para ver só o TSS</p></div></header><div class="scroll rtscroll"><table class="tg rtt" id="rtTbTss"></table></div></article>
+      <article class="card s7"><header class="ch"><div><h3>Retrabalhos por mês</h3><p>mês em que o serviço voltou</p></div></header><div class="chart" id="rtMes"></div></article>
+      <article class="card s12"><header class="ch"><div><h3>Endereços com retrabalho</h3><p id="rtListaNota"></p></div></header><div id="rtLista"></div></article>
     </div>
   </section>
 
@@ -1589,7 +1634,7 @@ function renderFiltros(){
   $("fgPrazo").hidden=abaAtual!=="painel";
   document.querySelectorAll(".legpz [data-prazo]").forEach(e=>e.classList.toggle("on",e.dataset.prazo===prazoSel));document.querySelectorAll(".legpz").forEach(e=>e.classList.toggle("ativo",!!prazoSel));
   $("dataCart").textContent=S.ult.dc?wd(S.ult.dc)+" "+dmy(S.ult.dc):"–";
-  $("segPolo").closest(".fgrp").hidden=abaAtual==="serv"||abaAtual==="lig"||abaAtual==="rel";$("segDia").closest(".fgrp").hidden=abaAtual==="res";}
+  $("segPolo").closest(".fgrp").hidden=abaAtual==="serv"||abaAtual==="lig"||abaAtual==="rel";$("segDia").closest(".fgrp").hidden=abaAtual==="res"||abaAtual==="rt";}
 $("segPolo").onclick=e=>{const b=e.target.closest("button");if(!b)return;poloSel=b.dataset.polo;renderTudo();};
 function segPoloBtns(sel){return (poloSel==="Todos"?["","Interlagos","Grajaú"]:[""]).map(p=>`<button type="button" data-sp="${p}" aria-pressed="${p===sel}">${p||(poloSel==="Todos"?"Interlagos e Grajaú":poloSel)}</button>`).join("");}
 $("segGrpPolo").onclick=e=>{const b=e.target.closest("button");if(!b)return;grpPolo=b.dataset.sp;render();};
@@ -2086,9 +2131,9 @@ let tb;$("busca").addEventListener("input",()=>{clearTimeout(tb);tb=setTimeout(r
 function irPara(o){abrirLista(o);}
 document.addEventListener("click",e=>{const el=e.target.closest("[data-go]");if(el&&!el.closest("#v-os")&&!el.closest(".seg2")){irPara(JSON.parse(el.dataset.go));return;}
   const d=e.target.closest("#diaDia .r[data-dia],#tbGrupo th[data-dia]");if(d){diaSel=diaSel===d.dataset.dia?"todos":d.dataset.dia;renderTudo();}});
-function aba(n){abaAtual=n;document.body.classList.toggle("aba-rel",n==="rel");if(n!=="os")lss("carteira-aba",n);document.body.classList.remove("printmode");for(const k of ["painel","mon","res","rel","lig","serv","os"]){$("t-"+k).setAttribute("aria-selected",k===n);$("v-"+k).hidden=k!==n;}renderTudo();}
-$("t-painel").onclick=()=>aba("painel");$("t-lig").onclick=()=>aba("lig");$("t-mon").onclick=()=>aba("mon");$("t-rel").onclick=()=>aba("rel");$("t-res").onclick=()=>aba("res");$("t-serv").onclick=()=>aba("serv");$("t-os").onclick=()=>aba("os");
-function renderTudo(){renderFiltros();if(abaAtual==="painel")render();else if(abaAtual==="serv")renderServ();else if(abaAtual==="lig")renderLig();else if(abaAtual==="mon")renderMonLig();else if(abaAtual==="rel")renderRel();else if(abaAtual==="res")renderRes();else renderOS();}
+function aba(n){abaAtual=n;document.body.classList.toggle("aba-rel",n==="rel");if(n!=="os")lss("carteira-aba",n);document.body.classList.remove("printmode");for(const k of ["painel","mon","res","rel","lig","serv","rt","os"]){$("t-"+k).setAttribute("aria-selected",k===n);$("v-"+k).hidden=k!==n;}renderTudo();}
+$("t-painel").onclick=()=>aba("painel");$("t-lig").onclick=()=>aba("lig");$("t-mon").onclick=()=>aba("mon");$("t-rel").onclick=()=>aba("rel");$("t-res").onclick=()=>aba("res");$("t-serv").onclick=()=>aba("serv");$("t-rt").onclick=()=>aba("rt");$("t-os").onclick=()=>aba("os");
+function renderTudo(){renderFiltros();if(abaAtual==="painel")render();else if(abaAtual==="serv")renderServ();else if(abaAtual==="lig")renderLig();else if(abaAtual==="mon")renderMonLig();else if(abaAtual==="rel")renderRel();else if(abaAtual==="res")renderRes();else if(abaAtual==="rt")renderRt();else renderOS();}
 
 /* ================= Excel ================= */
 $("baixar").onclick=()=>{try{exportar();}catch(e){console.error(e);msg("Não consegui gerar o Excel: "+e.message);}};
@@ -2268,6 +2313,160 @@ async function iniciarLeitor(){document.body.classList.add("leitor");const ft=do
   setInterval(async()=>{if(document.hidden)return;try{if(await carregarLeitor())renderTudo();}catch(e){}},180000);}
 if(LEITOR)iniciarLeitor();else
 (async()=>{await pedirSenha();await carregarLocal();let ab=lsg("carteira-aba");if(ab==="mon")ab="rel";if(ab&&$("t-"+ab)&&!$("t-"+ab).hidden)aba(ab);else renderTudo();window.__pronto=true;pubStatus();setTimeout(conferirLink,1500);})();
+
+/* ================= RETRABALHO ================= */
+// Base: uma linha por OS+TSS executada (fim do dia e continua não entram). Guardada neste computador e enviada ao link da coordenação.
+// RB={v,em,fonte,ini,fim,D:{t,f,e,b,m,a,r,q,c},R:[[os,t,f,e,num,b,m,pde,a,r,q,c,min]]}
+var RB=null,rtCache=null,rtPer="tudo",rtModo="todas",rtTssSel="",rtAbertos=new Set(),rtCarregando=false;
+var RT_E0=Date.UTC(2020,0,1)+3*3600000; // minutos contados a partir de 01/01/2020 00:00 (horário de Brasília)
+function rtMin(txt){const t=parseDT0(txt);return t==null?null:Math.round((t-new Date(2020,0,1).getTime())/60000);}
+function rtData(m){return new Date(new Date(2020,0,1).getTime()+m*60000);}
+function rtDm(m){const d=rtData(m);return String(d.getDate()).padStart(2,"0")+"/"+String(d.getMonth()+1).padStart(2,"0")+"/"+String(d.getFullYear()).slice(2);}
+function rtIso(m){const d=rtData(m);return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");}
+function rtEndK(e){return U(clean(e)).replace(/^(R|RUA)\.? /,"RUA ").replace(/^(AV|AVENIDA)\.? /,"AVENIDA ");}
+function rtNumK(n){return U(clean(n)).replace(/\s/g,"").replace(/^0+/,"");}
+var RT_ALEG=/IMOVEL FECHADO|OUTRO SERVICO|DUPLICIDADE|NADA CONSTA|CANCELAD|EXECUTADO ANTERIORMENTE|ASSUMIDO RISCO|DECURSO DE PRAZO|DEFEITO INTERNO|NAO EXECUTAD|REPROGRAMAR|SEM APROV/;
+var RT_POLO={"923":"Interlagos","929":"Grajaú","299":"Grajaú"};
+function rtVazio(){return {v:1,em:0,fonte:"",ini:"",fim:"",D:{t:[],f:[],e:[],b:[],m:[],a:[],r:[],q:[],c:[]},R:[]};}
+function rtIdx(B){const I={};for(const k in B.D){const m=new Map();B.D[k].forEach((v,i)=>m.set(v,i));I[k]=m;}return I;}
+function rtPut(B,I,k,v){v=v==null?"":String(v);let i=I[k].get(v);if(i==null){i=B.D[k].length;B.D[k].push(v);I[k].set(v,i);}return i;}
+function rtRecalcPeriodo(B){let a=Infinity,b=-Infinity;for(const r of B.R){if(r[12]<a)a=r[12];if(r[12]>b)b=r[12];}B.ini=isFinite(a)?rtIso(a):"";B.fim=isFinite(b)?rtIso(b):"";}
+
+// junta linhas de executados na base (a mesma OS+TSS fica com a baixa mais recente)
+function rtJuntar(B,linhas){const I=rtIdx(B);const pos=new Map();B.R.forEach((r,i)=>pos.set(r[0]+"|"+r[1],i));let novos=0,trocados=0,fora=0;
+  for(const x of linhas){const t=rtPut(B,I,"t",x.tss);const k=x.os+"|"+t;
+    const reg=[x.os,t,rtPut(B,I,"f",x.fam),rtPut(B,I,"e",x.end),x.num,rtPut(B,I,"b",x.bai),rtPut(B,I,"m",x.mun),x.pde,rtPut(B,I,"a",x.atc),rtPut(B,I,"r",x.res),rtPut(B,I,"q",x.eq),rtPut(B,I,"c",x.con),x.min];
+    if(pos.has(k)){const i=pos.get(k);if(B.R[i][12]<=x.min){B.R[i]=reg;trocados++;}else fora++;}else{pos.set(k,B.R.length);B.R.push(reg);novos++;}}
+  rtRecalcPeriodo(B);B.em=Date.now();return {novos,trocados,fora};}
+
+// lê o arquivo de executados do sistema
+var RT_CAMPOS={os:"NUMERO OS",tss:"DESCRICAO TSS",fam:"FAMILIA",end:"ENDERECO",num:"NUMERO",bai:"BAIRRO",mun:"MUNICIPIO",pde:"PDE",atc:"ATC",res:"RESULTADO",eq:"EQUIPE",con:"DESCRICAO CONTRATO",ini:"DATA INICIO EXECUCAO"};
+// posição das colunas no layout de executados (quando o cabeçalho vem trocado)
+var RT_POS={os:1,tss:4,fam:5,pde:9,mun:10,end:11,num:12,bai:14,atc:15,res:20,ini:26,eq:33,con:32};
+async function rtLerArquivo(file){const w=await abrirPlanilha(file);let aoa=null;for(const n of w.nomes){const a=await w.ler(n);if(a&&a.length>1){aoa=a;break;}}
+  if(!aoa)throw new Error(`Não achei dados em ${file.name}.`);
+  let hi=acharCab(aoa);if(hi<0)hi=0;const h=(aoa[hi]||[]).map(c=>U(clean(c)));const ix={};for(const [k,n] of Object.entries(RT_CAMPOS))ix[k]=h.indexOf(n);
+  const usaPos=ix.res<0||ix.ini<0;const est={linhas:0,ok:0,fimdia:0,outroAtc:0,semData:0};const out=[];
+  for(const r of aoa.slice(hi+1)){if(!r||!r.some(c=>String(c??"").trim()))continue;est.linhas++;
+    const g=k=>clean(usaPos?r[RT_POS[k]]:(ix[k]>=0?r[ix[k]]:""));
+    const atc=g("atc").replace(/\.0+$/,"");if(!RT_POLO[atc]){est.outroAtc++;continue;}
+    const res=g("res");if(/FIM DO DIA|CONTINUA/.test(U(res))){est.fimdia++;continue;}
+    const os=keyOS(g("os"));const min=rtMin(g("ini"));if(!os||min==null){est.semData++;continue;}
+    out.push({os,tss:g("tss"),fam:g("fam"),end:g("end"),num:g("num"),bai:g("bai"),mun:g("mun"),pde:keyOS(g("pde")),atc,res,eq:g("eq"),con:g("con"),min});est.ok++;}
+  return {out,est};}
+
+async function rtCarregarLocal(){try{RB=await idbGet("retrab");}catch(e){RB=null;}rtCache=null;}
+async function rtSalvar(){try{await idbSet("retrab",RB);}catch(e){rtAviso("Não consegui guardar a base neste computador: "+e.message,"err");}}
+function rtAviso(t,c){const m=$("rtMsg");if(m){m.textContent=t||"";m.className="note "+(c||"");}}
+
+// ---------- cálculo ----------
+function rtCalc(){const k=rtModo+"|"+($("rtPde")&&$("rtPde").checked?1:0);if(rtCache&&rtCache.k===k&&rtCache.em===RB.em)return rtCache;
+  const D=RB.D,ale=D.r.map(x=>RT_ALEG.test(U(x)));const pdeOn=k.endsWith("1");
+  const G=new Map();
+  for(const r of RB.R){if(rtModo==="exec"&&ale[r[9]])continue;
+    const key=rtEndK(D.e[r[3]])+"|"+rtNumK(r[4])+"|"+r[6]+"|"+r[1]+(pdeOn?"|"+r[7]:"");let g=G.get(key);if(!g){g=[];G.set(key,g);}g.push(r);}
+  const grupos=[];let total=0;
+  for(const [key,L] of G){total+=L.length;if(L.length<2)continue;L.sort((a,b)=>a[12]-b[12]);grupos.push({key,L});}
+  rtCache={k,em:RB.em,grupos,total,ale};return rtCache;}
+function rtJanela(){if(rtPer==="tudo"||!RB.fim)return null;const f=rtMin(RB.fim.split("-").reverse().join("/")+" 23:59");const d={"15":15,"30":30,"90":90}[rtPer];return [f-d*1440,f];}
+function rtFiltrar(){const C=rtCalc(),D=RB.D,J=rtJanela(),q=U(($("rtBusca").value||"").trim()),pol=poloSel;
+  const okP=r=>pol==="Todos"||RT_POLO[D.a[r[8]]]===pol;
+  const out=[];let eventos=0;
+  for(const g of C.grupos){const r0=g.L[0];if(!okP(r0))continue;if(rtTssSel&&D.t[r0[1]]!==rtTssSel)continue;
+    if(q&&!U(D.e[r0[3]]+" "+r0[4]+" "+D.b[r0[5]]).includes(q))continue;
+    const ev=g.L.slice(1).filter(r=>!J||(r[12]>=J[0]&&r[12]<=J[1])).length;if(!ev)continue;eventos+=ev;out.push({g,ev});}
+  let serv=0;for(const r of RB.R){if(!okP(r))continue;if(rtModo==="exec"&&C.ale[r[9]])continue;if(rtTssSel&&D.t[r[1]]!==rtTssSel)continue;if(J&&(r[12]<J[0]||r[12]>J[1]))continue;serv++;}
+  out.sort((a,b)=>b.g.L.length-a.g.L.length||b.ev-a.ev||b.g.L[b.g.L.length-1][12]-a.g.L[a.g.L.length-1][12]);
+  return {out,eventos,serv,J};}
+
+// ---------- tela ----------
+function renderRt(){
+  const sem=!RB||!RB.R||!RB.R.length;
+  $("rtBase").hidden=LEITOR;$("rtAtual").hidden=LEITOR;
+  if(sem){$("rtInfo").textContent=LEITOR?"A base de retrabalho ainda não foi publicada.":"Ainda não há base. Clique em Importar base completa (o arquivo .json.gz) ou em Atualizar com executados.";
+    ["rtKpis","rtTbTss","rtMes","rtLista"].forEach(i=>$(i).innerHTML="");$("rtTss").innerHTML="";$("rtPer").innerHTML="";$("rtModo").innerHTML="";return;}
+  const D=RB.D;
+  $("rtInfo").innerHTML=`Baixas de <b>${dmy(RB.ini)}</b> a <b>${dmy(RB.fim)}</b> · ${nf(RB.R.length)} serviços na base · fim do dia e continua não entram · a mesma OS conta uma vez só${RB.em?` · atualizada em ${new Date(RB.em).toLocaleString("pt-BR",{dateStyle:"short",timeStyle:"short"})}`:""}`;
+  $("rtPer").innerHTML=[["tudo","Tudo"],["15","Últimos 15 dias"],["30","30 dias"],["90","90 dias"]].map(([k,l])=>`<button type="button" data-rp="${k}" aria-pressed="${rtPer===k}">${l}</button>`).join("");
+  $("rtModo").innerHTML=[["todas","Todas as baixas"],["exec","Só executadas"]].map(([k,l])=>`<button type="button" data-rm="${k}" aria-pressed="${rtModo===k}" title="${k==="exec"?"tira imóvel fechado, outro serviço, duplicidade, nada consta, cancelado…":"só tira fim do dia e continua"}">${l}</button>`).join("");
+  const F=rtFiltrar();const C=rtCalc();
+  // TSS
+  const porT=new Map();for(const x of F.out){const t=D.t[x.g.L[0][1]];const o=porT.get(t)||{t,end:0,ev:0};o.end++;o.ev+=x.ev;porT.set(t,o);}
+  const tl=[...porT.values()].sort((a,b)=>b.ev-a.ev);
+  const todosT=[...new Set(C.grupos.map(g=>D.t[g.L[0][1]]))].sort();
+  $("rtTss").innerHTML=`<option value="">Todos os TSS</option>`+todosT.map(t=>`<option${t===rtTssSel?" selected":""}>${esc(t)}</option>`).join("");
+  const pde=$("rtPde").checked;
+  $("rtKpis").innerHTML=[
+    kpi({l:"Serviços executados",v:nf(F.serv),s:F.J?`${rtDm(F.J[0])} a ${rtDm(F.J[1])}`:"toda a base",ic:IC.exe,tone:"var(--green)",soft:"var(--green-soft)"}),
+    kpi({hl:1,l:"Retrabalhos",v:nf(F.eventos),s:"vezes que o serviço voltou",ic:IC.saldo}),
+    kpi({l:"Endereços com retrabalho",v:nf(F.out.length),s:pde?"mesmo endereço e mesmo PDE":"mesmo endereço e mesmo TSS",ic:IC.cart,tone:"var(--orange)",soft:"var(--orange-soft)"}),
+    kpi({l:"% de retrabalho",v:F.serv?(Math.round(F.eventos*1000/F.serv)/10).toLocaleString("pt-BR")+"%":"–",s:"retrabalhos ÷ serviços",ic:IC.pct,tone:"var(--red)",soft:"var(--red-soft)"}),
+    kpi({l:"Mais repetido",v:F.out.length?nf(F.out[0].g.L.length)+"x":"–",s:F.out.length?esc(D.e[F.out[0].g.L[0][3]]+", "+F.out[0].g.L[0][4]):"",ic:IC.fora,tone:"var(--red)",soft:"var(--red-soft)"})].join("");
+  $("rtTbTss").innerHTML=`<thead><tr><th>TSS</th><th class="r">Endereços</th><th class="r">Retrabalhos</th></tr></thead><tbody>`+(rtTssSel?`<tr class="rtsel"><td colspan="3"><button type="button" data-rtt="">✕ Ver todos os TSS</button></td></tr>`:"")+
+    tl.slice(0,60).map(o=>`<tr data-rtt="${esc(o.t)}"${o.t===rtTssSel?' class="rtsel"':""}><td>${esc(o.t)}</td><td class="r">${nf(o.end)}</td><td class="r"><b>${nf(o.ev)}</b></td></tr>`).join("")+`</tbody>`;
+  // por mês
+  const pm=new Map();for(const x of F.out)for(const r of x.g.L.slice(1)){if(F.J&&(r[12]<F.J[0]||r[12]>F.J[1]))continue;const m=rtIso(r[12]).slice(0,7);pm.set(m,(pm.get(m)||0)+1);}
+  const ms=[...pm.keys()].sort();$("rtMes").innerHTML=barras(ms.map(m=>({lab:m.slice(5)+"/"+m.slice(2,4),sub:"",vals:[{v:pm.get(m),c:"#C2362B"}]})),{h:220,bw:30,wmin:520});
+  // lista
+  const lim=200;$("rtListaNota").textContent=`${nf(F.out.length)} endereços${F.out.length>lim?` · mostrando os ${lim} que mais repetiram (use a pesquisa ou o TSS)`:""} · clique para ver as datas e as OS`;
+  $("rtLista").innerHTML=F.out.length?`<div class="rtl">`+F.out.slice(0,lim).map(x=>{const L=x.g.L,r0=L[0],ab=rtAbertos.has(x.g.key);const pdes=new Set(L.map(r=>r[7]).filter(Boolean)).size;
+    return `<div class="rtr${ab?" ab":""}" data-rtk="${esc(x.g.key)}"><div class="rtl1"><span class="rtn">${L.length}x</span><div class="rte"><b>${esc(D.e[r0[3]])}, ${esc(r0[4])}</b><small>${esc(D.b[r0[5]])} · ${esc(RT_POLO[D.a[r0[8]]]||"")} · ${esc(D.t[r0[1]])}${pdes>1?` · <em class="rtw">${pdes} PDEs diferentes</em>`:""}</small></div><div class="rtd">${L.map(r=>`<i${C.ale[r[9]]?' class="al" title="'+esc(D.r[r[9]])+'"':""}>${rtDm(r[12])}</i>`).join("")}</div></div>`+
+      (ab?`<table class="rtdet"><thead><tr><th>#</th><th>Data</th><th>OS</th><th>PDE</th><th>Resultado</th><th>Equipe</th><th>Dias desde a anterior</th></tr></thead><tbody>${L.map((r,i)=>`<tr><td>${i+1}</td><td>${rtDm(r[12])} ${rtData(r[12]).toTimeString().slice(0,5)}</td><td class="mono">${esc(r[0])}</td><td class="mono">${esc(r[7])}</td><td>${esc(D.r[r[9]])}</td><td>${esc(D.q[r[10]])}</td><td>${i?Math.round((r[12]-L[i-1][12])/1440):"–"}</td></tr>`).join("")}</tbody></table>`:"")+`</div>`;}).join("")+`</div>`:`<div class="empty">Nenhum retrabalho com esses filtros.</div>`;}
+
+// ---------- eventos ----------
+document.addEventListener("click",e=>{
+  const p=e.target.closest("[data-rp]");if(p){rtPer=p.dataset.rp;renderRt();return;}
+  const m=e.target.closest("[data-rm]");if(m){rtModo=m.dataset.rm;renderRt();return;}
+  const t=e.target.closest("[data-rtt]");if(t&&t.closest("#v-rt")){rtTssSel=t.dataset.rtt;renderRt();return;}
+  const k=e.target.closest(".rtl1");if(k){const key=k.parentElement.dataset.rtk;rtAbertos.has(key)?rtAbertos.delete(key):rtAbertos.add(key);renderRt();}});
+$("rtTss").onchange=e=>{rtTssSel=e.target.value;renderRt();};
+$("rtPde").onchange=()=>{rtCache=null;renderRt();};
+{let tb=null;$("rtBusca").addEventListener("input",()=>{clearTimeout(tb);tb=setTimeout(renderRt,250);});}
+$("rtAtual").onclick=()=>$("rtArq").click();$("rtBase").onclick=()=>$("rtArqBase").click();
+$("rtArq").onchange=async e=>{const fs=[...e.target.files];e.target.value="";if(!fs.length)return;rtAviso("Lendo os arquivos… (arquivo grande pode levar alguns minutos)");
+  try{if(!RB)RB=rtVazio();let tot={novos:0,trocados:0,fora:0},E={linhas:0,ok:0,fimdia:0,outroAtc:0,semData:0};
+    for(const f of fs){const {out,est}=await rtLerArquivo(f);for(const k in E)E[k]+=est[k];const r=rtJuntar(RB,out);for(const k in tot)tot[k]+=r[k];}
+    RB.fonte=fs.map(f=>f.name).join(", ");rtCache=null;await rtSalvar();renderRt();
+    rtAviso(`Base atualizada: ${nf(E.linhas)} linhas lidas · ${nf(tot.novos)} serviços novos · ${nf(tot.trocados)} atualizados · ${nf(E.fimdia)} fim do dia/continua fora · ${nf(E.outroAtc)} de outro ATC fora. Atualizando o link da coordenação…`,"ok");
+    const ok=await rtPublicar();rtAviso($("rtMsg").textContent.replace(" Atualizando o link da coordenação…",ok?" Link da coordenação atualizado.":" O link da coordenação não atualizou — tente de novo."),ok?"ok":"err");}
+  catch(err){console.error(err);rtAviso("Não consegui ler: "+err.message,"err");}};
+$("rtArqBase").onchange=async e=>{const f=e.target.files[0];e.target.value="";if(!f)return;rtAviso("Abrindo a base…");
+  try{let txt;const u=new Uint8Array(await f.slice(0,2).arrayBuffer());
+    if(u[0]===0x1f&&u[1]===0x8b)txt=await new Response(f.stream().pipeThrough(new DecompressionStream("gzip"))).text();else txt=await f.text();
+    const B=JSON.parse(txt);if(!B.R||!B.D)throw new Error("arquivo não é uma base de retrabalho");
+    if(RB&&RB.R&&RB.R.length&&!confirm("Juntar com a base que já está aqui? (OK = juntar · Cancelar = trocar pela nova)")){RB=B;}
+    else if(RB&&RB.R&&RB.R.length){const D=B.D;rtJuntar(RB,B.R.map(r=>({os:r[0],tss:D.t[r[1]],fam:D.f[r[2]],end:D.e[r[3]],num:r[4],bai:D.b[r[5]],mun:D.m[r[6]],pde:r[7],atc:D.a[r[8]],res:D.r[r[9]],eq:D.q[r[10]],con:D.c[r[11]],min:r[12]})));}
+    else RB=B;
+    rtCache=null;await rtSalvar();renderRt();rtAviso(`Base carregada: ${nf(RB.R.length)} serviços (${dmy(RB.ini)} a ${dmy(RB.fim)}). Atualizando o link da coordenação…`,"ok");
+    const ok=await rtPublicar();rtAviso(`Base carregada: ${nf(RB.R.length)} serviços (${dmy(RB.ini)} a ${dmy(RB.fim)}).`+(ok?" Link da coordenação atualizado.":" O link da coordenação não atualizou."),ok?"ok":"err");}
+  catch(err){console.error(err);rtAviso("Não consegui abrir a base: "+err.message,"err");}};
+
+// ---------- link da coordenação ----------
+async function rtPublicar(){if(LEITOR||!RB)return false;try{const z=await compactar(JSON.stringify(RB));const T=2000000,n=Math.max(1,Math.ceil(z.length/T));const v=Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+  for(let i=0;i<n;i++){let ok=false,er=null;for(let t=0;t<3&&!ok;t++){try{await apiC({acao:"parte",b:"rt",v,i,n,dados:z.slice(i*T,(i+1)*T),dc:RB.fim||""});ok=true;}catch(e){er=e;await new Promise(r=>setTimeout(r,1500));}}if(!ok)throw er;}return true;}catch(e){console.error(e);return false;}}
+async function rtCarregarLeitor(){try{const q="?k="+encodeURIComponent(SLUG)+"&b=rt";const m=await apiC(null,"GET",q);if(!m.em||(RB&&RB.em===m.em))return false;
+  let z="";for(let i=0;i<m.partes;i++){const j=await apiC(null,"GET",q+"&v="+m.v+"&i="+i);z+=j.dados;}RB=JSON.parse(await descompactar(z));rtCache=null;return true;}catch(e){return false;}}
+
+// ---------- Excel ----------
+$("rtXls").onclick=()=>{if(!RB||!RB.R.length){rtAviso("Ainda não há base.");return;}
+  const F=rtFiltrar(),D=RB.D,C=rtCalc();const L=novoLivro();
+  const sH=L.st({f:{b:1,sz:10,c:"FFFFFF"},fill:"0B2540",v:"center"}),sD=L.st({nf:"dd/mm/yyyy"}),sDh=L.st({nf:"dd/mm/yyyy hh:mm"});
+  const put=(sh,r,c,v,s)=>sh.cells.set(r+","+c,{v,s});
+  const A=folha("RETRABALHOS",{widths:[12,16,20,36,8,42,26,10,11,12,12,12,60,60],freeze:"A2"});
+  ["Polo","Município","Bairro","Endereço","Nº","TSS","Família","Vezes","Retrabalhos","1ª vez","Última vez","Dias entre","Datas","OS"].forEach((h,i)=>put(A,0,i,h,sH));
+  const B=folha("DETALHE",{widths:[12,16,20,36,8,12,42,26,13,17,40,30,8,10],freeze:"A2"});
+  ["Polo","Município","Bairro","Endereço","Nº","PDE","TSS","Família","OS","Data","Resultado","Equipe","Vez nº","Dias desde a anterior"].forEach((h,i)=>put(B,0,i,h,sH));
+  let ra=1,rb=1;const dt=m=>{const d=rtData(m);return serial(d)+(d.getHours()*60+d.getMinutes())/1440;};
+  for(const x of F.out){const L2=x.g.L,r0=L2[0];const po=RT_POLO[D.a[r0[8]]]||"";
+    [po,D.m[r0[6]],D.b[r0[5]],D.e[r0[3]],r0[4],D.t[r0[1]],D.f[r0[2]],L2.length,x.ev].forEach((v,i)=>put(A,ra,i,v));put(A,ra,9,serial(rtData(r0[12])),sD);put(A,ra,10,serial(rtData(L2[L2.length-1][12])),sD);
+    put(A,ra,11,Math.round((L2[L2.length-1][12]-r0[12])/1440));put(A,ra,12,L2.map(r=>rtDm(r[12])).join(" · "));put(A,ra,13,L2.map(r=>r[0]).join(" · "));ra++;
+    L2.forEach((r,i)=>{[po,D.m[r[6]],D.b[r[5]],D.e[r[3]],r[4],r[7],D.t[r[1]],D.f[r[2]],r[0]].forEach((v,j)=>put(B,rb,j,v));put(B,rb,9,dt(r[12]),sDh);put(B,rb,10,D.r[r[9]]);put(B,rb,11,D.q[r[10]]);put(B,rb,12,i+1);put(B,rb,13,i?Math.round((r[12]-L2[i-1][12])/1440):"");rb++;});}
+  A.filter=`A1:N${ra}`;B.filter=`A1:N${rb}`;
+  baixarBlob(gerarXlsx(L,[A,B]),`Retrabalho ${dmy(RB.fim).replace(/\//g,"-")}.xlsx`);rtAviso(`Excel baixado: ${nf(F.out.length)} endereços e ${nf(rb-1)} serviços.`,"ok");};
+
+// carrega a base ao abrir
+(async()=>{if(LEITOR){if(await rtCarregarLeitor()&&abaAtual==="rt")renderRt();setInterval(async()=>{if(!document.hidden&&await rtCarregarLeitor()&&abaAtual==="rt")renderRt();},600000);}
+  else{await rtCarregarLocal();if(abaAtual==="rt")renderRt();}})();
 
 })();
 </script>

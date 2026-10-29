@@ -25,6 +25,8 @@ async function lerCorpo(req) {
   if (typeof req.body === "string") return JSON.parse(req.body || "{}");
   const ch = []; for await (const c of req) ch.push(c); const t = Buffer.concat(ch).toString("utf8"); return t ? JSON.parse(t) : {};
 }
+// "rt" = base do retrabalho; o resto = painel da carteira
+const pre = (b) => (b === "rt" ? "rt" : "cart");
 const limparChave = (s) => String(s || "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().trim().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "").replace(/-+/g, "-").replace(/^-|-$/g, "");
 
 module.exports = async (req, res) => {
@@ -36,11 +38,11 @@ module.exports = async (req, res) => {
       const k = limparChave(q.k);
       if (!["coordenacao", "cordenacao"].includes(k) && !(cfg && cfg.chave && k && iguais(k, cfg.chave))) throw erro(404, "Este link não existe mais. Peça o link novo para a Fernanda.");
       if (q.i != null) {
-        const dados = await cmd("GET", `cart:p:${String(q.v || "").replace(/[^a-z0-9]/g, "")}:${Number(q.i) | 0}`);
+        const dados = await cmd("GET", `${pre(q.b)}:p:${String(q.v || "").replace(/[^a-z0-9]/g, "")}:${Number(q.i) | 0}`);
         if (dados == null) throw erro(409, "O painel acabou de ser atualizado. Recarregue a página.");
         return res.status(200).json({ dados });
       }
-      const meta = J(await cmd("GET", "cart:meta"), null);
+      const meta = J(await cmd("GET", pre(q.b) + ":meta"), null);
       return res.status(200).json(meta ? { em: meta.em, v: meta.v, partes: meta.partes, dc: meta.dc } : { em: 0 });
     }
     if (req.method !== "POST") throw erro(405, "Método não aceito.");
@@ -55,12 +57,13 @@ module.exports = async (req, res) => {
     if (b.acao === "parte") {
       const v = String(b.v || "").replace(/[^a-z0-9]/g, "").slice(0, 30), i = Number(b.i) | 0, n = Number(b.n) | 0;
       if (!v || n < 1 || n > 60 || i < 0 || i >= n || typeof b.dados !== "string" || b.dados.length > 3300000) throw erro(400, "Envio inválido.");
-      await cmd("SET", `cart:p:${v}:${i}`, b.dados, "EX", 60 * 60 * 24 * 60);
+      const P = pre(b.b);
+      await cmd("SET", `${P}:p:${v}:${i}`, b.dados, "EX", 60 * 60 * 24 * 60);
       if (i === n - 1) {
-        const antiga = J(await cmd("GET", "cart:meta"), null);
+        const antiga = J(await cmd("GET", P + ":meta"), null);
         const meta = { v, partes: n, em: Date.now(), dc: String(b.dc || "").slice(0, 10) };
-        await cmd("SET", "cart:meta", JSON.stringify(meta));
-        if (antiga && antiga.v && antiga.v !== v) await pipe(Array.from({ length: antiga.partes }, (_, j) => ["EXPIRE", `cart:p:${antiga.v}:${j}`, 300]));
+        await cmd("SET", P + ":meta", JSON.stringify(meta));
+        if (antiga && antiga.v && antiga.v !== v) await pipe(Array.from({ length: antiga.partes }, (_, j) => ["EXPIRE", `${P}:p:${antiga.v}:${j}`, 300]));
         return res.status(200).json({ ok: true, em: meta.em, chave: "coordenacao" });
       }
       return res.status(200).json({ ok: true });
