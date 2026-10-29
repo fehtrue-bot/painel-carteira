@@ -1575,6 +1575,60 @@ body.aba-rt .app>.wrap{max-width:1440px!important}
 #rdTop .rx-top{gap:10px}
 #v-rt .kc-vr{flex-wrap:nowrap}#v-rt .rx-dl{white-space:nowrap}
 @media (max-width:1250px){#v-rt .rx-tiles{grid-template-columns:repeat(2,minmax(0,1fr))!important}.rx-evorow{grid-template-columns:1fr}}
+/* carteira do dia (retrabalho) */
+.kcs.k4{grid-template-columns:repeat(4,minmax(0,1fr));margin-bottom:12px}
+#rtCkpi .kc-f{margin-top:auto;padding-top:8px}
+.rk-tools{display:flex;gap:8px;flex-wrap:wrap}
+.rk-list{display:flex;flex-direction:column}
+.rk-row{display:grid;grid-template-columns:64px minmax(0,1.6fr) minmax(0,1.2fr) 120px minmax(0,1.4fr);gap:14px;align-items:center;padding:10px 16px;border-top:1px solid #EEF2F5;border-left:3px solid transparent}
+.rk-row.f{border-left-color:#D9534A}
+.rk-row:hover{background:#F8FBFD}
+.rk-n{display:flex;flex-direction:column;align-items:center;justify-content:center;width:52px;height:52px;border-radius:12px;background:#FFF3E3}
+.rk-n b{font-family:var(--f-display);font-size:20px;color:#E07F00;line-height:1}.rk-n small{font-size:10px;color:#B4540A}
+.rk-e b{display:block;font-size:13.5px;color:#00396F}.rk-e small{display:block;font-size:11.5px;color:#8A97A3;margin-top:2px}
+.rk-s{font-size:12.5px;color:#3E5163}
+.rk-pz{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:700;padding:3px 10px;border-radius:999px;white-space:nowrap}
+.rk-pz::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor}
+.rk-pz.f{background:#FDE8E6;color:#C9423A}.rk-pz.n{background:#E3F4EA;color:#1C7444}
+.rk-d small{display:block;font-size:11px;color:#8A97A3;margin-top:4px}
+.rk-d .rtd{display:flex;gap:4px;flex-wrap:wrap;align-items:center}.rk-d .rtd em{font-style:normal;font-size:11px;font-weight:700;color:#5E6E7B}
+@media (max-width:1100px){.kcs.k4{grid-template-columns:repeat(2,minmax(0,1fr))}.rk-row{grid-template-columns:56px minmax(0,1fr);}.rk-s,.rk-p,.rk-d{grid-column:2}}
+
+/* ===== topo: marca · vazamentos · abas ===== */
+.sb{position:static!important;justify-content:space-between;min-height:56px;box-shadow:none!important}
+.tabbar{position:sticky;top:0;z-index:30;background:#fff;border-bottom:1px solid #E3E9EF;box-shadow:0 1px 3px rgba(16,40,64,.05);padding:0 max(28px,calc((100% - 1440px)/2 + 28px))}
+.tabbar .tabs.sb-nav{display:flex;justify-content:center;gap:4px;overflow-x:auto;border:0;margin:0;padding:0;background:none;max-width:none}
+.tabbar .tab{all:unset;box-sizing:border-box;display:flex;align-items:center;gap:8px;padding:13px 16px 12px;font:600 13.5px var(--f-body);color:#4A5D6E;cursor:pointer;border-bottom:3px solid transparent;white-space:nowrap}
+.tabbar .tab[hidden]{display:none}
+.tabbar .tab svg{width:16px;height:16px;color:#8A9BAA}
+.tabbar .tab:hover{color:#00396F;background:#F6FAFC}
+.tabbar .tab[aria-selected="true"]{color:#00396F;border-bottom-color:#0096D6}.tabbar .tab[aria-selected="true"] svg{color:#0096D6}
+.vz{background:linear-gradient(120deg,#00396F 0%,#0A5A9C 55%,#0096D6 100%);color:#fff;padding:16px max(28px,calc((100% - 1440px)/2 + 28px))}
+.vz:empty{display:none}
+.vz-in{display:flex;align-items:center;justify-content:center;gap:28px;flex-wrap:wrap}
+.vz-t{display:flex;align-items:center;gap:10px}
+.vz-ic{width:40px;height:40px;border-radius:12px;background:rgba(255,255,255,.16);display:grid;place-items:center;color:#7FDBFF}
+.vz-t b{display:block;font-family:var(--f-display);font-size:17px;font-weight:700}.vz-t small{display:block;font-size:11.5px;color:#B9D9EE}
+.vz-main{display:flex;align-items:baseline;gap:8px;cursor:pointer;padding:4px 18px;border-left:1px solid rgba(255,255,255,.2);border-right:1px solid rgba(255,255,255,.2)}
+.vz-main b{font-family:var(--f-display);font-size:42px;font-weight:700;line-height:1}.vz-main span{font-size:13px;color:#B9D9EE}
+.vz-k{display:flex;flex-direction:column;align-items:center;cursor:pointer;padding:4px 10px;border-radius:10px}
+.vz-k:hover,.vz-main:hover,.vz-p:hover{background:rgba(255,255,255,.1)}
+.vz-k span{font-size:11px;color:#B9D9EE;font-weight:600;text-transform:uppercase;letter-spacing:.06em}
+.vz-k b{font-family:var(--f-display);font-size:24px;font-weight:700;line-height:1.2}
+.vz-k b.g{color:#7CE3A8}.vz-k b.r{color:#FF9C93}
+.vz-k small{font-size:10.5px;color:#B9D9EE}
+.vz-ps{display:flex;gap:10px}
+.vz-p{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);border-radius:10px;padding:8px 12px;min-width:150px;cursor:pointer}
+.vz-p span{font-size:11px;color:#B9D9EE;font-weight:600}.vz-p b{display:block;font-family:var(--f-display);font-size:20px;line-height:1.2}
+.vz-p .kc-bar{background:rgba(255,255,255,.2);margin:4px 0}
+.vz-p small{font-size:10.5px;color:#D7E9F5}.vz-p em{font-style:normal;font-weight:700}.vz-p em.g{color:#7CE3A8}.vz-p em.r{color:#FF9C93}
+body.printmode .vz,body.printmode .tabbar{display:none}
+@media (max-width:1000px){.vz-in{gap:12px;justify-content:flex-start}.vz-main{border:0;padding:0}.vz-main b{font-size:32px}.vz-ps{width:100%}.vz-p{flex:1;min-width:0}.tabbar{padding:0 8px}.tabbar .tabs.sb-nav{justify-content:flex-start}.tabbar .tab{padding:11px 10px}}
+.sb .hbt.sb-tools{margin-left:auto!important}
+.tabbar .tabs.sb-nav{width:100%!important;justify-self:stretch!important}
+.tabbar .tab{border-radius:0!important;background:none!important}
+.tabbar .tab:hover{background:#F6FAFC!important;color:#00396F!important}
+.tabbar .tab[aria-selected="true"]{background:none!important;color:#00396F!important;border-bottom:3px solid #0096D6!important}
 
 </style>
 </head>
@@ -1598,6 +1652,13 @@ body.aba-rt .app>.wrap{max-width:1440px!important}
 <div class="app">
 <aside class="sb" id="sb">
   <div class="sb-brand"><div class="brand"><span class="gota"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2.5c-3.6 4.4-6.5 8-6.5 11.6a6.5 6.5 0 0 0 13 0C18.5 10.5 15.6 6.9 12 2.5Z" fill="#fff"/><path d="M9 14.5a3 3 0 0 0 3 3" stroke="#0093C9" stroke-width="1.8" stroke-linecap="round"/></svg></span><div style="min-width:0"><div class="brand-t">Carteira de Serviços</div><div class="brand-s" id="sub">Interlagos · Grajaú</div></div></div></div>
+
+  <div class="sb-sp"></div>
+  <div class="hbt sb-tools"><button type="button" id="btnLink" class="lnk"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 17H7A5 5 0 0 1 7 7h2M15 7h2a5 5 0 0 1 0 10h-2M8 12h8"/></svg> Link da coordenação</button><button type="button" id="btnAjuda" title="Como usar"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6V14M12 17.5h.01"/></svg> Como usar</button><button type="button" id="btnBackup" title="Cópia de segurança: baixa um arquivo com o histórico, para levar a outro computador"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg> Cópia de segurança</button><button type="button" id="btnTrancar" title="Sair: fecha o painel e pede a senha de novo"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 4h4v16h-4M10 8l-4 4 4 4M6 12h11"/></svg> Sair</button></div>
+  <div class="hquem"><span class="av">F</span><div><b>Fernanda</b><small>Analista · conectada</small></div><span class="on"></span></div>
+</aside>
+<section class="vz" id="vzBand"></section>
+<div class="tabbar">
   <nav class="tabs sb-nav" role="tablist">
     <button class="tab" role="tab" id="t-painel" aria-selected="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg> Painel</button>
     <button class="tab" role="tab" id="t-res" aria-selected="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="12" cy="12" r="3"/><path d="M8 5l1.5-2h5L16 5"/></svg> Resumo</button>
@@ -1608,10 +1669,7 @@ body.aba-rt .app>.wrap{max-width:1440px!important}
     <button class="tab" role="tab" id="t-rt" aria-selected="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 0 1 15.5-6.2L21 8M21 3v5h-5M21 12a9 9 0 0 1-15.5 6.2L3 16M3 21v-5h5"/></svg> Retrabalho</button>
     <button class="tab" role="tab" id="t-os" aria-selected="false" hidden><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M9 6h12M9 12h12M9 18h12M4 6h.01M4 12h.01M4 18h.01"/></svg> OS</button>
   </nav>
-  <div class="sb-sp"></div>
-  <div class="hbt sb-tools"><button type="button" id="btnLink" class="lnk"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 17H7A5 5 0 0 1 7 7h2M15 7h2a5 5 0 0 1 0 10h-2M8 12h8"/></svg> Link da coordenação</button><button type="button" id="btnAjuda" title="Como usar"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6V14M12 17.5h.01"/></svg> Como usar</button><button type="button" id="btnBackup" title="Cópia de segurança: baixa um arquivo com o histórico, para levar a outro computador"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg> Cópia de segurança</button><button type="button" id="btnTrancar" title="Sair: fecha o painel e pede a senha de novo"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 4h4v16h-4M10 8l-4 4 4 4M6 12h11"/></svg> Sair</button></div>
-  <div class="hquem"><span class="av">F</span><div><b>Fernanda</b><small>Analista · conectada</small></div><span class="on"></span></div>
-</aside>
+</div>
 <div class="wrap">
   <header class="topo">
     <div class="topo-l">
@@ -1771,8 +1829,8 @@ body.aba-rt .app>.wrap{max-width:1440px!important}
       <div id="rtRes"></div>
     </div>
     <div id="rtV3" hidden>
-      <section class="rx-head" id="rtCkpi"></section>
-      <article class="rx-box"><div class="rx-boxh"><div><h3>OS da carteira que já foram feitas no mesmo endereço</h3><p class="rx-sub" id="rtCnota"></p></div><div class="seg2" id="rtCper"></div></div><div id="rtClista"></div></article>
+      <div class="kcs k4" id="rtCkpi"></div>
+      <article class="rx-box"><div class="rx-boxh"><div><h3>Já feitas no mesmo endereço</h3><p class="rx-sub" id="rtCnota"></p></div><div class="rk-tools"><div class="seg2" id="rtCfil"></div><div class="seg2" id="rtCper"></div></div></div><div id="rtClista"></div></article>
     </div>
       </div>
     </div>
@@ -2735,7 +2793,16 @@ document.addEventListener("click",e=>{const el=e.target.closest("[data-go]");if(
   const d=e.target.closest("#diaDia .r[data-dia],#tbGrupo th[data-dia]");if(d){diaSel=diaSel===d.dataset.dia?"todos":d.dataset.dia;renderTudo();}});
 function aba(n){abaAtual=n;document.body.classList.toggle("aba-rel",n==="rel");document.body.classList.toggle("aba-rt",n==="rt");if(n!=="os")lss("carteira-aba",n);document.body.classList.remove("printmode");for(const k of ["painel","mon","res","rel","lig","serv","rt","os"]){$("t-"+k).setAttribute("aria-selected",k===n);$("v-"+k).hidden=k!==n;}renderTudo();}
 $("t-painel").onclick=()=>aba("painel");$("t-lig").onclick=()=>aba("lig");$("t-mon").onclick=()=>aba("mon");$("t-rel").onclick=()=>aba("rel");$("t-res").onclick=()=>aba("res");$("t-serv").onclick=()=>aba("serv");$("t-rt").onclick=()=>aba("rt");$("t-os").onclick=()=>aba("os");
-function renderTudo(){renderFiltros();if(abaAtual==="painel")render();else if(abaAtual==="serv")renderServ();else if(abaAtual==="lig")renderLig();else if(abaAtual==="mon")renderMonLig();else if(abaAtual==="rel")renderRel();else if(abaAtual==="res")renderRes();else if(abaAtual==="rt")renderRt();else renderOS();}
+function renderVz(){const el=$("vzBand");if(!el)return;const G="Vazamento de água";const ca=ultF().ca.filter(r=>r.g===G);const t=ca.length,f=ca.filter(r=>r.fora).length,n=t-f,pv=t?n/t:null,meta=metaDe(G);
+  const pf=v=>v==null?"–":(Math.round(v*1000)/10).toLocaleString("pt-BR")+"%";
+  const polo=p=>{const c=ca.filter(r=>r.p===p),tt=c.length,ff=c.filter(r=>r.fora).length;return `<div class="vz-p"${go({p,modo:"carteira",g:G})}><span>${p}</span><b>${nf(tt)}</b><div class="kc-bar"><i style="width:${tt?((tt-ff)*100/tt).toFixed(1):0}%;background:#2FA36B"></i><i style="width:${tt?(ff*100/tt).toFixed(1):0}%;background:#D9534A"></i></div><small><em class="g">${nf(tt-ff)}</em> no prazo · <em class="r">${nf(ff)}</em> fora</small></div>`;};
+  el.innerHTML=t||S.ult.dc?`<div class="vz-in"><div class="vz-t"><span class="vz-ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2.5c-3.6 4.4-6.5 8-6.5 11.6a6.5 6.5 0 0 0 13 0C18.5 10.5 15.6 6.9 12 2.5Z" fill="currentColor"/></svg></span><div><b>Carteira de vazamentos</b><small>${S.ult.dc?"carteira de "+wd(S.ult.dc)+" "+dmy(S.ult.dc):""}</small></div></div>
+    <div class="vz-main"${go({modo:"carteira",g:G})}><b>${nf(t)}</b><span>na carteira</span></div>
+    <div class="vz-k"${go({modo:"carteira",g:G,prazo:"no"})}><span>No prazo</span><b class="g">${nf(n)}</b></div>
+    <div class="vz-k"${go({modo:"carteira",g:G,prazo:"fora"})}><span>Fora do prazo</span><b class="r">${nf(f)}</b></div>
+    <div class="vz-k"><span>% no prazo</span><b class="${pv!=null&&pv>=meta?"g":"r"}">${pf(pv)}</b><small>meta ${Math.round(meta*100)}%</small></div>
+    <div class="vz-ps">${polo("Interlagos")}${polo("Grajaú")}</div></div>`:"";}
+function renderTudo(){renderFiltros();renderVz();if(abaAtual==="painel")render();else if(abaAtual==="serv")renderServ();else if(abaAtual==="lig")renderLig();else if(abaAtual==="mon")renderMonLig();else if(abaAtual==="rel")renderRel();else if(abaAtual==="res")renderRes();else if(abaAtual==="rt")renderRt();else renderOS();}
 
 /* ================= Excel ================= */
 $("baixar").onclick=()=>{try{exportar();}catch(e){console.error(e);msg("Não consegui gerar o Excel: "+e.message);}};
@@ -3134,17 +3201,26 @@ function rtBuscar(){const D=RB.D,q=U(($("rtBusca").value||"").trim());const ale=
       `<table class="rtts"><tbody>${ts.map(([t,x])=>`<tr class="${x.length>1?"rep":""}"><td class="n">${x.length}x</td><td class="t">${esc(t)}</td><td><div class="rtd">${x.map(r=>rtChip(r,ale[r[9]])).join("")}</div></td></tr>`).join("")}</tbody></table></div>`;}).join("");}
 
 // ---------- carteira × retrabalho ----------
+var rtCfil="";
 function rtCarteira(){const D=RB.D;const agora=Date.now();const lim90=rtMin(new Date(agora-90*864e5).toLocaleDateString("pt-BR")+" 00:00");
-  $("rtCper").innerHTML=[["90","Últimos 90 dias"],["tudo","Qualquer tempo"]].map(([k,l])=>`<button type="button" data-rcp="${k}" aria-pressed="${rtCper===k}">${l}</button>`).join("");
+  $("rtCper").innerHTML=[["90","90 dias"],["tudo","Qualquer tempo"]].map(([k,l])=>`<button type="button" data-rcp="${k}" aria-pressed="${rtCper===k}">${l}</button>`).join("");
   const ca=ultF().ca.filter(r=>fp(r));const itens=[];
   for(const r of ca){let h=rtHistCart(r);if(rtCper==="90")h=h.filter(x=>x[12]>=lim90);if(h.length)itens.push({r,h});}
   itens.sort((a,b)=>(b.r.fora-a.r.fora)||b.h.length-a.h.length||b.h[b.h.length-1][12]-a.h[a.h.length-1][12]);
-  const fora=itens.filter(x=>x.r.fora).length;
-  $("rtCkpi").innerHTML=`<div class="rx-big"><div class="rx-pct">${nf(itens.length)}</div><div class="rx-frase">OS da carteira de ${dmy(S.ult.dc)} vão para um endereço onde <b>o mesmo serviço já foi feito</b>${rtCper==="90"?" nos últimos 90 dias":""}.<small>Se executar de novo, vira retrabalho. Vale olhar antes de mandar a equipe.</small></div></div>
-    <dl class="rx-stats"><div><dt>OS na carteira</dt><dd>${nf(ca.length)}</dd></div><div><dt>Já feitas antes</dt><dd class="r">${nf(itens.length)}</dd></div><div><dt>Dessas, fora do prazo</dt><dd class="r">${nf(fora)}</dd></div><div><dt>% da carteira</dt><dd>${ca.length?pctTxt(itens.length,ca.length):"–"}</dd></div></dl>`;
-  $("rtCnota").textContent=`fora do prazo primeiro; ao lado, as datas em que o serviço já foi feito ali`;
-  $("rtClista").innerHTML=itens.length?`<table class="rtct"><thead><tr><th>OS na carteira</th><th>Endereço</th><th>Serviço</th><th>Prazo</th><th class="r">Já feito</th><th>Quando foi feito</th></tr></thead><tbody>${itens.slice(0,400).map(({r,h})=>{const ul=h[h.length-1];const dd=Math.round((rtMin(new Date().toLocaleDateString("pt-BR")+" 12:00")-ul[12])/1440);
-    return `<tr><td class="mono">${esc(r.os)}</td><td><b>${esc(r.end)}</b><small>${esc(r.bai)} · ${r.p}</small></td><td>${esc(r.tss)}</td><td><span class="tg5 ${r.fora?"f":"n"}">${r.fora?"fora do prazo":"no prazo"}</span></td><td class="r"><b class="vm">${h.length}x</b></td><td><div class="rtd">${h.map(x=>rtChip(x,rtCalc().ale[x[9]])).join("")}</div><small>última há ${dd} dias</small></td></tr>`;}).join("")}</tbody></table>${itens.length>400?`<div class="note">mostrando 400 de ${nf(itens.length)}</div>`:""}`:`<div class="rtvazio">Nenhuma OS da carteira tem o mesmo serviço feito antes no endereço.</div>`;}
+  const fora=itens.filter(x=>x.r.fora).length,noP=itens.length-fora;
+  const SV=p=>`<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">${p}</svg>`;
+  const kc=o=>`<div class="kc${o.go!=null?" rx-clk":""}${o.go!=null&&rtCfil===o.go?" sel":""}"${o.go!=null?` data-rcf="${o.go}"`:""} style="--c:${o.c}"><div class="kc-h"><span class="kc-ic">${o.ic}</span><span class="kc-l">${o.l}</span></div><div class="kc-vr"><span class="kc-v"${o.vc?` style="color:${o.vc}"`:""}>${o.v}</span></div><div class="kc-s">${o.s||""}</div><div class="kc-f">${o.f||""}</div></div>`;
+  const pc=ca.length?itens.length/ca.length:0;
+  $("rtCkpi").innerHTML=kc({l:"OS na carteira",c:"#00396F",ic:SV('<rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/>'),v:nf(ca.length),s:`carteira de ${dm(S.ult.dc)}`})+
+    kc({l:"Já feitas antes",c:"#F08C00",vc:"#E07F00",ic:SV('<path d="M3 12a9 9 0 0 1 15.5-6.2L21 8M21 3v5h-5M21 12a9 9 0 0 1-15.5 6.2L3 16M3 21v-5h5"/>'),v:nf(itens.length),s:`${pctTxt(itens.length,ca.length||1)} da carteira`,f:`<div class="kc-bar"><i style="width:${(pc*100).toFixed(1)}%;background:#F08C00"></i></div>`,go:""})+
+    kc({l:"Fora do prazo",c:"#D9534A",vc:"#C9423A",ic:SV('<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>'),v:nf(fora),s:"olhar primeiro",f:`<div class="kc-bar"><i style="width:${itens.length?(fora*100/itens.length).toFixed(1):0}%;background:#D9534A"></i></div>`,go:"f"})+
+    kc({l:"No prazo",c:"#2FA36B",vc:"#1C7444",ic:SV('<path d="m5 12 5 5 9-10"/>'),v:nf(noP),s:"dá tempo de conferir",f:`<div class="kc-bar"><i style="width:${itens.length?(noP*100/itens.length).toFixed(1):0}%;background:#2FA36B"></i></div>`,go:"n"});
+  $("rtCfil").innerHTML=[["","Todas"],["f","Fora do prazo"],["n","No prazo"]].map(([k,l])=>`<button type="button" data-rcf="${k}" aria-pressed="${rtCfil===k}">${l}</button>`).join("");
+  const L=itens.filter(x=>!rtCfil||(rtCfil==="f"?x.r.fora:!x.r.fora));
+  $("rtCnota").textContent=`${nf(L.length)} OS · se executar de novo, vira retrabalho`;
+  const hoje=rtMin(new Date().toLocaleDateString("pt-BR")+" 12:00");
+  $("rtClista").innerHTML=L.length?`<div class="rk-list">${L.slice(0,400).map(({r,h})=>{const ul=h[h.length-1];const dd=Math.round((hoje-ul[12])/1440);const ale=rtCalc().ale;
+    return `<div class="rk-row${r.fora?" f":""}"><div class="rk-n"><b>${h.length}x</b><small>feito</small></div><div class="rk-e"><b>${esc(r.end)}</b><small>${esc(r.bai)} · ${r.p} · OS ${esc(r.os)}</small></div><div class="rk-s">${esc(r.tss)}</div><div class="rk-p"><span class="rk-pz ${r.fora?"f":"n"}">${r.fora?"Fora do prazo":"No prazo"}</span></div><div class="rk-d"><div class="rtd">${h.slice(-3).map(x=>rtChip(x,ale[x[9]])).join("")}${h.length>3?`<em>+${h.length-3}</em>`:""}</div><small>há ${dd} ${dd===1?"dia":"dias"}</small></div></div>`;}).join("")}</div>${L.length>400?`<div class="note">mostrando 400 de ${nf(L.length)}</div>`:""}`:`<div class="rtvazio">Nenhuma OS nessa condição.</div>`;}
 
 // ---------- eventos ----------
 document.addEventListener("click",e=>{
@@ -3156,6 +3232,7 @@ document.addEventListener("click",e=>{
   const p=e.target.closest("[data-rp]");if(p){rtPer=p.dataset.rp;renderRt();return;}
   const m=e.target.closest("[data-rm]");if(m){rtModo=m.dataset.rm;renderRt();return;}
   const po=e.target.closest("[data-rpo]");if(po){poloSel=(po.closest(".rx-tile")&&poloSel===po.dataset.rpo)?"Todos":po.dataset.rpo;renderTudo();return;}
+  const cf=e.target.closest("[data-rcf]");if(cf){rtCfil=(cf.classList.contains("kc")&&rtCfil===cf.dataset.rcf)?"":cf.dataset.rcf;renderRt();return;}
   const c=e.target.closest("[data-rcp]");if(c){rtCper=c.dataset.rcp;renderRt();return;}
   const t=e.target.closest("[data-rtt]");if(t&&t.closest("#v-rt")){rtTssSel=(t.dataset.rtt===rtTssSel?"":t.dataset.rtt);renderRt();return;}
   const k=e.target.closest(".rx-row .rtl1");if(k){const key=k.parentElement.dataset.rtk;rtAbertos.has(key)?rtAbertos.delete(key):rtAbertos.add(key);renderRt();}});
