@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Painel da Carteira de Serviços</title>
+<title>Gestão da Carteira de Serviços · Grajaú e Interlagos</title>
 <style>
 /* Layout: barra de topo azul-escura com marca, abas e ações; abaixo, conteúdo em cartões sobre fundo cinza-azulado */
 :root{
@@ -1746,6 +1746,17 @@ body.printmode .vz,body.printmode .tabbar{display:none}
 .sb-title small{display:block;font-size:12.5px;color:#6B7C8B;margin-top:2px}
 .sb-brand .brand-t,.sb-brand .brand-s{display:none!important}
 @media (max-width:1000px){.sb-title{position:static;transform:none;order:2;flex:1;text-align:left}.sb-title b{font-size:15px}}
+/* título corporativo */
+.sb{min-height:74px!important;border-bottom:1px solid #E3E9EF}
+.sb::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:3px;background:linear-gradient(90deg,#00396F,#0096D6 60%,#12D1FE)}
+.sb-title .sb-over{display:block;font-size:10.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#0096D6}
+.sb-title b{font-size:20px!important;letter-spacing:-.005em;color:#0B2545!important;margin-top:1px}
+.sb-title small{display:flex!important;justify-content:center;align-items:center;gap:10px;font-size:12px!important;color:#6B7C8B!important;margin-top:4px!important}
+.sb-title small b{display:inline!important;font-size:12px!important;color:#14212B!important;font-weight:600}
+.sb-title small i.dt{display:inline-block;width:7px;height:7px;border-radius:50%;background:#2FA36B;box-shadow:0 0 0 3px #E3F4EA;margin-right:7px;vertical-align:1px}
+.sb-title small .sep{width:1px;height:12px;background:#D3DCE3}
+.tabbar{border-top:0}
+@media (max-width:1000px){.sb-title small{justify-content:flex-start}.sb-title b{font-size:16px!important}.sb::after{display:none}}
 
 </style>
 </head>
@@ -1768,7 +1779,7 @@ body.printmode .vz,body.printmode .tabbar{display:none}
 </div>
 <div class="app">
 <aside class="sb" id="sb">
-  <div class="sb-title"><b>Carteira de Serviços · Grajaú e Interlagos</b><small id="sbData"></small></div>
+  <div class="sb-title"><span class="sb-over">Polos Grajaú e Interlagos</span><b>Gestão da Carteira de Serviços</b><small id="sbData"></small></div>
   <div class="sb-brand"><div class="brand"><span class="gota"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2.5c-3.6 4.4-6.5 8-6.5 11.6a6.5 6.5 0 0 0 13 0C18.5 10.5 15.6 6.9 12 2.5Z" fill="#fff"/><path d="M9 14.5a3 3 0 0 0 3 3" stroke="#0093C9" stroke-width="1.8" stroke-linecap="round"/></svg></span><div style="min-width:0"><div class="brand-t">Carteira de Serviços</div><div class="brand-s" id="sub">Interlagos · Grajaú</div></div></div></div>
 
   <div class="sb-sp"></div>
@@ -2914,7 +2925,7 @@ document.addEventListener("click",e=>{const el=e.target.closest("[data-go]");if(
   const d=e.target.closest("#diaDia .r[data-dia],#tbGrupo th[data-dia]");if(d){diaSel=diaSel===d.dataset.dia?"todos":d.dataset.dia;renderTudo();}});
 function aba(n){abaAtual=n;document.body.classList.toggle("aba-rel",n==="rel");document.body.classList.toggle("aba-rt",n==="rt");if(n!=="os")lss("carteira-aba",n);document.body.classList.remove("printmode");for(const k of ["painel","mon","res","rel","lig","serv","rt","os"]){$("t-"+k).setAttribute("aria-selected",k===n);$("v-"+k).hidden=k!==n;}renderTudo();}
 $("t-painel").onclick=()=>aba("painel");$("t-lig").onclick=()=>aba("lig");$("t-mon").onclick=()=>aba("mon");$("t-rel").onclick=()=>aba("rel");$("t-res").onclick=()=>aba("res");$("t-serv").onclick=()=>aba("serv");$("t-rt").onclick=()=>aba("rt");$("t-os").onclick=()=>aba("os");
-function renderVz(){{const e=$("sbData");if(e){const u=S&&S.ult;e.innerHTML=u&&u.dc?`carteira de ${wd(u.dc)} ${dmy(u.dc)}${u.em?" · gerado em "+new Date(u.em).toLocaleString("pt-BR",{dateStyle:"short",timeStyle:"short"}):""}`:"sem carteira carregada";}}const el=$("vzBand");if(!el||el.dataset.ok)return;el.dataset.ok=1;el.innerHTML=`<div class="vz-in"><span class="vz-ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2.5c-3.6 4.4-6.5 8-6.5 11.6a6.5 6.5 0 0 0 13 0C18.5 10.5 15.6 6.9 12 2.5Z" fill="currentColor"/></svg></span><h1 class="vz-h">Carteira de Vazamentos</h1></div>`;}
+function renderVz(){{const e=$("sbData");if(e){const u=S&&S.ult;e.innerHTML=u&&u.dc?`<span><i class="dt"></i>Carteira de <b>${dmy(u.dc)}</b></span>${u.em?`<span class="sep"></span><span>Atualizado em <b>${new Date(u.em).toLocaleDateString("pt-BR")}</b> às <b>${new Date(u.em).toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"})}</b></span>`:""}`:"<span>Nenhuma carteira carregada</span>";}}const el=$("vzBand");if(!el||el.dataset.ok)return;el.dataset.ok=1;el.innerHTML=`<div class="vz-in"><span class="vz-ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2.5c-3.6 4.4-6.5 8-6.5 11.6a6.5 6.5 0 0 0 13 0C18.5 10.5 15.6 6.9 12 2.5Z" fill="currentColor"/></svg></span><h1 class="vz-h">Carteira de Vazamentos</h1></div>`;}
 const CARD_SEL=".kc,.bfo2,.c4,.kpi";let cardAtivo="";
 function chaveCard(el){const d=el.dataset;const lb=el.querySelector(".kc-l,.bf-n,.h4 b,.lbl");return [d.go,d.prazo,d.forn,d.rgo,d.rcf,lb?lb.textContent.trim():""].map(x=>x??"").join("|")+"|"+((el.closest("section")||{}).id||"");}
 function marcarCards(){document.querySelectorAll(CARD_SEL).forEach(el=>el.classList.toggle("ativo",!!cardAtivo&&chaveCard(el)===cardAtivo));}
@@ -3091,7 +3102,7 @@ async function carregarLeitor(){const q="?k="+encodeURIComponent(SLUG);const m=a
   if(m.em===versaoLeitor)return false;let z="";for(let i=0;i<m.partes;i++){const j=await apiC(null,"GET",q+"&v="+m.v+"&i="+i);z+=j.dados;}
   {const o=JSON.parse(await descompactar(z));RAW=o._raw||null;delete o._raw;S=normalizar(o);}ajustarRel(S.ult.ca);for(const r of S.ult.ex)r.conta=executadoDeFato(r.cod,r.res);versaoLeitor=m.em;
   setConn("on","Atualizado pela equipe em "+new Date(m.em).toLocaleString("pt-BR",{dateStyle:"short",timeStyle:"short"}),S.ult.dc?"carteira de "+dmy(S.ult.dc):"");return true;}
-async function iniciarLeitor(){document.body.classList.add("leitor");const ft=document.querySelector(".foot");if(ft)ft.textContent="Painel da Carteira de Serviços · Interlagos e Grajaú · só visualização";$("telaLogin").hidden=true;document.title="Carteira de Serviços · Interlagos e Grajaú";
+async function iniciarLeitor(){document.body.classList.add("leitor");const ft=document.querySelector(".foot");if(ft)ft.textContent="Painel da Carteira de Serviços · Interlagos e Grajaú · só visualização";$("telaLogin").hidden=true;document.title="Gestão da Carteira de Serviços · Grajaú e Interlagos";
   $("hSaudL").innerHTML='Bem-vindo(a)<small class="hsub">Carteira de Serviços · Interlagos e Grajaú</small>';
   {const tick=()=>{const d=new Date();$("hHora").textContent=d.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"});const t=d.toLocaleDateString("pt-BR",{weekday:"long",day:"2-digit",month:"long",year:"numeric"});$("hDia").textContent=t.charAt(0).toUpperCase()+t.slice(1);};$("hClock").hidden=false;tick();setInterval(tick,20000);}setConn("warn","Carregando o painel…","");
   try{await carregarLeitor();}catch(e){S=normalizar(null);setConn("off",e.message,"");$("hRes").textContent=e.message;window.__pronto=true;return;}
