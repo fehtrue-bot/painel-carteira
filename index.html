@@ -1338,6 +1338,125 @@ body.aba-rt .wrap{max-width:1500px}
 #v-rt .rx-top{gap:7px;margin-top:6px}
 .rx-splitl{flex-wrap:wrap;font-size:10.5px}
 
+/* ===================== APP SHELL (cara de software) ===================== */
+body{background:#F3F6FA}
+.app{display:grid;grid-template-columns:240px minmax(0,1fr);min-height:100vh}
+.sb{position:sticky;top:0;height:100vh;overflow-y:auto;background:#fff;border-right:1px solid #E3E9EF;padding:18px 14px 14px;display:flex;flex-direction:column;gap:6px;z-index:20}
+.sb-brand .brand{display:flex;align-items:center;gap:10px;padding:2px 6px 16px;border-bottom:1px solid #EEF2F5;margin-bottom:8px}
+.sb-brand .gota{width:38px;height:38px;border-radius:11px;background:linear-gradient(135deg,#12D1FE,#0096D6);display:grid;place-items:center;flex:none;box-shadow:0 4px 12px rgba(0,150,214,.25)}
+.sb-brand .brand-t{font-family:var(--f-display);font-size:15px;font-weight:700;color:#00396F;line-height:1.15}
+.sb-brand .brand-s{font-size:11px;color:#8A97A3;line-height:1.35;margin-top:2px}.sb-brand .brand-s b{color:#5E6E7B;font-weight:600}
+.sb-lbl{display:block;font-size:10.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#A3AFBA;padding:10px 10px 6px}
+.sb .tabs.sb-nav{display:flex;flex-direction:column;gap:2px;border:0;padding:0;margin:0;background:none;overflow:visible;max-width:none}
+.sb .tab{all:unset;box-sizing:border-box;display:flex;align-items:center;gap:11px;width:100%;padding:10px 12px;border-radius:10px;font:600 13.5px var(--f-body);color:#4A5D6E;cursor:pointer;transition:background .15s,color .15s}
+.sb .tab[hidden]{display:none}
+.sb .tab svg{width:17px;height:17px;color:#8A9BAA;flex:none}
+.sb .tab:hover{background:#F2F7FB!important;color:#00396F!important}
+.sb .tab[aria-selected="true"]{background:linear-gradient(90deg,#E4F4FB,#F2FAFE)!important;color:#00396F!important;box-shadow:inset 3px 0 0 #0096D6}
+.sb .tab[aria-selected="true"] svg{color:#0096D6}
+.sb .tab:focus-visible{outline:2px solid #0096D6;outline-offset:1px}
+.sb-sub{display:none;flex-direction:column;gap:1px;margin:2px 0 6px 20px;padding-left:10px;border-left:2px solid #E4EDF3}
+body.aba-rt .sb-sub{display:flex}
+.sb-sub button{all:unset;box-sizing:border-box;display:flex;align-items:center;gap:9px;padding:7px 10px;border-radius:8px;font-size:12.5px;font-weight:600;color:#5E6E7B;cursor:pointer}
+.sb-sub button svg{width:15px;height:15px;color:#9AA9B6}
+.sb-sub button:hover{background:#F2F7FB;color:#00396F}
+.sb-sub button[aria-pressed="true"]{color:#00396F;background:#EEF7FC}.sb-sub button[aria-pressed="true"] svg{color:#0096D6}
+.sb-sp{flex:1;min-height:14px}
+.sb .sb-rt{display:none;margin:0 0 8px}body.aba-rt .sb .sb-rt{display:block}
+.sb .rx-base{background:linear-gradient(160deg,#00396F,#0A5A9C);border-radius:12px;padding:12px 14px;border:0}
+.sb .hbt.sb-tools{display:flex;flex-direction:column;gap:1px;border-top:1px solid #EEF2F5;padding-top:6px;margin:0}
+.sb .hbt.sb-tools button{all:unset;box-sizing:border-box;display:flex;align-items:center;gap:10px;width:100%;padding:8px 12px;border-radius:9px;font-size:12.5px;font-weight:600;color:#5E6E7B;cursor:pointer}
+.sb .hbt.sb-tools button svg{color:#9AA9B6;flex:none}
+.sb .hbt.sb-tools button:hover{background:#F2F7FB;color:#00396F}
+.sb .hbt.sb-tools button.lnk{color:#0077B6}.sb .hbt.sb-tools button.lnk svg{color:#0096D6}
+.sb .hquem{display:flex;align-items:center;gap:10px;margin-top:8px;padding:10px;border:1px solid #E3E9EF;border-radius:12px;background:#FAFCFD;position:relative}
+.sb .hquem .av{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#0096D6,#00396F);color:#fff;display:grid;place-items:center;font-weight:700;flex:none}
+.sb .hquem b{display:block;font-size:13px;color:#14212B}.sb .hquem small{display:block;font-size:11px;color:#2FA36B;font-weight:600}
+.sb .hquem .on{position:absolute;right:12px;top:50%;width:8px;height:8px;margin-top:-4px;border-radius:50%;background:#2FA36B;box-shadow:0 0 0 3px #E3F4EA}
+
+/* topo */
+.app>.wrap{max-width:none!important;width:100%;margin:0;padding:20px 28px 40px;gap:16px}
+.topo{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap}
+.topo .hsaud{font-family:var(--f-display);font-size:26px!important;font-weight:700;color:#14212B;line-height:1.15!important;margin:0}
+.topo .hsaud span{color:inherit}
+.topo-pills{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;align-items:center}
+.topo .conn{display:inline-flex;align-items:center;gap:8px;padding:5px 12px;border-radius:999px;background:#fff;border:1px solid #DCE6EE;box-shadow:none;font-size:12px;flex-wrap:nowrap}
+.topo .conn .dot{width:8px;height:8px}.topo .conn .txt{font-size:12px;color:#5E6E7B;white-space:nowrap}.topo .conn .txt b{color:#14212B;font-weight:600}
+.topo .pubst{margin:0;padding:5px 12px;border-radius:999px;font-size:12px}
+.topo .pubst:empty{display:none}
+.topo-r{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.topo-r .hdata{display:inline-flex;align-items:center;gap:6px;padding:8px 12px;border:1px solid #DCE6EE;background:#fff;border-radius:9px;font-size:12.5px;font-weight:600;color:#3E5163;white-space:nowrap}
+.topo-r .actions{display:flex;gap:6px}
+.topo-r .actions button{font-size:12.5px;padding:8px 13px;border-radius:9px;box-shadow:none}
+.topo-r .actions button.primary{background:#0096D6;border-color:#0096D6;color:#fff}
+.topo-r .actions button.ghost{background:#fff;border:1px solid #DCE6EE;color:#3E5163}
+.topo-r .actions button.ghost:hover{border-color:#0096D6;color:#00396F}
+.topo-r .hclock{display:flex;align-items:baseline;gap:8px;padding:6px 12px;border:1px solid #DCE6EE;background:#fff;border-radius:9px}
+.topo-r .hclock[hidden]{display:none}
+.topo-r .hclock b{font-family:var(--f-display);font-size:18px;color:#00396F}.topo-r .hclock span{font-size:12px;color:#5E6E7B}
+body.leitor .topo-r .hdata{display:none}
+.app>.wrap>.hres{font-size:13px;color:#5E6E7B;margin-top:-8px}
+.app>.wrap>.hres b{color:#14212B}
+body.aba-rt .topo-r .actions,body.aba-rt .app>.wrap>.hres{display:none}
+
+/* cartões e seções no mesmo padrão */
+.app .card,.app .panel,.app .fbar2,.app .fornp{border-radius:12px!important;border:1px solid #E3E9EF!important;box-shadow:0 1px 2px rgba(16,40,64,.04)!important}
+.app .card>.ch{border-bottom:1px solid #EEF2F5;padding-bottom:12px;margin:0 -18px 0;padding-left:18px;padding-right:18px}
+.app .card h3{font-family:var(--f-display);font-size:15px;font-weight:700;color:#14212B}
+.app .sect{font-size:11.5px;letter-spacing:.1em;color:#8A97A3;margin-top:8px}
+.app .sect::after{height:1px;background:#E3E9EF}
+.app .kpi{border-radius:12px!important;border:1px solid #E3E9EF!important;box-shadow:0 1px 2px rgba(16,40,64,.04)!important;transition:transform .15s,box-shadow .15s}
+.app .kpi:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(16,40,64,.08)!important}
+.app .fbar2 .lbl{font-size:10.5px;letter-spacing:.1em;color:#A3AFBA}
+
+/* retrabalho dentro do shell: sem moldura própria */
+.app .rx-app{background:none!important;border:0!important;box-shadow:none!important;border-radius:0}
+.app .rx-body{display:block!important;min-height:0}
+.app .rx-main{padding:0!important}
+.app .rx-topo{align-items:center}
+.app .rx-pill{margin-top:0}
+body.aba-rt .app>.wrap{max-width:none}
+
+/* clique nos cartões do retrabalho */
+.rx-clk{cursor:pointer;transition:transform .15s,box-shadow .15s,border-color .15s}
+.rx-clk:hover{transform:translateY(-2px);box-shadow:0 8px 22px rgba(16,40,64,.10);border-color:#B9DDF0}
+.rx-clk:focus-visible{outline:2px solid #0096D6;outline-offset:2px}
+.rx-tile.on{border-color:#F08C00;box-shadow:0 0 0 2px rgba(240,140,0,.25)}
+.rx-hb{cursor:pointer;border-radius:6px;padding:2px 4px;margin:0 -4px}.rx-hb:hover{background:rgba(255,255,255,.08)}
+.rx-hb.on em{color:#fff;font-weight:700}
+.rx-split i{cursor:pointer}.rx-split i:hover{filter:brightness(1.15)}
+.rx-splitl span{cursor:pointer;border-radius:4px;padding:1px 3px;margin:0 -3px}.rx-splitl span:hover,.rx-splitl span.on{background:#EEF6FB;color:#00396F;font-weight:700}
+.rx-chipf{all:unset;cursor:pointer;margin-left:8px;padding:2px 9px;border-radius:999px;background:#FDEBDD;color:#B4540A;font-size:11px;font-weight:700}
+
+/* modos especiais */
+body.printmode .sb,body.trancado .sb{display:none}
+body.printmode .app{display:block}body.printmode .topo,body.printmode .app>.wrap>.hres{display:none}
+body.trancado>.app{filter:blur(6px);pointer-events:none;user-select:none}
+
+/* telas menores: menu vira barra no alto */
+@media (max-width:1000px){
+  .app{grid-template-columns:1fr}
+  .sb{position:sticky;top:0;height:auto;flex-direction:row;flex-wrap:wrap;align-items:center;gap:6px 10px;padding:10px 12px;border-right:0;border-bottom:1px solid #E3E9EF}
+  .sb-brand .brand{border:0;padding:0;margin:0}.sb-brand .brand-s{display:none}
+  .sb .tabs.sb-nav{flex-direction:row;overflow-x:auto;flex:1 1 100%;order:3;gap:4px}
+  .sb .tab{width:auto;white-space:nowrap;padding:8px 12px;flex:none}
+  .sb-lbl,.sb-sp,.sb .hquem,.sb .sb-rt{display:none!important}
+  .sb .hbt.sb-tools{flex-direction:row;border:0;padding:0;margin-left:auto;flex-wrap:wrap}
+  .sb .hbt.sb-tools button{width:auto;padding:6px 8px;font-size:0;gap:0}.sb .hbt.sb-tools button svg{width:18px;height:18px}
+  body.aba-rt .sb-sub{display:flex;flex-direction:row;order:4;flex:1 1 100%;margin:0;border:0;padding:0;overflow-x:auto}
+  .sb-sub button{white-space:nowrap}
+  .app>.wrap{padding:14px 14px 32px}
+  .topo .hsaud{font-size:21px!important}
+}
+.sb .tabs.sb-nav{order:0;justify-self:auto;align-self:auto;grid-column:auto;width:100%}
+.topo{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:start}
+.topo-l{min-width:0}
+@media (max-width:1000px){.topo{grid-template-columns:1fr}.topo-r{justify-content:flex-start}}
+.topo-r #hData{display:inline-flex!important;margin:0}.topo-r #hData svg{color:#0096D6}
+body.leitor .topo-r #hData{display:none!important}
+.app{background:linear-gradient(90deg,#fff 0,#fff 240px,transparent 240px)}
+@media (max-width:1000px){.app{background:none}}
+
 </style>
 </head>
 <body>
@@ -1357,9 +1476,10 @@ body.aba-rt .wrap{max-width:1500px}
     <div class="tlreset" id="tlReset" hidden>Para criar outra senha, o painel apaga os dados guardados neste computador (o histórico e os arquivos do dia). Depois é só subir os arquivos de novo.<button type="button" id="tlApagar">Apagar dados e criar nova senha</button></div>
   </div>
 </div>
-<header class="appbar"><div class="appbar-in">
-  <div class="brand"><span class="gota"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2.5c-3.6 4.4-6.5 8-6.5 11.6a6.5 6.5 0 0 0 13 0C18.5 10.5 15.6 6.9 12 2.5Z" fill="#fff"/><path d="M9 14.5a3 3 0 0 0 3 3" stroke="#0093C9" stroke-width="1.8" stroke-linecap="round"/></svg></span><div style="min-width:0"><div class="brand-t">Carteira de Serviços</div><div class="brand-s" id="sub">Interlagos · Grajaú</div></div></div>
-  <nav class="tabs" role="tablist">
+<div class="app">
+<aside class="sb" id="sb">
+  <div class="sb-brand"><div class="brand"><span class="gota"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2.5c-3.6 4.4-6.5 8-6.5 11.6a6.5 6.5 0 0 0 13 0C18.5 10.5 15.6 6.9 12 2.5Z" fill="#fff"/><path d="M9 14.5a3 3 0 0 0 3 3" stroke="#0093C9" stroke-width="1.8" stroke-linecap="round"/></svg></span><div style="min-width:0"><div class="brand-t">Carteira de Serviços</div><div class="brand-s" id="sub">Interlagos · Grajaú</div></div></div></div>
+  <nav class="tabs sb-nav" role="tablist"><span class="sb-lbl">Menu</span>
     <button class="tab" role="tab" id="t-painel" aria-selected="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg> Painel</button>
     <button class="tab" role="tab" id="t-res" aria-selected="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="12" cy="12" r="3"/><path d="M8 5l1.5-2h5L16 5"/></svg> Resumo</button>
     <button class="tab" role="tab" id="t-rel" aria-selected="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2M9 2h6"/></svg> Religação ao vivo</button>
@@ -1367,28 +1487,30 @@ body.aba-rt .wrap{max-width:1500px}
     <button class="tab" role="tab" id="t-lig" aria-selected="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9h7a3 3 0 0 1 3 3v9"/><path d="M3 6v6M18 4c-1.6 2-3 3.7-3 5.3a3 3 0 0 0 6 0C21 7.7 19.6 6 18 4Z"/></svg> Ligação de água</button>
     <button class="tab" role="tab" id="t-serv" aria-selected="false" hidden><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg> Outros serviços</button>
     <button class="tab" role="tab" id="t-rt" aria-selected="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 0 1 15.5-6.2L21 8M21 3v5h-5M21 12a9 9 0 0 1-15.5 6.2L3 16M3 21v-5h5"/></svg> Retrabalho</button>
+    <div class="sb-sub" id="rtSub"></div>
     <button class="tab" role="tab" id="t-os" aria-selected="false" hidden><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M9 6h12M9 12h12M9 18h12M4 6h.01M4 12h.01M4 18h.01"/></svg> OS</button>
   </nav>
-  <div class="actions">
+  <div class="sb-sp"></div>
+  <div class="rx-base sb-rt"><span>Base de executados</span><b id="rtBaseN">–</b><small id="rtInfo"></small></div>
+  <div class="hbt sb-tools"><span class="sb-lbl">Ferramentas</span><button type="button" id="btnLink" class="lnk"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 17H7A5 5 0 0 1 7 7h2M15 7h2a5 5 0 0 1 0 10h-2M8 12h8"/></svg> Link da coordenação</button><button type="button" id="btnAjuda"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6V14M12 17.5h.01"/></svg> Como usar</button><button type="button" id="btnBackup" title="Baixa um arquivo com o histórico, para levar a outro computador"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg> Cópia de segurança</button><button type="button" id="btnTrancar" title="Fecha o painel e pede a senha de novo"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 4h4v16h-4M10 8l-4 4 4 4M6 12h11"/></svg> Sair</button></div>
+  <div class="hquem"><span class="av">F</span><div><b>Fernanda</b><small>Analista · conectada</small></div><span class="on"></span></div>
+</aside>
+<div class="wrap">
+  <header class="topo">
+    <div class="topo-l">
+      <div class="hsaud" id="hSaudL"><span id="hSaud">Bem-vinda</span>, Fernanda</div>
+      <div class="topo-pills"><div class="conn"><span class="dot" id="connDot"></span><div class="txt"><b id="connTit">Carregando…</b> <span class="note" id="connSub"></span></div></div><div class="pubst" id="pubStatus"></div></div>
+    </div>
+    <div class="topo-r">
+      <div class="hclock" id="hClock" hidden><b id="hHora"></b><span id="hDia"></span></div>
+      <div class="hdata" id="hData"></div>
+    <div class="actions">
     <button type="button" class="primary" id="btnSubir"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V4M6 10l6-6 6 6M4 20h16"/></svg> Atualizar com os arquivos do dia</button>
     <button id="baixar" type="button" class="ghost"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v12M6 10l6 6 6-6M4 20h16"/></svg> Baixar Excel</button>
   </div>
-</div></header>
-<div class="wrap">
-  <section class="hero">
-    <div class="hl1">
-      <div class="hsaud" id="hSaudL"><span id="hSaud">Bem-vinda</span>, Fernanda</div>
-      <div class="hclock" id="hClock" hidden><b id="hHora"></b><span id="hDia"></span></div>
-      <div class="hdata" id="hData"></div>
-      <div class="hres" id="hRes"></div>
     </div>
-    <div class="hl2">
-      <div class="hquem"><span class="av">F</span><div><b>Fernanda</b><small>Analista · conectada</small></div><span class="on"></span></div>
-      <div class="conn"><span class="dot" id="connDot"></span><div class="txt"><b id="connTit">Carregando…</b> <span class="note" id="connSub"></span></div></div>
-      <div class="pubst" id="pubStatus"></div>
-      <div class="hbt"><button type="button" id="btnLink" class="lnk">🔗 Link da coordenação</button><button type="button" id="btnAjuda">Como usar</button><button type="button" id="btnBackup" title="Baixa um arquivo com o histórico, para levar a outro computador">Cópia de segurança</button><button type="button" id="btnTrancar" title="Fecha o painel e pede a senha de novo">Sair</button></div>
-    </div>
-  </section>
+  </header>
+  <div class="hres" id="hRes"></div>
   <div class="status" id="msg" role="status" aria-live="polite"></div>
 
   <section class="panel intro" id="intro" hidden>
@@ -1509,13 +1631,8 @@ body.aba-rt .wrap{max-width:1500px}
   <section id="v-rt" class="view" hidden>
    <div class="rx-app">
     <div class="rx-body">
-      <aside class="rx-side">
-        <div class="rx-brand"><span class="rx-logo"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 0 1 15.5-6.2L21 8M21 3v5h-5M21 12a9 9 0 0 1-15.5 6.2L3 16M3 21v-5h5"/></svg></span><div><b>RETRABALHO</b><small>Carteira de Serviços</small></div></div>
-        <nav class="rx-nav" id="rtSub"></nav>
-        <div class="rx-base"><span>Base de executados</span><b id="rtBaseN">–</b><small id="rtInfo"></small></div>
-      </aside>
       <div class="rx-main">
-      <div class="rx-topo"><div class="rx-ola"><h2 id="rxOla">Olá</h2><span class="rx-pill" id="rxPill"></span></div><div class="rx-topd"><span class="rx-date" id="rxData"></span><div class="rx-acts"><button type="button" id="rtAtual" class="primary" title="Juntar o arquivo de executados do sistema na base"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V4M6 10l6-6 6 6M4 20h16"/></svg> Atualizar</button><button type="button" id="rtBase" title="Importar a base completa (.json.gz)"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h10"/></svg> Importar base</button><button type="button" id="rtXls" title="Baixar o que está na tela em Excel"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v12M6 10l6 6 6-6M4 20h16"/></svg> Excel</button>
+      <div class="rx-topo"><div class="rx-ola"><h2 id="rxOla" hidden>Olá</h2><span class="rx-pill" id="rxPill"></span></div><div class="rx-topd"><span class="rx-date" id="rxData" hidden></span><div class="rx-acts"><button type="button" id="rtAtual" class="primary" title="Juntar o arquivo de executados do sistema na base"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V4M6 10l6-6 6 6M4 20h16"/></svg> Atualizar</button><button type="button" id="rtBase" title="Importar a base completa (.json.gz)"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h10"/></svg> Importar base</button><button type="button" id="rtXls" title="Baixar o que está na tela em Excel"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v12M6 10l6 6 6-6M4 20h16"/></svg> Excel</button>
         <input type="file" id="rtArq" multiple accept=".xlsx,.xls,.csv,.txt,.htm,.html,.xml" hidden><input type="file" id="rtArqBase" accept=".gz,.json" hidden></div></div></div>
       <div class="rx-fil" id="rtFil">
         <div class="seg2" id="rtPolo"></div><div class="seg2" id="rtPer"></div><div class="seg2" id="rtModo"></div>
@@ -1567,6 +1684,7 @@ body.aba-rt .wrap{max-width:1500px}
   </section>
   <div class="foot">Painel da Carteira de Serviços · os dados ficam guardados só neste computador</div>
   <div class="assina">Sistema desenvolvido por Fernanda</div>
+</div>
 </div>
 
 <div class="modal" id="modal" hidden><div class="mbox"><div class="mhd"><div><b id="mTit"></b><small id="mSub"></small></div><button type="button" class="cpy" id="mCopiar">📋 Copiar endereços</button><button type="button" id="mFechar" aria-label="Fechar">✕</button></div><div class="mlist" id="mLista"></div></div></div>
@@ -2003,7 +2121,7 @@ $("segDia").onclick=e=>{const b=e.target.closest("button");if(!b)return;diaSel=b
 
 
 function renderHero(T){const h=new Date().getHours();
-  $("hData").textContent=(h<12?"Bom dia":h<18?"Boa tarde":"Boa noite")+" · "+new Date().toLocaleDateString("pt-BR",{weekday:"long",day:"numeric",month:"long",year:"numeric"});
+  {const d=new Date(),w=d.toLocaleDateString("pt-BR",{weekday:"long"});$("hData").innerHTML=`<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>${w.charAt(0).toUpperCase()+w.slice(1)}, ${d.toLocaleDateString("pt-BR")}`;}
   const u=ultF();if(!u.dc){$("hRes").innerHTML="Bem-vinda! Clique em <b>Atualizar com os arquivos do dia</b> para montar o painel.";return;}
   const v=pctN(T.no,T.cart);$("hRes").innerHTML=`A carteira de <b>${wd(u.dc)} ${dmy(u.dc)}</b> tem <b>${nf(T.cart)} OS</b>, com <b>${v==null?"–":(Math.round(v*1000)/10).toLocaleString("pt-BR")+"%"}</b> no prazo${v!=null?(v>=META?" (dentro da meta)":" (abaixo da meta de "+Math.round(META*100)+"%)"):""}. Entradas e execuções: <b>${esc(rotDias())}</b>.`;}
 function render(){
@@ -2749,7 +2867,7 @@ function rtSelo(r){const h=rtHistCart(r);if(!h.length)return "";const ult=h[h.le
 function rtChip(r,ale){const D=RB.D;return `<i class="${ale?"al":""}" title="OS ${esc(r[0])} · ${esc(D.r[r[9]])}${D.q[r[10]]?" · "+esc(D.q[r[10]]):""}">${rtDm(r[12])}</i>`;}
 
 // ---------- tela ----------
-var rtView="geral",rtCper="90";
+var rtView="geral",rtCper="90",rt30=false;
 var RT_IC=Object.assign({dash:'<path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/>'},{"geral": "<rect x=\"3\" y=\"3\" width=\"7\" height=\"9\" rx=\"1.5\"/><rect x=\"14\" y=\"3\" width=\"7\" height=\"5\" rx=\"1.5\"/><rect x=\"14\" y=\"12\" width=\"7\" height=\"9\" rx=\"1.5\"/><rect x=\"3\" y=\"16\" width=\"7\" height=\"5\" rx=\"1.5\"/>", "busca": "<circle cx=\"11\" cy=\"11\" r=\"7\"/><path d=\"m20 20-3.5-3.5\"/>", "cart": "<path d=\"M9 17H7A5 5 0 0 1 7 7h2M15 7h2a5 5 0 0 1 0 10h-2M8 12h8\"/>"});
 function renderRt(){
   const sem=!RB||!RB.R||!RB.R.length;
@@ -2775,9 +2893,11 @@ function rtGeral(){rtFiltros();const D=RB.D,F=rtFiltrar(),C=rtCalc(),pde=$("rtPd
   const pdesDe=L=>new Set(L.map(r=>r[7]).filter(Boolean)).size;
   const lote=L=>{const d=new Set(L.map(r=>rtIso(r[12])));return L.length>=4&&d.size<=2;}; // muitas OS no mesmo dia: lote / cavalete múltiplo
   const ehCond=L=>pdesDe(L)>1||lote(L);
-  const cond=pde?[]:F.out.filter(x=>ehCond(x.g.L)),princ=pde?F.out:F.out.filter(x=>!ehCond(x.g.L));
+  const gap30=L=>{for(let i=1;i<L.length;i++)if(L[i][12]-L[i-1][12]<=30*1440&&(!F.J||(L[i][12]>=F.J[0]&&L[i][12]<=F.J[1])))return true;return false;};
+  const base=rt30?F.out.filter(x=>gap30(x.g.L)):F.out;
+  const cond=pde?[]:base.filter(x=>ehCond(x.g.L)),princ=pde?base:base.filter(x=>!ehCond(x.g.L));
   // endereços
-  const lim=40;$("rtListaNota").textContent=`${nf(princ.length)} endereços${princ.length>lim?`, os ${lim} com maior reincidência`:""} — clique para ver as OS`;
+  const lim=40;$("rtListaNota").innerHTML=`${nf(princ.length)} endereços${princ.length>lim?`, os ${lim} com maior reincidência`:""} — clique para ver as OS`+(rt30?` <button type="button" class="rx-chipf" data-rgo="r30">Só reincidência em até 30 dias ✕</button>`:"");
   const T0=F.J?F.J[0]:rtMin(dmy(RB.ini)+" 00:00"),T1=F.J?F.J[1]:rtMin(dmy(RB.fim)+" 23:59");
   $("rtLista").innerHTML=princ.length?`<div class="rx-rows"><div class="rx-colh"><span>Vezes</span><span>Endereço</span><span>Serviço</span><span>Datas de execução (intervalo entre elas)</span><span>Menor intervalo</span></div>`+princ.slice(0,lim).map(x=>rtLinha(x.g.key,x.g.L,C.ale,T0,T1)).join("")+`</div>`:`<div class="rtvazio">Nenhum retrabalho com esses filtros.</div>`;
   $("rtCondBox").hidden=!cond.length;$("rtCondN").textContent=cond.length?nf(cond.length)+" endereços":"";
@@ -2820,20 +2940,20 @@ function rtDash(){const D=RB.D,F=rtFiltrar(),C=rtCalc();
   const cmp=F.J?"vs período anterior":"últimos 30 dias vs 30 antes";
   const porPolo=k=>["Interlagos","Grajaú"].map(p=>{let n=0;for(const e of ev)if(RT_POLO[D.a[e.r[8]]]===p)n++;return [p,n];});
   const pp=porPolo(),pE=rtPctModo("exec"),pT=rtPctModo("todas");
-  const tile=(l,v,dl,vis,c,tip)=>`<div class="rx-tile${c?" "+c:""}"${tip?` title="${esc(tip)}"`:""}><span>${l}</span><div class="rx-tv"><b>${v}</b>${dl||""}</div><div class="rx-vis">${vis}</div></div>`;
-  const barra=(l,v,mx,cor)=>`<div class="rx-hb"><em>${l}</em><i><u style="width:${Math.min(100,v*100/(mx||1)).toFixed(1)}%;background:${cor}"></u></i><strong>${f1(v)}</strong></div>`;
+  const tile=(l,v,dl,vis,c,tip,go)=>`<div class="rx-tile rx-clk${c?" "+c:""}"${go?` data-rgo="${go}"`:""} role="button" tabindex="0"${tip?` title="${esc(tip)}"`:""}><span>${l}</span><div class="rx-tv"><b>${v}</b>${dl||""}</div><div class="rx-vis">${vis}</div></div>`;
+  const barra=(l,v,mx,cor,m)=>`<div class="rx-hb${rtModo===m?" on":""}" data-rm="${m}"><em>${l}</em><i><u style="width:${Math.min(100,v*100/(mx||1)).toFixed(1)}%;background:${cor}"></u></i><strong>${f1(v)}</strong></div>`;
   const tP=pp[0][1]+pp[1][1]||1;
-  const split=`<div class="rx-split"><i style="width:${(pp[0][1]*100/tP).toFixed(1)}%" title="Interlagos ${nf(pp[0][1])}"></i><i style="width:${(pp[1][1]*100/tP).toFixed(1)}%" title="Grajaú ${nf(pp[1][1])}"></i></div><div class="rx-splitl"><span><i class="c1"></i>Interlagos ${Math.round(pp[0][1]*100/tP)}%</span><span><i class="c2"></i>Grajaú ${Math.round(pp[1][1]*100/tP)}%</span></div>`;
+  const split=`<div class="rx-split"><i data-rpo="Interlagos" style="width:${(pp[0][1]*100/tP).toFixed(1)}%" title="Interlagos ${nf(pp[0][1])}"></i><i data-rpo="Grajaú" style="width:${(pp[1][1]*100/tP).toFixed(1)}%" title="Grajaú ${nf(pp[1][1])}"></i></div><div class="rx-splitl"><span data-rpo="Interlagos"${poloSel==="Interlagos"?' class="on"':""}><i class="c1"></i>Interlagos ${Math.round(pp[0][1]*100/tP)}%</span><span data-rpo="Grajaú"${poloSel==="Grajaú"?' class="on"':""}><i class="c2"></i>Grajaú ${Math.round(pp[1][1]*100/tP)}%</span></div>`;
   const anel=(v,cor)=>{const R=22,C=2*Math.PI*R;return `<svg viewBox="0 0 56 56" class="rx-ring"><circle cx="28" cy="28" r="${R}" fill="none" stroke="#EEF2F5" stroke-width="7"/><circle cx="28" cy="28" r="${R}" fill="none" stroke="${cor}" stroke-width="7" stroke-linecap="round" stroke-dasharray="${(C*v).toFixed(1)} ${C.toFixed(1)}" transform="rotate(-90 28 28)"/></svg>`;};
   const MDs=rtMesDados(F,C).slice(-12);const spk=(()=>{if(MDs.length<2)return "";const vs=MDs.map(x=>x.p?x.v/x.p:0),mx=Math.max(...vs)||1,mn=Math.min(...vs)*.8;const W=160,H=34;const P=vs.map((v,i)=>`${(i*W/(vs.length-1)).toFixed(1)},${(H-2-(H-6)*(v-mn)/(mx-mn||1)).toFixed(1)}`).join(" ");return `<svg viewBox="0 0 ${W} ${H}" class="rx-spk" preserveAspectRatio="none"><polygon points="0,${H} ${P} ${W},${H}" fill="#0096D6" opacity=".12"/><polyline points="${P}" fill="none" stroke="#0096D6" stroke-width="2" vector-effect="non-scaling-stroke"/></svg>`;})();
   const BK=[["0",0,0],["1-7",1,7],["8-30",8,30],["31-90",31,90],["90+",91,1e9]].map(([l,a,b])=>({l,v:ds.filter(d=>d>=a&&d<=b).length}));const mxk=Math.max(1,...BK.map(x=>x.v));
   const hist=`<div class="rx-mh">${BK.map((x,i)=>`<div title="${x.l==="0"?"mesmo dia":x.l+" dias"}: ${nf(x.v)}"><i style="height:${Math.max(4,x.v*100/mxk).toFixed(0)}%" class="${i<3?"q":""}"></i><span>${x.l==="0"?"0d":x.l}</span></div>`).join("")}</div>`;
   const r30=ds.length?ate30/ds.length:0;
-  $("rdTiles").innerHTML=tile("% de retrabalho",f1(pct),rtDelta(AT.p,AN.p),barra("Todas",pT,Math.max(pT,pE)*1.2,"#7FC8EA")+barra("Executadas",pE,Math.max(pT,pE)*1.2,"#fff"),"t1",cmp)+
-    tile("Retrabalhos",nf(ev.length),rtDelta(AT.ev,AN.ev),split,"t2",cmp)+
-    tile("Serviços executados",nf(F.serv),rtDelta(AT.sv,AN.sv,true),spk,"",(F.J?`${rtDm(F.J[0])} a ${rtDm(F.J[1])}`:`${dmy(RB.ini)} a ${dmy(RB.fim)}`)+" · "+nf(F.out.length)+" endereços com retrabalho")+
-    tile("Em até 30 dias",ds.length?Math.round(r30*100)+"%":"–","",`<div class="rx-ringw">${anel(r30,"#F08C00")}<small>${nf(ate30)}<br>de ${nf(ds.length)}</small></div>`,"",nf(ate30)+" reincidências em até 30 dias")+
-    `<div class="rx-tile rx-ttop"><span>Serviços com mais reincidência</span><div class="rx-top">${(()=>{const t=new Map();for(const e of ev){const k=D.t[e.r[1]];t.set(k,(t.get(k)||0)+1);}const L=[...t].sort((a,b)=>b[1]-a[1]).slice(0,4),mx=L.length?L[0][1]:1;return L.length?L.map(([k,v])=>`<button type="button" data-rtt="${esc(k)}"${k===rtTssSel?' class="sel"':""} title="${esc(k)}: ${nf(v)} — clique para filtrar"><em>${esc(k.charAt(0)+k.slice(1).toLowerCase())}</em><strong>${nf(v)}</strong><i style="width:${(v*100/mx).toFixed(1)}%"></i></button>`).join(""):`<small>Sem reincidências.</small>`;})()}</div></div>`;
+  $("rdTiles").innerHTML=tile("% de retrabalho",f1(pct),rtDelta(AT.p,AN.p),barra("Todas",pT,Math.max(pT,pE)*1.2,"#7FC8EA","todas")+barra("Executadas",pE,Math.max(pT,pE)*1.2,"#fff","exec"),"t1",cmp+" · clique para alternar todas as baixas / só executadas","modo")+
+    tile("Retrabalhos",nf(ev.length),rtDelta(AT.ev,AN.ev),split,"t2",cmp+" · clique no polo para filtrar","lista")+
+    tile("Serviços executados",nf(F.serv),rtDelta(AT.sv,AN.sv,true),spk,"",(F.J?`${rtDm(F.J[0])} a ${rtDm(F.J[1])}`:`${dmy(RB.ini)} a ${dmy(RB.fim)}`)+" · "+nf(F.out.length)+" endereços com retrabalho · clique para ver a evolução","evo")+
+    tile("Em até 30 dias",ds.length?Math.round(r30*100)+"%":"–","",`<div class="rx-ringw">${anel(r30,"#F08C00")}<small>${nf(ate30)}<br>de ${nf(ds.length)}</small></div>`,rt30?"on":"",nf(ate30)+" reincidências em até 30 dias · clique para listar só esses endereços","r30")+
+    `<div class="rx-tile rx-ttop" title="Clique no serviço para filtrar o painel"><span>Serviços com mais reincidência</span><div class="rx-top">${(()=>{const t=new Map();for(const e of ev){const k=D.t[e.r[1]];t.set(k,(t.get(k)||0)+1);}const L=[...t].sort((a,b)=>b[1]-a[1]).slice(0,4),mx=L.length?L[0][1]:1;return L.length?L.map(([k,v])=>`<button type="button" data-rtt="${esc(k)}"${k===rtTssSel?' class="sel"':""} title="${esc(k)}: ${nf(v)} — clique para filtrar"><em>${esc(k.charAt(0)+k.slice(1).toLowerCase())}</em><strong>${nf(v)}</strong><i style="width:${(v*100/mx).toFixed(1)}%"></i></button>`).join(""):`<small>Sem reincidências.</small>`;})()}</div></div>`;
   {const MD=rtMesDados(F,C).slice(-12);$("rdMes").innerHTML=`<p class="rx-sub">retrabalhos por mês — últimos ${MD.length} meses (passe o mouse para ver o %)</p>`+rtArea(MD,"v","#F08C00",v=>nf(v),1200,200);}}
 
 function rtMesSvg(it){if(!it.length)return `<div class="rtvazio">Sem retrabalhos no período.</div>`;
@@ -2901,9 +3021,13 @@ function rtCarteira(){const D=RB.D;const agora=Date.now();const lim90=rtMin(new 
 // ---------- eventos ----------
 document.addEventListener("click",e=>{
   const v=e.target.closest("[data-rv]");if(v&&v.dataset.rv==="lista"){const x=$("rtListaBox");if(x)x.scrollIntoView({behavior:"smooth",block:"start"});return;}if(v){rtView=v.dataset.rv;renderRt();if(rtView==="busca")setTimeout(()=>$("rtBusca").focus(),0);return;}
+  const rgo=e.target.closest("[data-rgo]");if(rgo&&!e.target.closest("[data-rpo],[data-rm],[data-rtt]")){const g=rgo.dataset.rgo;
+    if(g==="modo"){rtModo=rtModo==="exec"?"todas":"exec";renderRt();return;}
+    if(g==="r30"){rt30=!rt30;renderRt();if(rt30)setTimeout(()=>{const x=$("rtListaBox");if(x)x.scrollIntoView({behavior:"smooth",block:"start"});},50);return;}
+    const x=$(g==="evo"?"rdMes":"rtListaBox");if(x)x.scrollIntoView({behavior:"smooth",block:"center"});return;}
   const p=e.target.closest("[data-rp]");if(p){rtPer=p.dataset.rp;renderRt();return;}
   const m=e.target.closest("[data-rm]");if(m){rtModo=m.dataset.rm;renderRt();return;}
-  const po=e.target.closest("[data-rpo]");if(po){poloSel=po.dataset.rpo;renderTudo();return;}
+  const po=e.target.closest("[data-rpo]");if(po){poloSel=(po.closest(".rx-tile")&&poloSel===po.dataset.rpo)?"Todos":po.dataset.rpo;renderTudo();return;}
   const c=e.target.closest("[data-rcp]");if(c){rtCper=c.dataset.rcp;renderRt();return;}
   const t=e.target.closest("[data-rtt]");if(t&&t.closest("#v-rt")){rtTssSel=(t.dataset.rtt===rtTssSel?"":t.dataset.rtt);renderRt();return;}
   const k=e.target.closest(".rx-row .rtl1");if(k){const key=k.parentElement.dataset.rtk;rtAbertos.has(key)?rtAbertos.delete(key):rtAbertos.add(key);renderRt();}});
@@ -2955,6 +3079,7 @@ $("rtXls").onclick=()=>{if(!RB||!RB.R.length){rtAviso("Ainda não há base.");re
 // carrega a base ao abrir
 (async()=>{if(LEITOR){if(await rtCarregarLeitor()&&abaAtual==="rt")renderRt();setInterval(async()=>{if(!document.hidden&&await rtCarregarLeitor()&&abaAtual==="rt")renderRt();},600000);}
   else{await rtCarregarLocal();if(abaAtual==="rt")renderRt();}})();
+document.addEventListener("keydown",e=>{if(e.key==="Enter"&&e.target.classList&&e.target.classList.contains("rx-clk"))e.target.click();});
 
 })();
 </script>
