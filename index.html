@@ -2372,7 +2372,8 @@ const FAM={[U("REATIV/RELIG/RESTAB")]:["Religação",false],[U("LIGAÇÃO DE ÁG
 const CG=U("EMPRESA CONSORCIO GLOBAL INTERLAGOS/04576-050 SÃO PAULO");
 // Executado de verdade = o resultado é o próprio serviço (códigos de serviço, abaixo de 900000).
 // Fim do dia (FJL), imóvel fechado, trata-se de outro serviço, duplicidade, continua, nada consta etc. (900000 em diante) não contam.
-const RES_NAO=/FIM DO DIA|IMOVEL FECHADO|OUTRO SERVICO|DUPLICIDADE|CONTINUA|NADA CONSTA|EXECUTADO ANTERIORMENTE|CANCELAD|DEFEITO INTERNO|NAO EXECUTAD|REPROGRAMAR|NAO CONCLUID|SEM APROVEITAMENTO/;
+// na ligação de água, "sem aprov ramal" também não conta como executada
+const RES_NAO=/FIM DO DIA|IMOVEL FECHADO|OUTRO SERVICO|DUPLICIDADE|CONTINUA|NADA CONSTA|EXECUTADO ANTERIORMENTE|CANCELAD|DEFEITO INTERNO|NAO EXECUTAD|REPROGRAMAR|NAO CONCLUID|SEM APROV/;
 // além do código, o texto do resultado também é conferido: alegação nunca conta, mesmo com código de serviço
 function executadoDeFato(cod,res){const c=String(cod||"").trim();if(RES_NAO.test(U(res)))return false;if(/^\d+$/.test(c))return Number(c)<900000;if(c)return false;return !!clean(res);}
 const META=0.8;
@@ -3319,7 +3320,7 @@ function rtDm(m){const d=rtData(m);return String(d.getDate()).padStart(2,"0")+"/
 function rtIso(m){const d=rtData(m);return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");}
 function rtEndK(e){return U(clean(e)).replace(/^(R|RUA)\.? /,"RUA ").replace(/^(AV|AVENIDA)\.? /,"AVENIDA ");}
 function rtNumK(n){return U(clean(n)).replace(/\s/g,"").replace(/^0+/,"");}
-var RT_ALEG=/IMOVEL FECHADO|OUTRO SERVICO|DUPLICIDADE|NADA CONSTA|CANCELAD|EXECUTADO ANTERIORMENTE|ASSUMIDO RISCO|DECURSO DE PRAZO|DEFEITO INTERNO|NAO EXECUTAD|REPROGRAMAR|SEM APROVEITAMENTO/;
+var RT_ALEG=/IMOVEL FECHADO|OUTRO SERVICO|DUPLICIDADE|NADA CONSTA|CANCELAD|EXECUTADO ANTERIORMENTE|ASSUMIDO RISCO|DECURSO DE PRAZO|DEFEITO INTERNO|NAO EXECUTAD|REPROGRAMAR|SEM APROV/;
 var RT_POLO={"923":"Interlagos","929":"Grajaú","299":"Grajaú"};
 function rtVazio(){return {v:1,em:0,fonte:"",ini:"",fim:"",D:{t:[],f:[],e:[],b:[],m:[],a:[],r:[],q:[],c:[]},R:[]};}
 function rtIdx(B){const I={};for(const k in B.D){const m=new Map();B.D[k].forEach((v,i)=>m.set(v,i));I[k]=m;}return I;}
