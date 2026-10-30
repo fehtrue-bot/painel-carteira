@@ -1852,10 +1852,81 @@ body.printmode .nfaixa,body.printmode .ncab{display:none}
 .kc2{min-height:88px!important;padding:12px 14px!important}.k2-v{font-size:26px!important}.k2-g,.k2-ring{width:54px!important;height:54px!important}
 .bfo2{padding:8px 12px!important}.bf-v b{font-size:20px!important}
 
+/* ===== tela de entrada ===== */
+.tl{grid-template-columns:minmax(0,1.05fr) minmax(0,1fr)!important;place-items:stretch!important;padding:0!important;background:#F3F6FA!important}
+.tl-side{background:linear-gradient(150deg,#0B2545 0%,#00396F 55%,#0077B6 100%);color:#fff;padding:48px 56px;display:flex;flex-direction:column;gap:28px;position:relative;overflow:hidden}
+.tl-side::after{content:"";position:absolute;right:-120px;bottom:-120px;width:420px;height:420px;border-radius:50%;background:radial-gradient(circle,rgba(18,209,254,.25),transparent 70%)}
+.tl-brand{display:flex;align-items:center;gap:14px}
+.tl-mark{width:48px;height:48px;border-radius:13px;background:linear-gradient(135deg,#12D1FE,#0096D6);display:grid;place-items:center;box-shadow:0 6px 18px rgba(0,0,0,.25)}
+.tl-brand b{display:block;font-family:var(--f-display);font-size:20px;font-weight:800;letter-spacing:.02em}
+.tl-brand small{display:block;font-size:11px;letter-spacing:.28em;color:#9FC6E4;font-weight:700;margin-top:3px}
+.tl-side h2{margin:auto 0 0;font-family:var(--f-display);font-size:30px;font-weight:700;line-height:1.25;max-width:460px;color:#fff;display:block}
+.tl-side ul{list-style:none;margin:0 0 auto;padding:0;display:flex;flex-direction:column;gap:12px}
+.tl-side li{display:flex;align-items:center;gap:10px;font-size:15px;color:#D7E9F5}
+.tl-side li::before{content:"";width:20px;height:20px;border-radius:6px;background:rgba(18,209,254,.18) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2312D1FE' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m5 12 5 5 9-10'/%3E%3C/svg%3E") center/12px no-repeat;flex:none}
+.tl-foot{font-size:12px;color:#9FC6E4}
+.tl .tlbox{align-self:center;justify-self:center;width:min(400px,calc(100% - 48px));box-shadow:0 10px 40px rgba(16,40,64,.10)!important;border:1px solid #E3E9EF;border-radius:16px!important;text-align:left!important;padding:32px 30px 24px!important}
+.tl .tlbox .tlg{display:none}
+.tl .tlbox .tlsis{color:#0096D6;letter-spacing:.14em;font-size:11px}
+.tl .tlbox h1{font-size:26px!important;color:#0B2545!important}
+.tl .tlbox input{text-align:left!important;border:1px solid #C9D6E0!important;border-radius:10px!important;padding:12px 14px!important;font-size:15px!important;background:#F8FAFC!important}
+.tl .tlbox input:focus{border-color:#0096D6!important;box-shadow:0 0 0 3px rgba(0,150,214,.15)!important;background:#fff!important;outline:none}
+.tl .tlbox button.primary{background:#0B2545!important;border-color:#0B2545!important;border-radius:10px!important;padding:12px!important;font-size:15px!important;justify-content:center}
+.tl .tlbox button.primary:hover{background:#00396F!important}
+.tl .tlesq{align-self:flex-start}
+@media (max-width:860px){.tl{grid-template-columns:1fr!important}.tl-side{display:none}}
+
+/* ===== Painel: tabelas e quadros com cara de sistema ===== */
+.app .card{border-radius:12px!important;background:#fff!important}
+.app .card .ch{border-bottom:1px solid #EEF2F5}
+.tfam{font-size:13.5px}
+.tfam th{background:#fff!important;border-bottom:1px solid #E3E9EF!important;font-size:11px;color:#8A97A3;padding:10px 12px!important}
+.tfam td{padding:9px 12px!important;border-bottom:1px solid #F1F4F7!important}
+.tfam tr.fam td.fnm{font-weight:600!important;color:#14212B!important;text-transform:capitalize}
+.tfam tr.fam td.fnm{font-variant:normal}
+.tfam .nb{background:none!important;border:0!important;min-width:0!important;padding:2px 4px!important;font-weight:600}
+.tfam .nb.e{color:#B9650F}.tfam .nb.x{color:#1C7444}.tfam .nb.n{color:#1C7444}.tfam .nb.f{color:#C9423A}
+.tfam .nb:not(.z):hover{background:#EAF5FC!important;border-radius:6px}
+.tfam .nb.z{color:#B8C2CB!important;opacity:1!important}
+.tfam .pbar{height:6px!important;border-radius:99px!important}
+.tfam tr.total td{border-top:1px solid #C9D6E0!important;background:#F6F9FB!important}
+.tfam tr.tss td{background:#FAFCFD!important}
+.cg .r{border-bottom:1px solid #F1F4F7!important}
+.cg .r .nm{text-transform:none}
+.cg .r.of .nm{text-transform:capitalize;font-size:12.5px!important;color:#3E5163}
+.app .sect{display:none!important}
+
+/* ===== Resumo ===== */
+.rescard{border-radius:14px!important;border:1px solid #E3E9EF!important;box-shadow:0 1px 2px rgba(16,40,64,.04)!important}
+.rhead{background:#0B2545!important;padding:18px 24px!important}
+.rhead h2{font-size:20px!important;font-weight:700!important}
+.rhead p{color:#9FC6E4!important}
+.rhead .rdt{color:#9FC6E4!important}
+.rk{gap:12px;padding:14px 16px;border-bottom:0!important;background:#F6F9FB}
+.rk>div{background:#EAF5FC;border:1px solid #C9E4F4;border-radius:11px;padding:10px 14px!important;border-right:0!important}
+.rk>div small{font-size:12px!important;font-weight:600!important;color:#5E6E7B!important;text-transform:none!important;letter-spacing:0!important}
+.rk>div b{font-size:26px!important}
+.rk>div em{font-size:12px!important}
+.r3{gap:12px!important;padding:0 16px 14px!important;background:#F6F9FB}
+.rg{background:#fff;border:1px solid #E3E9EF!important;border-radius:11px!important}
+.rgt{font-size:14px!important;font-weight:700!important;color:#14212B!important}
+.rescard .bfw{background:#F6F9FB!important;border:0!important;padding:4px 16px 14px!important}
+.rescard .svc4{padding:0 16px 16px;background:#F6F9FB}
+.rsech{background:#0B2545!important;color:#fff!important;font-size:17px!important;padding:12px 20px!important}
+.rsech small{color:#9FC6E4!important}
+.rsec{border-top:0!important;background:#F6F9FB}
+.resbar{background:#fff;border:1px solid #E3E9EF;border-radius:12px;padding:10px 14px}
+.resbar .ghost2{background:#fff;border:1px solid #C5D1E3;color:#0B2545}
+.resbar .primary{background:#0B2545!important;border-color:#0B2545!important;color:#fff!important}
+
 </style>
 </head>
 <body>
 <div id="telaLogin" class="tl" hidden>
+  <div class="tl-side"><div class="tl-brand"><span class="tl-mark"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2.5c-3.6 4.4-6.5 8-6.5 11.6a6.5 6.5 0 0 0 13 0C18.5 10.5 15.6 6.9 12 2.5Z" fill="#fff"/></svg></span><div><b>CARTEIRA DE SERVIÇOS</b><small>INTERLAGOS · GRAJAÚ</small></div></div>
+    <h2>Acompanhamento diário da carteira, das entradas e das execuções.</h2>
+    <ul><li>Prazo da carteira por serviço e por polo</li><li>Religação ao vivo e ligação de água</li><li>Retrabalho com histórico por endereço</li><li>Link da coordenação sempre atualizado</li></ul>
+    <span class="tl-foot">Sistema desenvolvido por Fernanda</span></div>
   <div class="tlbox">
     <span class="gota tlg"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2.5c-3.6 4.4-6.5 8-6.5 11.6a6.5 6.5 0 0 0 13 0C18.5 10.5 15.6 6.9 12 2.5Z" fill="#fff"/><path d="M9 14.5a3 3 0 0 0 3 3" stroke="#0093C9" stroke-width="1.8" stroke-linecap="round"/></svg></span>
     <div class="tlsis">Painel da Carteira de Serviços</div>
