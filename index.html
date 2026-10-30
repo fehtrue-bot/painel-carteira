@@ -2933,15 +2933,19 @@ function miniDia(ds,E,X){if(!ds.length)return "";const W=220,H=74,bt=16,mx=Math.
 const REP="Reposição";
 function cardsServ(ds,polo){const u=ultF();const PP=polo?{p:polo}:{};const fpo=r=>polo?r.p===polo:fp(r);
   const dsTodos=ds;
-  return GRUPOS.concat([REP]).map(g=>{const ehR=g===REP,mg=r=>ehR?famDe(r)==="REPOSICAO":r.g===g,GG=ehR?{fam:"REPOSICAO",nome:REP}:{g};const ds=g==="Religação"?[diaRel()].filter(Boolean):dsTodos;const ca=u.ca.filter(r=>mg(r)&&fpo(r)),t=ca.length,f=ca.filter(r=>r.fora).length,n=t-f;
+  const ENT=GRUPOS.concat([REP]).map(g=>{const ehR=g===REP;return {g,mg:r=>ehR?famDe(r)==="REPOSICAO":r.g===g,GG:ehR?{fam:"REPOSICAO",nome:REP}:{g}};});
+  if(fornSel){const fams=new Map();for(const t of ["ca","ac","ex"])for(const r of u[t]){if(r.g!==OUT||!fpo(r))continue;const fm=famDe(r);if(!fm||fm==="REPOSICAO")continue;fams.set(fm,(fams.get(fm)||0)+(t==="ca"?3:1));}
+    [...fams].sort((a,b)=>b[1]-a[1]).slice(0,8).forEach(([fm])=>{const nm=fm.charAt(0)+fm.slice(1).toLowerCase();ENT.push({g:nm,mg:r=>r.g===OUT&&famDe(r)===fm,GG:{g:OUT,fam:fm,nome:nm},cor:"#6C7A89"});});}
+  const cards=ENT.map(({g,mg,GG,cor})=>{const ds=g==="Religação"?[diaRel()].filter(Boolean):dsTodos;const ca=u.ca.filter(r=>mg(r)&&fpo(r)),t=ca.length,f=ca.filter(r=>r.fora).length,n=t-f;
     const E=d=>u.ac.filter(r=>mg(r)&&r.dt===d&&fpo(r)).length,X=d=>u.ex.filter(r=>mg(r)&&r.dt===d&&exGeral(r)&&fpo(r)).length;
-    const te=ds.reduce((a,d)=>a+E(d),0),tx=ds.reduce((a,d)=>a+X(d),0);const pv=t?n/t:null;
-    return `<div class="c4" style="--c:${COR[g]||"#8A6D3B"}"><div class="h4"><b>${g}</b>${pp(pv,metaDe(g))}</div>
+    const te=ds.reduce((a,d)=>a+E(d),0),tx=ds.reduce((a,d)=>a+X(d),0);const pv=t?n/t:null;if(!t&&!te&&!tx)return "";
+    return `<div class="c4" style="--c:${cor||COR[g]||"#8A6D3B"}"><div class="h4"><b>${g}</b>${pp(pv,metaDe(g))}</div>
       <div class="big"${go({...PP,modo:"carteira",...GG})}><b>${nf(t)}</b><span>na carteira</span></div>
       <div class="pz4"${go({...PP,modo:"carteira",...GG,prazo:"fora"})}>${t?`<i style="width:${(n*100/t).toFixed(1)}%;background:#2FA36B">${n&&n/t>.12?n:""}</i><i style="width:${(f*100/t).toFixed(1)}%;background:#D9534A">${f&&f/t>.12?f:""}</i>`:""}</div>
       <div class="lg4"><span${go({...PP,modo:"carteira",...GG,prazo:"no"})}><b style="color:#2FA36B">${nf(n)}</b> no prazo</span>${g==="Religação"?`<span${go({...PP,modo:"carteira",...GG,prazo:"p24"})}><b style="color:#E8891A">${nf(ca.filter(r=>!r.fora&&(marca24(r)??Infinity)<Date.now()&&(vencimento(r)??0)>=Date.now()).length)}</b> +24h</span>`:""}<span${go({...PP,modo:"carteira",...GG,prazo:"fora"})}><b style="color:#D9534A">${nf(f)}</b> fora${g==="Religação"?" (48h)":""}</span></div>
       <div class="ch4">${miniDia(ds,E,X)}</div>
-      <div class="ft4"><div${go({...PP,modo:"entradas",...GG})}><small>Entradas</small><b style="color:#B9650F">${nf(te)}</b></div><div${go({...PP,modo:"execucoes",...GG})}><small>Execuções</small><b style="color:#1C7444">${nf(tx)}</b></div><div><small>Saldo</small><b class="${te-tx>0?"up":te-tx<0?"down":""}">${sgn(te-tx)}</b></div></div></div>`;}).join("");}
+      <div class="ft4"><div${go({...PP,modo:"entradas",...GG})}><small>Entradas</small><b style="color:#B9650F">${nf(te)}</b></div><div${go({...PP,modo:"execucoes",...GG})}><small>Execuções</small><b style="color:#1C7444">${nf(tx)}</b></div><div><small>Saldo</small><b class="${te-tx>0?"up":te-tx<0?"down":""}">${sgn(te-tx)}</b></div></div></div>`;}).filter(Boolean);
+  return cards.length?cards.join(""):`<div class="empty" style="grid-column:1/-1">Nenhum serviço com carteira, entradas ou execuções${fornSel?" para "+esc(fornSel):""}.</div>`;}
 function abrirLista(o){const u=ultF();const modo=o.modo||"carteira";const agora=Date.now();
   let L=(modo==="carteira"?u.ca:modo==="entradas"?u.ac:u.ex).filter(r=>(o.p?r.p===o.p:fp(r))&&(!o.g||r.g===o.g)&&(!o.gs||o.gs.includes(r.g))&&(!o.tss||r.tss===o.tss)&&(!o.fam||famDe(r)===o.fam));
   const h24=r=>{const m=marca24(r);return m==null?null:(m-agora)/3600000;};
