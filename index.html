@@ -2360,7 +2360,7 @@ function executadoDeFato(cod,res){const c=String(cod||"").trim();if(RES_NAO.test
 const META=0.8;
 function grupoDe(tss,fam,forn){
   // vazamento de água = família VAZAMENTO DE ÁGUA (todas as TSS dela), como no filtro da planilha
-  if(U(clean(fam)).startsWith("VAZAMENTO DE AGUA"))return "Vazamento de água";
+  if(U(clean(fam))==="VAZAMENTO DE AGUA")return "Vazamento de água";
   const f=FAM[U(clean(fam))];if(!f)return "";
   if(f[1]&&U(clean(forn))!==CG)return "";
   return f[0];}
@@ -2375,7 +2375,7 @@ async function idbGet(k){const d=await idb();return await new Promise((res,rej)=
 async function idbSet(k,v){const d=await idb();return await new Promise((res,rej)=>{const t=d.transaction("d","readwrite");t.objectStore("d").put(v,k);t.oncomplete=()=>res();t.onerror=()=>rej(t.error);});}
 function normalizar(o){const s=Object.assign(vazio(),o||{});
   // vazamento pela família (migra o que foi guardado antes pela TSS)
-  if(s.ult)for(const t of ["ac","ex","ca"])for(const r of (s.ult[t]||[])){const ehV=U(clean(r.fam)).startsWith("VAZAMENTO DE AGUA");if(ehV&&r.g!=="Vazamento de água")r.g="Vazamento de água";else if(!ehV&&r.g==="Vazamento de água")r.g=grupoDe(r.tss,r.fam,r.forn)||OUT;}s.hist=s.hist||{};s.histF=s.histF||{};
+  if(s.ult)for(const t of ["ac","ex","ca"])for(const r of (s.ult[t]||[])){const ehV=U(clean(r.fam))==="VAZAMENTO DE AGUA";if(ehV&&r.g!=="Vazamento de água")r.g="Vazamento de água";else if(!ehV&&r.g==="Vazamento de água")r.g=grupoDe(r.tss,r.fam,r.forn)||OUT;}s.hist=s.hist||{};s.histF=s.histF||{};
   // o grupo "Vazamento de esgoto" passou a se chamar "Desobstrução"
   {const VE="Vazamento de esgoto",DE="Desobstrução";const ren=H=>{for(const k of Object.keys(H))if(k.endsWith("|"+VE)){const n=k.slice(0,-VE.length)+DE;if(!H[n])H[n]=H[k];delete H[k];}};
    ren(s.hist);for(const f of Object.keys(s.histF))ren(s.histF[f]);
@@ -3042,6 +3042,7 @@ function abrirLista(o){const u=ultF();const modo=o.modo||"carteira";const agora=
   if(modo==="carteira")L.sort((a,b)=>(vc(a)??0)-(vc(b)??0));else L.sort((a,b)=>a.dt<b.dt?-1:1);
   $("mTit").textContent=(o.nome||o.tss||(o.fam?"Família "+o.fam:"")||o.g||(o.gs?o.gs.join(" e "):"Todos os serviços"))+" · "+(modo==="carteira"?(o.prazo==="fora"?(o.g==="Religação"?"vencidas (passaram de 48h)":"fora do prazo"):o.prazo==="no"?"no prazo":o.prazo==="p24"?"passaram de 24h · vencem em 48h":o.prazo==="d24"?"dentro das 24h":"carteira"):modo==="entradas"?"entradas":"execuções");
   $("mSub").textContent=`${nf(L.length)} endereço${L.length===1?"":"s"}${o.p?" · "+o.p:poloSel!=="Todos"?" · "+poloSel:""}${modo!=="carteira"?" · "+(o.g==="Religação"?"só "+wd(diaRel())+" "+dmy(diaRel())+" (dia anterior)":rotDias()):""}`;
+  {const pf=new Map();for(const r of L){const k=nomeForn(r.forn);pf.set(k,(pf.get(k)||0)+1);}if(pf.size>1)$("mSub").textContent+=" · "+[...pf].sort((a,b)=>b[1]-a[1]).map(([k,n])=>`${k}: ${nf(n)}`).join(" · ");}
   $("mLista").innerHTML=L.length?`<table><thead><tr><th>Endereço</th><th>Bairro</th><th>Tipo</th><th>Polo</th><th>${modo==="carteira"?"Prazo":"Dia"}</th></tr></thead><tbody>`+L.slice(0,800).map(r=>{const h=vc(r);
     const k24=r.g==="Religação"?h24(r):null;
     const sit=modo==="carteira"?(r.g==="Religação"&&h!=null&&h>=0&&k24!=null&&k24<0?`<span class="tg5 a">passou de 24h · vence 48h em ${tempoTxt(h)}</span>`:r.fora||(h!=null&&h<0)?`<span class="tg5 f">${h!=null&&h<0?"venceu há "+tempoTxt(h):"fora do prazo"}</span>`:`<span class="tg5 n">${h!=null?"vence em "+tempoTxt(h):"no prazo"}</span>`):`${wd(r.dt)} ${dm(r.dt)}`;
