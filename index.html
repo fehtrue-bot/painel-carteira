@@ -2442,8 +2442,8 @@ function registros(raw,tipo){
       o.conta=executadoDeFato(o.cod,o.res);if(!o.tss)est.semTss++;}
     else{o.dt=dataIso(g(r,"ins"));o.ins=txtData(g(r,"ins"));o.pf=txtData(g(r,"pf"));o.tr=clean(g(r,"tr"));o.fora=o.tr.startsWith("-");o.st=clean(g(r,"st"));if(!o.tss)continue;
 }
-    // "CONTINUA" e "FIM DO DIA" (Causa Resultado / Resultado) não entram em acatados, executados nem carteira
-    if(/CONTINUA|FIM DO DIA/.test(U(tipo==="ex"?o.res:g(r,"cr")))){est.continua++;continue;}
+    // "CONTINUA" e "FIM DO DIA" saem só dos executados (acatados e carteira contam tudo)
+    if(tipo==="ex"&&/CONTINUA|FIM DO DIA/.test(U(o.res))){est.continua++;continue;}
     if(o.dt)dias.add(o.dt);
     if(o.p==="Outro"){est.outroAtc++;continue;}
     // ligação de água de outro contrato não entra em lugar nenhum (nem no total geral)
@@ -3199,8 +3199,8 @@ function exportarTudo(){
   // ---------- bases ----------
   const base=(nome,t,tab)=>{const raw=RAW&&RAW[t];let h,rows;
     if(raw){h=raw.h;const ci=h.map(c=>U(clean(c))).indexOf(t==="ex"?"RESULTADO":"CAUSA RESULTADO");
-      // continua e fim do dia não vão para o Excel
-      rows=ci<0?raw.rows:raw.rows.filter(r=>!/CONTINUA|FIM DO DIA/.test(U(r[ci])));}
+      // continua e fim do dia saem só da base de executados no Excel
+      rows=ci<0||t!=="ex"?raw.rows:raw.rows.filter(r=>!/CONTINUA|FIM DO DIA/.test(U(r[ci])));}
     else{const recs=u[t];if(t==="ex"){h=["Número OS","Descrição TSS","Família","Grupo","Polo","Código Resultado","Resultado","Data Início Execução","Data Fim Execução","Equipe","Endereço","Bairro","Município"];rows=recs.map(x=>[x.os,x.tss,x.fam,x.g,x.p,x.cod,x.res,x.ini,x.fim,x.eq,x.end,x.bai,x.mun]);}
       else{h=["Número OS","TSS","Família","Grupo","Polo","Data Inserção","Prazo de Execução - Fim","Tempo Residual","Status da Operação","Endereço","Bairro","Município"];rows=recs.map(x=>[x.os,x.tss,x.fam,x.g,x.p,x.ins,x.pf,x.tr,x.st,x.end,x.bai,x.mun]);}}
     const sh=folha(nome,{widths:h.map(x=>Math.min(40,Math.max(11,String(x).length+3))),tab,freeze:"A2",filter:`A1:${colName(h.length-1)}${rows.length+1}`});
