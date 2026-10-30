@@ -1936,6 +1936,9 @@ body.printmode .nfaixa,body.printmode .ncab{display:none}
 .rk-tb .r{text-align:right}.rk-tb .mono{font-family:ui-monospace,Consolas,monospace}
 .rk-tb tr.al td{color:#8A97A3}.rk-tb em{font-style:normal;font-size:10.5px;font-weight:700;background:#F1F4F7;color:#5E6E7B;padding:1px 6px;border-radius:99px}
 @media (max-width:1100px){.rk-det{padding-left:16px}.rk-tb{font-size:11.5px}}
+.rk-dsub{font-size:12.5px;color:#5E6E7B;margin:0 0 8px}
+.rk-eq{display:inline-block;background:#FFF3E3;color:#B4600A;font-weight:700;border-radius:6px;padding:1px 7px}
+.rk-tb tr.eq td{background:#FFF8EE}.rk-tb tr.eq td:first-child{box-shadow:inset 3px 0 0 #F08C00;font-weight:700;color:#14212B}
 
 </style>
 </head>
@@ -3570,7 +3573,10 @@ function rtCarteira(){const D=RB.D;
   $("rtClista").innerHTML=L.length?`<div class="rk-list">${L.slice(0,400).map(({r,h})=>{const ul=h[h.length-1];const dd=Math.round((hoje-ul[12])/1440);const ale=rtCalc().ale;
     const key=r.os+"|"+r.tss,ab=rtCab.has(key);const D2=RB.D;
     const det=ab?`<div class="rk-det"><div class="rk-dh"><div><small>Na carteira agora</small><b>OS ${esc(r.os)}</b> · ${esc(r.tss)}${r.fora!=null?` · <span class="rk-pz2 ${r.fora?"f":"n"}">${r.fora?"fora do prazo":"no prazo"}</span>`:""}</div><button type="button" class="rk-ver" data-rbusca="${esc(r.end)}">Ver todo o histórico do endereço →</button></div>
-      <table class="rk-tb"><thead><tr><th>Data</th><th>OS</th><th>Serviço</th><th>Resultado</th><th>Equipe</th><th class="r">Depois de</th></tr></thead><tbody>${h.map((x,i)=>{const gap=i?Math.round((x[12]-h[i-1][12])/1440):null;const res=x.rs!=null?x.rs:(D2.r[x[9]]||"");const al=x.al||ale[x[9]];return `<tr${al?' class="al"':""}><td>${rtDm(x[12])}</td><td class="mono">${esc(x[0])}</td><td>${esc(x[1]!=null&&D2.t[x[1]]?D2.t[x[1]]:r.tss)}</td><td>${esc(res)}${al?' <em>alegação</em>':""}</td><td>${esc(x[10]!=null?(D2.q[x[10]]||""):"")}</td><td class="r">${gap==null?"1ª vez":gap+(gap===1?" dia":" dias")}</td></tr>`;}).join("")}</tbody></table></div>`:"";
+      ${(()=>{const [e0,n0]=rtSepEnd(r.end);const T=(rtIndice().get(rtAddrK(e0,n0))||[]).slice().sort((a,b)=>a[12]-b[12]);const tU=U(r.tss);
+        if(!T.length)return `<div class="rtvazio">Sem histórico nesse endereço.</div>`;const nT=new Set(T.map(x=>x[1])).size;
+        return `<div class="rk-dsub">${nf(T.length)} ${T.length===1?"serviço feito":"serviços feitos"} nesse endereço em qualquer momento · ${nf(nT)} ${nT===1?"tipo":"tipos"} de serviço · <span class="rk-eq">em destaque, o mesmo serviço da OS de agora</span></div>
+        <table class="rk-tb"><thead><tr><th>Data</th><th>OS</th><th>Serviço</th><th>Resultado</th><th>Equipe</th></tr></thead><tbody>${T.slice().reverse().map(x=>{const al=ale[x[9]];const mesmo=U(D2.t[x[1]])===tU;return `<tr class="${mesmo?"eq":""}${al?" al":""}"><td>${rtDm(x[12])}</td><td class="mono">${esc(x[0])}</td><td>${esc(D2.t[x[1]]||"")}</td><td>${esc(D2.r[x[9]]||"")}${al?' <em>alegação</em>':""}</td><td>${esc(D2.q[x[10]]||"")}</td></tr>`;}).join("")}</tbody></table>`;})()}</div>`:"";
     return `<div class="rk-wrap${ab?" ab":""}"><div class="rk-row rk-clk" data-rck="${esc(key)}" title="Clique para ver o endereço, os serviços e as OS"><div class="rk-n"><b>${h.length}x</b><small>feito</small></div><div class="rk-e"><b>${esc(r.end)}</b><small>${esc(r.bai)} · ${r.p} · OS ${esc(r.os)}</small></div><div class="rk-s">${esc(r.tss)}</div><div class="rk-d"><div class="rtd">${h.slice(-3).map(x=>rtChip(x,x.al||ale[x[9]])).join("")}${h.length>3?`<em>+${h.length-3}</em>`:""}</div><small>há ${dd} ${dd===1?"dia":"dias"}</small></div><span class="rk-seta">›</span></div>${det}</div>`;}).join("")}</div>${L.length>400?`<div class="note">mostrando 400 de ${nf(L.length)}</div>`:""}`:`<div class="rtvazio">Nenhuma OS nessa condição.</div>`;}
 
 // ---------- eventos ----------
