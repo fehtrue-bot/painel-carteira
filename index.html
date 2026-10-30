@@ -1940,6 +1940,11 @@ body.printmode .nfaixa,body.printmode .ncab{display:none}
 .rk-eq{display:inline-block;background:#FFF3E3;color:#B4600A;font-weight:700;border-radius:6px;padding:1px 7px}
 .rk-tb tr.eq td{background:#FFF8EE}.rk-tb tr.eq td:first-child{box-shadow:inset 3px 0 0 #F08C00;font-weight:700;color:#14212B}
 .rk-n small{font-size:9.5px!important;text-align:center;line-height:1.1}.rk-n{width:58px!important}
+.rk-oss{display:flex;flex-wrap:wrap;gap:4px;align-items:center}
+.rk-oss span{display:inline-flex;flex-direction:column;align-items:flex-start;background:#FFF3E3;border:1px solid #F6D9B0;border-radius:7px;padding:2px 7px;font-size:11px;color:#8A4B06;font-family:ui-monospace,Consolas,monospace;line-height:1.25}
+.rk-oss span b{font-family:var(--f-body);font-size:10.5px;color:#B4600A}
+.rk-oss span.al{background:#F3F6F8;border-color:#E1E7EC;color:#6B7C8B}.rk-oss span.al b{color:#8A97A3}
+.rk-oss em{font-style:normal;font-size:11px;font-weight:700;color:#5E6E7B}
 
 </style>
 </head>
@@ -3386,12 +3391,12 @@ function rtIndice(){if(rtIdxCache&&rtIdxCache.em===RB.em)return rtIdxCache.M;con
   for(const L of M.values())L.sort((a,b)=>a[12]-b[12]);rtIdxCache={em:RB.em,M};return M;}
 function rtSepEnd(e){const m=String(e||"").match(/^(.*),\s*([^,]*)$/);return m?[m[1],m[2]]:[e||"",""];}
 // OS da carteira: quantas vezes o mesmo serviço já foi feito naquele endereço
-function rtHistCart(r){if(!RB||!RB.R||!RB.R.length)return [];const [e,n]=rtSepEnd(r.end);const L=rtIndice().get(rtAddrK(e,n));if(!L)return [];const t=U(r.tss);return L.filter(x=>U(RB.D.t[x[1]])===t&&x[0]!==r.os);}
+function rtHistCart(r){if(!RB||!RB.R||!RB.R.length)return [];const [e,n]=rtSepEnd(r.end);const L=rtIndice().get(rtAddrK(e,n));if(!L)return [];const fm=U(clean(r.fam)),t=U(r.tss);const vis=new Set();return L.filter(x=>x[0]!==r.os&&(fm?U(RB.D.f[x[2]])===fm:U(RB.D.t[x[1]])===t)).filter(x=>vis.has(x[0])?false:(vis.add(x[0]),true));}
 function rtSelo(r){const h=rtHistCart(r);if(!h.length)return "";const ult=h[h.length-1];return ` <span class="rtselo" title="Já feito ${h.length}x neste endereço · última em ${rtDm(ult[12])}">↻ já feito ${h.length}x</span>`;}
 function rtChip(r,ale){const D=RB.D;return `<i class="${ale?"al":""}" title="OS ${esc(r[0])} · ${esc(r.rs!=null?r.rs:D.r[r[9]])}${D.q[r[10]]?" · "+esc(D.q[r[10]]):""}">${rtDm(r[12])}</i>`;}
 
 // ---------- tela ----------
-var rtView="geral",rtCper="90",rt30=false;
+var rtView="geral",rtCper="tudo",rt30=false;
 var RT_IC=Object.assign({dash:'<path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/>'},{"geral": "<rect x=\"3\" y=\"3\" width=\"7\" height=\"9\" rx=\"1.5\"/><rect x=\"14\" y=\"3\" width=\"7\" height=\"5\" rx=\"1.5\"/><rect x=\"14\" y=\"12\" width=\"7\" height=\"9\" rx=\"1.5\"/><rect x=\"3\" y=\"16\" width=\"7\" height=\"5\" rx=\"1.5\"/>", "busca": "<circle cx=\"11\" cy=\"11\" r=\"7\"/><path d=\"m20 20-3.5-3.5\"/>", "cart": "<path d=\"M9 17H7A5 5 0 0 1 7 7h2M15 7h2a5 5 0 0 1 0 10h-2M8 12h8\"/>"});
 
 // ---------- cartões simples (número + gráfico redondo) ----------
@@ -3541,7 +3546,7 @@ function rtBuscar(){const D=RB.D,q=U(($("rtBusca").value||"").trim());const ale=
 var rtCfil="",rtCdc="",rtCab=new Set();
 // histórico das carteiras: guarda, para cada carteira montada, as OS que já tinham o mesmo serviço feito no endereço
 function rtSnapCarteira(){if(!RB||!RB.R||!RB.R.length||!S||!S.ult||!S.ult.dc||!S.ult.ca)return false;const ale=rtCalc().ale;const it=[];
-  for(const r of S.ult.ca){const h=rtHistCart(r);if(h.length)it.push({os:r.os,end:r.end,bai:r.bai,p:r.p,tss:r.tss,fora:r.fora?1:0,h:h.map(x=>[x[0],x[12],ale[x[9]]?1:0,RB.D.r[x[9]]||""])});}
+  for(const r of S.ult.ca){const h=rtHistCart(r);if(h.length)it.push({os:r.os,end:r.end,bai:r.bai,p:r.p,tss:r.tss,fam:r.fam,fora:r.fora?1:0,h:h.map(x=>[x[0],x[12],ale[x[9]]?1:0,RB.D.r[x[9]]||""])});}
   const sn={dc:S.ult.dc,em:S.ult.em||Date.now(),n:S.ult.ca.length,np:{},it};for(const p of POLOS)sn.np[p]=S.ult.ca.filter(r=>r.p===p).length;
   RB.CH=(RB.CH||[]).filter(x=>x.dc!==sn.dc).concat([sn]).sort((a,b)=>a.dc<b.dc?-1:1).slice(-180);return true;}
 function rtCarteira(){const D=RB.D;
@@ -3549,7 +3554,7 @@ function rtCarteira(){const D=RB.D;
   const CH=(RB.CH||[]).slice().reverse();const snap=rtCdc?CH.find(x=>x.dc===rtCdc):null;if(rtCdc&&!snap)rtCdc="";
   $("rtChist").innerHTML=`<label>Carteira de</label><select id="rtCsel"><option value="">${S.ult.dc?"Hoje · "+dmy(S.ult.dc):"Hoje"}</option>${CH.filter(x=>x.dc!==S.ult.dc).map(x=>`<option value="${x.dc}"${rtCdc===x.dc?" selected":""}>${wd(x.dc)} ${dmy(x.dc)} · ${nf(x.it.length)} em risco</option>`).join("")}</select><span class="note">${nf(CH.length)} ${CH.length===1?"carteira guardada":"carteiras guardadas"}</span>`;
   const agora=snap?new Date(snap.dc+"T23:59").getTime():Date.now();const lim90=rtMin(new Date(agora-90*864e5).toLocaleDateString("pt-BR")+" 00:00");
-  $("rtCper").innerHTML=[["90","90 dias"],["tudo","Qualquer tempo"]].map(([k,l])=>`<button type="button" data-rcp="${k}" aria-pressed="${rtCper===k}">${l}</button>`).join("");
+  $("rtCper").innerHTML=[["tudo","Toda a base"],["90","Últimos 90 dias"]].map(([k,l])=>`<button type="button" data-rcp="${k}" aria-pressed="${rtCper===k}">${l}</button>`).join("");
   const fpS=x=>poloSel==="Todos"||x.p===poloSel;
   const ca=snap?{length:poloSel==="Todos"?snap.n:(snap.np||{})[poloSel]||0}:ultF().ca.filter(r=>fp(r));const itens=[];
   if(snap){for(const x of snap.it){if(!fpS(x))continue;let h=x.h.map(a=>{const z=[];z[0]=a[0];z[12]=a[1];z.al=a[2];z.rs=a[3];return z;});if(rtCper==="90")h=h.filter(z=>z[12]>=lim90);if(h.length)itens.push({r:x,h});}}
@@ -3569,16 +3574,16 @@ function rtCarteira(){const D=RB.D;
     rkCard({l:"Por polo",c:"#00396F",v:`${nf(pI)} <small>·</small> ${nf(pG)}`,s:`<i class="dI"></i>Interlagos <i class="dG"></i>Grajaú`,g:rkRing([[itens.length?pI/itens.length:0,"#00396F"],[itens.length?pG/itens.length:0,"#12A5D6"]]),attr:go({modo:"carteira"}),tip:"clique para abrir a carteira"});
   $("rtCfil").innerHTML=`<button type="button" data-rcf="" class="${rtCfil?"":"on"}">Todos <b>${nf(itens.length)}</b></button>`+tops.slice(0,6).map(([k,n])=>`<button type="button" data-rcf="${esc(k)}" class="${rtCfil===k?"on":""}" title="${esc(k)}">${esc(cap(k).length>34?cap(k).slice(0,32)+"…":cap(k))} <b>${nf(n)}</b></button>`).join("");
   const L=itens.filter(x=>!rtCfil||(x.r.tss||"(sem TSS)")===rtCfil).sort((a,b)=>b.h.length-a.h.length||b.h[b.h.length-1][12]-a.h[a.h.length-1][12]);
-  $("rtCnota").textContent=`${nf(L.length)} OS da carteira em endereço onde o mesmo serviço já foi feito antes · o número mostra quantas vezes · se executar de novo, vira retrabalho`;
+  $("rtCnota").textContent=`${nf(L.length)} OS da carteira em endereço onde o mesmo serviço (mesma família) já foi feito antes, ${rtCper==="90"?"nos últimos 90 dias":"em qualquer data da base"} · ao lado, quantas vezes e as OS`;
   const hoje=rtMin(new Date(agora).toLocaleDateString("pt-BR")+" 12:00");
   $("rtClista").innerHTML=L.length?`<div class="rk-list">${L.slice(0,400).map(({r,h})=>{const ul=h[h.length-1];const dd=Math.round((hoje-ul[12])/1440);const ale=rtCalc().ale;
     const key=r.os+"|"+r.tss,ab=rtCab.has(key);const D2=RB.D;
     const det=ab?`<div class="rk-det"><div class="rk-dh"><div><small>Na carteira agora</small><b>OS ${esc(r.os)}</b> · ${esc(r.tss)}${r.fora!=null?` · <span class="rk-pz2 ${r.fora?"f":"n"}">${r.fora?"fora do prazo":"no prazo"}</span>`:""}</div><button type="button" class="rk-ver" data-rbusca="${esc(r.end)}">Ver todo o histórico do endereço →</button></div>
-      ${(()=>{const [e0,n0]=rtSepEnd(r.end);const T=(rtIndice().get(rtAddrK(e0,n0))||[]).slice().sort((a,b)=>a[12]-b[12]);const tU=U(r.tss);
+      ${(()=>{const [e0,n0]=rtSepEnd(r.end);const T=(rtIndice().get(rtAddrK(e0,n0))||[]).slice().sort((a,b)=>a[12]-b[12]);const tU=U(clean(r.fam))||U(r.tss);const mesmoF=x=>U(clean(r.fam))?U(D2.f[x[2]])===tU:U(D2.t[x[1]])===tU;
         if(!T.length)return `<div class="rtvazio">Sem histórico nesse endereço.</div>`;const nT=new Set(T.map(x=>x[1])).size;
-        return `<div class="rk-dsub">${nf(T.length)} ${T.length===1?"serviço feito":"serviços feitos"} nesse endereço em qualquer momento · ${nf(nT)} ${nT===1?"tipo":"tipos"} de serviço · <span class="rk-eq">em destaque, o mesmo serviço da OS de agora</span></div>
-        <table class="rk-tb"><thead><tr><th>Data</th><th>OS</th><th>Serviço</th><th>Resultado</th><th>Equipe</th></tr></thead><tbody>${T.slice().reverse().map(x=>{const al=ale[x[9]];const mesmo=U(D2.t[x[1]])===tU;return `<tr class="${mesmo?"eq":""}${al?" al":""}"><td>${rtDm(x[12])}</td><td class="mono">${esc(x[0])}</td><td>${esc(D2.t[x[1]]||"")}</td><td>${esc(D2.r[x[9]]||"")}${al?' <em>alegação</em>':""}</td><td>${esc(D2.q[x[10]]||"")}</td></tr>`;}).join("")}</tbody></table>`;})()}</div>`:"";
-    return `<div class="rk-wrap${ab?" ab":""}"><div class="rk-row rk-clk" data-rck="${esc(key)}" title="Clique para ver o endereço, os serviços e as OS"><div class="rk-n" title="O mesmo serviço já foi feito ${h.length} ${h.length===1?"vez":"vezes"} nesse endereço antes desta OS"><b>${h.length}</b><small>${h.length===1?"vez antes":"vezes antes"}</small></div><div class="rk-e"><b>${esc(r.end)}</b><small>${esc(r.bai)} · ${r.p} · OS ${esc(r.os)}</small></div><div class="rk-s">${esc(r.tss)}</div><div class="rk-d"><div class="rtd">${h.slice(-3).map(x=>rtChip(x,x.al||ale[x[9]])).join("")}${h.length>3?`<em>+${h.length-3}</em>`:""}</div><small>última: há ${dd} ${dd===1?"dia":"dias"} · OS ${esc(ul[0])}</small></div><span class="rk-seta">›</span></div>${det}</div>`;}).join("")}</div>${L.length>400?`<div class="note">mostrando 400 de ${nf(L.length)}</div>`:""}`:`<div class="rtvazio">Nenhuma OS nessa condição.</div>`;}
+        return `<div class="rk-dsub">${nf(T.length)} ${T.length===1?"serviço feito":"serviços feitos"} nesse endereço em qualquer momento · ${nf(nT)} ${nT===1?"tipo":"tipos"} de serviço · <span class="rk-eq">em destaque, a mesma família de serviço da OS de agora (${esc(r.fam||r.tss)})</span></div>
+        <table class="rk-tb"><thead><tr><th>Data</th><th>OS</th><th>Serviço</th><th>Resultado</th><th>Equipe</th></tr></thead><tbody>${T.slice().reverse().map(x=>{const al=ale[x[9]];const mesmo=mesmoF(x);return `<tr class="${mesmo?"eq":""}${al?" al":""}"><td>${rtDm(x[12])}</td><td class="mono">${esc(x[0])}</td><td>${esc(D2.t[x[1]]||"")}</td><td>${esc(D2.r[x[9]]||"")}${al?' <em>alegação</em>':""}</td><td>${esc(D2.q[x[10]]||"")}</td></tr>`;}).join("")}</tbody></table>`;})()}</div>`:"";
+    return `<div class="rk-wrap${ab?" ab":""}"><div class="rk-row rk-clk" data-rck="${esc(key)}" title="Clique para ver o endereço, os serviços e as OS"><div class="rk-n" title="O mesmo serviço já foi feito ${h.length} ${h.length===1?"vez":"vezes"} nesse endereço antes desta OS"><b>${h.length}</b><small>${h.length===1?"vez antes":"vezes antes"}</small></div><div class="rk-e"><b>${esc(r.end)}</b><small>${esc(r.bai)} · ${r.p} · OS ${esc(r.os)}</small></div><div class="rk-s">${esc(r.tss)}</div><div class="rk-d"><div class="rk-oss">${h.slice().reverse().slice(0,4).map(x=>`<span class="${x.al||ale[x[9]]?"al":""}" title="${esc(x.rs!=null?x.rs:(RB.D.r[x[9]]||""))}"><b>${rtDm(x[12])}</b>OS ${esc(x[0])}</span>`).join("")}${h.length>4?`<em>+${h.length-4}</em>`:""}</div><small>última há ${dd} ${dd===1?"dia":"dias"}</small></div><span class="rk-seta">›</span></div>${det}</div>`;}).join("")}</div>${L.length>400?`<div class="note">mostrando 400 de ${nf(L.length)}</div>`:""}`:`<div class="rtvazio">Nenhuma OS nessa condição.</div>`;}
 
 // ---------- eventos ----------
 document.addEventListener("click",e=>{
