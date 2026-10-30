@@ -1945,6 +1945,24 @@ body.printmode .nfaixa,body.printmode .ncab{display:none}
 .rk-oss span b{font-family:var(--f-body);font-size:10.5px;color:#B4600A}
 .rk-oss span.al{background:#F3F6F8;border-color:#E1E7EC;color:#6B7C8B}.rk-oss span.al b{color:#8A97A3}
 .rk-oss em{font-style:normal;font-size:11px;font-weight:700;color:#5E6E7B}
+/* evolução mensal clicável */
+.rx-area .hit{fill:transparent;cursor:pointer}.rx-area .hit:hover{fill:rgba(0,150,214,.07)}.rx-area .hit.sel{fill:rgba(0,150,214,.12)}
+.rx-area text.m.sel{fill:#00396F;font-weight:800}
+.md{margin-bottom:14px;padding:0!important;overflow:hidden}
+.md-h{display:flex;align-items:center;gap:18px;flex-wrap:wrap;padding:14px 18px;background:#0B2545;color:#fff}
+.md-h small{display:block;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#9FC6E4;font-weight:700}
+.md-h>div>b{font-family:var(--f-display);font-size:20px}
+.md-k{display:flex;gap:8px;flex-wrap:wrap;flex:1}
+.md-k span{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);border-radius:10px;padding:6px 12px;font-size:11.5px;color:#CFE6F5;display:flex;flex-direction:column}
+.md-k span b{font-family:var(--f-display);font-size:18px;color:#fff;line-height:1.1}
+.md-x{all:unset;cursor:pointer;font-size:12.5px;font-weight:700;color:#fff;padding:6px 12px;border-radius:8px;border:1px solid rgba(255,255,255,.3)}.md-x:hover{background:rgba(255,255,255,.12)}
+.md-g{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;padding:14px 18px}
+.md-g>div{background:#F6FAFD;border:1px solid #E3E9EF;border-radius:10px;padding:10px 12px}
+.md h4{margin:0 0 8px;font-size:13px;font-weight:700;color:#14212B}.md h4 small{font-weight:500;color:#8A97A3;margin-left:6px}
+.md-t{padding:0 18px 16px}
+.md-t td small{color:#8A97A3}
+@media (max-width:1000px){.md-g{grid-template-columns:1fr}}
+.md .rx-tss li{display:grid!important;grid-template-columns:minmax(0,1fr) auto;gap:2px 10px}.md .rx-tss li span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.md .rx-tss li i{grid-column:1/-1}
 
 </style>
 </head>
@@ -2144,6 +2162,7 @@ body.printmode .nfaixa,body.printmode .ncab{display:none}
         <article class="rx-box rx-evo"><h3>Evolução mês a mês</h3><div id="rdMes"></div></article>
         <div id="rdTop"></div>
       </div>
+      <article class="rx-box md" id="rdMesDet" hidden></article>
       <article class="rx-box" id="rtListaBox"><div class="rx-boxh"><div><h3>Endereços com maior reincidência</h3><p class="rx-sub" id="rtListaNota"></p></div><div class="rx-leg"><span><i class="d1"></i>1ª vez</span><span><i class="d2"></i>reincidência</span><span><i class="d3"></i>alegação (imóvel fechado etc.)</span><span><b class="rx-gl">+12d</b> reincidência em até 30 dias</span></div></div><div id="rtLista"></div></article>
       <details class="rx-box rx-cond" id="rtCondBox"><summary><b>Possível condomínio ou lote</b> <span id="rtCondN"></span><small>mesmo número com PDEs diferentes, ou várias OS no mesmo dia (cavalete múltiplo, ligações novas) — normalmente não é retrabalho</small></summary><div id="rtCond"></div></details>
     </div>
@@ -3396,7 +3415,7 @@ function rtSelo(r){const h=rtHistCart(r);if(!h.length)return "";const ult=h[h.le
 function rtChip(r,ale){const D=RB.D;return `<i class="${ale?"al":""}" title="OS ${esc(r[0])} · ${esc(r.rs!=null?r.rs:D.r[r[9]])}${D.q[r[10]]?" · "+esc(D.q[r[10]]):""}">${rtDm(r[12])}</i>`;}
 
 // ---------- tela ----------
-var rtView="geral",rtCper="tudo",rt30=false;
+var rtMesSel="",rtView="geral",rtCper="tudo",rt30=false;
 var RT_IC=Object.assign({dash:'<path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/>'},{"geral": "<rect x=\"3\" y=\"3\" width=\"7\" height=\"9\" rx=\"1.5\"/><rect x=\"14\" y=\"3\" width=\"7\" height=\"5\" rx=\"1.5\"/><rect x=\"14\" y=\"12\" width=\"7\" height=\"9\" rx=\"1.5\"/><rect x=\"3\" y=\"16\" width=\"7\" height=\"5\" rx=\"1.5\"/>", "busca": "<circle cx=\"11\" cy=\"11\" r=\"7\"/><path d=\"m20 20-3.5-3.5\"/>", "cart": "<path d=\"M9 17H7A5 5 0 0 1 7 7h2M15 7h2a5 5 0 0 1 0 10h-2M8 12h8\"/>"});
 
 // ---------- cartões simples (número + gráfico redondo) ----------
@@ -3459,7 +3478,7 @@ function rtArea(it,k,cor,fmt,WW,HH){if(!it.length)return `<div class="rtvazio">S
   const pts=it.map((x,i)=>`${X(i).toFixed(1)},${Y(x[k]).toFixed(1)}`).join(" ");const id="g"+k+Math.random().toString(36).slice(2,6);
   let sv=`<svg viewBox="0 0 ${W} ${H}" class="rx-area"><defs><linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${cor}" stop-opacity=".28"/><stop offset="1" stop-color="${cor}" stop-opacity="0"/></linearGradient></defs>`;
   sv+=`<polygon points="${X(0)},${H-pb} ${pts} ${X(n-1)},${H-pb}" fill="url(#${id})"/><polyline points="${pts}" fill="none" stroke="${cor}" stroke-width="2.4" stroke-linejoin="round"/>`;
-  it.forEach((x,i)=>{sv+=`<circle cx="${X(i)}" cy="${Y(x[k])}" r="3" fill="#fff" stroke="${cor}" stroke-width="2"><title>${MES[Number(x.m.slice(5))-1]}/${x.m.slice(2,4)}: ${fmt(x[k])}${x.p!=null?" · "+(Math.round(x.p*1000)/10).toLocaleString("pt-BR")+"%":""}</title></circle>`;if(true)sv+=`<text x="${X(i)}" y="${H-8}" text-anchor="middle" class="m">${MES[Number(x.m.slice(5))-1]}</text>`;});
+  it.forEach((x,i)=>{sv+=`<circle cx="${X(i)}" cy="${Y(x[k])}" r="3" fill="#fff" stroke="${cor}" stroke-width="2"><title>${MES[Number(x.m.slice(5))-1]}/${x.m.slice(2,4)}: ${fmt(x[k])}${x.p!=null?" · "+(Math.round(x.p*1000)/10).toLocaleString("pt-BR")+"%":""}</title></circle>`;if(true)sv+=`<text x="${X(i)}" y="${H-8}" text-anchor="middle" class="m${WW&&x.m===rtMesSel?" sel":""}">${MES[Number(x.m.slice(5))-1]}</text>`;if(WW){const w=(W-pl-pr)/Math.max(1,n-1);sv+=`<rect class="hit${x.m===rtMesSel?" sel":""}" data-rmes="${x.m}" x="${(X(i)-w/2).toFixed(1)}" y="0" width="${w.toFixed(1)}" height="${H}" rx="8"><title>Clique para ver os detalhes de ${MES[Number(x.m.slice(5))-1]}/${x.m.slice(2,4)}</title></rect>`;}});
   if(WW){it.forEach((x,i)=>{sv+=`<text x="${X(i)}" y="${Y(x[k])-10}" text-anchor="middle" class="v">${fmt(x[k])}</text>`;});sv+=`</svg>`;}else{const u=it[n-1];sv+=`<text x="${X(n-1)-4}" y="${Y(u[k])-9}" text-anchor="end" class="v">${fmt(u[k])}</text></svg>`;}return sv;}
 function rtDash(){const D=RB.D,F=rtFiltrar(),C=rtCalc();
   const ev=[];for(const x of F.out){const L=x.g.L;for(let i=1;i<L.length;i++){const r=L[i];if(F.J&&(r[12]<F.J[0]||r[12]>F.J[1]))continue;ev.push({r,p:L[i-1],d:Math.max(0,Math.round((r[12]-L[i-1][12])/1440))});}}
@@ -3491,7 +3510,16 @@ function rtDash(){const D=RB.D,F=rtFiltrar(),C=rtCalc();
     rkCard({l:"Endereços reincidentes",c:"#00396F",v:nf(F.out.length),s:"mesmo serviço mais de 1 vez",g:`<span class="k2-ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11 12 4l9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-5h4v5"/></svg></span>`,attr:` data-rgo="lista"`,tip:"clique para ver a lista"});}
   $("rdTop").innerHTML=
     `<div class="kc rx-kc rx-ttop" style="--c:#F08C00" title="Clique no serviço para filtrar o painel"><div class="kc-h"><span class="kc-ic">${ICT.top}</span><span class="kc-l">Serviços com mais reincidência</span></div><div class="rx-top">${(()=>{const t=new Map();for(const e of ev){const k=D.t[e.r[1]];t.set(k,(t.get(k)||0)+1);}const L=[...t].sort((a,b)=>b[1]-a[1]).slice(0,4),mx=L.length?L[0][1]:1;return L.length?L.map(([k,v])=>`<button type="button" data-rtt="${esc(k)}"${k===rtTssSel?' class="sel"':""} title="${esc(k)}: ${nf(v)} — clique para filtrar"><em>${esc(k.charAt(0)+k.slice(1).toLowerCase())}</em><strong>${nf(v)}</strong><i style="width:${(v*100/mx).toFixed(1)}%"></i></button>`).join(""):`<small>Sem reincidências.</small>`;})()}</div></div>`;
-  {const MD=rtMesDados(F,C).slice(-12);$("rdMes").innerHTML=`<p class="rx-sub">retrabalhos por mês — últimos ${MD.length} meses (passe o mouse para ver o %)</p>`+rtArea(MD,"v","#F08C00",v=>nf(v),860,230);}}
+  {const MD=rtMesDados(F,C).slice(-12);$("rdMes").innerHTML=`<p class="rx-sub">retrabalhos por mês — últimos ${MD.length} meses · <b>clique num mês para ver os detalhes</b></p>`+rtArea(MD,"v","#F08C00",v=>nf(v),860,230);
+   const det=$("rdMesDet");if(det){const m=rtMesSel&&MD.find(x=>x.m===rtMesSel);if(!m){det.hidden=true;det.innerHTML="";}else{det.hidden=false;
+     const MESL=["janeiro","fevereiro","março","abril","maio","junho","julho","agosto","setembro","outubro","novembro","dezembro"];const nomeM=MESL[Number(m.m.slice(5))-1]+" de "+m.m.slice(0,4);
+     const E=ev.filter(e=>rtIso(e.r[12]).slice(0,7)===m.m);const cnt=f=>{const M=new Map();for(const e of E){const k=f(e);M.set(k,(M.get(k)||0)+1);}return [...M].sort((a,b)=>b[1]-a[1]);};
+     const ts=cnt(e=>D.t[e.r[1]]),ba=cnt(e=>{const b=D.b[e.r[5]]||"";return (b.charAt(0)+b.slice(1).toLowerCase())+" · "+(RT_POLO[D.a[e.r[8]]]||"");}),pl=cnt(e=>RT_POLO[D.a[e.r[8]]]||"–"),eq=cnt(e=>D.q[e.p[10]]||"(sem equipe)");
+     const ate30=E.filter(e=>e.d<=30).length;const cap=t=>t?t.charAt(0)+t.slice(1).toLowerCase():"";
+     const lista=(L,go)=>`<ol class="rx-tss">${L.slice(0,6).map(([k,v])=>`<li${go?` data-rtt="${esc(k)}"`:""} title="${esc(k)}"><span>${esc(/ · /.test(k)?k:cap(k))}</span><b>${nf(v)}</b><i style="width:${(v*100/(L[0][1]||1)).toFixed(1)}%"></i></li>`).join("")}</ol>`;
+     det.innerHTML=`<div class="md-h"><div><small>Detalhes do mês</small><b>${nomeM[0].toUpperCase()+nomeM.slice(1)}</b></div><div class="md-k"><span><b>${nf(m.v)}</b>retrabalhos</span><span><b>${(Math.round(m.p*1000)/10).toLocaleString("pt-BR")}%</b>dos serviços</span><span><b>${nf(m.p?Math.round(m.v/m.p):0)}</b>serviços executados</span><span><b>${E.length?Math.round(ate30*100/E.length):0}%</b>voltaram em até 30 dias</span>${pl.map(([k,v])=>`<span><b>${nf(v)}</b>${esc(k)}</span>`).join("")}</div><button type="button" class="md-x" data-rmes="">✕ Fechar</button></div>
+       <div class="md-g"><div><h4>Serviços que mais voltaram</h4>${lista(ts,1)}</div><div><h4>Bairros</h4>${lista(ba)}</div><div><h4>Equipe da execução anterior</h4>${lista(eq)}</div></div>
+       <div class="md-t"><h4>Retrabalhos do mês <small>${nf(E.length)} · os mais recentes primeiro</small></h4><table class="rk-tb"><thead><tr><th>Data</th><th>OS</th><th>Endereço</th><th>Serviço</th><th>Antes</th><th class="r">Depois de</th></tr></thead><tbody>${E.slice().sort((a,b)=>b.r[12]-a.r[12]).slice(0,150).map(e=>`<tr><td>${rtDm(e.r[12])}</td><td class="mono">${esc(e.r[0])}</td><td>${esc(D.e[e.r[3]])}, ${esc(e.r[4])}<small> · ${esc(D.b[e.r[5]])}</small></td><td>${esc(cap(D.t[e.r[1]]))}</td><td class="mono">${rtDm(e.p[12])} · ${esc(e.p[0])}</td><td class="r">${e.d} ${e.d===1?"dia":"dias"}</td></tr>`).join("")}</tbody></table>${E.length>150?`<div class="note">mostrando 150 de ${nf(E.length)} · use o Excel para a lista completa</div>`:""}</div>`;}}}}
 
 function rtMesSvg(it){if(!it.length)return `<div class="rtvazio">Sem retrabalhos no período.</div>`;
   const MES=["jan","fev","mar","abr","mai","jun","jul","ago","set","out","nov","dez"];const W=Math.max(560,it.length*52),H=230,pl=8,pr=8,pt=30,pb=40,n=it.length,bw=(W-pl-pr)/n;
@@ -3595,6 +3623,7 @@ document.addEventListener("click",e=>{
   const p=e.target.closest("[data-rp]");if(p){rtPer=p.dataset.rp;renderRt();return;}
   const m=e.target.closest("[data-rm]");if(m){rtModo=m.dataset.rm;renderRt();return;}
   const po=e.target.closest("[data-rpo]");if(po){poloSel=(po.closest(".rx-tile")&&poloSel===po.dataset.rpo)?"Todos":po.dataset.rpo;renderTudo();return;}
+  const rmx=e.target.closest("[data-rmes]");if(rmx){const m=rmx.dataset.rmes;rtMesSel=rtMesSel===m?"":m;renderRt();if(rtMesSel)setTimeout(()=>{const d=$("rdMesDet");if(d)d.scrollIntoView({behavior:"smooth",block:"start"});},60);return;}
   const rb=e.target.closest("[data-rbusca]");if(rb){rtView="busca";renderRt();{const [e,n]=rtSepEnd(rb.dataset.rbusca);$("rtBusca").value=(rtEndK(e)+" "+rtNumK(n)).trim();}rtBuscar();window.scrollTo({top:0,behavior:"smooth"});return;}
   const rk=e.target.closest("[data-rck]");if(rk){const k=rk.dataset.rck;rtCab.has(k)?rtCab.delete(k):rtCab.add(k);renderRt();return;}
   const cf=e.target.closest("[data-rcf]");if(cf){rtCfil=(cf.classList.contains("kc")&&rtCfil===cf.dataset.rcf)?"":cf.dataset.rcf;renderRt();return;}
