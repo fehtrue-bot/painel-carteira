@@ -1990,7 +1990,7 @@ body.printmode .nfaixa,body.printmode .ncab{display:none}
       <li>Escolha o dia no alto do painel para ver as entradas e execuções de cada um. Clique em qualquer número para ver as OS.</li>
       <li>Clique em <b>Baixar Excel</b> para ter o PAINEL, a Ligação de água, o Serviço por dia, o Histórico e as bases, no formato da sua planilha.</li>
     </ol>
-    <div class="note">As regras são as mesmas da sua planilha: ATC 923 é Interlagos; 929 e 299 são Grajaú. Os vazamentos de água são separados pelo TSS, os outros serviços pela família. Ligação de água conta só o Contrato Global (acatados, executados e carteira); os outros serviços contam todos os contratos. Execuções contam tudo o que está no arquivo de executados, igual aos acatados. Só na Ligação de água as alegações (fim do dia, imóvel fechado, trata-se de outro serviço, duplicidade, continua, nada consta, sem aproveitamento e parecidos) não contam. Meta: 80% no prazo.</div>
+    <div class="note">As regras são as mesmas da sua planilha: ATC 923 é Interlagos; 929 e 299 são Grajaú. Os serviços são separados pela família (vazamento de água = família Vazamento de água). Ligação de água conta só o Contrato Global (acatados, executados e carteira); os outros serviços contam todos os contratos. Execuções contam tudo o que está no arquivo de executados, igual aos acatados. Só na Ligação de água as alegações (fim do dia, imóvel fechado, trata-se de outro serviço, duplicidade, continua, nada consta, sem aproveitamento e parecidos) não contam. Meta: 80% no prazo.</div>
     <div class="note">Os dados ficam guardados neste computador, no próprio navegador. Para usar em outro computador, leve a <b>Cópia de segurança</b>.</div>
   </section>
 
@@ -2359,7 +2359,8 @@ const RES_NAO=/FIM DO DIA|IMOVEL FECHADO|OUTRO SERVICO|DUPLICIDADE|CONTINUA|NADA
 function executadoDeFato(cod,res){const c=String(cod||"").trim();if(RES_NAO.test(U(res)))return false;if(/^\d+$/.test(c))return Number(c)<900000;if(c)return false;return !!clean(res);}
 const META=0.8;
 function grupoDe(tss,fam,forn){
-  if(VAZ.has(U(clean(tss))))return "Vazamento de água";
+  // vazamento de água = família VAZAMENTO DE ÁGUA (todas as TSS dela), como no filtro da planilha
+  if(U(clean(fam)).startsWith("VAZAMENTO DE AGUA"))return "Vazamento de água";
   const f=FAM[U(clean(fam))];if(!f)return "";
   if(f[1]&&U(clean(forn))!==CG)return "";
   return f[0];}
@@ -2372,7 +2373,9 @@ let S=null,RAW=null,timerSalvar=null;
 function idb(){return new Promise((res,rej)=>{try{const r=indexedDB.open("painel-carteira-servicos",1);r.onupgradeneeded=()=>r.result.createObjectStore("d");r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error);}catch(e){rej(e);}});}
 async function idbGet(k){const d=await idb();return await new Promise((res,rej)=>{const q=d.transaction("d").objectStore("d").get(k);q.onsuccess=()=>res(q.result??null);q.onerror=()=>rej(q.error);});}
 async function idbSet(k,v){const d=await idb();return await new Promise((res,rej)=>{const t=d.transaction("d","readwrite");t.objectStore("d").put(v,k);t.oncomplete=()=>res();t.onerror=()=>rej(t.error);});}
-function normalizar(o){const s=Object.assign(vazio(),o||{});s.hist=s.hist||{};s.histF=s.histF||{};
+function normalizar(o){const s=Object.assign(vazio(),o||{});
+  // vazamento pela família (migra o que foi guardado antes pela TSS)
+  if(s.ult)for(const t of ["ac","ex","ca"])for(const r of (s.ult[t]||[])){const ehV=U(clean(r.fam)).startsWith("VAZAMENTO DE AGUA");if(ehV&&r.g!=="Vazamento de água")r.g="Vazamento de água";else if(!ehV&&r.g==="Vazamento de água")r.g=grupoDe(r.tss,r.fam,r.forn)||OUT;}s.hist=s.hist||{};s.histF=s.histF||{};
   // o grupo "Vazamento de esgoto" passou a se chamar "Desobstrução"
   {const VE="Vazamento de esgoto",DE="Desobstrução";const ren=H=>{for(const k of Object.keys(H))if(k.endsWith("|"+VE)){const n=k.slice(0,-VE.length)+DE;if(!H[n])H[n]=H[k];delete H[k];}};
    ren(s.hist);for(const f of Object.keys(s.histF))ren(s.histF[f]);
