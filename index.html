@@ -1990,7 +1990,7 @@ body.printmode .nfaixa,body.printmode .ncab{display:none}
       <li>Escolha o dia no alto do painel para ver as entradas e execuções de cada um. Clique em qualquer número para ver as OS.</li>
       <li>Clique em <b>Baixar Excel</b> para ter o PAINEL, a Ligação de água, o Serviço por dia, o Histórico e as bases, no formato da sua planilha.</li>
     </ol>
-    <div class="note">As regras são as mesmas da sua planilha: ATC 923 é Interlagos; 929 e 299 são Grajaú. Os serviços são separados pela família (vazamento de água = família Vazamento de água). Ligação de água conta só o Contrato Global (acatados, executados e carteira); os outros serviços contam todos os contratos. Execuções contam tudo o que está no arquivo de executados, igual aos acatados. Só na Ligação de água as alegações (fim do dia, imóvel fechado, trata-se de outro serviço, duplicidade, continua, nada consta, sem aproveitamento e parecidos) não contam. Meta: 80% no prazo.</div>
+    <div class="note">As regras são as mesmas da sua planilha: ATC 923 é Interlagos; 929 e 299 são Grajaú. Os serviços são separados pela família (vazamento de água = família Vazamento de água). Todos os serviços contam pela família, de todos os contratos e fornecedores. Execuções contam tudo o que está no arquivo de executados, igual aos acatados. Só na Ligação de água as alegações (fim do dia, imóvel fechado, trata-se de outro serviço, duplicidade, continua, nada consta, sem aproveitamento e parecidos) não contam. Meta: 80% no prazo.</div>
     <div class="note">Os dados ficam guardados neste computador, no próprio navegador. Para usar em outro computador, leve a <b>Cópia de segurança</b>.</div>
   </section>
 
@@ -2362,7 +2362,6 @@ function grupoDe(tss,fam,forn){
   // vazamento de água = família VAZAMENTO DE ÁGUA (todas as TSS dela), como no filtro da planilha
   if(U(clean(fam))==="VAZAMENTO DE AGUA")return "Vazamento de água";
   const f=FAM[U(clean(fam))];if(!f)return "";
-  if(f[1]&&U(clean(forn))!==CG)return "";
   return f[0];}
 const poloDe=atc=>ATC_POLO[keyOS(atc)]||"Outro";
 
@@ -2420,10 +2419,11 @@ async function lerTabela(file,tipo){
 function indices(h,campos){const u=h.map(c=>U(clean(c)));const ix={};for(const [k,n] of Object.entries(campos))ix[k]=u.indexOf(n);return ix;}
 function unirTabelas(tabs,tipo){
   // junta os arquivos (Interlagos + Embu) e tira linhas idênticas repetidas entre eles
-  const h=tabs[0].h;const out=[];const pol=[];const visto=new Set();let rep=0;
-  for(const t of tabs){const pf=/EMBU|GRAJA/i.test(t.nome||"")?"Grajaú":/INTERLAGOS/i.test(t.nome||"")?"Interlagos":null;const ix=indices(t.h,tipo==="ex"?CAMPOS_EX:CAMPOS_AC);const map=h.map(n=>t.h.findIndex(x=>U(x)===U(n)));
+  const h=tabs[0].h;const out=[];const pol=[];const visto=new Map();let rep=0;
+  for(let ti=0;ti<tabs.length;ti++){const t=tabs[ti];const pf=/EMBU|GRAJA/i.test(t.nome||"")?"Grajaú":/INTERLAGOS/i.test(t.nome||"")?"Interlagos":null;const ix=indices(t.h,tipo==="ex"?CAMPOS_EX:CAMPOS_AC);const map=h.map(n=>t.h.findIndex(x=>U(x)===U(n)));
     for(const r of t.rows){const os=keyOS(r[ix.os]);if(!os)continue;const k=JSON.stringify(map.map(i=>i<0?"":String(r[i]??"").trim()));
-      if(visto.has(k)){rep++;continue;}visto.add(k);out.push(map.map(i=>i<0?"":r[i]));pol.push(pf);}}
+      // só tira a linha se ela já veio de OUTRO arquivo (repetida entre Interlagos e Embu); dentro do mesmo arquivo conta tudo
+      if(visto.has(k)&&visto.get(k)!==ti){rep++;continue;}visto.set(k,ti);out.push(map.map(i=>i<0?"":r[i]));pol.push(pf);}}
   return {h,rows:out,rep,pol};}
 
 // Religação: prazo oficial de 48 horas a partir da inserção; a equipe controla por 24 horas. Os outros serviços seguem o prazo do sistema.
@@ -2822,7 +2822,7 @@ function renderRes(){
    const El=(d,p)=>u.ac.filter(r=>r.g===g&&r.dt===d&&(!p||r.p===p)).length,Xl=(d,p)=>u.ex.filter(r=>r.g===g&&r.dt===d&&exGeral(r)&&(!p||r.p===p)).length;
    const cl=p=>{const c=u.ca.filter(r=>r.g===g&&(!p||r.p===p));return {cart:c.length,fora:c.filter(r=>r.fora).length};};
    const te=ds.reduce((a,d)=>a+El(d),0),tx=ds.reduce((a,d)=>a+Xl(d),0),ct=cl();
-   h+=`<div class="rsec pc-lig"><div class="rsech"><span class="rdot" style="--c:${COR[g]}"></span>Ligação de água<small>só Contrato Global · ${per}</small></div>
+   h+=`<div class="rsec pc-lig"><div class="rsech"><span class="rdot" style="--c:${COR[g]}"></span>Ligação de água<small>todos os contratos · ${per}</small></div>
      <div class="rk rk5"><div><small>Entradas</small><b style="color:#B9650F">${nf(te)}</b><em>${Pl.map(p=>ds.reduce((a,d)=>a+El(d,p),0)+" "+p).join(" · ")}</em></div><div><small>Executadas</small><b style="color:#1C7444">${nf(tx)}</b><em>${Pl.map(p=>ds.reduce((a,d)=>a+Xl(d,p),0)+" "+p).join(" · ")}</em></div><div><small>Saldo</small><b class="${te-tx>0?"up":"down"}">${sgn(te-tx)}</b><em>${te>tx?"carteira sobe":te<tx?"carteira desce":"equilibrado"}</em></div><div><small>Carteira</small><b>${nf(ct.cart)}</b><em>${Pl.map(p=>cl(p).cart+" "+p).join(" · ")}</em></div><div><small>Fora do prazo</small><b class="${ct.fora?"up":""}">${nf(ct.fora)}</b><em>${ct.cart?pctTxt(ct.fora,ct.cart)+" da carteira":""}</em></div></div>`;
    const itL=ds.map(d=>({lab:dm(d),sub:wd(d),vals:[{v:El(d),c:"#F0A23B"},{v:Xl(d),c:"#23824F"}]}));
    const ca=u.ca.filter(r=>r.g===g);
@@ -2984,7 +2984,7 @@ function renderLig(){
     card({l:"Entradas",c:"#F0A23B",v:nf(T.ent),s:(n=>n>1?`em ${n} dias`:"no dia")(diasSel().length),g:ring([[T.ent/mx,"#F0A23B"]]),go:{modo:"entradas",g,p:""}})+
     card({l:"Executadas",c:"#23824F",v:nf(T.exe),s:ncTot?`${nf(ncTot)} ${ncTot>1?"baixas não contam":"baixa não conta"}`:"todas contam",g:ring([[T.exe/mx,"#23824F"]]),go:{modo:"execucoes",g,p:"",nc:"nao"}})+
     card({l:"Saldo",c:saldo>0?"#D9534A":"#2FA36B",v:sgn(saldo),vc:saldo>0?"#C9423A":"#1C7444",s:saldo>0?"carteira sobe":saldo<0?"carteira desce":"equilibrado",g:`<span class="k2-ic" style="color:${saldo>0?"#C9423A":"#1C7444"}"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">${saldo>0?'<path d="M7 17 17 7M9 7h8v8"/>':'<path d="M7 7l10 10M17 9v8H9"/>'}</svg></span>`});
-  $("ligNota").textContent=`entradas e execuções: ${rotDias()} · carteira de ${dmy(u.dc)} · só Contrato Global`;
+  $("ligNota").textContent=`entradas e execuções: ${rotDias()} · carteira de ${dmy(u.dc)} · todos os contratos`;
   // por polo: cartões
   $("tbLigPolo").innerHTML=P.map(x=>{const n=x.cart-x.fora,v=pctN(n,x.cart),sd=x.ent-x.exe;return `<div class="lg-pc"><div class="lg-pt"><b>${x.p}</b>${v==null?"":`<span class="lg-pill ${v>=META?"ok":"ru"}">${pf(v)} no prazo</span>`}</div>
     <div class="lg-pn"${go({modo:"carteira",g,p:x.p})}><b>${nf(x.cart)}</b><span>na carteira</span></div>
@@ -3165,7 +3165,7 @@ function exportarTudo(){
   // ---------- LIGAÇÃO DE ÁGUA ----------
   const g="Ligação de água";const LA=folha("LIGAÇÃO DE ÁGUA",{widths:[2,44,12,12,12,12,12,12,12,12],grid:false,tab:"E07B24",merges:["B1:J1","B2:J2"],heights:{0:30}});
   put(LA,0,1,"LIGAÇÃO DE ÁGUA",sT);for(let c=2;c<=9;c++)put(LA,0,c,"",sT);
-  put(LA,1,1,`Entradas e execuções: ${rotDias()} · Carteira de ${dmy(u.dc)} · só Contrato Global`,sSub);
+  put(LA,1,1,`Entradas e execuções: ${rotDias()} · Carteira de ${dmy(u.dc)} · todos os contratos`,sSub);
   const PP=POLOS.map(p=>({p,...contaTss(g,p)}));const TT=PP.reduce((a,b)=>({ent:a.ent+b.ent,exe:a.exe+b.exe,cart:a.cart+b.cart,fora:a.fora+b.fora}),{ent:0,exe:0,cart:0,fora:0});
   [["ENTRADAS",TT.ent,PP.map(x=>x.ent+" "+x.p).join(" · ")],["EXECUTADAS",TT.exe,PP.map(x=>x.exe+" "+x.p).join(" · ")],["SALDO DO DIA",TT.ent-TT.exe,TT.ent-TT.exe>0?"carteira sobe":TT.ent-TT.exe<0?"carteira desce":"equilibrado"],["CARTEIRA",TT.cart,(TT.cart-TT.fora)+" no prazo"],["FORA DO PRAZO",TT.fora,TT.cart?Math.round(TT.fora*100/TT.cart)+"% da carteira":""]].forEach((k,i)=>{const c=[1,2,4,6,8][i];
     put(LA,3,c,k[0],sKl);put(LA,4,c,k[1],sKv);put(LA,5,c,k[2],sKs);if(c>1){put(LA,3,c+1,"",sKl);put(LA,4,c+1,"",sKv);put(LA,5,c+1,"",sKs);LA.merges.push(`${colName(c)}4:${colName(c+1)}4`,`${colName(c)}5:${colName(c+1)}5`,`${colName(c)}6:${colName(c+1)}6`);}});
