@@ -1963,6 +1963,9 @@ body.printmode .nfaixa,body.printmode .ncab{display:none}
 .md-t td small{color:#8A97A3}
 @media (max-width:1000px){.md-g{grid-template-columns:1fr}}
 .md .rx-tss li{display:grid!important;grid-template-columns:minmax(0,1fr) auto;gap:2px 10px}.md .rx-tss li span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.md .rx-tss li i{grid-column:1/-1}
+.rk-oss span.ct{background:#E2F2FB;border-color:#B9DDF0;color:#00507F}.rk-oss span.ct b{color:#0077B6}
+.rk-tb tr.ct td{background:#F2F9FE}
+.rk-tb em.ctb{background:#E2F2FB;color:#0077B6}
 
 </style>
 </head>
@@ -3378,7 +3381,7 @@ async function rtLerArquivo(file){const w=await abrirPlanilha(file);let aoa=null
     out.push({os,tss:g("tss"),fam:g("fam"),end:g("end"),num:g("num"),bai:g("bai"),mun:g("mun"),pde:keyOS(g("pde")),atc,res,eq:g("eq"),con:g("con"),min});est.ok++;}
   return {out,est};}
 
-async function rtCarregarLocal(){try{RB=await idbGet("retrab");}catch(e){RB=null;}rtCache=null;}
+async function rtCarregarLocal(){try{RB=await idbGet("retrab");}catch(e){RB=null;}rtCache=null;rtCOIdx=null;}
 async function rtSalvar(){try{await idbSet("retrab",RB);}catch(e){rtAviso("Não consegui guardar a base neste computador: "+e.message,"err");}}
 function rtAviso(t,c){const m=$("rtMsg");if(m){m.textContent=t||"Pronto.";m.parentElement.className="rx-status "+(c||"");}}
 
@@ -3410,7 +3413,19 @@ function rtIndice(){if(rtIdxCache&&rtIdxCache.em===RB.em)return rtIdxCache.M;con
   for(const L of M.values())L.sort((a,b)=>a[12]-b[12]);rtIdxCache={em:RB.em,M};return M;}
 function rtSepEnd(e){const m=String(e||"").match(/^(.*),\s*([^,]*)$/);return m?[m[1],m[2]]:[e||"",""];}
 // OS da carteira: quantas vezes o mesmo serviço já foi feito naquele endereço
-function rtHistCart(r){if(!RB||!RB.R||!RB.R.length)return [];const [e,n]=rtSepEnd(r.end);const L=rtIndice().get(rtAddrK(e,n));if(!L)return [];const fm=U(clean(r.fam)),t=U(r.tss);const vis=new Set(),AL=rtCalc().ale;return L.filter(x=>x[0]!==r.os&&!AL[x[9]]&&(fm?U(RB.D.f[x[2]])===fm:U(RB.D.t[x[1]])===t)).filter(x=>vis.has(x[0])?false:(vis.add(x[0]),true));}
+// banco das carteiras: cada OS que já passou por uma carteira (endereço, família, serviço, 1ª e última carteira em que apareceu)
+var rtCOIdx=null;
+function rtIdxCO(){if(rtCOIdx)return rtCOIdx;const M=new Map();for(const [os,v] of Object.entries((RB&&RB.CO)||{})){const L=M.get(v[0]);if(L)L.push(os);else M.set(v[0],[os]);}rtCOIdx=M;return M;}
+function rtGuardarCarteira(){if(!RB||!S||!S.ult||!S.ult.dc||!S.ult.ca)return;const dc=S.ult.dc;RB.CO=RB.CO||{};
+  for(const r of S.ult.ca){if(!r.os)continue;const [e,n]=rtSepEnd(r.end);const ak=rtAddrK(e,n);const o=RB.CO[r.os];
+    if(o){if(dc<o[3])o[3]=dc;if(dc>o[4])o[4]=dc;}else RB.CO[r.os]=[ak,U(clean(r.fam)),r.tss||"",dc,dc,r.end||"",r.bai||"",r.p||""];}
+  RB.COd=[...new Set((RB.COd||[]).concat([dc]))].sort();rtCOIdx=null;}
+function rtHistCart(r,dcRef){if(!RB||!RB.R)return [];const [e,n]=rtSepEnd(r.end);const ak=rtAddrK(e,n);const L=rtIndice().get(ak)||[];const fm=U(clean(r.fam)),t=U(r.tss);const vis=new Set(),AL=rtCalc().ale;
+  const ex=L.filter(x=>x[0]!==r.os&&!AL[x[9]]&&(fm?U(RB.D.f[x[2]])===fm:U(RB.D.t[x[1]])===t)).filter(x=>vis.has(x[0])?false:(vis.add(x[0]),true));
+  const ref=dcRef||(S&&S.ult&&S.ult.dc)||"9999";const out=ex.slice();
+  for(const os of (rtIdxCO().get(ak)||[])){if(os===r.os||vis.has(os))continue;const v=RB.CO[os];if(!v||v[3]>=ref)continue;if(fm?v[1]!==fm:U(v[2])!==t)continue;
+    const z=[];z[0]=os;z[12]=rtMin(dmy(v[3])+" 08:00");z.cart=v[3];z.tss=v[2];z.rs="estava na carteira de "+dmy(v[3])+(v[4]!==v[3]?" até "+dmy(v[4]):"")+" · sem execução na base";vis.add(os);out.push(z);}
+  return out.sort((a,b)=>a[12]-b[12]);}
 function rtSelo(r){const h=rtHistCart(r);if(!h.length)return "";const ult=h[h.length-1];return ` <span class="rtselo" title="Já feito ${h.length}x neste endereço · última em ${rtDm(ult[12])}">↻ já feito ${h.length}x</span>`;}
 function rtChip(r,ale){const D=RB.D;return `<i class="${ale?"al":""}" title="OS ${esc(r[0])} · ${esc(r.rs!=null?r.rs:D.r[r[9]])}${D.q[r[10]]?" · "+esc(D.q[r[10]]):""}">${rtDm(r[12])}</i>`;}
 
@@ -3574,18 +3589,18 @@ function rtBuscar(){const D=RB.D,q=U(($("rtBusca").value||"").trim());const ale=
 var rtCfil="",rtCdc="",rtCab=new Set();
 // histórico das carteiras: guarda, para cada carteira montada, as OS que já tinham o mesmo serviço feito no endereço
 function rtSnapCarteira(){if(!RB||!RB.R||!RB.R.length||!S||!S.ult||!S.ult.dc||!S.ult.ca)return false;const ale=rtCalc().ale;const it=[];
-  for(const r of S.ult.ca){const h=rtHistCart(r);if(h.length)it.push({os:r.os,end:r.end,bai:r.bai,p:r.p,tss:r.tss,fam:r.fam,fora:r.fora?1:0,h:h.map(x=>[x[0],x[12],ale[x[9]]?1:0,RB.D.r[x[9]]||""])});}
+  for(const r of S.ult.ca){const h=rtHistCart(r);if(h.length)it.push({os:r.os,end:r.end,bai:r.bai,p:r.p,tss:r.tss,fam:r.fam,fora:r.fora?1:0,h:h.map(x=>[x[0],x[12],ale[x[9]]?1:0,x.rs!=null?x.rs:(RB.D.r[x[9]]||""),x.cart?1:0])});}
   const sn={dc:S.ult.dc,em:S.ult.em||Date.now(),n:S.ult.ca.length,np:{},it};for(const p of POLOS)sn.np[p]=S.ult.ca.filter(r=>r.p===p).length;
-  RB.CH=(RB.CH||[]).filter(x=>x.dc!==sn.dc).concat([sn]).sort((a,b)=>a.dc<b.dc?-1:1).slice(-180);return true;}
+  RB.CH=(RB.CH||[]).filter(x=>x.dc!==sn.dc).concat([sn]).sort((a,b)=>a.dc<b.dc?-1:1).slice(-180);rtGuardarCarteira();return true;}
 function rtCarteira(){const D=RB.D;
-  if(!LEITOR&&S.ult.dc&&!(RB.CH||[]).some(x=>x.dc===S.ult.dc)){if(rtSnapCarteira())rtSalvar();}
+  if(!LEITOR&&S.ult.dc&&(!(RB.CH||[]).some(x=>x.dc===S.ult.dc)||!(RB.COd||[]).includes(S.ult.dc))){if(rtSnapCarteira())rtSalvar();}
   const CH=(RB.CH||[]).slice().reverse();const snap=rtCdc?CH.find(x=>x.dc===rtCdc):null;if(rtCdc&&!snap)rtCdc="";
   $("rtChist").innerHTML=`<label>Carteira de</label><select id="rtCsel"><option value="">${S.ult.dc?"Hoje · "+dmy(S.ult.dc):"Hoje"}</option>${CH.filter(x=>x.dc!==S.ult.dc).map(x=>`<option value="${x.dc}"${rtCdc===x.dc?" selected":""}>${wd(x.dc)} ${dmy(x.dc)} · ${nf(x.it.length)} em risco</option>`).join("")}</select><span class="note">${nf(CH.length)} ${CH.length===1?"carteira guardada":"carteiras guardadas"}</span>`;
   const agora=snap?new Date(snap.dc+"T23:59").getTime():Date.now();const lim90=rtMin(new Date(agora-90*864e5).toLocaleDateString("pt-BR")+" 00:00");
   $("rtCper").innerHTML=[["tudo","Toda a base"],["90","Últimos 90 dias"]].map(([k,l])=>`<button type="button" data-rcp="${k}" aria-pressed="${rtCper===k}">${l}</button>`).join("");
   const fpS=x=>poloSel==="Todos"||x.p===poloSel;
   const ca=snap?{length:poloSel==="Todos"?snap.n:(snap.np||{})[poloSel]||0}:ultF().ca.filter(r=>fp(r));const itens=[];
-  if(snap){for(const x of snap.it){if(!fpS(x))continue;let h=x.h.filter(a=>!a[2]).map(a=>{const z=[];z[0]=a[0];z[12]=a[1];z.al=a[2];z.rs=a[3];return z;});if(rtCper==="90")h=h.filter(z=>z[12]>=lim90);if(h.length)itens.push({r:x,h});}}
+  if(snap){for(const x of snap.it){if(!fpS(x))continue;let h=x.h.filter(a=>!a[2]).map(a=>{const z=[];z[0]=a[0];z[12]=a[1];z.al=a[2];z.rs=a[3];if(a[4])z.cart=1;return z;});if(rtCper==="90")h=h.filter(z=>z[12]>=lim90);if(h.length)itens.push({r:x,h});}}
   else for(const r of ca){let h=rtHistCart(r);if(rtCper==="90")h=h.filter(x=>x[12]>=lim90);if(h.length)itens.push({r,h});}
   itens.sort((a,b)=>(b.r.fora-a.r.fora)||b.h.length-a.h.length||b.h[b.h.length-1][12]-a.h[a.h.length-1][12]);
   const fora=itens.filter(x=>x.r.fora).length,noP=itens.length-fora;
@@ -3607,11 +3622,11 @@ function rtCarteira(){const D=RB.D;
   $("rtClista").innerHTML=L.length?`<div class="rk-list">${L.slice(0,400).map(({r,h})=>{const ul=h[h.length-1];const dd=Math.round((hoje-ul[12])/1440);const ale=rtCalc().ale;
     const key=r.os+"|"+r.tss,ab=rtCab.has(key);const D2=RB.D;
     const det=ab?`<div class="rk-det"><div class="rk-dh"><div><small>Na carteira agora</small><b>OS ${esc(r.os)}</b> · ${esc(r.tss)}${r.fora!=null?` · <span class="rk-pz2 ${r.fora?"f":"n"}">${r.fora?"fora do prazo":"no prazo"}</span>`:""}</div><button type="button" class="rk-ver" data-rbusca="${esc(r.end)}">Ver todo o histórico do endereço →</button></div>
-      ${(()=>{const [e0,n0]=rtSepEnd(r.end);const T=(rtIndice().get(rtAddrK(e0,n0))||[]).filter(x=>!ale[x[9]]).sort((a,b)=>a[12]-b[12]);const tU=U(clean(r.fam))||U(r.tss);const mesmoF=x=>U(clean(r.fam))?U(D2.f[x[2]])===tU:U(D2.t[x[1]])===tU;
+      ${(()=>{const [e0,n0]=rtSepEnd(r.end);const ak0=rtAddrK(e0,n0);const T=(rtIndice().get(ak0)||[]).filter(x=>!ale[x[9]]);{const vs=new Set(T.map(x=>x[0]));const ref=snap?snap.dc:S.ult.dc;for(const os of (rtIdxCO().get(ak0)||[])){if(os===r.os||vs.has(os))continue;const v=RB.CO[os];if(!v||v[3]>=ref)continue;const z=[];z[0]=os;z[12]=rtMin(dmy(v[3])+" 08:00");z.cart=v[3];z.tss=v[2];z.fam=v[1];z.rs="estava na carteira de "+dmy(v[3])+(v[4]!==v[3]?" até "+dmy(v[4]):"")+" · sem execução na base";T.push(z);}}T.sort((a,b)=>a[12]-b[12]);const tU=U(clean(r.fam))||U(r.tss);const mesmoF=x=>x.cart?(U(clean(r.fam))?x.fam===tU:U(x.tss)===tU):(U(clean(r.fam))?U(D2.f[x[2]])===tU:U(D2.t[x[1]])===tU);
         if(!T.length)return `<div class="rtvazio">Sem histórico nesse endereço.</div>`;const nT=new Set(T.map(x=>x[1])).size;
-        return `<div class="rk-dsub">${nf(T.length)} ${T.length===1?"serviço executado":"serviços executados"} nesse endereço em qualquer momento (sem alegações) · ${nf(nT)} ${nT===1?"tipo":"tipos"} de serviço · <span class="rk-eq">em destaque, a mesma família de serviço da OS de agora (${esc(r.fam||r.tss)})</span></div>
-        <table class="rk-tb"><thead><tr><th>Data</th><th>OS</th><th>Serviço</th><th>Resultado</th><th>Equipe</th></tr></thead><tbody>${T.slice().reverse().map(x=>{const al=ale[x[9]];const mesmo=mesmoF(x);return `<tr class="${mesmo?"eq":""}${al?" al":""}"><td>${rtDm(x[12])}</td><td class="mono">${esc(x[0])}</td><td>${esc(D2.t[x[1]]||"")}</td><td>${esc(D2.r[x[9]]||"")}${al?' <em>alegação</em>':""}</td><td>${esc(D2.q[x[10]]||"")}</td></tr>`;}).join("")}</tbody></table>`;})()}</div>`:"";
-    return `<div class="rk-wrap${ab?" ab":""}"><div class="rk-row rk-clk" data-rck="${esc(key)}" title="Clique para ver o endereço, os serviços e as OS"><div class="rk-n" title="O mesmo serviço já foi feito ${h.length} ${h.length===1?"vez":"vezes"} nesse endereço antes desta OS"><b>${h.length}</b><small>${h.length===1?"vez antes":"vezes antes"}</small></div><div class="rk-e"><b>${esc(r.end)}</b><small>${esc(r.bai)} · ${r.p} · OS ${esc(r.os)}</small></div><div class="rk-s">${esc(r.tss)}</div><div class="rk-d"><div class="rk-oss">${h.slice().reverse().slice(0,4).map(x=>`<span class="${x.al||ale[x[9]]?"al":""}" title="${esc(x.rs!=null?x.rs:(RB.D.r[x[9]]||""))}"><b>${rtDm(x[12])}</b>OS ${esc(x[0])}</span>`).join("")}${h.length>4?`<em>+${h.length-4}</em>`:""}</div><small>última há ${dd} ${dd===1?"dia":"dias"}</small></div><span class="rk-seta">›</span></div>${det}</div>`;}).join("")}</div>${L.length>400?`<div class="note">mostrando 400 de ${nf(L.length)}</div>`:""}`:`<div class="rtvazio">Nenhuma OS nessa condição.</div>`;}
+        return `<div class="rk-dsub">${nf(T.length)} ${T.length===1?"serviço":"serviços"} nesse endereço em qualquer momento (executados e carteiras anteriores, sem alegações) · ${nf(nT)} ${nT===1?"tipo":"tipos"} de serviço · <span class="rk-eq">em destaque, a mesma família de serviço da OS de agora (${esc(r.fam||r.tss)})</span></div>
+        <table class="rk-tb"><thead><tr><th>Data</th><th>OS</th><th>Serviço</th><th>Resultado</th><th>Equipe</th></tr></thead><tbody>${T.slice().reverse().map(x=>{const al=ale[x[9]];const mesmo=mesmoF(x);return x.cart?`<tr class="${mesmo?"eq":""} ct"><td>${rtDm(x[12])}</td><td class="mono">${esc(x[0])}</td><td>${esc(x.tss||"")}</td><td><em class="ctb">carteira</em> ${esc(x.rs)}</td><td></td></tr>`:`<tr class="${mesmo?"eq":""}${al?" al":""}"><td>${rtDm(x[12])}</td><td class="mono">${esc(x[0])}</td><td>${esc(D2.t[x[1]]||"")}</td><td>${esc(D2.r[x[9]]||"")}${al?' <em>alegação</em>':""}</td><td>${esc(D2.q[x[10]]||"")}</td></tr>`;}).join("")}</tbody></table>`;})()}</div>`:"";
+    return `<div class="rk-wrap${ab?" ab":""}"><div class="rk-row rk-clk" data-rck="${esc(key)}" title="Clique para ver o endereço, os serviços e as OS"><div class="rk-n" title="O mesmo serviço já foi feito ${h.length} ${h.length===1?"vez":"vezes"} nesse endereço antes desta OS"><b>${h.length}</b><small>${h.length===1?"vez antes":"vezes antes"}</small></div><div class="rk-e"><b>${esc(r.end)}</b><small>${esc(r.bai)} · ${r.p} · OS ${esc(r.os)}</small></div><div class="rk-s">${esc(r.tss)}</div><div class="rk-d"><div class="rk-oss">${h.slice().reverse().slice(0,4).map(x=>`<span class="${x.cart?"ct":x.al||ale[x[9]]?"al":""}" title="${esc(x.rs!=null?x.rs:(RB.D.r[x[9]]||""))}"><b>${x.cart?"carteira "+rtDm(x[12]):rtDm(x[12])}</b>OS ${esc(x[0])}</span>`).join("")}${h.length>4?`<em>+${h.length-4}</em>`:""}</div><small>última há ${dd} ${dd===1?"dia":"dias"}</small></div><span class="rk-seta">›</span></div>${det}</div>`;}).join("")}</div>${L.length>400?`<div class="note">mostrando 400 de ${nf(L.length)}</div>`:""}`:`<div class="rtvazio">Nenhuma OS nessa condição.</div>`;}
 
 // ---------- eventos ----------
 document.addEventListener("click",e=>{
@@ -3649,7 +3664,7 @@ $("rtArqBase").onchange=async e=>{const f=e.target.files[0];e.target.value="";if
     if(RB&&RB.R&&RB.R.length&&!confirm("Juntar com a base que já está aqui? (OK = juntar · Cancelar = trocar pela nova)")){RB=B;}
     else if(RB&&RB.R&&RB.R.length){const D=B.D;rtJuntar(RB,B.R.map(r=>({os:r[0],tss:D.t[r[1]],fam:D.f[r[2]],end:D.e[r[3]],num:r[4],bai:D.b[r[5]],mun:D.m[r[6]],pde:r[7],atc:D.a[r[8]],res:D.r[r[9]],eq:D.q[r[10]],con:D.c[r[11]],min:r[12]})));}
     else RB=B;
-    rtCache=null;await rtSalvar();renderRt();rtAviso(`Base carregada: ${nf(RB.R.length)} serviços (${dmy(RB.ini)} a ${dmy(RB.fim)}). Atualizando o link da coordenação…`,"ok");
+    rtCache=null;rtCOIdx=null;await rtSalvar();renderRt();rtAviso(`Base carregada: ${nf(RB.R.length)} serviços (${dmy(RB.ini)} a ${dmy(RB.fim)}). Atualizando o link da coordenação…`,"ok");
     const ok=await rtPublicar();rtAviso(`Base carregada: ${nf(RB.R.length)} serviços (${dmy(RB.ini)} a ${dmy(RB.fim)}).`+(ok?" Link da coordenação atualizado.":" O link da coordenação não atualizou."),ok?"ok":"err");}
   catch(err){console.error(err);rtAviso("Não consegui abrir a base: "+err.message,"err");}};
 
@@ -3657,7 +3672,7 @@ $("rtArqBase").onchange=async e=>{const f=e.target.files[0];e.target.value="";if
 async function rtPublicar(){if(LEITOR||!RB)return false;try{const z=await compactar(JSON.stringify(RB));const T=2000000,n=Math.max(1,Math.ceil(z.length/T));const v=Date.now().toString(36)+Math.random().toString(36).slice(2,6);
   for(let i=0;i<n;i++){let ok=false,er=null;for(let t=0;t<3&&!ok;t++){try{await apiC({acao:"parte",b:"rt",v,i,n,dados:z.slice(i*T,(i+1)*T),dc:RB.fim||""});ok=true;}catch(e){er=e;await new Promise(r=>setTimeout(r,1500));}}if(!ok)throw er;}return true;}catch(e){console.error(e);return false;}}
 async function rtCarregarLeitor(){try{const q="?k="+encodeURIComponent(SLUG)+"&b=rt";const m=await apiC(null,"GET",q);if(!m.em||(RB&&RB.em===m.em))return false;
-  let z="";for(let i=0;i<m.partes;i++){const j=await apiC(null,"GET",q+"&v="+m.v+"&i="+i);z+=j.dados;}RB=JSON.parse(await descompactar(z));rtCache=null;return true;}catch(e){return false;}}
+  let z="";for(let i=0;i<m.partes;i++){const j=await apiC(null,"GET",q+"&v="+m.v+"&i="+i);z+=j.dados;}RB=JSON.parse(await descompactar(z));rtCache=null;rtCOIdx=null;return true;}catch(e){return false;}}
 
 // ---------- Excel ----------
 $("rtXls").onclick=()=>{if(!RB||!RB.R.length){rtAviso("Ainda não há base.");return;}
