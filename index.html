@@ -2420,11 +2420,11 @@ async function lerTabela(file,tipo){
 function indices(h,campos){const u=h.map(c=>U(clean(c)));const ix={};for(const [k,n] of Object.entries(campos))ix[k]=u.indexOf(n);return ix;}
 function unirTabelas(tabs,tipo){
   // junta os arquivos (Interlagos + Embu) e tira linhas idênticas repetidas entre eles
-  const h=tabs[0].h;const out=[];const visto=new Set();let rep=0;
-  for(const t of tabs){const ix=indices(t.h,tipo==="ex"?CAMPOS_EX:CAMPOS_AC);const map=h.map(n=>t.h.findIndex(x=>U(x)===U(n)));
+  const h=tabs[0].h;const out=[];const pol=[];const visto=new Set();let rep=0;
+  for(const t of tabs){const pf=/EMBU|GRAJA/i.test(t.nome||"")?"Grajaú":/INTERLAGOS/i.test(t.nome||"")?"Interlagos":null;const ix=indices(t.h,tipo==="ex"?CAMPOS_EX:CAMPOS_AC);const map=h.map(n=>t.h.findIndex(x=>U(x)===U(n)));
     for(const r of t.rows){const os=keyOS(r[ix.os]);if(!os)continue;const k=JSON.stringify(map.map(i=>i<0?"":String(r[i]??"").trim()));
-      if(visto.has(k)){rep++;continue;}visto.add(k);out.push(map.map(i=>i<0?"":r[i]));}}
-  return {h,rows:out,rep};}
+      if(visto.has(k)){rep++;continue;}visto.add(k);out.push(map.map(i=>i<0?"":r[i]));pol.push(pf);}}
+  return {h,rows:out,rep,pol};}
 
 // Religação: prazo oficial de 48 horas a partir da inserção; a equipe controla por 24 horas. Os outros serviços seguem o prazo do sistema.
 const PRAZO_REL_H=48,CTRL_REL_H=24;
@@ -2437,7 +2437,7 @@ function ajustarRel(recs){const v=[];for(const r of recs){const pf=parseDT0(r.pf
 function registros(raw,tipo){
   const ix=indices(raw.h,tipo==="ex"?CAMPOS_EX:CAMPOS_AC);const g=(r,k)=>ix[k]>=0?r[ix[k]]:"";const out=[];const dias=new Set();
   const est={linhas:raw.rows.length,continua:0,semTss:0,outroServ:0,ligOutroContrato:0,outroAtc:0,alegacao:0,conta:0};
-  for(const r of raw.rows){
+  for(let ri=0;ri<raw.rows.length;ri++){const r=raw.rows[ri];
     const o={os:keyOS(g(r,"os")),p:poloDe(g(r,"atc")),tss:clean(g(r,"tss")),fam:clean(g(r,"fam")),end:clean([clean(g(r,"end")),clean(g(r,"num"))].filter(Boolean).join(", ")),bai:clean(g(r,"bai")),mun:clean(g(r,"mun"))};
     // só a ligação de água exige o Consórcio Global (acatados, executados e carteira); o resto vale para todos os contratos
     o.g=grupoDe(o.tss,o.fam,g(r,"forn"));o.forn=clean(g(r,"forn"));
@@ -2448,7 +2448,8 @@ function registros(raw,tipo){
     // "CONTINUA" e "FIM DO DIA" saem só dos executados (acatados e carteira contam tudo)
     if(tipo==="ex"&&/CONTINUA|FIM DO DIA/.test(U(o.res))){est.continua++;continue;}
     if(o.dt)dias.add(o.dt);
-    if(o.p==="Outro"){est.outroAtc++;continue;}
+    // ATC fora de 923/929/299: conta no polo do arquivo (Interlagos ou Embu/Grajaú) — considera tudo
+    if(o.p==="Outro"){const pf=raw.pol&&raw.pol[ri];if(pf)o.p=pf;else{est.outroAtc++;continue;}}
     // ligação de água de outro contrato não entra em lugar nenhum (nem no total geral)
     if(!o.g){const f=FAM[U(clean(o.fam))];if(f&&f[1]){est.ligOutroContrato++;if(tipo!=="ex")continue;o.lx=1;}else est.outroServ++;o.g=OUT;}
     else if(tipo==="ex"&&o.g==="Ligação de água"){if(o.conta)est.conta++;else est.alegacao++;}
