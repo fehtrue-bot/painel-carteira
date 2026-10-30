@@ -1918,6 +1918,24 @@ body.printmode .nfaixa,body.printmode .ncab{display:none}
 .resbar{background:#fff;border:1px solid #E3E9EF;border-radius:12px;padding:10px 14px}
 .resbar .ghost2{background:#fff;border:1px solid #C5D1E3;color:#0B2545}
 .resbar .primary{background:#0B2545!important;border-color:#0B2545!important;color:#fff!important}
+/* carteira do dia: linha clicável com detalhe */
+.rk-row.rk-clk{cursor:pointer;grid-template-columns:72px minmax(0,1.6fr) minmax(0,1.2fr) minmax(0,1.3fr) 20px!important}
+.rk-row.rk-clk:hover{background:#EEF6FB}
+.rk-seta{font-size:22px;color:#8A9BAA;transition:transform .15s;text-align:center}
+.rk-wrap.ab .rk-seta{transform:rotate(90deg);color:#0096D6}
+.rk-wrap.ab>.rk-row{background:#EAF5FC}
+.rk-det{background:#F6FAFD;border-top:1px solid #DCEAF3;padding:12px 16px 14px 88px}
+.rk-dh{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:10px;font-size:13px;color:#3E5163}
+.rk-dh small{display:block;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#8A97A3}
+.rk-dh b{color:#00396F}
+.rk-pz2{font-size:11.5px;font-weight:700;padding:2px 8px;border-radius:999px}.rk-pz2.f{background:#FDE8E6;color:#C9423A}.rk-pz2.n{background:#E3F4EA;color:#1C7444}
+.rk-ver{all:unset;cursor:pointer;font-size:12.5px;font-weight:700;color:#0077B6;padding:6px 10px;border-radius:8px;background:#fff;border:1px solid #C9E4F4}.rk-ver:hover{border-color:#0096D6}
+.rk-tb{width:100%;border-collapse:collapse;font-size:12.5px;background:#fff;border:1px solid #E3E9EF;border-radius:10px;overflow:hidden}
+.rk-tb th{background:#fff;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:#8A97A3;padding:8px 10px;text-align:left;border-bottom:1px solid #E3E9EF}
+.rk-tb td{padding:7px 10px;border-bottom:1px solid #F1F4F7}.rk-tb tr:last-child td{border-bottom:0}
+.rk-tb .r{text-align:right}.rk-tb .mono{font-family:ui-monospace,Consolas,monospace}
+.rk-tb tr.al td{color:#8A97A3}.rk-tb em{font-style:normal;font-size:10.5px;font-weight:700;background:#F1F4F7;color:#5E6E7B;padding:1px 6px;border-radius:99px}
+@media (max-width:1100px){.rk-det{padding-left:16px}.rk-tb{font-size:11.5px}}
 
 </style>
 </head>
@@ -3515,7 +3533,7 @@ function rtBuscar(){const D=RB.D,q=U(($("rtBusca").value||"").trim());const ale=
       `<table class="rtts"><tbody>${ts.map(([t,x])=>`<tr class="${x.length>1?"rep":""}"><td class="n">${x.length}x</td><td class="t">${esc(t)}</td><td><div class="rtd">${x.map(r=>rtChip(r,ale[r[9]])).join("")}</div></td></tr>`).join("")}</tbody></table></div>`;}).join("");}
 
 // ---------- carteira × retrabalho ----------
-var rtCfil="",rtCdc="";
+var rtCfil="",rtCdc="",rtCab=new Set();
 // histórico das carteiras: guarda, para cada carteira montada, as OS que já tinham o mesmo serviço feito no endereço
 function rtSnapCarteira(){if(!RB||!RB.R||!RB.R.length||!S||!S.ult||!S.ult.dc||!S.ult.ca)return false;const ale=rtCalc().ale;const it=[];
   for(const r of S.ult.ca){const h=rtHistCart(r);if(h.length)it.push({os:r.os,end:r.end,bai:r.bai,p:r.p,tss:r.tss,fora:r.fora?1:0,h:h.map(x=>[x[0],x[12],ale[x[9]]?1:0,RB.D.r[x[9]]||""])});}
@@ -3549,7 +3567,10 @@ function rtCarteira(){const D=RB.D;
   $("rtCnota").textContent=`${nf(L.length)} OS · se executar de novo, vira retrabalho`;
   const hoje=rtMin(new Date(agora).toLocaleDateString("pt-BR")+" 12:00");
   $("rtClista").innerHTML=L.length?`<div class="rk-list">${L.slice(0,400).map(({r,h})=>{const ul=h[h.length-1];const dd=Math.round((hoje-ul[12])/1440);const ale=rtCalc().ale;
-    return `<div class="rk-row"><div class="rk-n"><b>${h.length}x</b><small>feito</small></div><div class="rk-e"><b>${esc(r.end)}</b><small>${esc(r.bai)} · ${r.p} · OS ${esc(r.os)}</small></div><div class="rk-s">${esc(r.tss)}</div><div class="rk-d"><div class="rtd">${h.slice(-3).map(x=>rtChip(x,x.al||ale[x[9]])).join("")}${h.length>3?`<em>+${h.length-3}</em>`:""}</div><small>há ${dd} ${dd===1?"dia":"dias"}</small></div></div>`;}).join("")}</div>${L.length>400?`<div class="note">mostrando 400 de ${nf(L.length)}</div>`:""}`:`<div class="rtvazio">Nenhuma OS nessa condição.</div>`;}
+    const key=r.os+"|"+r.tss,ab=rtCab.has(key);const D2=RB.D;
+    const det=ab?`<div class="rk-det"><div class="rk-dh"><div><small>Na carteira agora</small><b>OS ${esc(r.os)}</b> · ${esc(r.tss)}${r.fora!=null?` · <span class="rk-pz2 ${r.fora?"f":"n"}">${r.fora?"fora do prazo":"no prazo"}</span>`:""}</div><button type="button" class="rk-ver" data-rbusca="${esc(r.end)}">Ver todo o histórico do endereço →</button></div>
+      <table class="rk-tb"><thead><tr><th>Data</th><th>OS</th><th>Serviço</th><th>Resultado</th><th>Equipe</th><th class="r">Depois de</th></tr></thead><tbody>${h.map((x,i)=>{const gap=i?Math.round((x[12]-h[i-1][12])/1440):null;const res=x.rs!=null?x.rs:(D2.r[x[9]]||"");const al=x.al||ale[x[9]];return `<tr${al?' class="al"':""}><td>${rtDm(x[12])}</td><td class="mono">${esc(x[0])}</td><td>${esc(x[1]!=null&&D2.t[x[1]]?D2.t[x[1]]:r.tss)}</td><td>${esc(res)}${al?' <em>alegação</em>':""}</td><td>${esc(x[10]!=null?(D2.q[x[10]]||""):"")}</td><td class="r">${gap==null?"1ª vez":gap+(gap===1?" dia":" dias")}</td></tr>`;}).join("")}</tbody></table></div>`:"";
+    return `<div class="rk-wrap${ab?" ab":""}"><div class="rk-row rk-clk" data-rck="${esc(key)}" title="Clique para ver o endereço, os serviços e as OS"><div class="rk-n"><b>${h.length}x</b><small>feito</small></div><div class="rk-e"><b>${esc(r.end)}</b><small>${esc(r.bai)} · ${r.p} · OS ${esc(r.os)}</small></div><div class="rk-s">${esc(r.tss)}</div><div class="rk-d"><div class="rtd">${h.slice(-3).map(x=>rtChip(x,x.al||ale[x[9]])).join("")}${h.length>3?`<em>+${h.length-3}</em>`:""}</div><small>há ${dd} ${dd===1?"dia":"dias"}</small></div><span class="rk-seta">›</span></div>${det}</div>`;}).join("")}</div>${L.length>400?`<div class="note">mostrando 400 de ${nf(L.length)}</div>`:""}`:`<div class="rtvazio">Nenhuma OS nessa condição.</div>`;}
 
 // ---------- eventos ----------
 document.addEventListener("click",e=>{
@@ -3561,6 +3582,8 @@ document.addEventListener("click",e=>{
   const p=e.target.closest("[data-rp]");if(p){rtPer=p.dataset.rp;renderRt();return;}
   const m=e.target.closest("[data-rm]");if(m){rtModo=m.dataset.rm;renderRt();return;}
   const po=e.target.closest("[data-rpo]");if(po){poloSel=(po.closest(".rx-tile")&&poloSel===po.dataset.rpo)?"Todos":po.dataset.rpo;renderTudo();return;}
+  const rb=e.target.closest("[data-rbusca]");if(rb){rtView="busca";renderRt();{const [e,n]=rtSepEnd(rb.dataset.rbusca);$("rtBusca").value=(rtEndK(e)+" "+rtNumK(n)).trim();}rtBuscar();window.scrollTo({top:0,behavior:"smooth"});return;}
+  const rk=e.target.closest("[data-rck]");if(rk){const k=rk.dataset.rck;rtCab.has(k)?rtCab.delete(k):rtCab.add(k);renderRt();return;}
   const cf=e.target.closest("[data-rcf]");if(cf){rtCfil=(cf.classList.contains("kc")&&rtCfil===cf.dataset.rcf)?"":cf.dataset.rcf;renderRt();return;}
   const c=e.target.closest("[data-rcp]");if(c){rtCper=c.dataset.rcp;renderRt();return;}
   const t=e.target.closest("[data-rtt]");if(t&&t.closest("#v-rt")){rtTssSel=(t.dataset.rtt===rtTssSel?"":t.dataset.rtt);renderRt();return;}
