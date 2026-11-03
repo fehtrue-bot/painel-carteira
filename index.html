@@ -2008,6 +2008,12 @@ body.perfil-hid .tabbar,body.perfil-hid .topo,body.perfil-hid #hRes,body.perfil-
 .pf-rei{background:#FFF3E3;color:#B4600A}.pf-na{color:#A3AFBA}
 @media (max-width:1000px){.pf-ks{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media (max-width:640px){.pf-ks{grid-template-columns:repeat(2,minmax(0,1fr))}.pf-t{font-size:12.5px}}
+.tl-users{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:4px 0 6px}
+.tl-users button{all:unset;box-sizing:border-box;cursor:pointer;display:grid;grid-template-columns:34px 1fr;grid-template-rows:auto auto;column-gap:10px;align-items:center;padding:10px 12px;border:1px solid #DCE6EE;border-radius:12px;background:#fff;font-weight:700;font-size:14px;color:#14212B}
+.tl-users button .av{grid-row:1/3;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;color:#fff;font-weight:800;background:linear-gradient(135deg,#0096D6,#00396F)}
+.tl-users button .av.r{background:linear-gradient(135deg,#F0A23B,#B4600A)}
+.tl-users button small{font-size:11.5px;font-weight:500;color:#8A97A3}
+.tl-users button[aria-pressed="true"]{border-color:#0096D6;background:#EAF5FC;box-shadow:0 0 0 2px rgba(0,150,214,.18)}
 
 </style>
 </head>
@@ -2020,7 +2026,8 @@ body.perfil-hid .tabbar,body.perfil-hid .topo,body.perfil-hid #hRes,body.perfil-
   <div class="tlbox">
     <span class="gota tlg"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2.5c-3.6 4.4-6.5 8-6.5 11.6a6.5 6.5 0 0 0 13 0C18.5 10.5 15.6 6.9 12 2.5Z" fill="#fff"/><path d="M9 14.5a3 3 0 0 0 3 3" stroke="#0093C9" stroke-width="1.8" stroke-linecap="round"/></svg></span>
     <div class="tlsis">Painel da Carteira de Serviços</div>
-    <h1>Olá, Fernanda</h1>
+    <div class="tl-users" id="tlUsers"><button type="button" data-u="fernanda" aria-pressed="true"><span class="av">F</span>Fernanda<small>Analista</small></button><button type="button" data-u="rolison" aria-pressed="false"><span class="av r">R</span>Rolison<small>Hidrômetro</small></button></div>
+    <h1 id="tlOla">Olá, Fernanda</h1>
     <p id="tlTxt">Digite sua senha para abrir o painel.</p>
     <form id="fTl">
       <input type="password" id="tlS1" placeholder="Senha" autocomplete="current-password">
@@ -3323,8 +3330,15 @@ function pedirSenha(){return new Promise(res=>{
   const criar=!salva;document.body.classList.add("trancado");$("telaLogin").hidden=false;
   $("tlTxt").textContent=criar?"Primeiro acesso neste computador: crie sua senha para abrir o painel.":"Digite sua senha para abrir o painel.";
   $("tlS2").hidden=!criar;$("tlS1").placeholder=criar?"Crie uma senha":"Senha";$("tlBtn").textContent=criar?"Criar senha e entrar":"Entrar";$("tlEsq").hidden=criar;
+  let usu=lsg("carteira-usuario")==="rolison"?"rolison":"fernanda";
+  const pUsu=()=>{document.querySelectorAll("#tlUsers [data-u]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.u===usu));const r=usu==="rolison";
+    $("tlOla").textContent=r?"Olá, Rolison":"Olá, Fernanda";$("tlTxt").textContent=r?"Digite a sua senha para abrir o painel de hidrômetro.":criar?"Primeiro acesso neste computador: crie sua senha para abrir o painel.":"Digite sua senha para abrir o painel.";
+    $("tlS2").hidden=r||!criar;$("tlS1").placeholder=r||!criar?"Senha":"Crie uma senha";$("tlBtn").textContent=r||!criar?"Entrar":"Criar senha e entrar";$("tlEsq").hidden=r||criar;$("tlMsg").textContent="";$("tlS1").value="";setTimeout(()=>$("tlS1").focus(),30);};
+  document.querySelectorAll("#tlUsers [data-u]").forEach(b=>b.onclick=()=>{usu=b.dataset.u;lss("carteira-usuario",usu);pUsu();});pUsu();
   setTimeout(()=>$("tlS1").focus(),50);
   $("fTl").onsubmit=async e=>{e.preventDefault();const s1=$("tlS1").value,s2=$("tlS2").value;$("tlMsg").textContent="";
+    if(usu==="rolison"){if(!s1)return;$("tlBtn").disabled=true;try{await apiC(null,"GET","?k=rolison&s="+encodeURIComponent(s1));try{sessionStorage.setItem("perfil-senha",s1);}catch(x){}location.href="/rolison";}
+      catch(x){$("tlMsg").textContent=/Senha/i.test(x.message)?"Senha incorreta.":"Não consegui entrar: "+x.message;$("tlS1").select();}finally{$("tlBtn").disabled=false;}return;}
     if(criar){if(s1.length<4){$("tlMsg").textContent="Use pelo menos 4 letras ou números.";return;}if(s1!==s2){$("tlMsg").textContent="As duas senhas não são iguais.";return;}
       const sal=Math.random().toString(36).slice(2,10);salva={sal,hash:await hashS(s1,sal)};lss(CH_SENHA,JSON.stringify(salva));}
     else if(await hashS(s1,salva.sal)!==salva.hash){$("tlMsg").textContent="Senha incorreta.";$("tlS1").select();return;}
