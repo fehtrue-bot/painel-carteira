@@ -2015,6 +2015,7 @@ body.perfil-hid .tabbar,body.perfil-hid .topo,body.perfil-hid #hRes,body.perfil-
 .tl-users button small{font-size:11.5px;font-weight:500;color:#8A97A3}
 .tl-users button[aria-pressed="true"]{border-color:#0096D6;background:#EAF5FC;box-shadow:0 0 0 2px rgba(0,150,214,.18)}
 .pf-xls{background:#0B2545!important;border-color:#0B2545!important;color:#fff!important;padding:9px 14px;border-radius:9px;font-size:13.5px}
+.rt-modo{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:4px 0 10px}.rt-rua td b{color:#00396F}
 
 </style>
 </head>
@@ -3692,7 +3693,12 @@ function rtBuscar(){const D=RB.D,q=U(($("rtBusca").value||"").trim());const ale=
   const cart=new Map();for(const r of ultF().ca){const [e,n]=rtSepEnd(r.end);const k=rtAddrK(e,n);let L=cart.get(k);if(!L){L=[];cart.set(k,L);}L.push(r);}
   if(!achados.length){$("rtRes").innerHTML=`<div class="rtvazio">Nenhum endereço encontrado com "${esc(q)}".</div>`;return;}
   const lim=25;
-  $("rtRes").innerHTML=`<div class="note" style="margin:2px 0 10px">${nf(achados.length)} endereço${achados.length>1?"s":""}${achados.length>lim?` · mostrando ${lim} (digite o número para achar o exato)`:""}</div>`+achados.slice(0,lim).map(([k,L])=>{
+  const modo=!num?`<div class="rt-modo"><div class="seg2"><button type="button" data-rrua="0" aria-pressed="${!rtRua}">Por número</button><button type="button" data-rrua="1" aria-pressed="${rtRua}">Tudo da rua por data</button></div><span class="note">sem número: dá para ver tudo o que teve na rua, do mais recente para o mais antigo</span></div>`:"";
+  if(!num&&rtRua){const T=[];for(const [k,L] of achados)for(const r of L)T.push(r);T.sort((a,b)=>b[12]-a[12]);const ruas=new Set(achados.map(([,L])=>D.e[L[0][3]]));const limR=600;const cap=t=>t?t.charAt(0)+t.slice(1).toLowerCase():"";
+    const nAl=T.filter(r=>ale[r[9]]).length;
+    $("rtRes").innerHTML=modo+`<div class="note" style="margin:2px 0 10px">${nf(T.length)} serviços em ${nf(achados.length)} ${achados.length===1?"número":"números"}${ruas.size>1?` de ${nf(ruas.size)} ruas`:""} · ${nf(T.length-nAl)} executados e ${nf(nAl)} alegações${T.length>limR?` · mostrando os ${limR} mais recentes`:""}</div>
+      <div class="scroll"><table class="rk-tb rt-rua"><thead><tr><th>Data</th>${ruas.size>1?"<th>Rua</th>":""}<th>Nº</th><th>OS</th><th>Serviço</th><th>Resultado</th><th>Equipe</th><th>Bairro</th></tr></thead><tbody>${T.slice(0,limR).map(r=>{const al=ale[r[9]];return `<tr class="${al?"al":""}"><td>${rtDm(r[12])}</td>${ruas.size>1?`<td>${esc(D.e[r[3]])}</td>`:""}<td><b>${esc(r[4]||"s/n")}</b></td><td class="mono">${esc(r[0])}</td><td>${esc(cap(D.t[r[1]]))}</td><td>${esc(cap(D.r[r[9]]))}${al?' <em>alegação</em>':""}</td><td>${esc(D.q[r[10]]||"")}</td><td>${esc(D.b[r[5]])}</td></tr>`;}).join("")}</tbody></table></div>`;return;}
+  $("rtRes").innerHTML=modo+`<div class="note" style="margin:2px 0 10px">${nf(achados.length)} endereço${achados.length>1?"s":""}${achados.length>lim?` · mostrando ${lim} (digite o número para achar o exato)`:""}</div>`+achados.slice(0,lim).map(([k,L])=>{
     const r0=L[0];const porT=new Map();for(const r of L){const t=D.t[r[1]];if(!porT.has(t))porT.set(t,[]);porT.get(t).push(r);}
     const ts=[...porT.entries()].sort((a,b)=>b[1].length-a[1].length);const ab=cart.get(k)||[];
     const retr=ts.reduce((a,[,x])=>a+Math.max(0,x.length-1),0);
@@ -3701,7 +3707,7 @@ function rtBuscar(){const D=RB.D,q=U(($("rtBusca").value||"").trim());const ale=
       `<table class="rtts"><tbody>${ts.map(([t,x])=>`<tr class="${x.length>1?"rep":""}"><td class="n">${x.length}x</td><td class="t">${esc(t)}</td><td><div class="rtd">${x.map(r=>rtChip(r,ale[r[9]])).join("")}</div></td></tr>`).join("")}</tbody></table></div>`;}).join("");}
 
 // ---------- carteira × retrabalho ----------
-var rtCfil="",rtCdc="",rtCab=new Set();
+var rtCfil="",rtCdc="",rtCab=new Set(),rtRua=false;
 // histórico das carteiras: guarda, para cada carteira montada, as OS que já tinham o mesmo serviço feito no endereço
 function rtSnapCarteira(){if(!RB||!RB.R||!RB.R.length||!S||!S.ult||!S.ult.dc||!S.ult.ca)return false;const ale=rtCalc().ale;const it=[];
   for(const r of S.ult.ca){const h=rtHistCart(r);if(h.length)it.push({os:r.os,end:r.end,bai:r.bai,p:r.p,tss:r.tss,fam:r.fam,fora:r.fora?1:0,h:h.map(x=>[x[0],x[12],ale[x[9]]?1:0,x.rs!=null?x.rs:(RB.D.r[x[9]]||""),x.cart?1:0])});}
@@ -3754,6 +3760,7 @@ document.addEventListener("click",e=>{
   const m=e.target.closest("[data-rm]");if(m){rtModo=m.dataset.rm;renderRt();return;}
   const po=e.target.closest("[data-rpo]");if(po){poloSel=(po.closest(".rx-tile")&&poloSel===po.dataset.rpo)?"Todos":po.dataset.rpo;renderTudo();return;}
   const rmx=e.target.closest("[data-rmes]");if(rmx){const m=rmx.dataset.rmes;rtMesSel=rtMesSel===m?"":m;renderRt();if(rtMesSel)setTimeout(()=>{const d=$("rdMesDet");if(d)d.scrollIntoView({behavior:"smooth",block:"start"});},60);return;}
+  const rr=e.target.closest("[data-rrua]");if(rr){rtRua=rr.dataset.rrua==="1";rtBuscar();return;}
   const rb=e.target.closest("[data-rbusca]");if(rb){rtView="busca";renderRt();{const [e,n]=rtSepEnd(rb.dataset.rbusca);$("rtBusca").value=(rtEndK(e)+" "+rtNumK(n)).trim();}rtBuscar();window.scrollTo({top:0,behavior:"smooth"});return;}
   const rk=e.target.closest("[data-rck]");if(rk){const k=rk.dataset.rck;rtCab.has(k)?rtCab.delete(k):rtCab.add(k);renderRt();return;}
   const cf=e.target.closest("[data-rcf]");if(cf){rtCfil=(cf.classList.contains("kc")&&rtCfil===cf.dataset.rcf)?"":cf.dataset.rcf;renderRt();return;}
