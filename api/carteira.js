@@ -39,7 +39,7 @@ module.exports = async (req, res) => {
       // perfis com senha (só visualização de uma parte do painel)
       const PERFIS = { rolison: "1234" };
       if (PERFIS[k] !== undefined) { if (!iguais(String(q.s || ""), PERFIS[k])) throw erro(401, "Senha incorreta."); }
-      else if (!["coordenacao", "cordenacao"].includes(k) && !(cfg && cfg.chave && k && iguais(k, cfg.chave))) throw erro(404, "Este link não existe mais. Peça o link novo para a Fernanda.");
+      else if (!["coordenacao", "cordenacao", "controle"].includes(k) && !(cfg && cfg.chave && k && iguais(k, cfg.chave))) throw erro(404, "Este link não existe mais. Peça o link novo para a Fernanda.");
       if (q.i != null) {
         const dados = await cmd("GET", `${pre(q.b)}:p:${String(q.v || "").replace(/[^a-z0-9]/g, "")}:${Number(q.i) | 0}`);
         if (dados == null) throw erro(409, "O painel acabou de ser atualizado. Recarregue a página.");

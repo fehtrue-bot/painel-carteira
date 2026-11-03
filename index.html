@@ -2052,6 +2052,8 @@ body.ru-only .app .rx-body{display:block!important}body.ru-only .app>.wrap{max-w
 .pf-ac .chart{overflow-x:auto}
 @media (max-width:1000px){.pf-ac{grid-template-columns:1fr}}
 .pf-k.pf-st2{cursor:default}
+.tl-ctl{display:block;text-align:center;font-size:13px;color:#0077B6;text-decoration:none;padding:8px;border:1px dashed #C9E4F4;border-radius:10px;margin-bottom:4px}.tl-ctl:hover{background:#EAF5FC}
+body.perfil-ctl #btnPrintLig,body.perfil-ctl #btnPrint,body.perfil-ctl .pc-lig{display:none!important}
 
 </style>
 </head>
@@ -2065,6 +2067,7 @@ body.ru-only .app .rx-body{display:block!important}body.ru-only .app>.wrap{max-w
     <span class="gota tlg"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2.5c-3.6 4.4-6.5 8-6.5 11.6a6.5 6.5 0 0 0 13 0C18.5 10.5 15.6 6.9 12 2.5Z" fill="#fff"/><path d="M9 14.5a3 3 0 0 0 3 3" stroke="#0093C9" stroke-width="1.8" stroke-linecap="round"/></svg></span>
     <div class="tlsis">Painel da Carteira de Serviços</div>
     <div class="tl-users" id="tlUsers"><button type="button" data-u="fernanda" aria-pressed="true"><span class="av">F</span>Fernanda<small>Analista</small></button><button type="button" data-u="rolison" aria-pressed="false"><span class="av r">R</span>Rolison<small>Hidrômetro</small></button></div>
+    <a class="tl-ctl" href="/controle">Entrar como <b>Controle</b> · sem senha →</a>
     <h1 id="tlOla">Olá, Fernanda</h1>
     <p id="tlTxt">Digite sua senha para abrir o painel.</p>
     <form id="fTl">
@@ -3246,7 +3249,7 @@ function aba(n){abaAtual=n;document.body.classList.toggle("aba-rel",n==="rel");d
 $("t-painel").onclick=()=>aba("painel");$("t-lig").onclick=()=>aba("lig");$("t-mon").onclick=()=>aba("mon");$("t-rel").onclick=()=>aba("rel");$("t-res").onclick=()=>aba("res");$("t-serv").onclick=()=>aba("serv");$("t-rt").onclick=()=>aba("rt");$("t-os").onclick=()=>aba("os");
 function relogioCab(){const SEM=["DOM","SEG","TER","QUA","QUI","SEX","SÁB"],MES=["JAN","FEV","MAR","ABR","MAI","JUN","JUL","AGO","SET","OUT","NOV","DEZ"],p=n=>String(n).padStart(2,"0");const t=()=>{const d=new Date();const h=$("nHora");if(!h)return;h.textContent=`${p(d.getHours())}:${p(d.getMinutes())}:${p(d.getSeconds())}`;$("nData").textContent=`${SEM[d.getDay()]} · ${p(d.getDate())} ${MES[d.getMonth()]} ${d.getFullYear()}`;};t();setInterval(t,1000);}
 relogioCab();
-function renderVz(){{const st=$("nSt"),bv=$("nBv");if(bv)bv.innerHTML=PERFIL?"Bem-vindo, <b>Rolison</b>":LEITOR?"Bem-vindo(a), <b>coordenação</b>":"Bem-vinda, <b>Fernanda</b>";if(st&&S&&S.ult){const n=(S.ult.ca||[]).length;st.innerHTML=S.ult.dc?`${nf(n)} na carteira<small>carteira de ${dm(S.ult.dc)}</small>`:`Sem carteira<small>suba os arquivos do dia</small>`;}}{const e=$("sbData");if(e){const u=S&&S.ult;e.innerHTML=u&&u.dc?`<span><i class="dt"></i>Carteira de <b>${dmy(u.dc)}</b></span>${u.em?`<span class="sep"></span><span>Atualizado em <b>${new Date(u.em).toLocaleDateString("pt-BR")}</b> às <b>${new Date(u.em).toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"})}</b></span>`:""}`:"<span>Nenhuma carteira carregada</span>";}}const el=$("vzBand");if(!el||el.dataset.ok)return;el.dataset.ok=1;el.innerHTML=`<div class="vz-in"><span class="vz-ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2.5c-3.6 4.4-6.5 8-6.5 11.6a6.5 6.5 0 0 0 13 0C18.5 10.5 15.6 6.9 12 2.5Z" fill="currentColor"/></svg></span><h1 class="vz-h">Carteira de Vazamentos</h1></div>`;}
+function renderVz(){{const st=$("nSt"),bv=$("nBv");if(bv)bv.innerHTML=PERFIL?"Bem-vindo, <b>Rolison</b>":CONTROLE?"Bem-vindo, <b>Controle</b>":LEITOR?"Bem-vindo(a), <b>coordenação</b>":"Bem-vinda, <b>Fernanda</b>";if(st&&S&&S.ult){const n=(S.ult.ca||[]).length;st.innerHTML=S.ult.dc?`${nf(n)} na carteira<small>carteira de ${dm(S.ult.dc)}</small>`:`Sem carteira<small>suba os arquivos do dia</small>`;}}{const e=$("sbData");if(e){const u=S&&S.ult;e.innerHTML=u&&u.dc?`<span><i class="dt"></i>Carteira de <b>${dmy(u.dc)}</b></span>${u.em?`<span class="sep"></span><span>Atualizado em <b>${new Date(u.em).toLocaleDateString("pt-BR")}</b> às <b>${new Date(u.em).toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"})}</b></span>`:""}`:"<span>Nenhuma carteira carregada</span>";}}const el=$("vzBand");if(!el||el.dataset.ok)return;el.dataset.ok=1;el.innerHTML=`<div class="vz-in"><span class="vz-ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2.5c-3.6 4.4-6.5 8-6.5 11.6a6.5 6.5 0 0 0 13 0C18.5 10.5 15.6 6.9 12 2.5Z" fill="currentColor"/></svg></span><h1 class="vz-h">Carteira de Vazamentos</h1></div>`;}
 const CARD_SEL=".kc,.bfo2,.c4,.kpi";let cardAtivo="";
 function chaveCard(el){const d=el.dataset;const lb=el.querySelector(".kc-l,.bf-n,.h4 b,.lbl");return [d.go,d.prazo,d.forn,d.rgo,d.rcf,lb?lb.textContent.trim():""].map(x=>x??"").join("|")+"|"+((el.closest("section")||{}).id||"");}
 function marcarCards(){document.querySelectorAll(CARD_SEL).forEach(el=>el.classList.toggle("ativo",!!cardAtivo&&chaveCard(el)===cardAtivo));}
@@ -3389,7 +3392,7 @@ function pedirSenha(){return new Promise(res=>{
 $("btnTrancar").onclick=()=>{try{sessionStorage.removeItem("carteira-ok");}catch(e){}location.reload();};
 /* ================= link da coordenação ================= */
 const SLUG=(()=>{try{return decodeURIComponent(location.pathname).replace(/^\/+|\/+$/g,"");}catch(e){return "";}})();
-const PERFIL=/^rolison$/i.test(SLUG)?"rolison":"";let PSENHA="";try{PSENHA=sessionStorage.getItem("perfil-senha")||"";}catch(e){}
+const PERFIL=/^rolison$/i.test(SLUG)?"rolison":"";const CONTROLE=/^controle$/i.test(SLUG);let PSENHA="";try{PSENHA=sessionStorage.getItem("perfil-senha")||"";}catch(e){}
 const qPerfil=()=>PERFIL?"&s="+encodeURIComponent(PSENHA):"";
 const LEITOR=!!SLUG&&!/^index(\.html)?$/i.test(SLUG);
 const b64de=async blob=>{const u=await new Promise((r,j)=>{const f=new FileReader();f.onload=()=>r(f.result);f.onerror=j;f.readAsDataURL(blob);});return String(u).split(",")[1]||"";};
@@ -3432,11 +3435,11 @@ async function carregarLeitor(){const q="?k="+encodeURIComponent(SLUG)+qPerfil()
   if(m.em===versaoLeitor)return false;let z="";for(let i=0;i<m.partes;i++){const j=await apiC(null,"GET",q+"&v="+m.v+"&i="+i);z+=j.dados;}
   {const o=JSON.parse(await descompactar(z));RAW=o._raw||null;delete o._raw;S=normalizar(o);}ajustarRel(S.ult.ca);for(const r of S.ult.ex)r.conta=executadoDeFato(r.cod,r.res);versaoLeitor=m.em;
   setConn("on","Atualizado pela equipe em "+new Date(m.em).toLocaleString("pt-BR",{dateStyle:"short",timeStyle:"short"}),S.ult.dc?"carteira de "+dmy(S.ult.dc):"");return true;}
-async function iniciarLeitor(){document.body.classList.add("leitor");const ft=document.querySelector(".foot");if(ft)ft.textContent="Painel da Carteira de Serviços · Interlagos e Grajaú · só visualização";$("telaLogin").hidden=true;document.title="Gestão da Carteira de Serviços · Grajaú e Interlagos";
+async function iniciarLeitor(){document.body.classList.add("leitor");if(CONTROLE){document.body.classList.add("perfil-ctl");$("t-lig").hidden=true;}const ft=document.querySelector(".foot");if(ft)ft.textContent="Painel da Carteira de Serviços · Interlagos e Grajaú · só visualização";$("telaLogin").hidden=true;document.title="Gestão da Carteira de Serviços · Grajaú e Interlagos";
   $("hSaudL").innerHTML='Bem-vindo(a)<small class="hsub">Carteira de Serviços · Interlagos e Grajaú</small>';
   {const tick=()=>{const d=new Date();$("hHora").textContent=d.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"});const t=d.toLocaleDateString("pt-BR",{weekday:"long",day:"2-digit",month:"long",year:"numeric"});$("hDia").textContent=t.charAt(0).toUpperCase()+t.slice(1);};$("hClock").hidden=false;tick();setInterval(tick,20000);}setConn("warn","Carregando o painel…","");
   try{await carregarLeitor();}catch(e){S=normalizar(null);setConn("off",e.message,"");$("hRes").textContent=e.message;window.__pronto=true;return;}
-  let ab=lsg("carteira-aba");if(ab==="serv")ab="painel";if(ab==="mon"||ab==="os")ab="rel";if(ab&&$("t-"+ab))aba(ab);else renderTudo();window.__pronto=true;
+  let ab=lsg("carteira-aba");if(ab==="serv")ab="painel";if(ab==="mon"||ab==="os")ab="rel";if(CONTROLE&&ab==="lig")ab="painel";if(ab&&$("t-"+ab)&&!$("t-"+ab).hidden)aba(ab);else renderTudo();window.__pronto=true;
   setInterval(async()=>{if(document.hidden)return;try{if(await carregarLeitor())renderTudo();}catch(e){}},180000);}
 if(PERFIL)iniciarPerfil();else if(LEITOR)iniciarLeitor();else
 (async()=>{await pedirSenha();await carregarLocal();let ab=lsg("carteira-aba");if(ab==="serv")ab="painel";if(ab==="mon")ab="rel";if(ab&&$("t-"+ab)&&!$("t-"+ab).hidden)aba(ab);else renderTudo();window.__pronto=true;pubStatus();setTimeout(conferirLink,1500);})();
