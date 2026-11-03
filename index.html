@@ -2046,6 +2046,12 @@ body.perfil-hid .tabbar,body.perfil-hid .topo,body.perfil-hid #hRes,body.perfil-
 body.ru-only .ncab-w,body.ru-only .tabbar,body.ru-only .topo,body.ru-only #hRes,body.ru-only #msg,body.ru-only .rx-side,body.ru-only .rx-topo,body.ru-only .rt-modo,body.ru-only .rtbusca,body.ru-only .foot,body.ru-only .assina,body.ru-only #rtFil{display:none!important}
 body.ru-only .app .rx-body{display:block!important}body.ru-only .app>.wrap{max-width:1000px!important}
 @media (max-width:760px){.ru-k{grid-template-columns:1fr 1fr}.ru-g{grid-template-columns:1fr}.ru-r{grid-template-columns:46px 70px minmax(0,1fr)}.ru-x{grid-column:2/-1;text-align:left}}
+.pf-vt{margin-bottom:14px}
+.pf-ac{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.pf-ac .lg-box>div:not(.lg-h){padding:12px 16px}
+.pf-ac .chart{overflow-x:auto}
+@media (max-width:1000px){.pf-ac{grid-template-columns:1fr}}
+.pf-k.pf-st2{cursor:default}
 
 </style>
 </head>
@@ -2511,7 +2517,7 @@ function normalizar(o){const s=Object.assign(vazio(),o||{});
   // o grupo "Vazamento de esgoto" passou a se chamar "Desobstrução"
   {const VE="Vazamento de esgoto",DE="Desobstrução";const ren=H=>{for(const k of Object.keys(H))if(k.endsWith("|"+VE)){const n=k.slice(0,-VE.length)+DE;if(!H[n])H[n]=H[k];delete H[k];}};
    ren(s.hist);for(const f of Object.keys(s.histF))ren(s.histF[f]);
-   if(s.ult)for(const t of ["ac","ex","ca"])for(const r of (s.ult[t]||[]))if(r.g===VE)r.g=DE;}s.rel=s.rel||[];s.ult=Object.assign(vazio().ult,s.ult||{});s.ult.arq=Object.assign({ac:[],ex:[],ca:[]},s.ult.arq||{});return s;}
+   if(s.ult)for(const t of ["ac","ex","ca"])for(const r of (s.ult[t]||[]))if(r.g===VE)r.g=DE;}s.rel=s.rel||[];s.ult=Object.assign(vazio().ult,s.ult||{});s.ult.arq=Object.assign({ac:[],ex:[],ca:[]},s.ult.arq||{});hidSnap(s);return s;}
 function setConn(estado,tit,sub){$("connDot").className="dot "+estado;$("connTit").textContent=tit;$("connSub").textContent=sub||"";}
 function statusGuardado(){setConn("on","Dados guardados neste computador",(S.ult.dc?"carteira de "+dmy(S.ult.dc)+" · ":"")+"salvo às "+new Date().toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"}));}
 async function salvar(){
@@ -2642,6 +2648,7 @@ $("impOk").onclick=async()=>{
     const fora=lidas("ac")+lidas("ca");if(fora)checks.push(check("warn",nf(fora),"Linhas fora do painel","de outro ATC (fora de 923, 929 e 299) ou ligação de água de outro contrato"));
     $("impChecks").innerHTML=checks.join("");
     const exArq=impArq.ex.slice();
+    hidSnap(S);
     diaSel="todos";await salvar();renderTudo();
     if(typeof rtAlimentar==="function")rtAlimentar(exArq).then(t=>{if(t&&(t.novos||t.trocados))msg($("msg").textContent+` Retrabalho: ${nf(t.novos)} serviços novos guardados no histórico.`);});
     msg((avisos.length?avisos.join(" ")+" ":"")+"Painel montado com os arquivos do dia. Atualizando o link da coordenação…");
@@ -3436,7 +3443,7 @@ if(PERFIL)iniciarPerfil();else if(LEITOR)iniciarLeitor();else
 window.__st=()=>S;
 
 /* ================= perfil do Rolison: hidrômetro ================= */
-let hidFil="",hidPolo="",hidBusca="";
+let hidFil="",hidPolo="",hidBusca="",hidView="hoje";
 async function iniciarPerfil(){document.body.classList.add("leitor","perfil-hid");$("telaLogin").hidden=true;document.title="Hidrômetro · Carteira de Serviços";
   const pedir=msg=>new Promise(ok=>{const d=document.createElement("div");d.className="pf-login";d.innerHTML=`<form class="pf-box"><span class="pf-ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="8"/><path d="M12 12l3-3M12 4v2M20 12h-2M6 12H4"/></svg></span><small>CARTEIRA DE SERVIÇOS · HIDRÔMETRO</small><h1>Olá, Rolison</h1><p>${msg||"Digite sua senha para abrir."}</p><input type="password" id="pfS" placeholder="Senha" autocomplete="current-password" inputmode="numeric"><button class="primary" type="submit">Entrar</button></form>`;document.body.appendChild(d);setTimeout(()=>d.querySelector("input").focus(),50);
     d.querySelector("form").onsubmit=e=>{e.preventDefault();const v=d.querySelector("input").value.trim();if(!v)return;d.remove();ok(v);};});
@@ -3461,13 +3468,15 @@ function renderHid(){const el=$("hidBox");if(!el)return;const u=S.ult;const ehH=
   const prazo=r=>{const m=minutosResid(r.tr);if(r.fora)return `<span class="pf-pz f">Fora do prazo</span><small>venceu ${esc(r.pf||"")}</small>`;const d=m/1440;return `<span class="pf-pz ${d<=2?"a":"n"}">${d<1?Math.max(0,Math.round(m/60))+"h":Math.floor(d)+" dias"} para vencer</span><small>prazo ${esc(r.pf||"")}</small>`;};
   const sit=x=>x.k==="cart"?`<span class="pf-st at">Ativa</span><small>${esc(x.r.st||"")}</small>`:x.k==="exe"?`<span class="pf-st ok">Executada</span><small>${esc(cap(x.r.res))}</small>`:x.k==="can"?`<span class="pf-st ca">Cancelada</span><small>${esc(cap(x.r.res))}</small>`:`<span class="pf-st se">Encerrada sem execução</span><small>${esc(cap(x.r.res))}</small>`;
   const rc=x=>x.k!=="cart"?`<span class="pf-na">–</span>`:x.h.length?`<span class="pf-rei">${x.h.length} ${x.h.length===1?"vez antes":"vezes antes"}</span><small>${x.h.slice().reverse().slice(0,2).map(z=>`${rtDm(z[12])} · OS ${esc(z[0])}`).join("<br>")}</small>`:`<span class="pf-na">não</span>`;
-  el.innerHTML=`<div class="pf-top"><div><h2>Hidrômetro</h2><p>carteira de ${u.dc?wd(u.dc)+" "+dmy(u.dc):"–"}${per?" · entradas e baixas de "+per:""}</p></div>
+  const vt=`<div class="seg2 pf-vt"><button type="button" data-hv="hoje" aria-pressed="${hidView!=="acum"}">Hoje</button><button type="button" data-hv="acum" aria-pressed="${hidView==="acum"}">Acumulado</button></div>`;
+  if(hidView==="acum"){el.innerHTML=vt+hidAcum();return;}
+  el.innerHTML=vt+`<div class="pf-top"><div><h2>Hidrômetro</h2><p>carteira de ${u.dc?wd(u.dc)+" "+dmy(u.dc):"–"}${per?" · entradas e baixas de "+per:""}</p></div>
     <div class="seg2">${[["","Os dois polos"],["Interlagos","Interlagos"],["Grajaú","Grajaú"]].map(([k,l])=>`<button type="button" data-hp="${k}" aria-pressed="${hidPolo===k}">${l}</button>`).join("")}</div></div>
     <div class="pf-ks">${kc("cart","Na carteira",ca.length,"ativas hoje","#0096D6")}${kc("fora","Fora do prazo",fora,ca.length?Math.round(fora*100/ca.length)+"% da carteira":"","#D9534A")}${kc("rei","Reincidência",rei,"já feito antes no endereço","#F08C00")}${kc("exe","Executadas",nex,per,"#23824F")}${kc("sem","Sem execução",nsem,"canceladas, imóvel fechado…","#6C7A89")}<div class="pf-k pf-in"><span>Entradas</span><b>${nf(ac.length)}</b><small>${per}</small></div></div>
     <div class="pf-bar"><div class="search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input type="search" id="hidQ" placeholder="Buscar OS, endereço, bairro ou serviço" value="${esc(hidBusca)}"></div><span class="note">${nf(L.length)} OS${hidFil?` · <button type="button" class="pf-lp" data-hf="">ver todas</button>`:""}</span><button type="button" class="pf-xls" id="hidXls"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v12M6 10l6 6 6-6M4 20h16"/></svg> Baixar Excel</button></div>
     ${L.length?`<div class="scroll"><table class="pf-t"><thead><tr><th>OS</th><th>Data da OS</th><th>Endereço</th><th>Serviço</th><th>Situação</th><th>Prazo</th><th>Reincidência</th></tr></thead><tbody>${L.sort((a,b)=>(a.k==="cart"?0:1)-(b.k==="cart"?0:1)||(b.r.fora?1:0)-(a.r.fora?1:0)||minutosResid(a.r.tr)-minutosResid(b.r.tr)).map(x=>`<tr class="${x.k}"><td class="mono">${esc(x.r.os)}</td><td>${esc(String(x.r.ins||"").split(" ")[0]||"–")}<small>${esc(String(x.r.ins||"").split(" ")[1]||"")}</small></td><td><b>${esc(x.r.end)}</b><small>${esc(x.r.bai)} · ${x.r.p}</small></td><td>${esc(cap(x.r.tss))}</td><td>${sit(x)}</td><td>${x.k==="cart"?prazo(x.r):`<small>baixa em ${esc(x.r.fim||x.r.ini||dm(x.r.dt))}</small>`}</td><td>${rc(x)}</td></tr>`).join("")}</tbody></table></div>`:`<div class="empty">Nenhuma OS de hidrômetro nessa condição.</div>`}`;
   {const i=$("hidQ");if(i&&hidBusca){i.focus();i.setSelectionRange(i.value.length,i.value.length);}}}
-document.addEventListener("click",e=>{if(!document.body.classList.contains("perfil-hid"))return;if(e.target.closest("#hidXls")){try{exportarHid();}catch(x){console.error(x);alert("Não consegui gerar o Excel: "+x.message);}return;}const f=e.target.closest("[data-hf]");if(f){hidFil=hidFil===f.dataset.hf?"":f.dataset.hf;renderHid();return;}const p=e.target.closest("[data-hp]");if(p){hidPolo=p.dataset.hp;renderHid();}});
+document.addEventListener("click",e=>{if(!document.body.classList.contains("perfil-hid"))return;if(e.target.closest("#hidXls")){try{exportarHid();}catch(x){console.error(x);alert("Não consegui gerar o Excel: "+x.message);}return;}const f=e.target.closest("[data-hf]");if(f){hidFil=hidFil===f.dataset.hf?"":f.dataset.hf;renderHid();return;}const p=e.target.closest("[data-hp]");if(p){hidPolo=p.dataset.hp;renderHid();return;}const v=e.target.closest("[data-hv]");if(v){hidView=v.dataset.hv;renderHid();}});
 document.addEventListener("input",e=>{if(e.target&&e.target.id==="hidQ"){hidBusca=e.target.value;clearTimeout(window.__hq);window.__hq=setTimeout(renderHid,250);}});
 
 function exportarHid(){const L0=window.__hidL||[];const u=S.ult;const Lv=novoLivro();
@@ -3485,6 +3494,35 @@ function exportarHid(){const L0=window.__hidL||[];const u=S.ult;const Lv=novoLiv
     [sitT(x),r.os,r.ins||"",r.p,r.bai,r.end,r.tss,c?r.st:r.res,c?r.pf:"",c?para(r):"",c?(r.fora?"Sim":"Não"):"",c?(x.h?x.h.length:0):"",c&&x.h?x.h.map(z=>rtDm(z[12])+" OS "+z[0]).join(" · "):"",c?"":(r.fim||r.ini||"")].forEach((v,i)=>put(A,ri,i,v));ri++;}
   A.filter=`A3:N${Math.max(4,ri)}`;
   baixarBlob(gerarXlsx(Lv,[A]),`HIDRÔMETRO ${dmy(u.dc||hojeLocal()).replace(/\//g,"-")}.xlsx`);}
+
+// histórico acumulado do hidrômetro: um retrato por carteira e por dia de entradas/baixas
+function hidSnap(st){try{if(!st||!st.ult)return;const u=st.ult;const H=st.hidH=st.hidH||{cart:{},dia:{}};const eh=r=>U(clean(r.fam))==="HIDROMETRO";
+  if(u.dc&&u.ca&&u.ca.length){const c=u.ca.filter(eh);const pp=p=>{const x=c.filter(r=>r.p===p);return [x.length,x.filter(r=>r.fora).length];};H.cart[u.dc]={n:c.length,f:c.filter(r=>r.fora).length,I:pp("Interlagos"),G:pp("Grajaú")};}
+  for(const d of (u.dias||[])){const e=(u.ac||[]).filter(r=>eh(r)&&r.dt===d).length,X=(u.ex||[]).filter(r=>eh(r)&&r.dt===d);if(!e&&!X.length&&!H.dia[d])continue;const x=X.filter(r=>executadoDeFato(r.cod,r.res)).length;H.dia[d]={e,x,s:X.length-x};}}catch(e){console.warn(e);}}
+function hidAcum(){const H=(S.hidH)||{cart:{},dia:{}};const MES=["jan","fev","mar","abr","mai","jun","jul","ago","set","out","nov","dez"];
+  const dc=Object.keys(H.cart).sort(),dd=Object.keys(H.dia).sort();
+  const sum=(L,k)=>L.reduce((a,d)=>a+(H.dia[d][k]||0),0);
+  const mesAt=(S.ult.dc||hojeLocal()).slice(0,7),dM=dd.filter(d=>d.startsWith(mesAt));
+  const ult=dc.length?H.cart[dc[dc.length-1]]:null,pri=dc.length?H.cart[dc[0]]:null;
+  // base do retrabalho: execuções de hidrômetro por mês (todo o histórico que temos)
+  let bm=[],tss=[],reiM=[];try{if(typeof RB!=="undefined"&&RB&&RB.R&&RB.R.length){const D=RB.D,ale=rtCalc().ale;const M=new Map(),T=new Map();
+    for(const r of RB.R){if(U(D.f[r[2]])!=="HIDROMETRO")continue;const m=rtIso(r[12]).slice(0,7);const o=M.get(m)||{x:0,a:0};if(ale[r[9]])o.a++;else{o.x++;const t=D.t[r[1]];T.set(t,(T.get(t)||0)+1);}M.set(m,o);}
+    bm=[...M].sort((a,b)=>a[0]<b[0]?-1:1).slice(-12);tss=[...T].sort((a,b)=>b[1]-a[1]).slice(0,6);
+    const G=rtCalc().grupos||[];const R=new Map();for(const g of G){const L=g.L;if(U(D.f[L[0][2]])!=="HIDROMETRO")continue;for(let i=1;i<L.length;i++){if(ale[L[i][9]])continue;const m=rtIso(L[i][12]).slice(0,7);R.set(m,(R.get(m)||0)+1);}}
+    reiM=bm.map(([m])=>[m,R.get(m)||0]);}}catch(e){console.warn(e);}
+  const cap=t=>{t=clean(t);return t?t.charAt(0)+t.slice(1).toLowerCase():"";};
+  const k=(l,v,sb,c)=>`<div class="pf-k pf-st2" style="--c:${c}"><span>${l}</span><b>${v}</b><small>${sb}</small></div>`;
+  const mL=m=>MES[Number(m.slice(5))-1]+"/"+m.slice(2,4);
+  const totX=bm.reduce((a,[,o])=>a+o.x,0),totA=bm.reduce((a,[,o])=>a+o.a,0),totR=reiM.reduce((a,[,v])=>a+v,0);
+  return `<div class="pf-top"><div><h2>Hidrômetro · acumulado</h2><p>atualiza sozinho toda vez que a carteira do dia é montada</p></div></div>
+   <div class="pf-ks">${k("No mês · entradas",nf(sum(dM,"e")),mL(mesAt),"#F0A23B")}${k("No mês · executadas",nf(sum(dM,"x")),mL(mesAt),"#23824F")}${k("No mês · sem execução",nf(sum(dM,"s")),mL(mesAt),"#6C7A89")}
+     ${k("Carteira hoje",ult?nf(ult.n):"–",ult?`${nf(ult.f)} fora do prazo`:"","#0096D6")}${k("Desde o 1º registro",ult&&pri?(ult.n-pri.n>0?"+":"")+nf(ult.n-pri.n):"–",pri?`carteira em ${dm(dc[0])}: ${nf(pri.n)}`:"","#00396F")}${k("Reincidências (base)",nf(totR),bm.length?`${mL(bm[0][0])} a ${mL(bm[bm.length-1][0])}`:"","#F08C00")}</div>
+   <div class="pf-ac">
+    <article class="lg-box"><div class="lg-h"><div><h3>Carteira de hidrômetro dia a dia</h3><p>no prazo × fora do prazo · ${nf(dc.length)} ${dc.length===1?"carteira guardada":"carteiras guardadas"}</p></div><div class="leg2"><span style="--c:#2FA36B">No prazo</span><span style="--c:#D9534A">Fora</span></div></div><div class="chart">${barras(dc.slice(-31).map(d=>({lab:dm(d),sub:wd(d),vals:[{v:H.cart[d].n-H.cart[d].f,c:"#2FA36B"},{v:H.cart[d].f,c:"#D9534A"}]})),{empilhar:1,wmin:700,h:220,rotular:1})}</div></article>
+    <article class="lg-box"><div class="lg-h"><div><h3>Entradas × executadas por dia</h3><p>${nf(sum(dd,"e"))} entradas · ${nf(sum(dd,"x"))} executadas · ${nf(sum(dd,"s"))} sem execução no total guardado</p></div><div class="leg2"><span style="--c:#F0A23B">Entradas</span><span style="--c:#23824F">Executadas</span><span style="--c:#B7C3CC">Sem execução</span></div></div><div class="chart">${barras(dd.slice(-31).map(d=>({lab:dm(d),sub:wd(d),vals:[{v:H.dia[d].e,c:"#F0A23B"},{v:H.dia[d].x,c:"#23824F"},{v:H.dia[d].s,c:"#B7C3CC"}]})),{wmin:700,h:220})}</div></article>
+    <article class="lg-box"><div class="lg-h"><div><h3>Baixas de hidrômetro por mês</h3><p>base de executados · ${nf(totX)} executadas · ${nf(totA)} sem execução (alegação)</p></div><div class="leg2"><span style="--c:#23824F">Executadas</span><span style="--c:#B7C3CC">Sem execução</span><span style="--c:#F08C00">Reincidência</span></div></div><div class="chart">${barras(bm.map(([m,o],i)=>({lab:mL(m),sub:"",vals:[{v:o.x,c:"#23824F"},{v:o.a,c:"#B7C3CC"},{v:reiM[i]?reiM[i][1]:0,c:"#F08C00"}]})),{wmin:700,h:240})}</div></article>
+    <article class="lg-box"><div class="lg-h"><div><h3>Serviços mais executados</h3><p>base de executados</p></div></div><div class="lg-nc">${tss.map(([t,v])=>`<div class="lg-nr" style="cursor:default"><span class="lg-nt">${esc(cap(t))}</span><b style="color:#1C7444">${nf(v)}</b><span class="lg-nb"><i style="width:${(v*100/(tss[0][1]||1)).toFixed(0)}%;background:#2FA36B"></i></span></div>`).join("")||'<div class="empty">Sem base carregada.</div>'}</div></article>
+   </div>`;}
 
 /* ================= RETRABALHO ================= */
 // Base: uma linha por OS+TSS executada (fim do dia e continua não entram). Guardada neste computador e enviada ao link da coordenação.
