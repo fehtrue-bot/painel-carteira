@@ -2016,6 +2016,36 @@ body.perfil-hid .tabbar,body.perfil-hid .topo,body.perfil-hid #hRes,body.perfil-
 .tl-users button[aria-pressed="true"]{border-color:#0096D6;background:#EAF5FC;box-shadow:0 0 0 2px rgba(0,150,214,.18)}
 .pf-xls{background:#0B2545!important;border-color:#0B2545!important;color:#fff!important;padding:9px 14px;border-radius:9px;font-size:13.5px}
 .rt-modo{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:4px 0 10px}.rt-rua td b{color:#00396F}
+/* histórico da rua: quadro bonito para enviar */
+.ru-card{background:#fff;border:1px solid #E3E9EF;border-radius:14px;overflow:hidden;box-shadow:0 1px 2px rgba(16,40,64,.04)}
+.ru-h{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding:18px 22px;background:linear-gradient(120deg,#0B2545,#00396F 60%,#0077B6);color:#fff}
+.ru-h small{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#9FC6E4;font-weight:700}
+.ru-h h3{margin:2px 0;font-family:var(--f-display);font-size:22px;color:#fff}.ru-h p{margin:0;font-size:13px;color:#CFE6F5}
+.ru-pr{all:unset;cursor:pointer;font-size:12.5px;font-weight:700;padding:8px 12px;border-radius:9px;border:1px solid rgba(255,255,255,.35);color:#fff}.ru-pr:hover{background:rgba(255,255,255,.12)}
+.ru-k{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;padding:14px 18px;background:#F6F9FB}
+.ru-k>div{background:#EAF5FC;border:1px solid #C9E4F4;border-radius:11px;padding:10px 14px;display:flex;flex-direction:column}
+.ru-k b{font-family:var(--f-display);font-size:26px;color:#14212B;line-height:1.1}.ru-k span{font-size:12px;color:#5E6E7B}
+.ru-k .ok b{color:#1C7444}.ru-k .al b{color:#8A97A3}
+.ru-g{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:0 18px 14px;background:#F6F9FB}
+.ru-g>div{background:#fff;border:1px solid #E3E9EF;border-radius:11px;padding:12px 14px}
+.ru-g h4{margin:0 0 8px;font-size:13px;color:#14212B}
+.ru-b{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 10px;font-size:12.5px;margin-bottom:6px}.ru-b span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.ru-b b{color:#00396F}
+.ru-b i{grid-column:1/-1;height:5px;border-radius:99px;background:#0096D6;opacity:.8}
+.ru-l{padding:4px 18px 16px}
+.ru-m{display:flex;align-items:baseline;gap:10px;margin:14px 0 6px;padding-bottom:6px;border-bottom:2px solid #E4EDF3}
+.ru-m b{font-family:var(--f-display);font-size:15px;color:#00396F;text-transform:capitalize}.ru-m span{font-size:12px;color:#8A97A3}
+.ru-r{display:grid;grid-template-columns:52px 90px minmax(0,1.6fr) minmax(0,1fr);gap:12px;align-items:center;padding:8px 6px;border-bottom:1px solid #F1F4F7}
+.ru-r:hover{background:#F6FAFD}
+.ru-d{width:46px;height:46px;border-radius:11px;background:#EAF5FC;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.ru-d b{font-family:var(--f-display);font-size:18px;color:#00396F;line-height:1}.ru-d small{font-size:10px;color:#5E6E7B;text-transform:uppercase}
+.ru-n{font-size:12px;color:#6B7C8B}.ru-n b{font-size:16px;color:#14212B}.ru-n small{display:block;font-size:10.5px}
+.ru-s b{display:block;font-size:13.5px;color:#14212B}.ru-s small{display:block;font-size:12px;color:#6B7C8B;margin-top:2px}
+.ru-x{text-align:right}.ru-x small{display:block;font-size:11.5px;color:#8A97A3;margin-top:3px}
+.ru-tag{display:inline-block;font-size:11px;font-weight:700;padding:2px 9px;border-radius:999px}.ru-tag.ok{background:#E3F4EA;color:#1C7444}.ru-tag.al{background:#F1F4F7;color:#6B7C8B}
+.ru-r.al .ru-d{background:#F3F6F8}.ru-r.al .ru-d b{color:#8A97A3}.ru-r.al .ru-s b{color:#6B7C8B}
+body.ru-only .ncab-w,body.ru-only .tabbar,body.ru-only .topo,body.ru-only #hRes,body.ru-only #msg,body.ru-only .rx-side,body.ru-only .rx-topo,body.ru-only .rt-modo,body.ru-only .rtbusca,body.ru-only .foot,body.ru-only .assina,body.ru-only #rtFil{display:none!important}
+body.ru-only .app .rx-body{display:block!important}body.ru-only .app>.wrap{max-width:1000px!important}
+@media (max-width:760px){.ru-k{grid-template-columns:1fr 1fr}.ru-g{grid-template-columns:1fr}.ru-r{grid-template-columns:46px 70px minmax(0,1fr)}.ru-x{grid-column:2/-1;text-align:left}}
 
 </style>
 </head>
@@ -3205,7 +3235,7 @@ let tb;$("busca").addEventListener("input",()=>{clearTimeout(tb);tb=setTimeout(r
 function irPara(o){abrirLista(o);}
 document.addEventListener("click",e=>{const el=e.target.closest("[data-go]");if(el&&!el.closest("#v-os")&&!el.closest(".seg2")){irPara(JSON.parse(el.dataset.go));return;}
   const d=e.target.closest("#diaDia .r[data-dia],#tbGrupo th[data-dia]");if(d){diaSel=diaSel===d.dataset.dia?"todos":d.dataset.dia;renderTudo();}});
-function aba(n){abaAtual=n;document.body.classList.toggle("aba-rel",n==="rel");document.body.classList.toggle("aba-rt",n==="rt");if(n!=="os")lss("carteira-aba",n);document.body.classList.remove("printmode");for(const k of ["painel","mon","res","rel","lig","serv","rt","os","hid"]){$("t-"+k).setAttribute("aria-selected",k===n);$("v-"+k).hidden=k!==n;}renderTudo();}
+function aba(n){abaAtual=n;document.body.classList.toggle("aba-rel",n==="rel");document.body.classList.toggle("aba-rt",n==="rt");if(n!=="os")lss("carteira-aba",n);document.body.classList.remove("printmode","ru-only");for(const k of ["painel","mon","res","rel","lig","serv","rt","os","hid"]){$("t-"+k).setAttribute("aria-selected",k===n);$("v-"+k).hidden=k!==n;}renderTudo();}
 $("t-painel").onclick=()=>aba("painel");$("t-lig").onclick=()=>aba("lig");$("t-mon").onclick=()=>aba("mon");$("t-rel").onclick=()=>aba("rel");$("t-res").onclick=()=>aba("res");$("t-serv").onclick=()=>aba("serv");$("t-rt").onclick=()=>aba("rt");$("t-os").onclick=()=>aba("os");
 function relogioCab(){const SEM=["DOM","SEG","TER","QUA","QUI","SEX","SÁB"],MES=["JAN","FEV","MAR","ABR","MAI","JUN","JUL","AGO","SET","OUT","NOV","DEZ"],p=n=>String(n).padStart(2,"0");const t=()=>{const d=new Date();const h=$("nHora");if(!h)return;h.textContent=`${p(d.getHours())}:${p(d.getMinutes())}:${p(d.getSeconds())}`;$("nData").textContent=`${SEM[d.getDay()]} · ${p(d.getDate())} ${MES[d.getMonth()]} ${d.getFullYear()}`;};t();setInterval(t,1000);}
 relogioCab();
@@ -3695,9 +3725,17 @@ function rtBuscar(){const D=RB.D,q=U(($("rtBusca").value||"").trim());const ale=
   const lim=25;
   const modo=!num?`<div class="rt-modo"><div class="seg2"><button type="button" data-rrua="0" aria-pressed="${!rtRua}">Por número</button><button type="button" data-rrua="1" aria-pressed="${rtRua}">Tudo da rua por data</button></div><span class="note">sem número: dá para ver tudo o que teve na rua, do mais recente para o mais antigo</span></div>`:"";
   if(!num&&rtRua){const T=[];for(const [k,L] of achados)for(const r of L)T.push(r);T.sort((a,b)=>b[12]-a[12]);const ruas=new Set(achados.map(([,L])=>D.e[L[0][3]]));const limR=600;const cap=t=>t?t.charAt(0)+t.slice(1).toLowerCase():"";
-    const nAl=T.filter(r=>ale[r[9]]).length;
-    $("rtRes").innerHTML=modo+`<div class="note" style="margin:2px 0 10px">${nf(T.length)} serviços em ${nf(achados.length)} ${achados.length===1?"número":"números"}${ruas.size>1?` de ${nf(ruas.size)} ruas`:""} · ${nf(T.length-nAl)} executados e ${nf(nAl)} alegações${T.length>limR?` · mostrando os ${limR} mais recentes`:""}</div>
-      <div class="scroll"><table class="rk-tb rt-rua"><thead><tr><th>Data</th>${ruas.size>1?"<th>Rua</th>":""}<th>Nº</th><th>OS</th><th>Serviço</th><th>Resultado</th><th>Equipe</th><th>Bairro</th></tr></thead><tbody>${T.slice(0,limR).map(r=>{const al=ale[r[9]];return `<tr class="${al?"al":""}"><td>${rtDm(r[12])}</td>${ruas.size>1?`<td>${esc(D.e[r[3]])}</td>`:""}<td><b>${esc(r[4]||"s/n")}</b></td><td class="mono">${esc(r[0])}</td><td>${esc(cap(D.t[r[1]]))}</td><td>${esc(cap(D.r[r[9]]))}${al?' <em>alegação</em>':""}</td><td>${esc(D.q[r[10]]||"")}</td><td>${esc(D.b[r[5]])}</td></tr>`;}).join("")}</tbody></table></div>`;return;}
+    const nAl=T.filter(r=>ale[r[9]]).length,nEx=T.length-nAl;const MESL=["janeiro","fevereiro","março","abril","maio","junho","julho","agosto","setembro","outubro","novembro","dezembro"];
+    const ruaN=ruas.size===1?[...ruas][0]:`${nf(ruas.size)} ruas com “${esc(q.toLowerCase())}”`;const bai=[...new Set(achados.map(([,L])=>D.b[L[0][5]]))].slice(0,3).join(" · ");
+    const porS=new Map();for(const r of T){if(ale[r[9]])continue;const k=D.t[r[1]];porS.set(k,(porS.get(k)||0)+1);}const topS=[...porS].sort((a,b)=>b[1]-a[1]).slice(0,5);
+    const porN=new Map();for(const r of T){if(ale[r[9]])continue;const k=r[4]||"s/n";porN.set(k,(porN.get(k)||0)+1);}const topN=[...porN].sort((a,b)=>b[1]-a[1]).slice(0,5);
+    const ini=T.length?rtDm(T[T.length-1][12]):"",fim=T.length?rtDm(T[0][12]):"";
+    let lastM="",rows="";for(const r of T.slice(0,limR)){const d=rtData(r[12]);const m=d.getFullYear()+"-"+d.getMonth();if(m!==lastM){lastM=m;const n=T.filter(x=>{const y=rtData(x[12]);return y.getFullYear()+"-"+y.getMonth()===m;}).length;rows+=`<div class="ru-m"><b>${MESL[d.getMonth()]} ${d.getFullYear()}</b><span>${nf(n)} ${n===1?"serviço":"serviços"}</span></div>`;}
+      const al=ale[r[9]];rows+=`<div class="ru-r${al?" al":""}"><div class="ru-d"><b>${String(d.getDate()).padStart(2,"0")}</b><small>${MESL[d.getMonth()].slice(0,3)}</small></div><div class="ru-n">nº <b>${esc(r[4]||"s/n")}</b>${ruas.size>1?`<small>${esc(D.e[r[3]])}</small>`:""}</div><div class="ru-s"><b>${esc(cap(D.t[r[1]]))}</b><small>${esc(cap(D.r[r[9]]))}</small></div><div class="ru-x">${al?'<span class="ru-tag al">alegação</span>':'<span class="ru-tag ok">executado</span>'}<small>OS ${esc(r[0])}${D.q[r[10]]?" · "+esc(cap(D.q[r[10]])):""}</small></div></div>`;}
+    $("rtRes").innerHTML=modo+`<div class="ru-card" id="ruCard"><div class="ru-h"><div><small>Histórico da rua</small><h3>${esc(ruaN)}</h3><p>${esc(bai)}${ini?` · de ${ini} a ${fim}`:""}</p></div><button type="button" class="ru-pr" id="ruPrint">Ver só este quadro (para print)</button></div>
+      <div class="ru-k"><div><b>${nf(T.length)}</b><span>serviços</span></div><div class="ok"><b>${nf(nEx)}</b><span>executados</span></div><div class="al"><b>${nf(nAl)}</b><span>alegações</span></div><div><b>${nf(achados.length)}</b><span>${achados.length===1?"número":"números"} da rua</span></div></div>
+      <div class="ru-g"><div><h4>Serviços que mais tiveram</h4>${topS.map(([k,v])=>`<div class="ru-b"><span>${esc(cap(k))}</span><b>${nf(v)}</b><i style="width:${(v*100/(topS[0][1]||1)).toFixed(0)}%"></i></div>`).join("")||'<div class="note">—</div>'}</div><div><h4>Números com mais serviços</h4>${topN.map(([k,v])=>`<div class="ru-b"><span>nº ${esc(k)}</span><b>${nf(v)}</b><i style="width:${(v*100/(topN[0][1]||1)).toFixed(0)}%"></i></div>`).join("")||'<div class="note">—</div>'}</div></div>
+      <div class="ru-l">${rows}</div>${T.length>limR?`<div class="note" style="padding:10px 18px">mostrando os ${limR} mais recentes de ${nf(T.length)}</div>`:""}</div>`;return;}
   $("rtRes").innerHTML=modo+`<div class="note" style="margin:2px 0 10px">${nf(achados.length)} endereço${achados.length>1?"s":""}${achados.length>lim?` · mostrando ${lim} (digite o número para achar o exato)`:""}</div>`+achados.slice(0,lim).map(([k,L])=>{
     const r0=L[0];const porT=new Map();for(const r of L){const t=D.t[r[1]];if(!porT.has(t))porT.set(t,[]);porT.get(t).push(r);}
     const ts=[...porT.entries()].sort((a,b)=>b[1].length-a[1].length);const ab=cart.get(k)||[];
@@ -3760,6 +3798,7 @@ document.addEventListener("click",e=>{
   const m=e.target.closest("[data-rm]");if(m){rtModo=m.dataset.rm;renderRt();return;}
   const po=e.target.closest("[data-rpo]");if(po){poloSel=(po.closest(".rx-tile")&&poloSel===po.dataset.rpo)?"Todos":po.dataset.rpo;renderTudo();return;}
   const rmx=e.target.closest("[data-rmes]");if(rmx){const m=rmx.dataset.rmes;rtMesSel=rtMesSel===m?"":m;renderRt();if(rtMesSel)setTimeout(()=>{const d=$("rdMesDet");if(d)d.scrollIntoView({behavior:"smooth",block:"start"});},60);return;}
+  if(e.target.closest("#ruPrint")){document.body.classList.toggle("ru-only");window.scrollTo({top:0});const b=$("ruPrint");if(b)b.textContent=document.body.classList.contains("ru-only")?"Voltar ao painel":"Ver só este quadro (para print)";return;}
   const rr=e.target.closest("[data-rrua]");if(rr){rtRua=rr.dataset.rrua==="1";rtBuscar();return;}
   const rb=e.target.closest("[data-rbusca]");if(rb){rtView="busca";renderRt();{const [e,n]=rtSepEnd(rb.dataset.rbusca);$("rtBusca").value=(rtEndK(e)+" "+rtNumK(n)).trim();}rtBuscar();window.scrollTo({top:0,behavior:"smooth"});return;}
   const rk=e.target.closest("[data-rck]");if(rk){const k=rk.dataset.rck;rtCab.has(k)?rtCab.delete(k):rtCab.add(k);renderRt();return;}
