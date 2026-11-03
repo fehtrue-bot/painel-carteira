@@ -2014,6 +2014,7 @@ body.perfil-hid .tabbar,body.perfil-hid .topo,body.perfil-hid #hRes,body.perfil-
 .tl-users button .av.r{background:linear-gradient(135deg,#F0A23B,#B4600A)}
 .tl-users button small{font-size:11.5px;font-weight:500;color:#8A97A3}
 .tl-users button[aria-pressed="true"]{border-color:#0096D6;background:#EAF5FC;box-shadow:0 0 0 2px rgba(0,150,214,.18)}
+.pf-xls{background:#0B2545!important;border-color:#0B2545!important;color:#fff!important;padding:9px 14px;border-radius:9px;font-size:13.5px}
 
 </style>
 </head>
@@ -3425,17 +3426,34 @@ function renderHid(){const el=$("hidBox");if(!el)return;const u=S.ult;const ehH=
   const kc=(k,l,v,s,c)=>`<button type="button" class="pf-k${hidFil===k?" on":""}" data-hf="${k}" style="--c:${c}"><span>${l}</span><b>${nf(v)}</b><small>${s}</small></button>`;
   let L=hidFil==="exe"?ex.filter(x=>x.k==="exe"):hidFil==="sem"?ex.filter(x=>x.k!=="exe"):hidFil==="fora"?ca.filter(x=>x.r.fora):hidFil==="rei"?ca.filter(x=>x.h.length):hidFil==="cart"?ca:ca.concat(ex);
   const q=U(hidBusca.trim());if(q)L=L.filter(x=>U([x.r.os,x.r.end,x.r.bai,x.r.tss].join(" ")).includes(q));
+  window.__hidL=L;
   const prazo=r=>{const m=minutosResid(r.tr);if(r.fora)return `<span class="pf-pz f">Fora do prazo</span><small>venceu ${esc(r.pf||"")}</small>`;const d=m/1440;return `<span class="pf-pz ${d<=2?"a":"n"}">${d<1?Math.max(0,Math.round(m/60))+"h":Math.floor(d)+" dias"} para vencer</span><small>prazo ${esc(r.pf||"")}</small>`;};
   const sit=x=>x.k==="cart"?`<span class="pf-st at">Ativa</span><small>${esc(x.r.st||"")}</small>`:x.k==="exe"?`<span class="pf-st ok">Executada</span><small>${esc(cap(x.r.res))}</small>`:x.k==="can"?`<span class="pf-st ca">Cancelada</span><small>${esc(cap(x.r.res))}</small>`:`<span class="pf-st se">Encerrada sem execução</span><small>${esc(cap(x.r.res))}</small>`;
   const rc=x=>x.k!=="cart"?`<span class="pf-na">–</span>`:x.h.length?`<span class="pf-rei">${x.h.length} ${x.h.length===1?"vez antes":"vezes antes"}</span><small>${x.h.slice().reverse().slice(0,2).map(z=>`${rtDm(z[12])} · OS ${esc(z[0])}`).join("<br>")}</small>`:`<span class="pf-na">não</span>`;
   el.innerHTML=`<div class="pf-top"><div><h2>Hidrômetro</h2><p>carteira de ${u.dc?wd(u.dc)+" "+dmy(u.dc):"–"}${per?" · entradas e baixas de "+per:""}</p></div>
     <div class="seg2">${[["","Os dois polos"],["Interlagos","Interlagos"],["Grajaú","Grajaú"]].map(([k,l])=>`<button type="button" data-hp="${k}" aria-pressed="${hidPolo===k}">${l}</button>`).join("")}</div></div>
     <div class="pf-ks">${kc("cart","Na carteira",ca.length,"ativas hoje","#0096D6")}${kc("fora","Fora do prazo",fora,ca.length?Math.round(fora*100/ca.length)+"% da carteira":"","#D9534A")}${kc("rei","Reincidência",rei,"já feito antes no endereço","#F08C00")}${kc("exe","Executadas",nex,per,"#23824F")}${kc("sem","Sem execução",nsem,"canceladas, imóvel fechado…","#6C7A89")}<div class="pf-k pf-in"><span>Entradas</span><b>${nf(ac.length)}</b><small>${per}</small></div></div>
-    <div class="pf-bar"><div class="search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input type="search" id="hidQ" placeholder="Buscar OS, endereço, bairro ou serviço" value="${esc(hidBusca)}"></div><span class="note">${nf(L.length)} OS${hidFil?` · <button type="button" class="pf-lp" data-hf="">ver todas</button>`:""}</span></div>
+    <div class="pf-bar"><div class="search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input type="search" id="hidQ" placeholder="Buscar OS, endereço, bairro ou serviço" value="${esc(hidBusca)}"></div><span class="note">${nf(L.length)} OS${hidFil?` · <button type="button" class="pf-lp" data-hf="">ver todas</button>`:""}</span><button type="button" class="pf-xls" id="hidXls"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v12M6 10l6 6 6-6M4 20h16"/></svg> Baixar Excel</button></div>
     ${L.length?`<div class="scroll"><table class="pf-t"><thead><tr><th>OS</th><th>Endereço</th><th>Serviço</th><th>Situação</th><th>Prazo</th><th>Reincidência</th></tr></thead><tbody>${L.sort((a,b)=>(a.k==="cart"?0:1)-(b.k==="cart"?0:1)||(b.r.fora?1:0)-(a.r.fora?1:0)||minutosResid(a.r.tr)-minutosResid(b.r.tr)).map(x=>`<tr class="${x.k}"><td class="mono">${esc(x.r.os)}</td><td><b>${esc(x.r.end)}</b><small>${esc(x.r.bai)} · ${x.r.p}</small></td><td>${esc(cap(x.r.tss))}</td><td>${sit(x)}</td><td>${x.k==="cart"?prazo(x.r):`<small>baixa em ${esc(x.r.fim||x.r.ini||dm(x.r.dt))}</small>`}</td><td>${rc(x)}</td></tr>`).join("")}</tbody></table></div>`:`<div class="empty">Nenhuma OS de hidrômetro nessa condição.</div>`}`;
   {const i=$("hidQ");if(i&&hidBusca){i.focus();i.setSelectionRange(i.value.length,i.value.length);}}}
-document.addEventListener("click",e=>{if(!document.body.classList.contains("perfil-hid"))return;const f=e.target.closest("[data-hf]");if(f){hidFil=hidFil===f.dataset.hf?"":f.dataset.hf;renderHid();return;}const p=e.target.closest("[data-hp]");if(p){hidPolo=p.dataset.hp;renderHid();}});
+document.addEventListener("click",e=>{if(!document.body.classList.contains("perfil-hid"))return;if(e.target.closest("#hidXls")){try{exportarHid();}catch(x){console.error(x);alert("Não consegui gerar o Excel: "+x.message);}return;}const f=e.target.closest("[data-hf]");if(f){hidFil=hidFil===f.dataset.hf?"":f.dataset.hf;renderHid();return;}const p=e.target.closest("[data-hp]");if(p){hidPolo=p.dataset.hp;renderHid();}});
 document.addEventListener("input",e=>{if(e.target&&e.target.id==="hidQ"){hidBusca=e.target.value;clearTimeout(window.__hq);window.__hq=setTimeout(renderHid,250);}});
+
+function exportarHid(){const L0=window.__hidL||[];const u=S.ult;const Lv=novoLivro();
+  const sH=Lv.st({f:{b:1,sz:10,c:"FFFFFF"},fill:"0B2540",v:"center"}),sT=Lv.st({f:{b:1,sz:13,c:"0B2540"}}),sS=Lv.st({f:{sz:10,c:"5E6E7B"}});
+  const put=(sh,r,c,v,st)=>{if(v!==""&&v!=null)sh.cells.set(r+","+c,{v,s:st});};
+  const cab=["Situação","OS","Polo","Bairro","Endereço","Serviço","Status / Resultado","Prazo de execução","Para vencer","Fora do prazo","Reincidência (vezes antes)","OS anteriores","Data de inserção","Data da baixa"];
+  const A=folha("HIDRÔMETRO",{widths:[22,14,12,22,40,34,34,18,14,12,14,46,18,18],freeze:"A4"});
+  put(A,0,0,"Hidrômetro · Carteira de Serviços",sT);
+  const fil={"":"todas",cart:"na carteira",fora:"fora do prazo",rei:"reincidência",exe:"executadas",sem:"sem execução"}[hidFil]||"todas";
+  put(A,1,0,`Carteira de ${dmy(u.dc||hojeLocal())} · ${fil}${hidPolo?" · "+hidPolo:""}${hidBusca?" · busca: "+hidBusca:""} · ${nf(L0.length)} OS · gerado em ${new Date().toLocaleString("pt-BR")}`,sS);
+  cab.forEach((h,i)=>put(A,2,i,h,sH));
+  const sitT=x=>x.k==="cart"?"Ativa":x.k==="exe"?"Executada":x.k==="can"?"Cancelada":"Encerrada sem execução";
+  const para=r=>{const m=minutosResid(r.tr);if(r.fora||m<0)return "vencida";const d=m/1440;return d<1?Math.round(m/60)+"h":Math.floor(d)+" dias";};
+  let ri=3;for(const x of L0){const r=x.r,c=x.k==="cart";
+    [sitT(x),r.os,r.p,r.bai,r.end,r.tss,c?r.st:r.res,c?r.pf:"",c?para(r):"",c?(r.fora?"Sim":"Não"):"",c?(x.h?x.h.length:0):"",c&&x.h?x.h.map(z=>rtDm(z[12])+" OS "+z[0]).join(" · "):"",r.ins||"",c?"":(r.fim||r.ini||"")].forEach((v,i)=>put(A,ri,i,v));ri++;}
+  A.filter=`A3:N${Math.max(4,ri)}`;
+  baixarBlob(gerarXlsx(Lv,[A]),`HIDRÔMETRO ${dmy(u.dc||hojeLocal()).replace(/\//g,"-")}.xlsx`);}
 
 /* ================= RETRABALHO ================= */
 // Base: uma linha por OS+TSS executada (fim do dia e continua não entram). Guardada neste computador e enviada ao link da coordenação.
