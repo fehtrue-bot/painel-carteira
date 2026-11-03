@@ -1978,6 +1978,37 @@ body.printmode .nfaixa,body.printmode .ncab{display:none}
 .c4.c4o .h4{align-items:flex-start}.c4.c4o .h4 b{white-space:normal!important;overflow:visible!important;line-height:1.25;min-height:2.5em}
 .c4 .h4{align-items:flex-start!important}.c4 .h4 b{white-space:normal!important;overflow:visible!important;line-height:1.25;min-height:2.5em}
 
+/* ===== perfil Hidrômetro (Rolison) ===== */
+body.perfil-hid .tabbar,body.perfil-hid .topo,body.perfil-hid #hRes,body.perfil-hid #msg,body.perfil-hid #filtros,body.perfil-hid .ncab .nst,body.perfil-hid .foot{display:none!important}
+.pf-login{position:fixed;inset:0;z-index:200;display:grid;place-items:center;background:linear-gradient(150deg,#0B2545,#00396F 55%,#0077B6)}
+.pf-box{width:min(380px,calc(100% - 40px));background:#fff;border-radius:16px;padding:30px 28px;display:flex;flex-direction:column;gap:10px;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+.pf-ic{width:52px;height:52px;border-radius:14px;background:linear-gradient(135deg,#12D1FE,#0096D6);display:grid;place-items:center}
+.pf-box small{font-size:11px;letter-spacing:.14em;font-weight:700;color:#0096D6}
+.pf-box h1{margin:0;font-family:var(--f-display);font-size:26px;color:#0B2545}.pf-box p{margin:0 0 4px;color:#5E6E7B;font-size:14px}
+.pf-box input{border:1px solid #C9D6E0;border-radius:10px;padding:12px 14px;font-size:16px;background:#F8FAFC}
+.pf-box button{background:#0B2545!important;border-color:#0B2545!important;color:#fff!important;justify-content:center;padding:12px;border-radius:10px;font-size:15px}
+.pf-erro{position:fixed;left:50%;top:40%;transform:translateX(-50%);background:#fff;padding:20px 24px;border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,.15);font-size:15px}
+.pf-top{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.pf-top h2{font-size:22px;color:#0B2545}.pf-top p{margin:2px 0 0;color:#6B7C8B;font-size:13px}
+.pf-ks{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px;margin-bottom:12px}
+.pf-k{all:unset;box-sizing:border-box;cursor:pointer;background:#EAF5FC;border:1px solid #C9E4F4;border-top:4px solid var(--c);border-radius:12px;padding:12px 14px;display:flex;flex-direction:column;gap:2px}
+.pf-k span{font-size:12.5px;font-weight:600;color:#4A6278}.pf-k b{font-family:var(--f-display);font-size:28px;color:#14212B;line-height:1.15}.pf-k small{font-size:11.5px;color:#6B7C8B}
+.pf-k:hover{border-color:#7CC4EA}.pf-k.on{background:linear-gradient(120deg,#00396F,#0096D6);border-color:transparent}.pf-k.on span,.pf-k.on small{color:#CFE6F5}.pf-k.on b{color:#fff}
+.pf-k.pf-in{cursor:default;border-top-color:#F0A23B}
+.pf-bar{display:flex;align-items:center;gap:12px;margin-bottom:10px;flex-wrap:wrap}.pf-bar .search{flex:1;min-width:240px}
+.pf-lp{all:unset;cursor:pointer;color:#0077B6;font-weight:700}
+.pf-t{width:100%;border-collapse:collapse;background:#fff;border:1px solid #E3E9EF;border-radius:12px;overflow:hidden;font-size:13.5px}
+.pf-t th{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#8A97A3;text-align:left;padding:10px 12px;border-bottom:1px solid #E3E9EF;background:#fff}
+.pf-t td{padding:10px 12px;border-bottom:1px solid #F1F4F7;vertical-align:top}.pf-t td small{display:block;font-size:11.5px;color:#8A97A3;margin-top:3px}
+.pf-t td b{color:#00396F}.pf-t .mono{font-family:ui-monospace,Consolas,monospace}
+.pf-t tr.exe td,.pf-t tr.sem td,.pf-t tr.can td{background:#FBFCFD}
+.pf-st,.pf-pz,.pf-rei{display:inline-block;font-size:11.5px;font-weight:700;padding:3px 9px;border-radius:999px;white-space:nowrap}
+.pf-st.at{background:#E2F2FB;color:#00507F}.pf-st.ok{background:#E3F4EA;color:#1C7444}.pf-st.ca{background:#FDE8E6;color:#C9423A}.pf-st.se{background:#F1F4F7;color:#5E6E7B}
+.pf-pz.f{background:#FDE8E6;color:#C9423A}.pf-pz.a{background:#FFF3E3;color:#B4600A}.pf-pz.n{background:#E3F4EA;color:#1C7444}
+.pf-rei{background:#FFF3E3;color:#B4600A}.pf-na{color:#A3AFBA}
+@media (max-width:1000px){.pf-ks{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (max-width:640px){.pf-ks{grid-template-columns:repeat(2,minmax(0,1fr))}.pf-t{font-size:12.5px}}
+
 </style>
 </head>
 <body>
@@ -2019,6 +2050,7 @@ body.printmode .nfaixa,body.printmode .ncab{display:none}
     <button class="tab" role="tab" id="t-lig" aria-selected="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9h7a3 3 0 0 1 3 3v9"/><path d="M3 6v6M18 4c-1.6 2-3 3.7-3 5.3a3 3 0 0 0 6 0C21 7.7 19.6 6 18 4Z"/></svg> Ligação de água</button>
     <button class="tab" role="tab" id="t-serv" aria-selected="false" hidden><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg> Outros serviços</button>
     <button class="tab" role="tab" id="t-rt" aria-selected="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 0 1 15.5-6.2L21 8M21 3v5h-5M21 12a9 9 0 0 1-15.5 6.2L3 16M3 21v-5h5"/></svg> Retrabalho</button>
+    <button class="tab" role="tab" id="t-hid" aria-selected="false" hidden>Hidrômetro</button>
     <button class="tab" role="tab" id="t-os" aria-selected="false" hidden><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M9 6h12M9 12h12M9 18h12M4 6h.01M4 12h.01M4 18h.01"/></svg> OS</button>
   </nav>
   <div class="tb-r"><div class="actions">
@@ -2204,6 +2236,7 @@ body.printmode .nfaixa,body.printmode .ncab{display:none}
     </div>
   </section>
 
+  <section id="v-hid" class="view" hidden><div id="hidBox"></div></section>
   <section id="v-os" class="view" hidden>
     <div class="toolbar">
       <div class="chips" id="chipsModo"></div>
@@ -3163,16 +3196,16 @@ let tb;$("busca").addEventListener("input",()=>{clearTimeout(tb);tb=setTimeout(r
 function irPara(o){abrirLista(o);}
 document.addEventListener("click",e=>{const el=e.target.closest("[data-go]");if(el&&!el.closest("#v-os")&&!el.closest(".seg2")){irPara(JSON.parse(el.dataset.go));return;}
   const d=e.target.closest("#diaDia .r[data-dia],#tbGrupo th[data-dia]");if(d){diaSel=diaSel===d.dataset.dia?"todos":d.dataset.dia;renderTudo();}});
-function aba(n){abaAtual=n;document.body.classList.toggle("aba-rel",n==="rel");document.body.classList.toggle("aba-rt",n==="rt");if(n!=="os")lss("carteira-aba",n);document.body.classList.remove("printmode");for(const k of ["painel","mon","res","rel","lig","serv","rt","os"]){$("t-"+k).setAttribute("aria-selected",k===n);$("v-"+k).hidden=k!==n;}renderTudo();}
+function aba(n){abaAtual=n;document.body.classList.toggle("aba-rel",n==="rel");document.body.classList.toggle("aba-rt",n==="rt");if(n!=="os")lss("carteira-aba",n);document.body.classList.remove("printmode");for(const k of ["painel","mon","res","rel","lig","serv","rt","os","hid"]){$("t-"+k).setAttribute("aria-selected",k===n);$("v-"+k).hidden=k!==n;}renderTudo();}
 $("t-painel").onclick=()=>aba("painel");$("t-lig").onclick=()=>aba("lig");$("t-mon").onclick=()=>aba("mon");$("t-rel").onclick=()=>aba("rel");$("t-res").onclick=()=>aba("res");$("t-serv").onclick=()=>aba("serv");$("t-rt").onclick=()=>aba("rt");$("t-os").onclick=()=>aba("os");
 function relogioCab(){const SEM=["DOM","SEG","TER","QUA","QUI","SEX","SÁB"],MES=["JAN","FEV","MAR","ABR","MAI","JUN","JUL","AGO","SET","OUT","NOV","DEZ"],p=n=>String(n).padStart(2,"0");const t=()=>{const d=new Date();const h=$("nHora");if(!h)return;h.textContent=`${p(d.getHours())}:${p(d.getMinutes())}:${p(d.getSeconds())}`;$("nData").textContent=`${SEM[d.getDay()]} · ${p(d.getDate())} ${MES[d.getMonth()]} ${d.getFullYear()}`;};t();setInterval(t,1000);}
 relogioCab();
-function renderVz(){{const st=$("nSt"),bv=$("nBv");if(bv)bv.innerHTML=LEITOR?"Bem-vindo(a), <b>coordenação</b>":"Bem-vinda, <b>Fernanda</b>";if(st&&S&&S.ult){const n=(S.ult.ca||[]).length;st.innerHTML=S.ult.dc?`${nf(n)} na carteira<small>carteira de ${dm(S.ult.dc)}</small>`:`Sem carteira<small>suba os arquivos do dia</small>`;}}{const e=$("sbData");if(e){const u=S&&S.ult;e.innerHTML=u&&u.dc?`<span><i class="dt"></i>Carteira de <b>${dmy(u.dc)}</b></span>${u.em?`<span class="sep"></span><span>Atualizado em <b>${new Date(u.em).toLocaleDateString("pt-BR")}</b> às <b>${new Date(u.em).toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"})}</b></span>`:""}`:"<span>Nenhuma carteira carregada</span>";}}const el=$("vzBand");if(!el||el.dataset.ok)return;el.dataset.ok=1;el.innerHTML=`<div class="vz-in"><span class="vz-ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2.5c-3.6 4.4-6.5 8-6.5 11.6a6.5 6.5 0 0 0 13 0C18.5 10.5 15.6 6.9 12 2.5Z" fill="currentColor"/></svg></span><h1 class="vz-h">Carteira de Vazamentos</h1></div>`;}
+function renderVz(){{const st=$("nSt"),bv=$("nBv");if(bv)bv.innerHTML=PERFIL?"Bem-vindo, <b>Rolison</b>":LEITOR?"Bem-vindo(a), <b>coordenação</b>":"Bem-vinda, <b>Fernanda</b>";if(st&&S&&S.ult){const n=(S.ult.ca||[]).length;st.innerHTML=S.ult.dc?`${nf(n)} na carteira<small>carteira de ${dm(S.ult.dc)}</small>`:`Sem carteira<small>suba os arquivos do dia</small>`;}}{const e=$("sbData");if(e){const u=S&&S.ult;e.innerHTML=u&&u.dc?`<span><i class="dt"></i>Carteira de <b>${dmy(u.dc)}</b></span>${u.em?`<span class="sep"></span><span>Atualizado em <b>${new Date(u.em).toLocaleDateString("pt-BR")}</b> às <b>${new Date(u.em).toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"})}</b></span>`:""}`:"<span>Nenhuma carteira carregada</span>";}}const el=$("vzBand");if(!el||el.dataset.ok)return;el.dataset.ok=1;el.innerHTML=`<div class="vz-in"><span class="vz-ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2.5c-3.6 4.4-6.5 8-6.5 11.6a6.5 6.5 0 0 0 13 0C18.5 10.5 15.6 6.9 12 2.5Z" fill="currentColor"/></svg></span><h1 class="vz-h">Carteira de Vazamentos</h1></div>`;}
 const CARD_SEL=".kc,.bfo2,.c4,.kpi";let cardAtivo="";
 function chaveCard(el){const d=el.dataset;const lb=el.querySelector(".kc-l,.bf-n,.h4 b,.lbl");return [d.go,d.prazo,d.forn,d.rgo,d.rcf,lb?lb.textContent.trim():""].map(x=>x??"").join("|")+"|"+((el.closest("section")||{}).id||"");}
 function marcarCards(){document.querySelectorAll(CARD_SEL).forEach(el=>el.classList.toggle("ativo",!!cardAtivo&&chaveCard(el)===cardAtivo));}
 document.addEventListener("click",e=>{if(e.target.closest("#modal"))return;const c=e.target.closest(CARD_SEL);if(!c){if(cardAtivo){cardAtivo="";setTimeout(marcarCards,0);}return;}const k=chaveCard(c);cardAtivo=cardAtivo===k?"":k;setTimeout(marcarCards,0);},true);
-function renderTudo(){setTimeout(marcarCards,0);renderFiltros();renderVz();if(abaAtual==="painel")render();else if(abaAtual==="serv")renderServ();else if(abaAtual==="lig")renderLig();else if(abaAtual==="mon")renderMonLig();else if(abaAtual==="rel")renderRel();else if(abaAtual==="res")renderRes();else if(abaAtual==="rt")renderRt();else renderOS();}
+function renderTudo(){setTimeout(marcarCards,0);renderFiltros();renderVz();if(abaAtual==="painel")render();else if(abaAtual==="serv")renderServ();else if(abaAtual==="lig")renderLig();else if(abaAtual==="mon")renderMonLig();else if(abaAtual==="rel")renderRel();else if(abaAtual==="res")renderRes();else if(abaAtual==="rt")renderRt();else if(abaAtual==="hid")renderHid();else renderOS();}
 
 /* ================= Excel ================= */
 $("baixar").onclick=()=>{try{exportar();}catch(e){console.error(e);msg("Não consegui gerar o Excel: "+e.message);}};
@@ -3303,6 +3336,8 @@ function pedirSenha(){return new Promise(res=>{
 $("btnTrancar").onclick=()=>{try{sessionStorage.removeItem("carteira-ok");}catch(e){}location.reload();};
 /* ================= link da coordenação ================= */
 const SLUG=(()=>{try{return decodeURIComponent(location.pathname).replace(/^\/+|\/+$/g,"");}catch(e){return "";}})();
+const PERFIL=/^rolison$/i.test(SLUG)?"rolison":"";let PSENHA="";try{PSENHA=sessionStorage.getItem("perfil-senha")||"";}catch(e){}
+const qPerfil=()=>PERFIL?"&s="+encodeURIComponent(PSENHA):"";
 const LEITOR=!!SLUG&&!/^index(\.html)?$/i.test(SLUG);
 const b64de=async blob=>{const u=await new Promise((r,j)=>{const f=new FileReader();f.onload=()=>r(f.result);f.onerror=j;f.readAsDataURL(blob);});return String(u).split(",")[1]||"";};
 async function compactar(txt){if(!window.CompressionStream)return "J"+await b64de(new Blob([txt]));const st=new Blob([txt]).stream().pipeThrough(new CompressionStream("gzip"));return "G"+await b64de(await new Response(st).blob());}
@@ -3339,7 +3374,7 @@ async function publicar(avisar){if(LEITOR)return false;if(publicando)return publ
 // ao abrir o painel: se o link da coordenação ficou para trás, atualiza sozinho
 async function conferirLink(){if(LEITOR||!S||!S.ult||!S.ult.em)return;try{const i=await apiC({acao:"info"});if(!i.em||S.ult.em>i.em+1000)await publicar(false);else{try{const st=JSON.parse(localStorage.getItem("carteira-pub")||"null");if(!st||!st.ok)localStorage.setItem("carteira-pub",JSON.stringify({em:i.em,ok:true}));}catch(e){}pubStatus();}}catch(e){}}
 let versaoLeitor=0;
-async function carregarLeitor(){const q="?k="+encodeURIComponent(SLUG);const m=await apiC(null,"GET",q);
+async function carregarLeitor(){const q="?k="+encodeURIComponent(SLUG)+qPerfil();const m=await apiC(null,"GET",q);
   if(!m.em)throw new Error("O painel ainda não foi publicado. Tente mais tarde.");
   if(m.em===versaoLeitor)return false;let z="";for(let i=0;i<m.partes;i++){const j=await apiC(null,"GET",q+"&v="+m.v+"&i="+i);z+=j.dados;}
   {const o=JSON.parse(await descompactar(z));RAW=o._raw||null;delete o._raw;S=normalizar(o);}ajustarRel(S.ult.ca);for(const r of S.ult.ex)r.conta=executadoDeFato(r.cod,r.res);versaoLeitor=m.em;
@@ -3350,9 +3385,43 @@ async function iniciarLeitor(){document.body.classList.add("leitor");const ft=do
   try{await carregarLeitor();}catch(e){S=normalizar(null);setConn("off",e.message,"");$("hRes").textContent=e.message;window.__pronto=true;return;}
   let ab=lsg("carteira-aba");if(ab==="serv")ab="painel";if(ab==="mon"||ab==="os")ab="rel";if(ab&&$("t-"+ab))aba(ab);else renderTudo();window.__pronto=true;
   setInterval(async()=>{if(document.hidden)return;try{if(await carregarLeitor())renderTudo();}catch(e){}},180000);}
-if(LEITOR)iniciarLeitor();else
+if(PERFIL)iniciarPerfil();else if(LEITOR)iniciarLeitor();else
 (async()=>{await pedirSenha();await carregarLocal();let ab=lsg("carteira-aba");if(ab==="serv")ab="painel";if(ab==="mon")ab="rel";if(ab&&$("t-"+ab)&&!$("t-"+ab).hidden)aba(ab);else renderTudo();window.__pronto=true;pubStatus();setTimeout(conferirLink,1500);})();
 window.__st=()=>S;
+
+/* ================= perfil do Rolison: hidrômetro ================= */
+let hidFil="",hidPolo="",hidBusca="";
+async function iniciarPerfil(){document.body.classList.add("leitor","perfil-hid");$("telaLogin").hidden=true;document.title="Hidrômetro · Carteira de Serviços";
+  const pedir=msg=>new Promise(ok=>{const d=document.createElement("div");d.className="pf-login";d.innerHTML=`<form class="pf-box"><span class="pf-ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="8"/><path d="M12 12l3-3M12 4v2M20 12h-2M6 12H4"/></svg></span><small>CARTEIRA DE SERVIÇOS · HIDRÔMETRO</small><h1>Olá, Rolison</h1><p>${msg||"Digite sua senha para abrir."}</p><input type="password" id="pfS" placeholder="Senha" autocomplete="current-password" inputmode="numeric"><button class="primary" type="submit">Entrar</button></form>`;document.body.appendChild(d);setTimeout(()=>d.querySelector("input").focus(),50);
+    d.querySelector("form").onsubmit=e=>{e.preventDefault();const v=d.querySelector("input").value.trim();if(!v)return;d.remove();ok(v);};});
+  for(let i=0;i<6;i++){if(!PSENHA)PSENHA=await pedir(i?"Senha incorreta. Tente de novo.":"");
+    try{await carregarLeitor();try{sessionStorage.setItem("perfil-senha",PSENHA);}catch(e){}break;}
+    catch(e){if(/Senha/i.test(e.message)){PSENHA="";try{sessionStorage.removeItem("perfil-senha");}catch(x){}continue;}S=normalizar(null);document.body.insertAdjacentHTML("beforeend",`<div class="pf-erro">${esc(e.message)}</div>`);window.__pronto=true;return;}}
+  try{if(typeof rtCarregarLeitor==="function")await rtCarregarLeitor();}catch(e){}
+  aba("hid");window.__pronto=true;
+  setInterval(async()=>{if(document.hidden)return;try{let m=await carregarLeitor();try{if(await rtCarregarLeitor())m=true;}catch(e){}if(m)renderTudo();}catch(e){}},180000);}
+function renderHid(){const el=$("hidBox");if(!el)return;const u=S.ult;const ehH=r=>famDe(r)==="HIDROMETRO";const fpo=r=>!hidPolo||r.p===hidPolo;
+  const cap=t=>{t=clean(t);return t?t.charAt(0)+t.slice(1).toLowerCase():"";};
+  const reinc=r=>{try{return (typeof rtHistCart==="function"&&typeof RB!=="undefined"&&RB&&RB.R)?rtHistCart(r):[];}catch(e){return [];}};
+  const ca=u.ca.filter(r=>ehH(r)&&fpo(r)).map(r=>({k:"cart",r,h:reinc(r)}));
+  const ds=u.dias||[];const ex=u.ex.filter(r=>ehH(r)&&fpo(r)&&ds.includes(r.dt)).map(r=>{const fez=executadoDeFato(r.cod,r.res);return {k:fez?"exe":(/CANCEL/.test(U(r.res))?"can":"sem"),r};});
+  const ac=u.ac.filter(r=>ehH(r)&&fpo(r)&&ds.includes(r.dt));
+  const fora=ca.filter(x=>x.r.fora).length,rei=ca.filter(x=>x.h.length).length,nex=ex.filter(x=>x.k==="exe").length,nsem=ex.length-nex;
+  const per=ds.length?(ds.length>1?`${dm(ds[0])} a ${dm(ds[ds.length-1])}`:wd(ds[0])+" "+dm(ds[0])):"";
+  const kc=(k,l,v,s,c)=>`<button type="button" class="pf-k${hidFil===k?" on":""}" data-hf="${k}" style="--c:${c}"><span>${l}</span><b>${nf(v)}</b><small>${s}</small></button>`;
+  let L=hidFil==="exe"?ex.filter(x=>x.k==="exe"):hidFil==="sem"?ex.filter(x=>x.k!=="exe"):hidFil==="fora"?ca.filter(x=>x.r.fora):hidFil==="rei"?ca.filter(x=>x.h.length):hidFil==="cart"?ca:ca.concat(ex);
+  const q=U(hidBusca.trim());if(q)L=L.filter(x=>U([x.r.os,x.r.end,x.r.bai,x.r.tss].join(" ")).includes(q));
+  const prazo=r=>{const m=minutosResid(r.tr);if(r.fora)return `<span class="pf-pz f">Fora do prazo</span><small>venceu ${esc(r.pf||"")}</small>`;const d=m/1440;return `<span class="pf-pz ${d<=2?"a":"n"}">${d<1?Math.max(0,Math.round(m/60))+"h":Math.floor(d)+" dias"} para vencer</span><small>prazo ${esc(r.pf||"")}</small>`;};
+  const sit=x=>x.k==="cart"?`<span class="pf-st at">Ativa</span><small>${esc(x.r.st||"")}</small>`:x.k==="exe"?`<span class="pf-st ok">Executada</span><small>${esc(cap(x.r.res))}</small>`:x.k==="can"?`<span class="pf-st ca">Cancelada</span><small>${esc(cap(x.r.res))}</small>`:`<span class="pf-st se">Encerrada sem execução</span><small>${esc(cap(x.r.res))}</small>`;
+  const rc=x=>x.k!=="cart"?`<span class="pf-na">–</span>`:x.h.length?`<span class="pf-rei">${x.h.length} ${x.h.length===1?"vez antes":"vezes antes"}</span><small>${x.h.slice().reverse().slice(0,2).map(z=>`${rtDm(z[12])} · OS ${esc(z[0])}`).join("<br>")}</small>`:`<span class="pf-na">não</span>`;
+  el.innerHTML=`<div class="pf-top"><div><h2>Hidrômetro</h2><p>carteira de ${u.dc?wd(u.dc)+" "+dmy(u.dc):"–"}${per?" · entradas e baixas de "+per:""}</p></div>
+    <div class="seg2">${[["","Os dois polos"],["Interlagos","Interlagos"],["Grajaú","Grajaú"]].map(([k,l])=>`<button type="button" data-hp="${k}" aria-pressed="${hidPolo===k}">${l}</button>`).join("")}</div></div>
+    <div class="pf-ks">${kc("cart","Na carteira",ca.length,"ativas hoje","#0096D6")}${kc("fora","Fora do prazo",fora,ca.length?Math.round(fora*100/ca.length)+"% da carteira":"","#D9534A")}${kc("rei","Reincidência",rei,"já feito antes no endereço","#F08C00")}${kc("exe","Executadas",nex,per,"#23824F")}${kc("sem","Sem execução",nsem,"canceladas, imóvel fechado…","#6C7A89")}<div class="pf-k pf-in"><span>Entradas</span><b>${nf(ac.length)}</b><small>${per}</small></div></div>
+    <div class="pf-bar"><div class="search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input type="search" id="hidQ" placeholder="Buscar OS, endereço, bairro ou serviço" value="${esc(hidBusca)}"></div><span class="note">${nf(L.length)} OS${hidFil?` · <button type="button" class="pf-lp" data-hf="">ver todas</button>`:""}</span></div>
+    ${L.length?`<div class="scroll"><table class="pf-t"><thead><tr><th>OS</th><th>Endereço</th><th>Serviço</th><th>Situação</th><th>Prazo</th><th>Reincidência</th></tr></thead><tbody>${L.sort((a,b)=>(a.k==="cart"?0:1)-(b.k==="cart"?0:1)||(b.r.fora?1:0)-(a.r.fora?1:0)||minutosResid(a.r.tr)-minutosResid(b.r.tr)).map(x=>`<tr class="${x.k}"><td class="mono">${esc(x.r.os)}</td><td><b>${esc(x.r.end)}</b><small>${esc(x.r.bai)} · ${x.r.p}</small></td><td>${esc(cap(x.r.tss))}</td><td>${sit(x)}</td><td>${x.k==="cart"?prazo(x.r):`<small>baixa em ${esc(x.r.fim||x.r.ini||dm(x.r.dt))}</small>`}</td><td>${rc(x)}</td></tr>`).join("")}</tbody></table></div>`:`<div class="empty">Nenhuma OS de hidrômetro nessa condição.</div>`}`;
+  {const i=$("hidQ");if(i&&hidBusca){i.focus();i.setSelectionRange(i.value.length,i.value.length);}}}
+document.addEventListener("click",e=>{if(!document.body.classList.contains("perfil-hid"))return;const f=e.target.closest("[data-hf]");if(f){hidFil=hidFil===f.dataset.hf?"":f.dataset.hf;renderHid();return;}const p=e.target.closest("[data-hp]");if(p){hidPolo=p.dataset.hp;renderHid();}});
+document.addEventListener("input",e=>{if(e.target&&e.target.id==="hidQ"){hidBusca=e.target.value;clearTimeout(window.__hq);window.__hq=setTimeout(renderHid,250);}});
 
 /* ================= RETRABALHO ================= */
 // Base: uma linha por OS+TSS executada (fim do dia e continua não entram). Guardada neste computador e enviada ao link da coordenação.
@@ -3685,7 +3754,7 @@ $("rtArqBase").onchange=async e=>{const f=e.target.files[0];e.target.value="";if
 // ---------- link da coordenação ----------
 async function rtPublicar(){if(LEITOR||!RB)return false;try{const z=await compactar(JSON.stringify(RB));const T=2000000,n=Math.max(1,Math.ceil(z.length/T));const v=Date.now().toString(36)+Math.random().toString(36).slice(2,6);
   for(let i=0;i<n;i++){let ok=false,er=null;for(let t=0;t<3&&!ok;t++){try{await apiC({acao:"parte",b:"rt",v,i,n,dados:z.slice(i*T,(i+1)*T),dc:RB.fim||""});ok=true;}catch(e){er=e;await new Promise(r=>setTimeout(r,1500));}}if(!ok)throw er;}return true;}catch(e){console.error(e);return false;}}
-async function rtCarregarLeitor(){try{const q="?k="+encodeURIComponent(SLUG)+"&b=rt";const m=await apiC(null,"GET",q);if(!m.em||(RB&&RB.em===m.em))return false;
+async function rtCarregarLeitor(){try{const q="?k="+encodeURIComponent(SLUG)+"&b=rt"+(typeof qPerfil==="function"?qPerfil():"");const m=await apiC(null,"GET",q);if(!m.em||(RB&&RB.em===m.em))return false;
   let z="";for(let i=0;i<m.partes;i++){const j=await apiC(null,"GET",q+"&v="+m.v+"&i="+i);z+=j.dados;}RB=JSON.parse(await descompactar(z));rtCache=null;rtCOIdx=null;return true;}catch(e){return false;}}
 
 // ---------- Excel ----------
@@ -3706,7 +3775,7 @@ $("rtXls").onclick=()=>{if(!RB||!RB.R.length){rtAviso("Ainda não há base.");re
   baixarBlob(gerarXlsx(L,[A,B]),`Retrabalho ${dmy(RB.fim).replace(/\//g,"-")}.xlsx`);rtAviso(`Excel baixado: ${nf(F.out.length)} endereços e ${nf(rb-1)} serviços.`,"ok");};
 
 // carrega a base ao abrir
-(async()=>{if(LEITOR){if(await rtCarregarLeitor()&&abaAtual==="rt")renderRt();setInterval(async()=>{if(!document.hidden&&await rtCarregarLeitor()&&abaAtual==="rt")renderRt();},600000);}
+(async()=>{if(LEITOR&&!PERFIL){if(await rtCarregarLeitor()&&abaAtual==="rt")renderRt();setInterval(async()=>{if(!document.hidden&&await rtCarregarLeitor()&&abaAtual==="rt")renderRt();},600000);}
   else{await rtCarregarLocal();if(abaAtual==="rt")renderRt();}})();
 document.addEventListener("keydown",e=>{if(e.key==="Enter"&&e.target.classList&&e.target.classList.contains("rx-clk"))e.target.click();});
 
