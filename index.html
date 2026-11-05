@@ -2061,6 +2061,30 @@ body.perfil-ctl .app .fbar2{position:sticky;top:52px;z-index:15;box-shadow:0 4px
 body.perfil-ctl .bfo2{border-left:4px solid #0096D6}
 body.perfil-ctl .bfo2.cg{border-left-color:#00396F}
 body.perfil-ctl .topo{margin-bottom:-4px}
+/* Pesquisar OS */
+.bo-top{background:#fff;border:1px solid #E3E9EF;border-radius:14px;padding:18px 20px;margin-bottom:12px}
+.bo-top h2{font-size:20px;color:#0B2545}.bo-top p{margin:4px 0 12px;color:#6B7C8B;font-size:13px}
+.bo-in{display:flex;align-items:flex-start;gap:10px;border:2px solid #C9E4F4;border-radius:12px;padding:10px 14px;background:#F8FBFD;color:#0096D6}
+.bo-in:focus-within{border-color:#0096D6;background:#fff}
+.bo-in textarea{flex:1;border:0;outline:0;background:none;resize:none;font:600 17px ui-monospace,Consolas,monospace;color:#14212B;min-height:26px}
+.bo-vazio{text-align:center;color:#8A97A3;padding:30px}
+.bo-card{background:#fff;border:1px solid #E3E9EF;border-radius:14px;margin-bottom:12px;overflow:hidden}
+.bo-h{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 18px;border-bottom:1px solid #EEF2F5}
+.bo-h small{display:block;font-size:11px;letter-spacing:.1em;color:#8A97A3;font-weight:700}.bo-h b{font-size:20px;color:#00396F}
+.bo-st{font-size:12.5px;font-weight:700;padding:5px 12px;border-radius:999px}
+.bo-st.f{background:#FDE8E6;color:#C9423A}.bo-st.n{background:#E2F2FB;color:#00507F}.bo-st.ok{background:#E3F4EA;color:#1C7444}.bo-st.se,.bo-st.nf{background:#F1F4F7;color:#5E6E7B}
+.bo-card.nf .note{padding:12px 18px;margin:0}
+.bo-g{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;padding:14px 18px;background:#F6FAFD}
+.bo-g small{display:block;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:#8A97A3;font-weight:700}
+.bo-g b{display:block;font-size:14px;color:#14212B;margin-top:2px}.bo-g span{display:block;font-size:12px;color:#6B7C8B}
+.bo-tl{padding:12px 18px 16px;display:flex;flex-direction:column}
+.bo-e{display:grid;grid-template-columns:18px 1fr;gap:10px;position:relative;padding-bottom:12px}
+.bo-e:not(:last-child)::before{content:"";position:absolute;left:5px;top:14px;bottom:0;width:2px;background:#E3E9EF}
+.bo-e i{width:12px;height:12px;border-radius:50%;background:#0096D6;margin-top:3px;box-shadow:0 0 0 3px #E2F2FB}
+.bo-e.ok i{background:#2FA36B;box-shadow:0 0 0 3px #E3F4EA}.bo-e.f i{background:#D9534A;box-shadow:0 0 0 3px #FDE8E6}.bo-e.se i{background:#A3AFBA;box-shadow:0 0 0 3px #F1F4F7}
+.bo-e b{display:block;font-size:13.5px;color:#14212B}.bo-e span{font-size:12px;color:#6B7C8B}
+@media (max-width:760px){.bo-g{grid-template-columns:1fr 1fr}}
+body.aba-bos #filtros,body.aba-bos .tb-r .actions{display:none!important}
 
 </style>
 </head>
@@ -2106,6 +2130,7 @@ body.perfil-ctl .topo{margin-bottom:-4px}
     <button class="tab" role="tab" id="t-serv" aria-selected="false" hidden><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg> Outros serviços</button>
     <button class="tab" role="tab" id="t-rt" aria-selected="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 0 1 15.5-6.2L21 8M21 3v5h-5M21 12a9 9 0 0 1-15.5 6.2L3 16M3 21v-5h5"/></svg> Retrabalho</button>
     <button class="tab" role="tab" id="t-hid" aria-selected="false" hidden>Hidrômetro</button>
+    <button class="tab" role="tab" id="t-bos" aria-selected="false" hidden><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg> Pesquisar OS</button>
     <button class="tab" role="tab" id="t-os" aria-selected="false" hidden><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M9 6h12M9 12h12M9 18h12M4 6h.01M4 12h.01M4 18h.01"/></svg> OS</button>
   </nav>
   <div class="tb-r"><div class="actions">
@@ -2292,6 +2317,8 @@ body.perfil-ctl .topo{margin-bottom:-4px}
   </section>
 
   <section id="v-hid" class="view" hidden><div id="hidBox"></div></section>
+  <section id="v-bos" class="view" hidden><div class="bo-top"><h2>Pesquisar OS</h2><p>Digite um ou mais números de OS (separados por espaço, vírgula ou um por linha). Mostra se está na carteira agora, em quais carteiras já esteve e se já foi baixada.</p>
+    <div class="bo-in"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><textarea id="bosQ" rows="1" placeholder="Número da OS — ex.: 2643510585"></textarea></div></div><div id="bosRes"></div></section>
   <section id="v-os" class="view" hidden>
     <div class="toolbar">
       <div class="chips" id="chipsModo"></div>
@@ -3252,7 +3279,7 @@ let tb;$("busca").addEventListener("input",()=>{clearTimeout(tb);tb=setTimeout(r
 function irPara(o){abrirLista(o);}
 document.addEventListener("click",e=>{const el=e.target.closest("[data-go]");if(el&&!el.closest("#v-os")&&!el.closest(".seg2")){irPara(JSON.parse(el.dataset.go));return;}
   const d=e.target.closest("#diaDia .r[data-dia],#tbGrupo th[data-dia]");if(d){diaSel=diaSel===d.dataset.dia?"todos":d.dataset.dia;renderTudo();}});
-function aba(n){abaAtual=n;document.body.classList.toggle("aba-rel",n==="rel");document.body.classList.toggle("aba-rt",n==="rt");if(n!=="os")lss("carteira-aba",n);document.body.classList.remove("printmode","ru-only");for(const k of ["painel","mon","res","rel","lig","serv","rt","os","hid"]){$("t-"+k).setAttribute("aria-selected",k===n);$("v-"+k).hidden=k!==n;}renderTudo();}
+function aba(n){abaAtual=n;document.body.classList.toggle("aba-rel",n==="rel");document.body.classList.toggle("aba-rt",n==="rt");document.body.classList.toggle("aba-bos",n==="bos");if(n!=="os")lss("carteira-aba",n);document.body.classList.remove("printmode","ru-only");for(const k of ["painel","mon","res","rel","lig","serv","rt","os","hid","bos"]){$("t-"+k).setAttribute("aria-selected",k===n);$("v-"+k).hidden=k!==n;}renderTudo();}
 $("t-painel").onclick=()=>aba("painel");$("t-lig").onclick=()=>aba("lig");$("t-mon").onclick=()=>aba("mon");$("t-rel").onclick=()=>aba("rel");$("t-res").onclick=()=>aba("res");$("t-serv").onclick=()=>aba("serv");$("t-rt").onclick=()=>aba("rt");$("t-os").onclick=()=>aba("os");
 function relogioCab(){const SEM=["DOM","SEG","TER","QUA","QUI","SEX","SÁB"],MES=["JAN","FEV","MAR","ABR","MAI","JUN","JUL","AGO","SET","OUT","NOV","DEZ"],p=n=>String(n).padStart(2,"0");const t=()=>{const d=new Date();const h=$("nHora");if(!h)return;h.textContent=`${p(d.getHours())}:${p(d.getMinutes())}:${p(d.getSeconds())}`;$("nData").textContent=`${SEM[d.getDay()]} · ${p(d.getDate())} ${MES[d.getMonth()]} ${d.getFullYear()}`;};t();setInterval(t,1000);}
 relogioCab();
@@ -3261,7 +3288,7 @@ const CARD_SEL=".kc,.bfo2,.c4,.kpi";let cardAtivo="";
 function chaveCard(el){const d=el.dataset;const lb=el.querySelector(".kc-l,.bf-n,.h4 b,.lbl");return [d.go,d.prazo,d.forn,d.rgo,d.rcf,lb?lb.textContent.trim():""].map(x=>x??"").join("|")+"|"+((el.closest("section")||{}).id||"");}
 function marcarCards(){document.querySelectorAll(CARD_SEL).forEach(el=>el.classList.toggle("ativo",!!cardAtivo&&chaveCard(el)===cardAtivo));}
 document.addEventListener("click",e=>{if(e.target.closest("#modal"))return;const c=e.target.closest(CARD_SEL);if(!c){if(cardAtivo){cardAtivo="";setTimeout(marcarCards,0);}return;}const k=chaveCard(c);cardAtivo=cardAtivo===k?"":k;setTimeout(marcarCards,0);},true);
-function renderTudo(){setTimeout(marcarCards,0);renderFiltros();renderVz();if(abaAtual==="painel")render();else if(abaAtual==="serv")renderServ();else if(abaAtual==="lig")renderLig();else if(abaAtual==="mon")renderMonLig();else if(abaAtual==="rel")renderRel();else if(abaAtual==="res")renderRes();else if(abaAtual==="rt")renderRt();else if(abaAtual==="hid")renderHid();else renderOS();}
+function renderTudo(){setTimeout(marcarCards,0);renderFiltros();renderVz();if(abaAtual==="painel")render();else if(abaAtual==="serv")renderServ();else if(abaAtual==="lig")renderLig();else if(abaAtual==="mon")renderMonLig();else if(abaAtual==="rel")renderRel();else if(abaAtual==="res")renderRes();else if(abaAtual==="rt")renderRt();else if(abaAtual==="hid")renderHid();else if(abaAtual==="bos")renderBos();else renderOS();}
 
 /* ================= Excel ================= */
 $("baixar").onclick=()=>{try{exportar();}catch(e){console.error(e);msg("Não consegui gerar o Excel: "+e.message);}};
@@ -3442,7 +3469,7 @@ async function carregarLeitor(){const q="?k="+encodeURIComponent(SLUG)+qPerfil()
   if(m.em===versaoLeitor)return false;let z="";for(let i=0;i<m.partes;i++){const j=await apiC(null,"GET",q+"&v="+m.v+"&i="+i);z+=j.dados;}
   {const o=JSON.parse(await descompactar(z));RAW=o._raw||null;delete o._raw;S=normalizar(o);}ajustarRel(S.ult.ca);for(const r of S.ult.ex)r.conta=executadoDeFato(r.cod,r.res);versaoLeitor=m.em;
   setConn("on","Atualizado pela equipe em "+new Date(m.em).toLocaleString("pt-BR",{dateStyle:"short",timeStyle:"short"}),S.ult.dc?"carteira de "+dmy(S.ult.dc):"");return true;}
-async function iniciarLeitor(){document.body.classList.add("leitor");if(CONTROLE){document.body.classList.add("perfil-ctl");$("t-lig").hidden=true;}const ft=document.querySelector(".foot");if(ft)ft.textContent="Painel da Carteira de Serviços · Interlagos e Grajaú · só visualização";$("telaLogin").hidden=true;document.title="Gestão da Carteira de Serviços · Grajaú e Interlagos";
+async function iniciarLeitor(){document.body.classList.add("leitor");if(CONTROLE){document.body.classList.add("perfil-ctl");$("t-lig").hidden=true;$("t-bos").hidden=false;$("t-bos").onclick=()=>aba("bos");}const ft=document.querySelector(".foot");if(ft)ft.textContent="Painel da Carteira de Serviços · Interlagos e Grajaú · só visualização";$("telaLogin").hidden=true;document.title="Gestão da Carteira de Serviços · Grajaú e Interlagos";
   $("hSaudL").innerHTML='Bem-vindo(a)<small class="hsub">Carteira de Serviços · Interlagos e Grajaú</small>';
   {const tick=()=>{const d=new Date();$("hHora").textContent=d.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"});const t=d.toLocaleDateString("pt-BR",{weekday:"long",day:"2-digit",month:"long",year:"numeric"});$("hDia").textContent=t.charAt(0).toUpperCase()+t.slice(1);};$("hClock").hidden=false;tick();setInterval(tick,20000);}setConn("warn","Carregando o painel…","");
   try{await carregarLeitor();}catch(e){S=normalizar(null);setConn("off",e.message,"");$("hRes").textContent=e.message;window.__pronto=true;return;}
@@ -3533,6 +3560,35 @@ function hidAcum(){const H=(S.hidH)||{cart:{},dia:{}};const MES=["jan","fev","ma
     <article class="lg-box"><div class="lg-h"><div><h3>Baixas de hidrômetro por mês</h3><p>base de executados · ${nf(totX)} executadas · ${nf(totA)} sem execução (alegação)</p></div><div class="leg2"><span style="--c:#23824F">Executadas</span><span style="--c:#B7C3CC">Sem execução</span><span style="--c:#F08C00">Reincidência</span></div></div><div class="chart">${barras(bm.map(([m,o],i)=>({lab:mL(m),sub:"",vals:[{v:o.x,c:"#23824F"},{v:o.a,c:"#B7C3CC"},{v:reiM[i]?reiM[i][1]:0,c:"#F08C00"}]})),{wmin:700,h:240})}</div></article>
     <article class="lg-box"><div class="lg-h"><div><h3>Serviços mais executados</h3><p>base de executados</p></div></div><div class="lg-nc">${tss.map(([t,v])=>`<div class="lg-nr" style="cursor:default"><span class="lg-nt">${esc(cap(t))}</span><b style="color:#1C7444">${nf(v)}</b><span class="lg-nb"><i style="width:${(v*100/(tss[0][1]||1)).toFixed(0)}%;background:#2FA36B"></i></span></div>`).join("")||'<div class="empty">Sem base carregada.</div>'}</div></article>
    </div>`;}
+
+/* ================= Pesquisar OS ================= */
+let bosIdx=null;
+function bosBase(){const em=(typeof RB!=="undefined"&&RB)?RB.em:0;if(bosIdx&&bosIdx.em===em)return bosIdx.M;const M=new Map();
+  if(typeof RB!=="undefined"&&RB&&RB.R)for(const r of RB.R){const k=r[0];const L=M.get(k);if(L)L.push(r);else M.set(k,[r]);}bosIdx={em,M};return M;}
+function renderBos(){const box=$("bosRes");if(!box)return;const toks=[...new Set(String($("bosQ").value||"").split(/[\s,;]+/).map(x=>x.replace(/\D/g,"")).filter(x=>x.length>=5))];
+  if(!toks.length){box.innerHTML=`<div class="bo-vazio">Digite o número da OS para ver a situação dela.</div>`;return;}
+  const u=S.ult,cap=t=>{t=clean(t);return t?t.charAt(0)+t.slice(1).toLowerCase():"";};const B=bosBase();const CO=(typeof RB!=="undefined"&&RB&&RB.CO)||{};const D=(typeof RB!=="undefined"&&RB)?RB.D:null;const ale=(D&&typeof rtCalc==="function")?rtCalc().ale:{};
+  const achar=os=>{const ok=x=>keyOS(x)===os;return {ca:u.ca.filter(r=>ok(r.os)),ac:u.ac.filter(r=>ok(r.os)),ex:u.ex.filter(r=>ok(r.os)),b:B.get(os)||[],co:CO[os]};};
+  box.innerHTML=toks.map(os=>{const a=achar(os);const r0=a.ca[0]||a.ac[0]||a.ex[0]||null;const b0=a.b[0];
+    const end=r0?r0.end:b0&&D?D.e[b0[3]]+", "+b0[4]:a.co?a.co[5]:"",bai=r0?r0.bai:b0&&D?D.b[b0[5]]:a.co?a.co[6]:"",tss=r0?r0.tss:b0&&D?D.t[b0[1]]:a.co?a.co[2]:"",polo=r0?r0.p:a.co?a.co[7]:b0&&D?(RT_POLO[D.a[b0[8]]]||""):"";
+    if(!r0&&!b0&&!a.co)return `<div class="bo-card nf"><div class="bo-h"><div><small>OS</small><b class="mono">${esc(os)}</b></div><span class="bo-st nf">Não encontrada</span></div><p class="note">Não está na carteira de agora, nem nas carteiras guardadas, nem na base de executados.</p></div>`;
+    let st,stc;const ca=a.ca[0];if(ca){const z=minutosResid(ca.tr);st=ca.fora?"Na carteira · fora do prazo":"Na carteira · no prazo";stc=ca.fora?"f":"n";}
+    else if(a.ex.length||a.b.length){const fez=a.ex.some(r=>executadoDeFato(r.cod,r.res))||a.b.some(r=>!ale[r[9]]);st=fez?"Baixada · executada":"Baixada · sem execução";stc=fez?"ok":"se";}
+    else if(a.co){st="Não está mais na carteira";stc="se";}else{st="Entrada registrada";stc="n";}
+    const ev=[];
+    for(const r of a.ac)ev.push({d:r.ins||r.dt,t:"Entrou (acatada)",s:cap(r.tss)});
+    if(a.co&&ca&&a.co[3]<u.dc)ev.push({d:a.co[3],t:`Na carteira desde ${dmy(a.co[3])}`,s:cap(a.co[2])});
+    if(a.co&&!ca)ev.push({d:a.co[3],t:a.co[4]!==a.co[3]?`Esteve nas carteiras de ${dmy(a.co[3])} a ${dmy(a.co[4])}`:`Esteve na carteira de ${dmy(a.co[3])}`,s:cap(a.co[2])});
+    if(ca)ev.push({d:u.dc,t:`Está na carteira de ${dmy(u.dc)}`,s:`${ca.st||""} · prazo ${ca.pf||"–"}`,c:stc});
+    const exV=new Set();for(const r of a.ex){exV.add(r.dt);const fez=executadoDeFato(r.cod,r.res);ev.push({d:r.fim||r.ini||r.dt,t:fez?"Executada":"Baixada sem execução",s:cap(r.res)+(r.eq?" · "+cap(r.eq):""),c:fez?"ok":"se"});}
+    if(D)for(const r of a.b){const dd=rtIso(r[12]);if(exV.has(dd))continue;const al=ale[r[9]];ev.push({d:rtDm(r[12]),t:al?"Baixada sem execução":"Executada",s:cap(D.r[r[9]])+(D.q[r[10]]?" · "+cap(D.q[r[10]]):""),c:al?"se":"ok"});}
+    const key=d=>{const m=String(d||"").match(/(\d{1,2})\/(\d{1,2})\/(\d{2,4})/);if(m){const y=m[3].length===2?"20"+m[3]:m[3];return y+m[2].padStart(2,"0")+m[1].padStart(2,"0");}return String(d||"").replace(/-/g,"").slice(0,8);};
+    ev.sort((x,y)=>key(y.d).localeCompare(key(x.d)));
+    const fmt=d=>{const s=String(d||"");return /^\d{4}-\d{2}-\d{2}$/.test(s)?dmy(s):s.slice(0,16);};
+    return `<div class="bo-card"><div class="bo-h"><div><small>OS</small><b class="mono">${esc(os)}</b></div><span class="bo-st ${stc}">${st}</span></div>
+      <div class="bo-g"><div><small>Endereço</small><b>${esc(end||"–")}</b><span>${esc(bai||"")}${polo?" · "+esc(polo):""}</span></div><div><small>Serviço</small><b>${esc(cap(tss)||"–")}</b><span>${esc(cap(r0?r0.fam:""))}</span></div>${ca?`<div><small>Prazo</small><b>${esc(ca.pf||"–")}</b><span>${ca.fora?"vencida":esc(ca.tr||"")}</span></div><div><small>Fornecedor</small><b>${esc(nomeForn(ca.forn))}</b><span>status ${esc(ca.st||"–")}</span></div>`:""}</div>
+      <div class="bo-tl">${ev.map(e=>`<div class="bo-e ${e.c||""}"><i></i><div><b>${esc(e.t)}</b><span>${esc(fmt(e.d))}${e.s?" · "+esc(e.s):""}</span></div></div>`).join("")}</div></div>`;}).join("");}
+document.addEventListener("input",e=>{if(e.target&&e.target.id==="bosQ"){e.target.style.height="auto";e.target.style.height=e.target.scrollHeight+"px";clearTimeout(window.__bq);window.__bq=setTimeout(renderBos,300);}});
 
 /* ================= RETRABALHO ================= */
 // Base: uma linha por OS+TSS executada (fim do dia e continua não entram). Guardada neste computador e enviada ao link da coordenação.
