@@ -2085,6 +2085,14 @@ body.perfil-ctl .topo{margin-bottom:-4px}
 .bo-e b{display:block;font-size:13.5px;color:#14212B}.bo-e span{font-size:12px;color:#6B7C8B}
 @media (max-width:760px){.bo-g{grid-template-columns:1fr 1fr}}
 body.aba-bos #filtros,body.aba-bos .tb-r .actions{display:none!important}
+.pbos{display:none}
+body.perfil-ctl .pbos{display:block;margin-bottom:4px}
+.pbos-in{display:flex;align-items:center;gap:10px;background:#fff;border:2px solid #C9E4F4;border-radius:12px;padding:10px 14px;color:#0096D6}
+.pbos-in:focus-within{border-color:#0096D6}
+.pbos-in input{flex:1;border:0;outline:0;background:none;font:600 15px var(--f-body);color:#14212B}
+#pbosRes:not(:empty){margin-top:10px}
+.mlist td.m-os,td.m-os{font-family:ui-monospace,Consolas,monospace;font-size:12.5px;color:#00396F;white-space:nowrap}
+.pbos-in input{padding:0 0 0 2px!important;border:0!important;box-shadow:none!important;background:none!important}
 
 </style>
 </head>
@@ -2195,6 +2203,7 @@ body.aba-bos #filtros,body.aba-bos .tb-r .actions{display:none!important}
   </div>
 
   <section id="v-painel" class="view">
+    <div class="pbos" id="pbos"><div class="pbos-in"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input type="search" id="pbosQ" placeholder="Pesquisar OS — digite um ou mais números para ver se está na carteira, onde já esteve e se foi baixada" autocomplete="off"></div><div id="pbosRes"></div></div>
     <div class="kcs" id="kpis"></div>
     <div class="pzaviso" id="pzAviso" hidden></div>
     <div class="fornp" id="fornPainel"></div>
@@ -3224,11 +3233,11 @@ function abrirLista(o){const u=ultF();const modo=o.modo||"carteira";const agora=
   $("mTit").textContent=(o.nome||o.tss||(o.fam?"Família "+o.fam:"")||o.g||(o.gs?o.gs.join(" e "):"Todos os serviços"))+" · "+(modo==="carteira"?(o.prazo==="fora"?(o.g==="Religação"?"vencidas (passaram de 48h)":"fora do prazo"):o.prazo==="no"?"no prazo":o.prazo==="p24"?"passaram de 24h · vencem em 48h":o.prazo==="d24"?"dentro das 24h":"carteira"):modo==="entradas"?"entradas":"execuções");
   $("mSub").textContent=`${nf(L.length)} endereço${L.length===1?"":"s"}${o.p?" · "+o.p:poloSel!=="Todos"?" · "+poloSel:""}${modo!=="carteira"?" · "+(o.g==="Religação"?"só "+wd(diaRel())+" "+dmy(diaRel())+" (dia anterior)":rotDias()):""}`;
   {const pf=new Map();for(const r of L){const k=nomeForn(r.forn);pf.set(k,(pf.get(k)||0)+1);}if(pf.size>1)$("mSub").textContent+=" · "+[...pf].sort((a,b)=>b[1]-a[1]).map(([k,n])=>`${k}: ${nf(n)}`).join(" · ");}
-  $("mLista").innerHTML=L.length?`<table><thead><tr><th>Endereço</th><th>Bairro</th><th>Tipo</th><th>Polo</th><th>${modo==="carteira"?"Prazo":"Dia"}</th></tr></thead><tbody>`+L.slice(0,800).map(r=>{const h=vc(r);
+  $("mLista").innerHTML=L.length?`<table><thead><tr><th>OS</th><th>Endereço</th><th>Bairro</th><th>Tipo</th><th>Polo</th><th>${modo==="carteira"?"Prazo":"Dia"}</th></tr></thead><tbody>`+L.slice(0,800).map(r=>{const h=vc(r);
     const k24=r.g==="Religação"?h24(r):null;
     const sit=modo==="carteira"?(r.g==="Religação"&&h!=null&&h>=0&&k24!=null&&k24<0?`<span class="tg5 a">passou de 24h · vence 48h em ${tempoTxt(h)}</span>`:r.fora||(h!=null&&h<0)?`<span class="tg5 f">${h!=null&&h<0?"venceu há "+tempoTxt(h):"fora do prazo"}</span>`:`<span class="tg5 n">${h!=null?"vence em "+tempoTxt(h):"no prazo"}</span>`):`${wd(r.dt)} ${dm(r.dt)}`;
     const txt=`${r.end||"–"} – ${r.bai||""} (${r.p}) · OS ${r.os} · ${r.tss}`;
-    return `<tr data-txt="${esc(txt)}"><td class="e5">${esc(r.end||"–")}</td><td>${esc(r.bai||"")}</td><td>${esc(r.tss)}${modo==="carteira"?rtSelo(r):""}</td><td>${r.p}</td><td>${sit}</td></tr>`;}).join("")+"</tbody></table>":`<div class="fvazia">Nenhum endereço.</div>`;
+    return `<tr data-txt="${esc(txt)}"><td class="m-os">${esc(r.os)}</td><td class="e5">${esc(r.end||"–")}</td><td>${esc(r.bai||"")}</td><td>${esc(r.tss)}${modo==="carteira"?rtSelo(r):""}</td><td>${r.p}</td><td>${sit}</td></tr>`;}).join("")+"</tbody></table>":`<div class="fvazia">Nenhum endereço.</div>`;
   $("modal").hidden=false;}
 $("mFechar").onclick=()=>{$("modal").hidden=true;};
 async function copiarTexto(t,bt){try{await navigator.clipboard.writeText(t);}catch(e){const a=document.createElement("textarea");a.value=t;document.body.appendChild(a);a.select();document.execCommand("copy");a.remove();}
@@ -3565,8 +3574,8 @@ function hidAcum(){const H=(S.hidH)||{cart:{},dia:{}};const MES=["jan","fev","ma
 let bosIdx=null;
 function bosBase(){const em=(typeof RB!=="undefined"&&RB)?RB.em:0;if(bosIdx&&bosIdx.em===em)return bosIdx.M;const M=new Map();
   if(typeof RB!=="undefined"&&RB&&RB.R)for(const r of RB.R){const k=r[0];const L=M.get(k);if(L)L.push(r);else M.set(k,[r]);}bosIdx={em,M};return M;}
-function renderBos(){const box=$("bosRes");if(!box)return;const toks=[...new Set(String($("bosQ").value||"").split(/[\s,;]+/).map(x=>x.replace(/\D/g,"")).filter(x=>x.length>=5))];
-  if(!toks.length){box.innerHTML=`<div class="bo-vazio">Digite o número da OS para ver a situação dela.</div>`;return;}
+function renderBos(qId,bId){const box=$(bId||"bosRes");if(!box)return;const toks=[...new Set(String(($(qId||"bosQ")||{}).value||"").split(/[\s,;]+/).map(x=>x.replace(/\D/g,"")).filter(x=>x.length>=5))];
+  if(!toks.length){box.innerHTML=bId?"":`<div class="bo-vazio">Digite o número da OS para ver a situação dela.</div>`;return;}
   const u=S.ult,cap=t=>{t=clean(t);return t?t.charAt(0)+t.slice(1).toLowerCase():"";};const B=bosBase();const CO=(typeof RB!=="undefined"&&RB&&RB.CO)||{};const D=(typeof RB!=="undefined"&&RB)?RB.D:null;const ale=(D&&typeof rtCalc==="function")?rtCalc().ale:{};
   const achar=os=>{const ok=x=>keyOS(x)===os;return {ca:u.ca.filter(r=>ok(r.os)),ac:u.ac.filter(r=>ok(r.os)),ex:u.ex.filter(r=>ok(r.os)),b:B.get(os)||[],co:CO[os]};};
   box.innerHTML=toks.map(os=>{const a=achar(os);const r0=a.ca[0]||a.ac[0]||a.ex[0]||null;const b0=a.b[0];
@@ -3588,7 +3597,7 @@ function renderBos(){const box=$("bosRes");if(!box)return;const toks=[...new Set
     return `<div class="bo-card"><div class="bo-h"><div><small>OS</small><b class="mono">${esc(os)}</b></div><span class="bo-st ${stc}">${st}</span></div>
       <div class="bo-g"><div><small>Endereço</small><b>${esc(end||"–")}</b><span>${esc(bai||"")}${polo?" · "+esc(polo):""}</span></div><div><small>Serviço</small><b>${esc(cap(tss)||"–")}</b><span>${esc(cap(r0?r0.fam:""))}</span></div>${ca?`<div><small>Prazo</small><b>${esc(ca.pf||"–")}</b><span>${ca.fora?"vencida":esc(ca.tr||"")}</span></div><div><small>Fornecedor</small><b>${esc(nomeForn(ca.forn))}</b><span>status ${esc(ca.st||"–")}</span></div>`:""}</div>
       <div class="bo-tl">${ev.map(e=>`<div class="bo-e ${e.c||""}"><i></i><div><b>${esc(e.t)}</b><span>${esc(fmt(e.d))}${e.s?" · "+esc(e.s):""}</span></div></div>`).join("")}</div></div>`;}).join("");}
-document.addEventListener("input",e=>{if(e.target&&e.target.id==="bosQ"){e.target.style.height="auto";e.target.style.height=e.target.scrollHeight+"px";clearTimeout(window.__bq);window.__bq=setTimeout(renderBos,300);}});
+document.addEventListener("input",e=>{if(e.target&&e.target.id==="pbosQ"){clearTimeout(window.__pbq);window.__pbq=setTimeout(()=>renderBos("pbosQ","pbosRes"),300);return;}if(e.target&&e.target.id==="bosQ"){e.target.style.height="auto";e.target.style.height=e.target.scrollHeight+"px";clearTimeout(window.__bq);window.__bq=setTimeout(renderBos,300);}});
 
 /* ================= RETRABALHO ================= */
 // Base: uma linha por OS+TSS executada (fim do dia e continua não entram). Guardada neste computador e enviada ao link da coordenação.
