@@ -2086,7 +2086,7 @@ body.perfil-ctl .topo{margin-bottom:-4px}
 @media (max-width:760px){.bo-g{grid-template-columns:1fr 1fr}}
 body.aba-bos #filtros,body.aba-bos .tb-r .actions{display:none!important}
 .pbos{display:none}
-body.perfil-ctl .pbos{display:block;margin-bottom:4px}
+body.com-bos .pbos{display:block;margin-bottom:4px}
 .pbos-in{display:flex;align-items:center;gap:10px;background:#fff;border:2px solid #C9E4F4;border-radius:12px;padding:10px 14px;color:#0096D6}
 .pbos-in:focus-within{border-color:#0096D6}
 .pbos-in input{flex:1;border:0;outline:0;background:none;font:600 15px var(--f-body);color:#14212B}
@@ -3478,7 +3478,7 @@ async function carregarLeitor(){const q="?k="+encodeURIComponent(SLUG)+qPerfil()
   if(m.em===versaoLeitor)return false;let z="";for(let i=0;i<m.partes;i++){const j=await apiC(null,"GET",q+"&v="+m.v+"&i="+i);z+=j.dados;}
   {const o=JSON.parse(await descompactar(z));RAW=o._raw||null;delete o._raw;S=normalizar(o);}ajustarRel(S.ult.ca);for(const r of S.ult.ex)r.conta=executadoDeFato(r.cod,r.res);versaoLeitor=m.em;
   setConn("on","Atualizado pela equipe em "+new Date(m.em).toLocaleString("pt-BR",{dateStyle:"short",timeStyle:"short"}),S.ult.dc?"carteira de "+dmy(S.ult.dc):"");return true;}
-async function iniciarLeitor(){document.body.classList.add("leitor");if(CONTROLE){document.body.classList.add("perfil-ctl");$("t-lig").hidden=true;$("t-bos").hidden=false;$("t-bos").onclick=()=>aba("bos");}const ft=document.querySelector(".foot");if(ft)ft.textContent="Painel da Carteira de Serviços · Interlagos e Grajaú · só visualização";$("telaLogin").hidden=true;document.title="Gestão da Carteira de Serviços · Grajaú e Interlagos";
+async function iniciarLeitor(){document.body.classList.add("leitor");if(CONTROLE){document.body.classList.add("perfil-ctl");$("t-lig").hidden=true;}const ft=document.querySelector(".foot");if(ft)ft.textContent="Painel da Carteira de Serviços · Interlagos e Grajaú · só visualização";$("telaLogin").hidden=true;document.title="Gestão da Carteira de Serviços · Grajaú e Interlagos";
   $("hSaudL").innerHTML='Bem-vindo(a)<small class="hsub">Carteira de Serviços · Interlagos e Grajaú</small>';
   {const tick=()=>{const d=new Date();$("hHora").textContent=d.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"});const t=d.toLocaleDateString("pt-BR",{weekday:"long",day:"2-digit",month:"long",year:"numeric"});$("hDia").textContent=t.charAt(0).toUpperCase()+t.slice(1);};$("hClock").hidden=false;tick();setInterval(tick,20000);}setConn("warn","Carregando o painel…","");
   try{await carregarLeitor();}catch(e){S=normalizar(null);setConn("off",e.message,"");$("hRes").textContent=e.message;window.__pronto=true;return;}
@@ -3598,6 +3598,9 @@ function renderBos(qId,bId){const box=$(bId||"bosRes");if(!box)return;const toks
       <div class="bo-g"><div><small>Endereço</small><b>${esc(end||"–")}</b><span>${esc(bai||"")}${polo?" · "+esc(polo):""}</span></div><div><small>Serviço</small><b>${esc(cap(tss)||"–")}</b><span>${esc(cap(r0?r0.fam:""))}</span></div>${ca?`<div><small>Prazo</small><b>${esc(ca.pf||"–")}</b><span>${ca.fora?"vencida":esc(ca.tr||"")}</span></div><div><small>Fornecedor</small><b>${esc(nomeForn(ca.forn))}</b><span>status ${esc(ca.st||"–")}</span></div>`:""}</div>
       <div class="bo-tl">${ev.map(e=>`<div class="bo-e ${e.c||""}"><i></i><div><b>${esc(e.t)}</b><span>${esc(fmt(e.d))}${e.s?" · "+esc(e.s):""}</span></div></div>`).join("")}</div></div>`;}).join("");}
 document.addEventListener("input",e=>{if(e.target&&e.target.id==="pbosQ"){clearTimeout(window.__pbq);window.__pbq=setTimeout(()=>renderBos("pbosQ","pbosRes"),300);return;}if(e.target&&e.target.id==="bosQ"){e.target.style.height="auto";e.target.style.height=e.target.scrollHeight+"px";clearTimeout(window.__bq);window.__bq=setTimeout(renderBos,300);}});
+
+// Pesquisar OS: aba e caixa no Painel para todos (menos o perfil do hidrômetro)
+if(!PERFIL){$("t-bos").hidden=false;$("t-bos").onclick=()=>aba("bos");document.body.classList.add("com-bos");}
 
 /* ================= RETRABALHO ================= */
 // Base: uma linha por OS+TSS executada (fim do dia e continua não entram). Guardada neste computador e enviada ao link da coordenação.
