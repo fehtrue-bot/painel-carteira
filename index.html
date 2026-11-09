@@ -2093,6 +2093,13 @@ body.com-bos .pbos{display:block;margin-bottom:4px}
 #pbosRes:not(:empty){margin-top:10px}
 .mlist td.m-os,td.m-os{font-family:ui-monospace,Consolas,monospace;font-size:12.5px;color:#00396F;white-space:nowrap}
 .pbos-in input{padding:0 0 0 2px!important;border:0!important;box-shadow:none!important;background:none!important}
+.svc-tg{all:unset;box-sizing:border-box;grid-column:1/-1;display:flex;align-items:center;gap:10px;cursor:pointer;margin:6px 0 0;padding:10px 14px;border:1px solid #E3E9EF;border-radius:10px;background:#fff;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#3E5163}
+.svc-tg::after{display:none}
+.svc-tg:hover{border-color:#0096D6;background:#F6FAFD}
+.svc-tg small{font-weight:600;letter-spacing:0;text-transform:none;color:#8A97A3}
+.svc-tg em{margin-left:auto;font-style:normal;letter-spacing:0;text-transform:none;color:#0077B6;font-size:13px;display:flex;align-items:center;gap:6px}
+.svc-tg em i{font-style:normal;font-size:18px;transition:transform .15s;display:inline-block}
+.svc-tg.ab em i{transform:rotate(90deg)}
 
 </style>
 </head>
@@ -3221,7 +3228,7 @@ function cardsServ(ds,polo){const u=ultF();const PP=polo?{p:polo}:{};const fpo=r
       <div class="ch4">${miniDia(ds,E,X)}</div>
       <div class="ft4"><div${go({...PP,modo:"entradas",...GG})}><small>Entradas</small><b style="color:#B9650F">${nf(te)}</b></div><div${go({...PP,modo:"execucoes",...GG})}><small>Execuções</small><b style="color:#1C7444">${nf(tx)}</b></div><div><small>Saldo</small><b class="${te-tx>0?"up":te-tx<0?"down":""}">${sgn(te-tx)}</b></div></div></div>`;}).filter(Boolean);
   const pri=cards.filter(c=>c[0]!=="\u0001"),out=cards.filter(c=>c[0]==="\u0001").map(c=>c.slice(1));
-  if(cards.length)return pri.join("")+(out.length?`<div class="svc-sep"><span>Outros serviços</span><small>${nf(out.length)} ${out.length===1?"família":"famílias"}</small></div>`+out.join(""):"");
+  if(cards.length)return pri.join("")+(out.length?`<button type="button" class="svc-sep svc-tg${outAberto?" ab":""}" data-outros="1"><span>Outros serviços</span><small>${nf(out.length)} ${out.length===1?"família":"famílias"}</small><em>${outAberto?"esconder":"ver todos"}<i>›</i></em></button>`+(outAberto?out.join(""):""):"");
   return cards.length?cards.join(""):`<div class="empty" style="grid-column:1/-1">Nenhum serviço com carteira, entradas ou execuções${fornSel?" para "+esc(fornSel):""}.</div>`;}
 function abrirLista(o){const u=ultF();const modo=o.modo||"carteira";const agora=Date.now();
   let L=(modo==="carteira"?u.ca:modo==="entradas"?u.ac:u.ex).filter(r=>(o.p?r.p===o.p:fp(r))&&(!o.g||r.g===o.g)&&(!o.gs||o.gs.includes(r.g))&&(!o.tss||r.tss===o.tss)&&(!o.fam||famDe(r)===o.fam));
@@ -3601,6 +3608,9 @@ document.addEventListener("input",e=>{if(e.target&&e.target.id==="pbosQ"){clearT
 
 // Pesquisar OS: aba e caixa no Painel para todos (menos o perfil do hidrômetro)
 if(!PERFIL){$("t-bos").hidden=false;$("t-bos").onclick=()=>aba("bos");document.body.classList.add("com-bos");}
+
+let outAberto=false;
+document.addEventListener("click",e=>{if(e.target.closest("[data-outros]")){outAberto=!outAberto;renderTudo();}});
 
 /* ================= RETRABALHO ================= */
 // Base: uma linha por OS+TSS executada (fim do dia e continua não entram). Guardada neste computador e enviada ao link da coordenação.
