@@ -990,6 +990,7 @@ body.leitor .pubst{display:none}
 .rte b{display:block;font-size:13.5px;color:#00396F}.rte small{font-size:11.5px;color:var(--muted)}.rtw{font-style:normal;color:#B9650F;font-weight:700}
 .rtd{display:flex;flex-wrap:wrap;gap:4px}.rtd i{font-style:normal;font-size:11px;font-weight:600;padding:2px 6px;border-radius:6px;background:#FCE9E8;color:#B0302A;font-variant-numeric:tabular-nums}
 .rtd i.al{background:#EEF1F4;color:#5E6E7B}
+.rtdos i{font-size:12px!important;padding:3px 8px!important}.rtdos i b{font-weight:800;user-select:all}
 .rtdet{width:100%;border-collapse:collapse;font-size:12px;margin:4px 0 10px}.rtdet th{font-size:10.5px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);text-align:left;padding:5px 8px;border-bottom:1px solid var(--line)}
 .rtdet td{padding:5px 8px;border-bottom:1px solid var(--line-2)}
 body.leitor #rtAtual,body.leitor #rtBase{display:none!important}
@@ -3699,6 +3700,7 @@ function rtHistCart(r,dcRef){if(!RB||!RB.R)return [];const [e,n]=rtSepEnd(r.end)
     const z=[];z[0]=os;z[12]=rtMin(dmy(v[3])+" 08:00");z.cart=v[3];z.tss=v[2];z.rs="estava na carteira de "+dmy(v[3])+(v[4]!==v[3]?" até "+dmy(v[4]):"")+" · sem execução na base";vis.add(os);out.push(z);}
   return out.sort((a,b)=>a[12]-b[12]);}
 function rtSelo(r){const h=rtHistCart(r);if(!h.length)return "";const ult=h[h.length-1];return ` <span class="rtselo" title="Já feito ${h.length}x neste endereço · última em ${rtDm(ult[12])}">↻ já feito ${h.length}x</span>`;}
+function rtChipOS(r,ale){const D=RB.D;const res=r.rs!=null?r.rs:D.r[r[9]];return `<i class="${ale?"al":""}" title="${esc(res||"")}${D.q[r[10]]?" · "+esc(D.q[r[10]]):""}">${rtDm(r[12])} · <b>OS ${esc(r[0])}</b>${ale?" · alegação":""}</i>`;}
 function rtChip(r,ale){const D=RB.D;return `<i class="${ale?"al":""}" title="OS ${esc(r[0])} · ${esc(r.rs!=null?r.rs:D.r[r[9]])}${D.q[r[10]]?" · "+esc(D.q[r[10]]):""}">${rtDm(r[12])}</i>`;}
 
 // ---------- tela ----------
@@ -3868,7 +3870,7 @@ function rtBuscar(){const D=RB.D,q=U(($("rtBusca").value||"").trim());const ale=
     const retr=ts.reduce((a,[,x])=>a+Math.max(0,x.length-1),0);
     return `<div class="rtend"><div class="rtendh"><div><b>${esc(D.e[r0[3]])}, ${esc(r0[4])}</b><small>${esc(D.b[r0[5]])} · ${esc(D.m[r0[6]])} · ${esc(RT_POLO[D.a[r0[8]]]||"")}</small></div><div class="rtendk"><span><b>${nf(L.length)}</b> serviços</span><span class="${retr?"vm":""}"><b>${nf(retr)}</b> retrabalhos</span><span class="${ab.length?"lj":""}"><b>${nf(ab.length)}</b> na carteira agora</span></div></div>`+
       (ab.length?`<div class="rtab">${ab.map(c=>`<span>🔗 Na carteira: <b>OS ${esc(c.os)}</b> · ${esc(c.tss)} · <em class="${c.fora?"vm":""}">${c.fora?"fora do prazo":"no prazo"}</em>${porT.has(c.tss)||[...porT.keys()].some(t=>U(t)===U(c.tss))?" · <b class='vm'>já feito antes</b>":""}</span>`).join("")}</div>`:"")+
-      `<table class="rtts"><tbody>${ts.map(([t,x])=>`<tr class="${x.length>1?"rep":""}"><td class="n">${x.length}x</td><td class="t">${esc(t)}</td><td><div class="rtd">${x.map(r=>rtChip(r,ale[r[9]])).join("")}</div></td></tr>`).join("")}</tbody></table></div>`;}).join("");}
+      `<table class="rtts"><tbody>${ts.map(([t,x])=>`<tr class="${x.length>1?"rep":""}"><td class="n">${x.length}x</td><td class="t">${esc(t)}</td><td><div class="rtd rtdos">${x.map(r=>rtChipOS(r,ale[r[9]])).join("")}</div></td></tr>`).join("")}</tbody></table></div>`;}).join("");}
 
 // ---------- carteira × retrabalho ----------
 var rtCfil="",rtCdc="",rtCab=new Set(),rtRua=false;
