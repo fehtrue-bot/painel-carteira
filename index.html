@@ -990,6 +990,17 @@ body.leitor .pubst{display:none}
 .rte b{display:block;font-size:13.5px;color:#00396F}.rte small{font-size:11.5px;color:var(--muted)}.rtw{font-style:normal;color:#B9650F;font-weight:700}
 .rtd{display:flex;flex-wrap:wrap;gap:4px}.rtd i{font-style:normal;font-size:11px;font-weight:600;padding:2px 6px;border-radius:6px;background:#FCE9E8;color:#B0302A;font-variant-numeric:tabular-nums}
 .rtd i.al{background:#EEF1F4;color:#5E6E7B}
+.rtx-l{display:flex;flex-direction:column;gap:6px;padding:10px 14px 14px}
+.rtx{border:1px solid var(--line-2,#E3E8EE);border-radius:10px;background:#fff;overflow:hidden}
+.rtx summary{list-style:none;display:grid;grid-template-columns:48px minmax(0,1fr) auto 70px;align-items:center;gap:10px;padding:10px 12px;cursor:pointer}
+.rtx summary::-webkit-details-marker{display:none}.rtx summary:hover{background:#F4F8FC}
+.rtx-n{font-weight:800;font-size:15px;color:#5E6E7B;text-align:center;background:#EEF2F5;border-radius:8px;padding:4px 0}.rtx.rep .rtx-n{background:#FFF1E0;color:#B36200}
+.rtx-t{font-weight:700;font-size:13.5px;color:#0B2545}.rtx-u{font-size:12px;color:#6B7A86;white-space:nowrap}
+.rtx-v{font-size:12px;font-weight:700;color:#00639A;text-align:right}.rtx-v::after{content:" ▾"}.rtx[open] .rtx-v::after{content:" ▴"}.rtx[open] summary{background:#F4F8FC;border-bottom:1px solid var(--line-2,#E3E8EE)}
+.rtx-tb{width:100%;border-collapse:collapse;font-size:12.5px}.rtx-tb th{text-align:left;font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:#6B7A86;padding:7px 12px;background:#FAFBFC}
+.rtx-tb td{padding:7px 12px;border-top:1px solid #EEF1F4}.rtx-tb td.os{font-weight:800;color:#0B2545;font-variant-numeric:tabular-nums;user-select:all}.rtx-tb tr.al td{color:#7A8794}
+.rtx-tag{display:inline-block;font-size:10.5px;font-weight:700;background:#EEF1F4;color:#5E6E7B;border-radius:6px;padding:1px 6px}
+@media (max-width:640px){.rtx summary{grid-template-columns:40px minmax(0,1fr) 60px}.rtx-u{display:none}.rtx-tb th:nth-child(4),.rtx-tb td:nth-child(4){display:none}}
 .rtdos i{font-size:12px!important;padding:3px 8px!important}.rtdos i b{font-weight:800;user-select:all}
 .rtdet{width:100%;border-collapse:collapse;font-size:12px;margin:4px 0 10px}.rtdet th{font-size:10.5px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);text-align:left;padding:5px 8px;border-bottom:1px solid var(--line)}
 .rtdet td{padding:5px 8px;border-bottom:1px solid var(--line-2)}
@@ -3870,7 +3881,9 @@ function rtBuscar(){const D=RB.D,q=U(($("rtBusca").value||"").trim());const ale=
     const retr=ts.reduce((a,[,x])=>a+Math.max(0,x.length-1),0);
     return `<div class="rtend"><div class="rtendh"><div><b>${esc(D.e[r0[3]])}, ${esc(r0[4])}</b><small>${esc(D.b[r0[5]])} · ${esc(D.m[r0[6]])} · ${esc(RT_POLO[D.a[r0[8]]]||"")}</small></div><div class="rtendk"><span><b>${nf(L.length)}</b> serviços</span><span class="${retr?"vm":""}"><b>${nf(retr)}</b> retrabalhos</span><span class="${ab.length?"lj":""}"><b>${nf(ab.length)}</b> na carteira agora</span></div></div>`+
       (ab.length?`<div class="rtab">${ab.map(c=>`<span>🔗 Na carteira: <b>OS ${esc(c.os)}</b> · ${esc(c.tss)} · <em class="${c.fora?"vm":""}">${c.fora?"fora do prazo":"no prazo"}</em>${porT.has(c.tss)||[...porT.keys()].some(t=>U(t)===U(c.tss))?" · <b class='vm'>já feito antes</b>":""}</span>`).join("")}</div>`:"")+
-      `<table class="rtts"><tbody>${ts.map(([t,x])=>`<tr class="${x.length>1?"rep":""}"><td class="n">${x.length}x</td><td class="t">${esc(t)}</td><td><div class="rtd rtdos">${x.map(r=>rtChipOS(r,ale[r[9]])).join("")}</div></td></tr>`).join("")}</tbody></table></div>`;}).join("");}
+      `<div class="rtx-l">${ts.map(([t,x])=>{const o=x.slice().sort((a,b)=>b[12]-a[12]);const nAl=o.filter(r=>ale[r[9]]).length;const cap=v=>v?v.charAt(0)+v.slice(1).toLowerCase():"";
+        return `<details class="rtx${x.length>1?" rep":""}"><summary><span class="rtx-n">${x.length}x</span><span class="rtx-t">${esc(cap(t))}</span><span class="rtx-u">último ${rtDm(o[0][12])}${nAl?` · ${nAl} ${nAl>1?"alegações":"alegação"}`:""}</span><span class="rtx-v">ver OS</span></summary>
+        <table class="rtx-tb"><thead><tr><th>Data</th><th>OS</th><th>Resultado</th><th>Equipe</th></tr></thead><tbody>${o.map(r=>{const al=ale[r[9]];const res=r.rs!=null?r.rs:RB.D.r[r[9]];return `<tr class="${al?"al":""}"><td>${rtDm(r[12])}</td><td class="os">${esc(r[0])}</td><td>${al?'<span class="rtx-tag">alegação</span> ':""}${esc(cap(res||""))}</td><td>${esc(cap(RB.D.q[r[10]]||"–"))}</td></tr>`;}).join("")}</tbody></table></details>`;}).join("")}</div></div>`;}).join("");}
 
 // ---------- carteira × retrabalho ----------
 var rtCfil="",rtCdc="",rtCab=new Set(),rtRua=false;
