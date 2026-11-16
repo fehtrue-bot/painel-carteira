@@ -3908,7 +3908,7 @@ function rtBuscar(){const D=RB.D,q=U(($("rtBusca").value||"").trim());const ale=
   const toks=q.split(" ").filter(Boolean);const num=/^\d+$/.test(toks[toks.length-1])&&toks.length>1?toks.pop():"";
   const M=rtIndice();const achados=[];
   for(const [k,L] of M){const [e,n]=k.split("|");const txt=e+" "+U(D.b[L[0][5]]);if(!toks.every(t=>txt.includes(t)))continue;if(num&&n!==num)continue;if(poloSel!=="Todos"&&RT_POLO[D.a[L[0][8]]]!==poloSel)continue;achados.push([k,L]);}
-  achados.sort((a,b)=>b[1].length-a[1].length);
+  {const nk=v=>{const m=String(v||"").match(/\d+/);return m?Number(m[0]):1e9;};achados.sort((a,b)=>{const ra=a[1][0],rb=b[1][0];return String(D.e[ra[3]]||"").localeCompare(String(D.e[rb[3]]||""),"pt-BR")||nk(ra[4])-nk(rb[4])||String(ra[4]||"").localeCompare(String(rb[4]||""),"pt-BR",{numeric:true});});}
   // OS abertas na carteira por endereço
   const cart=new Map();for(const r of ultF().ca){const [e,n]=rtSepEnd(r.end);const k=rtAddrK(e,n);let L=cart.get(k);if(!L){L=[];cart.set(k,L);}L.push(r);}
   if(!achados.length){$("rtRes").innerHTML=`<div class="rtvazio">Nenhum endereço encontrado com "${esc(q)}".</div>`;return;}
