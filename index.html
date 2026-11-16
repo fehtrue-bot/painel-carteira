@@ -995,7 +995,18 @@ body.leitor .pubst{display:none}
 .rtd i.al{background:#EEF1F4;color:#5E6E7B}
 .rtcq{margin:4px 14px 10px}
 .tsv{padding:4px 16px 16px}
-.tsv-q2{margin:0 0 12px}.tsv-q2 p{margin:6px 4px 0;font-size:12.5px;color:#6B7A86}
+.tsq{background:#fff;border:1px solid #E3E8EE;border-radius:14px;padding:16px 18px;margin:0 0 14px;box-shadow:0 1px 2px rgba(16,40,70,.04)}
+.tsq-t{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:12px}.tsq-t b{font-size:15px;color:#0B2545}.tsq-t small{font-size:12px;color:#8A99A6}
+.tsq-f{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr) auto;gap:12px;align-items:end}
+.tsq-i{display:flex;flex-direction:column;gap:5px}.tsq-i span{font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:#6B7A86}
+.tsq-i input{height:42px;border:1px solid #C9D5DE;border-radius:10px;padding:0 12px;font-size:14.5px;color:#0B2545;background:#FAFCFE;outline:none}.tsq-i input:focus{border-color:#0096D6;background:#fff;box-shadow:0 0 0 3px rgba(0,150,214,.15)}
+.tsq-x{height:42px;padding:0 16px;border:1px solid #C9D5DE;border-radius:10px;background:#fff;color:#3E5163;font-weight:600;cursor:pointer}.tsq-x:hover{background:#F2F6F9}
+.tsq-r{display:flex;align-items:center;gap:16px;margin-top:14px;padding:12px 16px;border-radius:12px;background:linear-gradient(100deg,#FFF6EA,#FFFDF9);border:1px solid #F6D9B0}
+.tsq-big{display:flex;align-items:baseline;gap:6px}.tsq-big b{font-size:34px;line-height:1;font-weight:800;color:#E07F00}.tsq-big span{font-size:14px;font-weight:700;color:#B36200}
+.tsq-d{display:flex;flex-direction:column;gap:2px;min-width:0}.tsq-d b{font-size:15px;color:#0B2545}.tsq-d span{font-size:12.5px;color:#6B7A86}
+.tsq-hint{margin-top:10px;font-size:12.5px;color:#8A99A6}
+@media (max-width:640px){.tsq-f{grid-template-columns:minmax(0,1fr)}}
+
 .tsv-h,.tsv-d>summary{display:grid;grid-template-columns:minmax(0,1fr) 120px 120px 28px;align-items:center;gap:12px;padding:0 14px}
 .tsv-h{font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:#6B7A86;height:34px;border-bottom:1px solid #E3E8EE}
 .tsv-h span:nth-child(2),.tsv-h span:nth-child(3){text-align:right}
@@ -2359,8 +2370,10 @@ body.com-bos .pbos{display:block;margin-bottom:4px}
       <details class="rx-box rx-cond" id="rtCondBox"><summary><b>Possível condomínio ou lote</b> <span id="rtCondN"></span><small>mesmo número com PDEs diferentes, ou várias OS no mesmo dia (cavalete múltiplo, ligações novas) — normalmente não é retrabalho</small></summary><div id="rtCond"></div></details>
     </div>
     <div id="rtV4" hidden>
-      <div class="tsv-q2"><div class="rtbusca"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input type="search" id="rtTend" placeholder="Endereço — ex.: rua evangelista 120" aria-label="Pesquisar endereço" autocomplete="off"></div><p>Escolha o serviço na caixa “Digite o serviço” acima e digite o endereço aqui: aparece quantas vezes aquele serviço foi feito nesse endereço.</p></div>
-      <article class="rx-box"><div class="rx-boxh"><div><h3>Retrabalho por serviço (TSS)</h3><p class="rx-sub" id="rtTnota"></p></div></div><div id="rtTlista"></div></article>
+      <article class="tsq"><div class="tsq-t"><b>Quantas vezes o serviço foi feito no endereço</b><small>preencha um ou os dois campos</small></div>
+        <div class="tsq-f"><label class="tsq-i"><span>Serviço (TSS)</span><input type="search" id="rtTs2" list="rtTssL" placeholder="ex.: vazamento, cavalete" autocomplete="off"></label><label class="tsq-i"><span>Endereço</span><input type="search" id="rtTend" placeholder="ex.: rua evangelista 120" autocomplete="off"></label><button type="button" id="rtTlimpa" class="tsq-x">Limpar</button></div>
+        <div id="rtTres"></div></article>
+      <article class="rx-box"><div class="rx-boxh"><div><h3 id="rtTtit">Retrabalho por serviço (TSS)</h3><p class="rx-sub" id="rtTnota"></p></div></div><div id="rtTlista"></div></article>
     </div>
     <div id="rtV2" hidden>
       <div class="rtbusca"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input type="search" id="rtBusca" placeholder="Rua e número — ex.: saint albans 199" aria-label="Pesquisar endereço"></div>
@@ -3768,7 +3781,7 @@ function renderRt(){setTimeout(marcarCards,0);
   const sem=!RB||!RB.R||!RB.R.length;
   $("rtBase").hidden=LEITOR;$("rtAtual").hidden=LEITOR;
   $("rtSub").innerHTML=[["geral","Análise de reincidência"],["tss","Por serviço (TSS)"],["busca","Consulta por endereço"],["cart","Carteira do dia"]].map(([k,l])=>`<button type="button" data-rv="${k}" aria-pressed="${rtView===k}"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${(k==="geral"?RT_IC.dash:RT_IC[k])}</svg>${l}</button>`).join("");
-  $("rtV1").hidden=rtView!=="geral";$("rtFil").hidden=rtView!=="geral"&&rtView!=="tss";$("rtV4").hidden=rtView!=="tss";$("rtV2").hidden=rtView!=="busca";$("rtV3").hidden=rtView!=="cart";
+  $("rtV1").hidden=rtView!=="geral";$("rtFil").hidden=rtView!=="geral"&&rtView!=="tss";{const sv=document.querySelector("#rtFil .rx-srv");if(sv)sv.hidden=rtView==="tss";}if(document.activeElement!==$("rtTs2"))$("rtTs2").value=rtTssSel;$("rtV4").hidden=rtView!=="tss";$("rtV2").hidden=rtView!=="busca";$("rtV3").hidden=rtView!=="cart";
   if(sem){$("rxOla").innerHTML=LEITOR?"Olá, <b>coordenação</b>":"Olá, <b>Fernanda</b>";$("rxPill").textContent="";$("rxData").textContent=new Date().toLocaleDateString("pt-BR");$("rtBaseN").textContent="vazia";$("rtInfo").textContent=LEITOR?"A base de retrabalho ainda não foi publicada.":"Ainda não há base. Use Importar base (arquivo .json.gz) ou Atualizar com executados.";
     ["rdTiles","rdMes","rdTop","rtLista","rtRes","rtCkpi","rtClista","rtCond"].forEach(i=>$(i).innerHTML="");return;}
   $("rtBaseN").textContent=nf(RB.R.length)+" serviços";$("rtInfo").innerHTML=`de ${dmy(RB.ini)} a ${dmy(RB.fim)}${RB.em?`<br>atualizada em ${new Date(RB.em).toLocaleString("pt-BR",{dateStyle:"short",timeStyle:"short"})}`:""}<em>Sem fim do dia e continua. A mesma OS conta uma vez.</em>`;
@@ -3776,15 +3789,19 @@ function renderRt(){setTimeout(marcarCards,0);
    const prox=RB.em?new Date(RB.em+15*864e5):null;$("rxPill").innerHTML=`<i></i>Base atualizada em <b>${RB.em?new Date(RB.em).toLocaleString("pt-BR",{dateStyle:"short",timeStyle:"short"}):"–"}</b>${prox?` · próxima atualização <b>${prox.toLocaleDateString("pt-BR")}</b>`:""}`;}
   if(rtView==="geral"){rtFiltros();rtDash();rtGeral();}else if(rtView==="tss"){rtFiltros();rtPorTss();}else if(rtView==="busca")rtBuscar();else rtCarteira();}
 function rtPorTss(){const D=RB.D,F=rtFiltrar(),C=rtCalc(),J=F.J;const pol=poloSel;const okP=r=>pol==="Todos"||RT_POLO[D.a[r[8]]]===pol;
-  const aq=U(($("rtTend")&&$("rtTend").value)||"").trim();
+  const aq=U(($("rtTend")&&$("rtTend").value)||"").trim();$("rtTtit").textContent=aq.length>=3?"Serviços feitos no endereço":"Retrabalho por serviço (TSS)";if(aq.length<3)$("rtTres").innerHTML=aq?'<div class="tsq-hint">Digite pelo menos 3 letras do endereço.</div>':"";
   if(aq.length>=3){const toks=aq.split(/\s+/).filter(Boolean);const num=/^\d+$/.test(toks[toks.length-1])&&toks.length>1?toks.pop():"";
     const qk=rtEndK(toks.join(" "));const T=new Map();let nEnd=new Set();
-    for(const [k,L0] of rtIndice()){const [e,n]=k.split("|");const txt=e+" "+U(D.b[L0[0][5]]);if(!toks.every(t=>txt.includes(t)))continue;if(num&&n!==num)continue;
+    const sc0=e=>{if(e===qk||e==="RUA "+qk||e==="AVENIDA "+qk)return 0;const W=" "+e.replace(/[^A-Z0-9]+/g," ")+" ";return toks.every(t=>W.includes(" "+t+" "))?1:2;};
+    const cand=[];for(const [k,L0] of rtIndice()){const [e,n]=k.split("|");const txt=e+" "+U(D.b[L0[0][5]]);if(!toks.every(t=>txt.includes(t)))continue;if(num&&n!==num)continue;cand.push([k,L0,sc0(e)]);}
+    const best=Math.min(3,...cand.map(c=>c[2]));
+    for(const [k,L0,sk] of cand){if(sk!==best)continue;const [e,n]=k.split("|");
       for(const r of L0){if(!okP(r))continue;if(rtModo==="exec"&&C.ale[r[9]])continue;if(rtTssSel&&!U(D.t[r[1]]).includes(U(rtTssSel)))continue;if(J&&(r[12]<J[0]||r[12]>J[1]))continue;
         let x=T.get(r[1]);if(!x){x={nome:D.t[r[1]]||"(sem TSS)",n:0,E:new Map()};T.set(r[1],x);}x.n++;let a=x.E.get(k);if(!a){a={e,n,b:D.b[r[5]]||"",L:[]};x.E.set(k,a);}a.L.push(r);nEnd.add(k);}}
     const cap=v=>v?v.charAt(0)+v.slice(1).toLowerCase():"";const sc=e=>{if(e===qk||e==="RUA "+qk||e==="AVENIDA "+qk)return 0;const W=" "+e.replace(/[^A-Z0-9]+/g," ")+" ";return toks.every(t=>W.includes(" "+t+" "))?1:2;};
     const L=[...T.values()].sort((a,b)=>String(a.nome).localeCompare(String(b.nome),"pt-BR",{sensitivity:"base"}));const tot=L.reduce((s,x)=>s+x.n,0);
-    $("rtTnota").textContent=L.length?`${nf(tot)} ${tot===1?"vez":"vezes"} ${rtTssSel?`o serviço “${rtTssSel}”`:"em todos os serviços"} em ${nf(nEnd.size)} ${nEnd.size===1?"endereço":"endereços"} para “${$("rtTend").value.trim()}”`:"";
+    $("rtTnota").textContent=`${nf(L.length)} ${L.length===1?"serviço":"serviços"} nesse endereço`;
+    $("rtTres").innerHTML=`<div class="tsq-r"><div class="tsq-big"><b>${nf(tot)}</b><span>${tot===1?"vez":"vezes"}</span></div><div class="tsq-d"><b>${rtTssSel?esc(cap(L.length===1?L[0].nome:rtTssSel)):"Todos os serviços"}</b><span>${esc($("rtTend").value.trim().toUpperCase())} · ${nf(nEnd.size)} ${nEnd.size===1?"endereço":"endereços"} encontrados</span></div></div>`;
     $("rtTlista").innerHTML=L.length?`<div class="tsv"><div class="tsv-h"><span>Serviço</span><span>Vezes</span><span>Endereços</span><span></span></div>${L.map(x=>{const ends=[...x.E].sort((a,b)=>sc(a[1].e)-sc(b[1].e)||a[1].e.localeCompare(b[1].e,"pt-BR")||(parseInt(a[1].n)||1e9)-(parseInt(b[1].n)||1e9)).map(([k,a])=>{const end=a.e+", "+a.n;a.L.sort((p,q)=>q[12]-p[12]);
         return `<div class="tsv-e" data-rbusca="${esc(end)}" title="Clique para ver todo o histórico do endereço"><span class="tsv-en"><b>${esc(end)}</b><small>${esc(a.b)}</small></span><span class="tsv-q">${a.L.length}x</span><span class="tsv-os">${a.L.map(r=>`<i class="${C.ale[r[9]]?"al":""}" title="${esc(D.r[r[9]]||"")}">${rtDm(r[12])} · ${esc(r[0])}</i>`).join("")}</span></div>`;}).join("");
       return `<details class="tsv-d" open><summary><span class="tsv-n" title="${esc(x.nome)}">${esc(cap(x.nome))}</span><span class="tsv-v">${nf(x.n)}</span><span class="tsv-v2">${nf(x.E.size)}</span><span class="tsv-ch"></span></summary><div class="tsv-l"><div class="tsv-eh"><span>Endereço</span><span>Vezes</span><span>Data · OS</span></div>${ends}</div></details>`;}).join("")}</div>`:`<div class="rtvazio">Nenhum serviço${rtTssSel?` “${esc(rtTssSel)}”`:""} encontrado nesse endereço.</div>`;
@@ -4019,7 +4036,9 @@ document.addEventListener("click",e=>{
   const t=e.target.closest("[data-rtt]");if(t&&t.closest("#v-rt")){rtTssSel=(t.dataset.rtt===rtTssSel?"":t.dataset.rtt);renderRt();return;}
   const k=e.target.closest(".rx-row .rtl1");if(k){const key=k.parentElement.dataset.rtk;rtAbertos.has(key)?rtAbertos.delete(key):rtAbertos.add(key);renderRt();}});
 document.addEventListener("change",e=>{if(e.target&&e.target.id==="rtCsel"){rtCdc=e.target.value;rtCfil="";renderRt();}});
-{let te=null;$("rtTend").addEventListener("input",()=>{clearTimeout(te);te=setTimeout(()=>{if(rtView==="tss")rtPorTss();},250);});}
+{let te=null;$("rtTend").addEventListener("input",()=>{clearTimeout(te);te=setTimeout(()=>{if(rtView==="tss")rtPorTss();},250);});
+ $("rtTs2").addEventListener("input",e=>{clearTimeout(te);te=setTimeout(()=>{rtTssSel=e.target.value.trim();$("rtTss").value=rtTssSel;rtPorTss();},300);});
+ $("rtTlimpa").onclick=()=>{$("rtTend").value="";$("rtTs2").value="";rtTssSel="";$("rtTss").value="";rtPorTss();};}
 {let tt=null;$("rtTss").addEventListener("input",e=>{clearTimeout(tt);tt=setTimeout(()=>{rtTssSel=e.target.value.trim();renderRt();},300);});}
 $("rtPde").onchange=()=>{rtCache=null;renderRt();};
 {let tb=null;$("rtBusca").addEventListener("input",()=>{clearTimeout(tb);tb=setTimeout(()=>{if(RB&&RB.R&&RB.R.length)rtBuscar();},250);});}
