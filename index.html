@@ -994,6 +994,24 @@ body.leitor .pubst{display:none}
 .rtd{display:flex;flex-wrap:wrap;gap:4px}.rtd i{font-style:normal;font-size:11px;font-weight:600;padding:2px 6px;border-radius:6px;background:#FCE9E8;color:#B0302A;font-variant-numeric:tabular-nums}
 .rtd i.al{background:#EEF1F4;color:#5E6E7B}
 .rtcq{margin:4px 14px 10px}
+.tsv{padding:4px 16px 16px}
+.tsv-h,.tsv-d>summary{display:grid;grid-template-columns:minmax(0,1fr) 120px 120px 28px;align-items:center;gap:12px;padding:0 14px}
+.tsv-h{font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:#6B7A86;height:34px;border-bottom:1px solid #E3E8EE}
+.tsv-h span:nth-child(2),.tsv-h span:nth-child(3){text-align:right}
+.tsv-d{border-bottom:1px solid #EEF1F4}.tsv-d>summary{list-style:none;height:48px;cursor:pointer;border-radius:8px}.tsv-d>summary::-webkit-details-marker{display:none}
+.tsv-d>summary:hover{background:#F3F8FC}.tsv-d[open]>summary{background:#EAF4FB}
+.tsv-n{font-weight:600;font-size:14px;color:#0B2545;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tsv-v{text-align:right;font-weight:800;font-size:16px;color:#E07F00;font-variant-numeric:tabular-nums}.tsv-v2{text-align:right;font-weight:600;font-size:14px;color:#3E5163;font-variant-numeric:tabular-nums}
+.tsv-ch{justify-self:end;width:8px;height:8px;border-right:2px solid #8A99A6;border-bottom:2px solid #8A99A6;transform:rotate(45deg);margin-top:-4px;transition:transform .15s}.tsv-d[open] .tsv-ch{transform:rotate(-135deg);margin-top:4px}
+.tsv-l{margin:4px 0 12px 14px;border-left:3px solid #0096D6;background:#FAFCFE;border-radius:0 8px 8px 0}
+.tsv-eh,.tsv-e{display:grid;grid-template-columns:minmax(180px,320px) 60px minmax(0,1fr);gap:12px;align-items:center;padding:8px 14px}
+.tsv-eh{font-size:10.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:#8A99A6;padding-top:10px;padding-bottom:4px}
+.tsv-e{border-top:1px solid #EEF1F4;cursor:pointer}.tsv-e:hover{background:#EEF6FC}
+.tsv-en b{display:block;font-size:13px;color:#0B2545;font-weight:700}.tsv-en small{font-size:11.5px;color:#6B7A86}
+.tsv-q{font-weight:800;color:#E07F00;font-size:14px}
+.tsv-os{display:flex;flex-wrap:wrap;gap:4px 10px}.tsv-os i{font-style:normal;font-size:12.5px;font-weight:600;color:#3E5163;font-variant-numeric:tabular-nums}.tsv-os i.al{color:#A3AEB8}
+@media (max-width:640px){.tsv-h,.tsv-d>summary{grid-template-columns:minmax(0,1fr) 70px 70px 20px;gap:8px;padding:0 6px}.tsv-eh{display:none}.tsv-e{grid-template-columns:minmax(0,1fr) 40px}.tsv-os{grid-column:1/-1}}
+
 .tsx{display:flex;flex-direction:column;gap:4px;padding:6px 14px 14px}
 .tsx-r{all:unset;box-sizing:border-box;display:grid;grid-template-columns:minmax(150px,260px) minmax(80px,1fr) 90px 230px 120px;align-items:center;gap:12px;padding:9px 12px;border:1px solid #E6ECF1;border-radius:10px;background:#fff;cursor:pointer}
 .tsx-r:hover{background:#F2F8FB;border-color:#BFD9EA}.tsx-r.on{background:#EAF4FB;border-color:#0096D6;box-shadow:inset 3px 0 0 #0096D6}
@@ -3761,12 +3779,11 @@ function rtPorTss(){const D=RB.D,F=rtFiltrar(),C=rtCalc(),J=F.J;const pol=poloSe
   for(const o of F.out){const x=tg(o.g.L[0][1]);x.ev+=o.ev;x.G.push(o);}
   const L=[...T.values()].filter(x=>x.ev).sort((a,b)=>b.ev-a.ev||b.G.length-a.G.length);const mx=Math.max(1,...L.map(x=>x.ev));
   const cap=v=>v?v.charAt(0)+v.slice(1).toLowerCase():"";
-  $("rtTnota").textContent=`${nf(L.length)} serviços com retrabalho · ${nf(F.eventos)} retrabalhos em ${nf(F.out.length)} endereços${J?" no período":" em toda a base"} · clique no serviço para ver os endereços e as OS`;
-  $("rtTlista").innerHTML=L.length?`<div class="tsx">${L.map(x=>{const pc=x.serv?x.ev*100/x.serv:0;
+  $("rtTnota").textContent=`${nf(F.eventos)} retrabalhos em ${nf(L.length)} serviços${J?" no período":""} · clique no serviço para ver os endereços`;
+  $("rtTlista").innerHTML=L.length?`<div class="tsv"><div class="tsv-h"><span>Serviço</span><span>Retrabalhos</span><span>Endereços</span><span></span></div>${L.map(x=>{
     const ends=x.G.slice().sort((a,b)=>b.g.L.length-a.g.L.length||b.ev-a.ev).slice(0,300).map(({g})=>{const r0=g.L[0];const end=D.e[r0[3]]+", "+r0[4];
-      return `<tr><td><b>${esc(end)}</b><small>${esc(D.b[r0[5]]||"")} · ${RT_POLO[D.a[r0[8]]]||""}</small></td><td class="tsx-q">${g.L.length}x</td><td><div class="tsx-os">${g.L.slice().reverse().map(r=>`<span class="${C.ale[r[9]]?"al":""}" title="${esc(D.r[r[9]]||"")}${D.q[r[10]]?" · "+esc(D.q[r[10]]):""}">${rtDm(r[12])} · <b>OS ${esc(r[0])}</b></span>`).join("")}</div></td><td><button type="button" class="tsx-ver" data-rbusca="${esc(end)}">histórico ›</button></td></tr>`;}).join("");
-    return `<details class="tsx-d"><summary class="tsx-r"><span class="tsx-n" title="${esc(x.nome)}">${esc(cap(x.nome))}</span><span class="tsx-b"><i style="width:${(x.ev*100/mx).toFixed(1)}%"></i></span><span class="tsx-v"><b>${nf(x.ev)}</b> retrab.</span><span class="tsx-x">${nf(x.G.length)} ${x.G.length===1?"endereço":"endereços"} · ${pc.toLocaleString("pt-BR",{maximumFractionDigits:1})}% de ${nf(x.serv)} feitos</span><span class="tsx-go">ver endereços</span></summary>
-      <div class="scroll"><table class="tsx-tb"><thead><tr><th>Endereço</th><th>Vezes</th><th>Data · OS (mais recente primeiro)</th><th></th></tr></thead><tbody>${ends}</tbody></table></div></details>`;}).join("")}</div>`:'<div class="rtvazio">Nenhum retrabalho com esses filtros.</div>';}
+      return `<div class="tsv-e" data-rbusca="${esc(end)}" title="Clique para ver todo o histórico do endereço"><span class="tsv-en"><b>${esc(end)}</b><small>${esc(D.b[r0[5]]||"")}</small></span><span class="tsv-q">${g.L.length}x</span><span class="tsv-os">${g.L.slice().reverse().map(r=>`<i class="${C.ale[r[9]]?"al":""}" title="${rtDm(r[12])} · ${esc(D.r[r[9]]||"")}">${esc(r[0])}</i>`).join("")}</span></div>`;}).join("");
+    return `<details class="tsv-d"><summary><span class="tsv-n" title="${esc(x.nome)}">${esc(cap(x.nome))}</span><span class="tsv-v">${nf(x.ev)}</span><span class="tsv-v2">${nf(x.G.length)}</span><span class="tsv-ch"></span></summary><div class="tsv-l"><div class="tsv-eh"><span>Endereço</span><span>Vezes</span><span>OS</span></div>${ends}</div></details>`;}).join("")}</div>`:'<div class="rtvazio">Nenhum retrabalho com esses filtros.</div>';}
 
 function rtPctModo(m){const old=rtModo;rtModo=m;const F=rtFiltrar();rtModo=old;return F.serv?F.eventos/F.serv:0;}
 function rtFiltros(){const D=RB.D,C=rtCalc();
