@@ -995,6 +995,15 @@ body.leitor .pubst{display:none}
 .rtd i.al{background:#EEF1F4;color:#5E6E7B}
 .rtcq{margin:4px 14px 10px}
 .tsv{padding:4px 16px 16px}
+.tsv-mod{display:inline-flex;gap:4px;background:#EEF2F5;border-radius:9px;padding:3px;margin-top:6px}.tsv-mod button{all:unset;cursor:pointer;font-size:12.5px;font-weight:600;color:#3E5163;padding:5px 12px;border-radius:7px}.tsv-mod button[aria-pressed="true"]{background:#fff;color:#0B2545;box-shadow:0 1px 2px rgba(0,0,0,.08)}
+.tsn{padding:4px 16px 16px}
+.tsn-h,.tsn-s{display:grid;grid-template-columns:minmax(160px,280px) 56px minmax(0,1fr);gap:12px;align-items:center}
+.tsn-h{grid-template-columns:110px minmax(160px,280px) 56px minmax(0,1fr);font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:#6B7A86;height:34px;padding:0 12px;border-bottom:1px solid #E3E8EE}
+.tsn-rua{margin:14px 0 4px;padding:6px 12px;font-size:12.5px;font-weight:800;letter-spacing:.03em;color:#00396F;background:#EAF2F9;border-radius:8px}
+.tsn-g{display:grid;grid-template-columns:110px minmax(0,1fr);gap:12px;padding:9px 12px;border-bottom:1px solid #EEF1F4;cursor:pointer;border-radius:8px}.tsn-g:hover{background:#F3F8FC}
+.tsn-n b{display:block;font-size:17px;font-weight:800;color:#0B2545;font-variant-numeric:tabular-nums}.tsn-n small{font-size:11px;color:#8A99A6}
+.tsn-ss{display:flex;flex-direction:column;gap:6px}.tsn-sn{font-size:13px;font-weight:600;color:#0B2545}
+@media (max-width:640px){.tsn-h{display:none}.tsn-g{grid-template-columns:64px minmax(0,1fr)}.tsn-s{grid-template-columns:minmax(0,1fr) 40px}.tsn-s .tsv-os{grid-column:1/-1}}
 .tsq{background:#fff;border:1px solid #E3E8EE;border-radius:14px;padding:16px 18px;margin:0 0 14px;box-shadow:0 1px 2px rgba(16,40,70,.04)}
 .tsq-t{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:12px}.tsq-t b{font-size:15px;color:#0B2545}.tsq-t small{font-size:12px;color:#8A99A6}
 .tsq-f{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr) auto;gap:12px;align-items:end}
@@ -3682,7 +3691,7 @@ document.addEventListener("click",e=>{if(e.target.closest("[data-outros]")){outA
 /* ================= RETRABALHO ================= */
 // Base: uma linha por OS+TSS executada (fim do dia e continua não entram). Guardada neste computador e enviada ao link da coordenação.
 // RB={v,em,fonte,ini,fim,D:{t,f,e,b,m,a,r,q,c},R:[[os,t,f,e,num,b,m,pde,a,r,q,c,min]]}
-var RB=null,rtCache=null,rtPer="tudo",rtModo="todas",rtTssSel="",rtAbertos=new Set(),rtCarregando=false;
+var rtTsm="num";var RB=null,rtCache=null,rtPer="tudo",rtModo="todas",rtTssSel="",rtAbertos=new Set(),rtCarregando=false;
 var RT_E0=Date.UTC(2020,0,1)+3*3600000; // minutos contados a partir de 01/01/2020 00:00 (horário de Brasília)
 function rtMin(txt){const t=parseDT0(txt);return t==null?null:Math.round((t-new Date(2020,0,1).getTime())/60000);}
 function rtData(m){return new Date(new Date(2020,0,1).getTime()+m*60000);}
@@ -3789,7 +3798,7 @@ function renderRt(){setTimeout(marcarCards,0);
    const prox=RB.em?new Date(RB.em+15*864e5):null;$("rxPill").innerHTML=`<i></i>Base atualizada em <b>${RB.em?new Date(RB.em).toLocaleString("pt-BR",{dateStyle:"short",timeStyle:"short"}):"–"}</b>${prox?` · próxima atualização <b>${prox.toLocaleDateString("pt-BR")}</b>`:""}`;}
   if(rtView==="geral"){rtFiltros();rtDash();rtGeral();}else if(rtView==="tss"){rtFiltros();rtPorTss();}else if(rtView==="busca")rtBuscar();else rtCarteira();}
 function rtPorTss(){const D=RB.D,F=rtFiltrar(),C=rtCalc(),J=F.J;const pol=poloSel;const okP=r=>pol==="Todos"||RT_POLO[D.a[r[8]]]===pol;
-  const aq=U(($("rtTend")&&$("rtTend").value)||"").trim();$("rtTtit").textContent=aq.length>=3?"Serviços feitos no endereço":"Retrabalho por serviço (TSS)";if(aq.length<3)$("rtTres").innerHTML=aq?'<div class="tsq-hint">Digite pelo menos 3 letras do endereço.</div>':"";
+  const aq=U(($("rtTend")&&$("rtTend").value)||"").trim();$("rtTtit").textContent=aq.length>=3?"O que foi feito no endereço":"Retrabalho por serviço (TSS)";if(aq.length<3)$("rtTres").innerHTML=aq?'<div class="tsq-hint">Digite pelo menos 3 letras do endereço.</div>':"";
   if(aq.length>=3){const toks=aq.split(/\s+/).filter(Boolean);const num=/^\d+$/.test(toks[toks.length-1])&&toks.length>1?toks.pop():"";
     const qk=rtEndK(toks.join(" "));const T=new Map();let nEnd=new Set();
     const sc0=e=>{if(e===qk||e==="RUA "+qk||e==="AVENIDA "+qk)return 0;const W=" "+e.replace(/[^A-Z0-9]+/g," ")+" ";return toks.every(t=>W.includes(" "+t+" "))?1:2;};
@@ -3800,8 +3809,17 @@ function rtPorTss(){const D=RB.D,F=rtFiltrar(),C=rtCalc(),J=F.J;const pol=poloSe
         let x=T.get(r[1]);if(!x){x={nome:D.t[r[1]]||"(sem TSS)",n:0,E:new Map()};T.set(r[1],x);}x.n++;let a=x.E.get(k);if(!a){a={e,n,b:D.b[r[5]]||"",L:[]};x.E.set(k,a);}a.L.push(r);nEnd.add(k);}}
     const cap=v=>v?v.charAt(0)+v.slice(1).toLowerCase():"";const sc=e=>{if(e===qk||e==="RUA "+qk||e==="AVENIDA "+qk)return 0;const W=" "+e.replace(/[^A-Z0-9]+/g," ")+" ";return toks.every(t=>W.includes(" "+t+" "))?1:2;};
     const L=[...T.values()].sort((a,b)=>String(a.nome).localeCompare(String(b.nome),"pt-BR",{sensitivity:"base"}));const tot=L.reduce((s,x)=>s+x.n,0);
-    $("rtTnota").textContent=`${nf(L.length)} ${L.length===1?"serviço":"serviços"} nesse endereço`;
     $("rtTres").innerHTML=`<div class="tsq-r"><div class="tsq-big"><b>${nf(tot)}</b><span>${tot===1?"vez":"vezes"}</span></div><div class="tsq-d"><b>${rtTssSel?esc(cap(L.length===1?L[0].nome:rtTssSel)):"Todos os serviços"}</b><span>${esc($("rtTend").value.trim().toUpperCase())} · ${nf(nEnd.size)} ${nEnd.size===1?"endereço encontrado":"endereços encontrados"}</span></div></div>`;
+    // visão por número: a rua inteira em ordem de numeração
+    const ruasN=new Set();for(const x of L)for(const a of x.E.values())ruasN.add(a.e);
+    $("rtTnota").innerHTML=`<span class="tsv-mod">${[["num","Rua em ordem de número"],["srv","Agrupado por serviço"]].map(([k,l])=>`<button type="button" data-tsm="${k}" aria-pressed="${rtTsm===k}">${l}</button>`).join("")}</span>`;
+    if(rtTsm==="num"){const P=new Map();for(const x of L)for(const [k,a] of x.E){let q=P.get(k);if(!q){q={e:a.e,n:a.n,b:a.b,S:[]};P.set(k,q);}q.S.push({nome:x.nome,L:a.L});}
+      const nk=v=>{const m=String(v||"").match(/\d+/);return m?Number(m[0]):1e9;};
+      const PL=[...P.values()].sort((a,b)=>sc(a.e)-sc(b.e)||a.e.localeCompare(b.e,"pt-BR")||nk(a.n)-nk(b.n)||String(a.n).localeCompare(String(b.n),"pt-BR",{numeric:true}));
+      let rua="";
+      $("rtTlista").innerHTML=PL.length?`<div class="tsn"><div class="tsn-h"><span>Nº</span><span>Serviço</span><span>Vezes</span><span>Data · OS</span></div>${PL.map(q=>{const cab=q.e!==rua?`<div class="tsn-rua">${esc(q.e)}</div>`:"";rua=q.e;q.S.sort((a,b)=>a.nome.localeCompare(b.nome,"pt-BR"));
+        return cab+`<div class="tsn-g" data-rbusca="${esc(q.e+", "+q.n)}" title="Clique para ver todo o histórico de ${esc(q.e+", "+q.n)}"><div class="tsn-n"><b>${esc(q.n||"s/n")}</b><small>${esc(q.b)}</small></div><div class="tsn-ss">${q.S.map(z=>`<div class="tsn-s"><span class="tsn-sn">${esc(cap(z.nome))}</span><span class="tsv-q">${z.L.length}x</span><span class="tsv-os">${z.L.map(r=>`<i class="${C.ale[r[9]]?"al":""}" title="${esc(D.r[r[9]]||"")}">${rtDm(r[12])} · ${esc(r[0])}</i>`).join("")}</span></div>`).join("")}</div></div>`;}).join("")}</div>`:`<div class="rtvazio">Nada encontrado nesse endereço.</div>`;
+      return;}
     $("rtTlista").innerHTML=L.length?`<div class="tsv"><div class="tsv-h"><span>Serviço</span><span>Vezes</span><span>Endereços</span><span></span></div>${L.map(x=>{const ends=[...x.E].sort((a,b)=>sc(a[1].e)-sc(b[1].e)||a[1].e.localeCompare(b[1].e,"pt-BR")||(parseInt(a[1].n)||1e9)-(parseInt(b[1].n)||1e9)).map(([k,a])=>{const end=a.e+", "+a.n;a.L.sort((p,q)=>q[12]-p[12]);
         return `<div class="tsv-e" data-rbusca="${esc(end)}" title="Clique para ver todo o histórico do endereço"><span class="tsv-en"><b>${esc(end)}</b><small>${esc(a.b)}</small></span><span class="tsv-q">${a.L.length}x</span><span class="tsv-os">${a.L.map(r=>`<i class="${C.ale[r[9]]?"al":""}" title="${esc(D.r[r[9]]||"")}">${rtDm(r[12])} · ${esc(r[0])}</i>`).join("")}</span></div>`;}).join("");
       return `<details class="tsv-d" open><summary><span class="tsv-n" title="${esc(x.nome)}">${esc(cap(x.nome))}</span><span class="tsv-v">${nf(x.n)}</span><span class="tsv-v2">${nf(x.E.size)}</span><span class="tsv-ch"></span></summary><div class="tsv-l"><div class="tsv-eh"><span>Endereço</span><span>Vezes</span><span>Data · OS</span></div>${ends}</div></details>`;}).join("")}</div>`:`<div class="rtvazio">Nenhum serviço${rtTssSel?` “${esc(rtTssSel)}”`:""} encontrado nesse endereço.</div>`;
@@ -4016,6 +4034,7 @@ function rtCarteira(){const D=RB.D;
     return `<div class="rk-wrap${ab?" ab":""}"><div class="rk-row rk-clk" data-rck="${esc(key)}" title="Clique para ver o endereço, os serviços e as OS"><div class="rk-n" title="O mesmo serviço já foi feito ${h.length} ${h.length===1?"vez":"vezes"} nesse endereço antes desta OS"><b>${h.length}</b><small>${h.length===1?"vez antes":"vezes antes"}</small></div><div class="rk-e"><b>${esc(r.end)}</b><small>${esc(r.bai)} · ${r.p} · OS ${esc(r.os)}</small></div><div class="rk-s">${esc(r.tss)}</div><div class="rk-d"><div class="rk-oss">${h.slice().reverse().slice(0,4).map(x=>`<span class="${x.cart?"ct":x.al||ale[x[9]]?"al":""}" title="${esc(x.rs!=null?x.rs:(RB.D.r[x[9]]||""))}"><b>${x.cart?"carteira "+rtDm(x[12]):rtDm(x[12])}</b>OS ${esc(x[0])}</span>`).join("")}${h.length>4?`<em>+${h.length-4}</em>`:""}</div><small>última há ${dd} ${dd===1?"dia":"dias"}</small></div><span class="rk-seta">›</span></div>${det}</div>`;}).join("")}</div>${L.length>400?`<div class="note">mostrando 400 de ${nf(L.length)}</div>`:""}`:`<div class="rtvazio">Nenhuma OS nessa condição.</div>`;}
 
 document.addEventListener("input",e=>{if(e.target&&e.target.id==="rtCq"){clearTimeout(window.__rtCqT);window.__rtCqT=setTimeout(rtCarteira,180);}});
+document.addEventListener("click",e=>{const b=e.target.closest("[data-tsm]");if(b){rtTsm=b.dataset.tsm;rtPorTss();}});
 // ---------- eventos ----------
 document.addEventListener("click",e=>{
   const v=e.target.closest("[data-rv]");if(v&&v.dataset.rv==="lista"){const x=$("rtListaBox");if(x)x.scrollIntoView({behavior:"smooth",block:"start"});return;}if(v){rtView=v.dataset.rv;renderRt();if(rtView==="busca")setTimeout(()=>$("rtBusca").focus(),0);return;}
