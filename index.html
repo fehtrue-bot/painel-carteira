@@ -995,6 +995,7 @@ body.leitor .pubst{display:none}
 .rtd i.al{background:#EEF1F4;color:#5E6E7B}
 .rtcq{margin:4px 14px 10px}
 .tsv{padding:4px 16px 16px}
+.tsv-q2{margin:0 0 12px}.tsv-q2 p{margin:6px 4px 0;font-size:12.5px;color:#6B7A86}
 .tsv-h,.tsv-d>summary{display:grid;grid-template-columns:minmax(0,1fr) 120px 120px 28px;align-items:center;gap:12px;padding:0 14px}
 .tsv-h{font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:#6B7A86;height:34px;border-bottom:1px solid #E3E8EE}
 .tsv-h span:nth-child(2),.tsv-h span:nth-child(3){text-align:right}
@@ -2358,6 +2359,7 @@ body.com-bos .pbos{display:block;margin-bottom:4px}
       <details class="rx-box rx-cond" id="rtCondBox"><summary><b>Possível condomínio ou lote</b> <span id="rtCondN"></span><small>mesmo número com PDEs diferentes, ou várias OS no mesmo dia (cavalete múltiplo, ligações novas) — normalmente não é retrabalho</small></summary><div id="rtCond"></div></details>
     </div>
     <div id="rtV4" hidden>
+      <div class="tsv-q2"><div class="rtbusca"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input type="search" id="rtTend" placeholder="Endereço — ex.: rua evangelista 120" aria-label="Pesquisar endereço" autocomplete="off"></div><p>Escolha o serviço na caixa “Digite o serviço” acima e digite o endereço aqui: aparece quantas vezes aquele serviço foi feito nesse endereço.</p></div>
       <article class="rx-box"><div class="rx-boxh"><div><h3>Retrabalho por serviço (TSS)</h3><p class="rx-sub" id="rtTnota"></p></div></div><div id="rtTlista"></div></article>
     </div>
     <div id="rtV2" hidden>
@@ -3774,6 +3776,19 @@ function renderRt(){setTimeout(marcarCards,0);
    const prox=RB.em?new Date(RB.em+15*864e5):null;$("rxPill").innerHTML=`<i></i>Base atualizada em <b>${RB.em?new Date(RB.em).toLocaleString("pt-BR",{dateStyle:"short",timeStyle:"short"}):"–"}</b>${prox?` · próxima atualização <b>${prox.toLocaleDateString("pt-BR")}</b>`:""}`;}
   if(rtView==="geral"){rtFiltros();rtDash();rtGeral();}else if(rtView==="tss"){rtFiltros();rtPorTss();}else if(rtView==="busca")rtBuscar();else rtCarteira();}
 function rtPorTss(){const D=RB.D,F=rtFiltrar(),C=rtCalc(),J=F.J;const pol=poloSel;const okP=r=>pol==="Todos"||RT_POLO[D.a[r[8]]]===pol;
+  const aq=U(($("rtTend")&&$("rtTend").value)||"").trim();
+  if(aq.length>=3){const toks=aq.split(/\s+/).filter(Boolean);const num=/^\d+$/.test(toks[toks.length-1])&&toks.length>1?toks.pop():"";
+    const qk=rtEndK(toks.join(" "));const T=new Map();let nEnd=new Set();
+    for(const [k,L0] of rtIndice()){const [e,n]=k.split("|");const txt=e+" "+U(D.b[L0[0][5]]);if(!toks.every(t=>txt.includes(t)))continue;if(num&&n!==num)continue;
+      for(const r of L0){if(!okP(r))continue;if(rtModo==="exec"&&C.ale[r[9]])continue;if(rtTssSel&&!U(D.t[r[1]]).includes(U(rtTssSel)))continue;if(J&&(r[12]<J[0]||r[12]>J[1]))continue;
+        let x=T.get(r[1]);if(!x){x={nome:D.t[r[1]]||"(sem TSS)",n:0,E:new Map()};T.set(r[1],x);}x.n++;let a=x.E.get(k);if(!a){a={e,n,b:D.b[r[5]]||"",L:[]};x.E.set(k,a);}a.L.push(r);nEnd.add(k);}}
+    const cap=v=>v?v.charAt(0)+v.slice(1).toLowerCase():"";const sc=e=>{if(e===qk||e==="RUA "+qk||e==="AVENIDA "+qk)return 0;const W=" "+e.replace(/[^A-Z0-9]+/g," ")+" ";return toks.every(t=>W.includes(" "+t+" "))?1:2;};
+    const L=[...T.values()].sort((a,b)=>String(a.nome).localeCompare(String(b.nome),"pt-BR",{sensitivity:"base"}));const tot=L.reduce((s,x)=>s+x.n,0);
+    $("rtTnota").textContent=L.length?`${nf(tot)} ${tot===1?"vez":"vezes"} ${rtTssSel?`o serviço “${rtTssSel}”`:"em todos os serviços"} em ${nf(nEnd.size)} ${nEnd.size===1?"endereço":"endereços"} para “${$("rtTend").value.trim()}”`:"";
+    $("rtTlista").innerHTML=L.length?`<div class="tsv"><div class="tsv-h"><span>Serviço</span><span>Vezes</span><span>Endereços</span><span></span></div>${L.map(x=>{const ends=[...x.E].sort((a,b)=>sc(a[1].e)-sc(b[1].e)||a[1].e.localeCompare(b[1].e,"pt-BR")||(parseInt(a[1].n)||1e9)-(parseInt(b[1].n)||1e9)).map(([k,a])=>{const end=a.e+", "+a.n;a.L.sort((p,q)=>q[12]-p[12]);
+        return `<div class="tsv-e" data-rbusca="${esc(end)}" title="Clique para ver todo o histórico do endereço"><span class="tsv-en"><b>${esc(end)}</b><small>${esc(a.b)}</small></span><span class="tsv-q">${a.L.length}x</span><span class="tsv-os">${a.L.map(r=>`<i class="${C.ale[r[9]]?"al":""}" title="${esc(D.r[r[9]]||"")}">${rtDm(r[12])} · ${esc(r[0])}</i>`).join("")}</span></div>`;}).join("");
+      return `<details class="tsv-d" open><summary><span class="tsv-n" title="${esc(x.nome)}">${esc(cap(x.nome))}</span><span class="tsv-v">${nf(x.n)}</span><span class="tsv-v2">${nf(x.E.size)}</span><span class="tsv-ch"></span></summary><div class="tsv-l"><div class="tsv-eh"><span>Endereço</span><span>Vezes</span><span>Data · OS</span></div>${ends}</div></details>`;}).join("")}</div>`:`<div class="rtvazio">Nenhum serviço${rtTssSel?` “${esc(rtTssSel)}”`:""} encontrado nesse endereço.</div>`;
+    return;}
   const T=new Map();const tg=i=>{let x=T.get(i);if(!x){x={i,nome:D.t[i]||"(sem TSS)",serv:0,ev:0,G:[]};T.set(i,x);}return x;};
   for(const r of RB.R){if(!okP(r))continue;if(rtModo==="exec"&&C.ale[r[9]])continue;if(rtTssSel&&!U(D.t[r[1]]).includes(U(rtTssSel)))continue;if(J&&(r[12]<J[0]||r[12]>J[1]))continue;tg(r[1]).serv++;}
   for(const o of F.out){const x=tg(o.g.L[0][1]);x.ev+=o.ev;x.G.push(o);}
@@ -4004,6 +4019,7 @@ document.addEventListener("click",e=>{
   const t=e.target.closest("[data-rtt]");if(t&&t.closest("#v-rt")){rtTssSel=(t.dataset.rtt===rtTssSel?"":t.dataset.rtt);renderRt();return;}
   const k=e.target.closest(".rx-row .rtl1");if(k){const key=k.parentElement.dataset.rtk;rtAbertos.has(key)?rtAbertos.delete(key):rtAbertos.add(key);renderRt();}});
 document.addEventListener("change",e=>{if(e.target&&e.target.id==="rtCsel"){rtCdc=e.target.value;rtCfil="";renderRt();}});
+{let te=null;$("rtTend").addEventListener("input",()=>{clearTimeout(te);te=setTimeout(()=>{if(rtView==="tss")rtPorTss();},250);});}
 {let tt=null;$("rtTss").addEventListener("input",e=>{clearTimeout(tt);tt=setTimeout(()=>{rtTssSel=e.target.value.trim();renderRt();},300);});}
 $("rtPde").onchange=()=>{rtCache=null;renderRt();};
 {let tb=null;$("rtBusca").addEventListener("input",()=>{clearTimeout(tb);tb=setTimeout(()=>{if(RB&&RB.R&&RB.R.length)rtBuscar();},250);});}
