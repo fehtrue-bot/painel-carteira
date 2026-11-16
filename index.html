@@ -993,6 +993,15 @@ body.leitor .pubst{display:none}
 .rte b{display:block;font-size:13.5px;color:#00396F}.rte small{font-size:11.5px;color:var(--muted)}.rtw{font-style:normal;color:#B9650F;font-weight:700}
 .rtd{display:flex;flex-wrap:wrap;gap:4px}.rtd i{font-style:normal;font-size:11px;font-weight:600;padding:2px 6px;border-radius:6px;background:#FCE9E8;color:#B0302A;font-variant-numeric:tabular-nums}
 .rtd i.al{background:#EEF1F4;color:#5E6E7B}
+.tsx{display:flex;flex-direction:column;gap:4px;padding:6px 14px 14px}
+.tsx-r{all:unset;box-sizing:border-box;display:grid;grid-template-columns:minmax(160px,300px) minmax(0,1fr) 70px 190px 86px;align-items:center;gap:12px;padding:9px 12px;border:1px solid #E6ECF1;border-radius:10px;background:#fff;cursor:pointer}
+.tsx-r:hover{background:#F2F8FB;border-color:#BFD9EA}.tsx-r.on{background:#EAF4FB;border-color:#0096D6;box-shadow:inset 3px 0 0 #0096D6}
+.tsx-n{font-weight:700;font-size:13.5px;color:#0B2545;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tsx-b{height:10px;background:#EEF2F5;border-radius:6px;overflow:hidden}.tsx-b i{display:block;height:100%;background:#F08C00;border-radius:6px;min-width:4px}
+.tsx-v{text-align:right;font-size:12px;color:#6B7A86}.tsx-v b{font-size:17px;color:#E07F00;font-weight:800}
+.tsx-x{font-size:12px;color:#6B7A86}.tsx-x em{font-style:normal;color:#C2362B;font-weight:700}
+.tsx-go{text-align:right;font-size:12.5px;font-weight:700;color:#00639A}
+@media (max-width:760px){.tsx-r{grid-template-columns:minmax(0,1fr) 60px;grid-template-areas:"n v" "b b" "x go"}.tsx-n{grid-area:n}.tsx-v{grid-area:v}.tsx-b{grid-area:b}.tsx-x{grid-area:x}.tsx-go{grid-area:go}}
 .rtx-l{display:flex;flex-direction:column;gap:6px;padding:10px 14px 14px}
 .rtx{border:1px solid var(--line-2,#E3E8EE);border-radius:10px;background:#fff;overflow:hidden}
 .rtx summary{list-style:none;display:grid;grid-template-columns:48px minmax(0,1fr) auto 70px;align-items:center;gap:10px;padding:10px 12px;cursor:pointer}
@@ -2330,7 +2339,8 @@ body.com-bos .pbos{display:block;margin-bottom:4px}
     <div id="rtV3" hidden>
       <div class="rk-hist" id="rtChist"></div>
       <div class="kcs k4" id="rtCkpi"></div>
-      <article class="rx-box"><div class="rx-boxh"><div><h3>Já feitas no mesmo endereço</h3><p class="rx-sub" id="rtCnota"></p></div><div class="rk-tools"><div class="seg2" id="rtCper"></div></div></div><div class="rk-chips" id="rtCfil"></div><div id="rtClista"></div></article>
+      <article class="rx-box"><div class="rx-boxh"><div><h3>Retrabalho por serviço (TSS)</h3><p class="rx-sub">quantas OS de cada serviço da carteira já foram feitas antes no mesmo endereço · clique no serviço para ver os endereços e as OS</p></div></div><div id="rtCtss"></div></article>
+      <article class="rx-box" id="rtCbox"><div class="rx-boxh"><div><h3>Já feitas no mesmo endereço</h3><p class="rx-sub" id="rtCnota"></p></div><div class="rk-tools"><div class="seg2" id="rtCper"></div></div></div><div class="rk-chips" id="rtCfil"></div><div id="rtClista"></div></article>
     </div>
       </div>
     </div>
@@ -3918,6 +3928,9 @@ function rtCarteira(){const D=RB.D;
     rkCard({l:"Risco de retrabalho",c:"#F08C00",v:nf(itens.length),vc:"#E07F00",s:`OS de ${nf(ca.length)} na carteira${snap?" de "+dm(snap.dc):""}`,g:rkRing([[pc,"#F08C00"]],ca.length?Math.round(pc*100)+"%":""),attr:` data-rcf=""`,tip:"OS da carteira em endereço onde o mesmo serviço já foi feito · clique para ver todas"})+
     (top?rkCard({l:"Serviço que mais aparece",c:"#0096D6",v:`${nf(top[1])} <small>OS</small>`,s:`<span class="k2-srv">${esc(cap(top[0]))}</span>`,g:rkRing([[itens.length?top[1]/itens.length:0,"#0096D6"]],itens.length?Math.round(top[1]*100/itens.length)+"%":""),sel:rtCfil===top[0],attr:` data-rcf="${esc(top[0])}"`,tip:"clique para ver só esse serviço"}):"")+
     rkCard({l:"Por polo",c:"#00396F",v:`${nf(pI)} <small>·</small> ${nf(pG)}`,s:`<i class="dI"></i>Interlagos <i class="dG"></i>Grajaú`,g:rkRing([[itens.length?pI/itens.length:0,"#00396F"],[itens.length?pG/itens.length:0,"#12A5D6"]]),attr:go({modo:"carteira"}),tip:"clique para abrir a carteira"});
+  {const fT=new Map(),vT=new Map();for(const x of itens){const k=x.r.tss||"(sem TSS)";if(x.r.fora)fT.set(k,(fT.get(k)||0)+1);vT.set(k,(vT.get(k)||0)+x.h.length);}
+   const mx=Math.max(1,...tops.map(t=>t[1]));
+   $("rtCtss").innerHTML=tops.length?`<div class="tsx">${tops.map(([k,n])=>{const f=fT.get(k)||0;return `<button type="button" class="tsx-r${rtCfil===k?" on":""}" data-rcf="${esc(k)}" data-rcfgo="1" title="Ver os endereços e as OS de ${esc(cap(k))}"><span class="tsx-n">${esc(cap(k))}</span><span class="tsx-b"><i style="width:${(n*100/mx).toFixed(1)}%"></i></span><span class="tsx-v"><b>${nf(n)}</b> OS</span><span class="tsx-x">${nf(vT.get(k)||0)}x antes${f?` · <em>${nf(f)} fora do prazo</em>`:""}</span><span class="tsx-go">${rtCfil===k?"mostrando ▾":"ver ›"}</span></button>`;}).join("")}</div>`:'<div class="rtvazio">Nenhum retrabalho na carteira.</div>';}
   $("rtCfil").innerHTML=`<button type="button" data-rcf="" class="${rtCfil?"":"on"}">Todos <b>${nf(itens.length)}</b></button>`+tops.slice(0,6).map(([k,n])=>`<button type="button" data-rcf="${esc(k)}" class="${rtCfil===k?"on":""}" title="${esc(k)}">${esc(cap(k).length>34?cap(k).slice(0,32)+"…":cap(k))} <b>${nf(n)}</b></button>`).join("");
   const L=itens.filter(x=>!rtCfil||(x.r.tss||"(sem TSS)")===rtCfil).sort((a,b)=>b.h.length-a.h.length||b.h[b.h.length-1][12]-a.h[a.h.length-1][12]);
   $("rtCnota").textContent=`${nf(L.length)} OS da carteira em endereço onde o mesmo serviço (mesma família) já foi feito antes, ${rtCper==="90"?"nos últimos 90 dias":"em qualquer data da base"} · ao lado, quantas vezes e as OS`;
@@ -3946,7 +3959,7 @@ document.addEventListener("click",e=>{
   const rr=e.target.closest("[data-rrua]");if(rr){rtRua=rr.dataset.rrua==="1";rtBuscar();return;}
   const rb=e.target.closest("[data-rbusca]");if(rb){rtView="busca";renderRt();{const [e,n]=rtSepEnd(rb.dataset.rbusca);$("rtBusca").value=(rtEndK(e)+" "+rtNumK(n)).trim();}rtBuscar();window.scrollTo({top:0,behavior:"smooth"});return;}
   const rk=e.target.closest("[data-rck]");if(rk){const k=rk.dataset.rck;rtCab.has(k)?rtCab.delete(k):rtCab.add(k);renderRt();return;}
-  const cf=e.target.closest("[data-rcf]");if(cf){rtCfil=(cf.classList.contains("kc")&&rtCfil===cf.dataset.rcf)?"":cf.dataset.rcf;renderRt();return;}
+  const cf=e.target.closest("[data-rcf]");if(cf){const g2=cf.dataset.rcfgo;rtCfil=((cf.classList.contains("kc")||g2)&&rtCfil===cf.dataset.rcf)?"":cf.dataset.rcf;renderRt();if(g2&&rtCfil){const bx=$("rtCbox");if(bx)bx.scrollIntoView({behavior:"smooth",block:"start"});}return;}
   const c=e.target.closest("[data-rcp]");if(c){rtCper=c.dataset.rcp;renderRt();return;}
   const t=e.target.closest("[data-rtt]");if(t&&t.closest("#v-rt")){rtTssSel=(t.dataset.rtt===rtTssSel?"":t.dataset.rtt);renderRt();return;}
   const k=e.target.closest(".rx-row .rtl1");if(k){const key=k.parentElement.dataset.rtk;rtAbertos.has(key)?rtAbertos.delete(key):rtAbertos.add(key);renderRt();}});
