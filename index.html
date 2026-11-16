@@ -3674,7 +3674,7 @@ function renderBos(qId,bId){const box=$(bId||"bosRes");if(!box)return;const toks
 document.addEventListener("input",e=>{if(e.target&&e.target.id==="pbosQ"){clearTimeout(window.__pbq);window.__pbq=setTimeout(()=>renderBos("pbosQ","pbosRes"),300);return;}if(e.target&&e.target.id==="bosQ"){e.target.style.height="auto";e.target.style.height=e.target.scrollHeight+"px";clearTimeout(window.__bq);window.__bq=setTimeout(renderBos,300);}});
 
 // Pesquisar OS: aba e caixa no Painel para todos (menos o perfil do hidrômetro)
-if(!PERFIL){$("t-bos").hidden=false;$("t-bos").onclick=()=>aba("bos");document.body.classList.add("com-bos");}
+if(!PERFIL){document.body.classList.add("com-bos");}
 
 let outAberto=false;
 document.addEventListener("click",e=>{if(e.target.closest("[data-outros]")){outAberto=!outAberto;renderTudo();}});
