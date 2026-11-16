@@ -868,6 +868,9 @@ body.aba-rel .assina{display:block}
 .cg .r.tot{border-top:2px solid var(--ink);margin-top:4px;padding-top:8px}.cg .r.tot .nm{font-weight:800;color:var(--ink)}.cg .r.tot .n{font-weight:800}
 .cg .r{grid-template-columns:minmax(150px,240px) minmax(0,1fr) 54px 64px}
 .cg .r.of{padding:5px 6px}.cg .r.of .n{font-size:15px}.cg .r.of .br{height:12px}
+.cg .bw{display:flex;align-items:center;gap:7px;min-width:0}.cg .bw .br{flex:0 0 auto;min-width:6px}
+.cg .bl{font-style:normal;display:flex;gap:6px;font-size:12px;white-space:nowrap}.cg .bl b{font-weight:800}.cg .bl .g{color:#23824F}.cg .bl .v{color:#C2362B}
+.cg .r.of .bl{font-size:11px}
 
 /* filtro de prazo no painel */
 #segPrazo button.pz-no[aria-pressed="true"]{background:#2FA36B;color:#fff;border-color:#2FA36B}
@@ -904,7 +907,7 @@ body.aba-rel .assina{display:block}
   /* carteira por grupo: nome em cima, barra embaixo */
   .cg .r{grid-template-columns:minmax(0,1fr) auto auto!important;grid-template-areas:"nm n p" "br br br";gap:4px 10px!important;padding:8px 4px!important}
   .cg .r .nm{grid-area:nm;font-size:13.5px}.cg .r .n{grid-area:n;font-size:17px}.cg .r .p{grid-area:p;display:block!important}
-  .cg .r .br{grid-area:br;height:12px!important}.cg .r.tot .br{display:none}
+  .cg .r .br,.cg .r .bw{grid-area:br}.cg .r .br{height:12px!important}.cg .r.tot .br,.cg .r.tot .bw{display:none}
   .cg .r.of .nm{font-size:11.5px}
   /* tabelas: primeira coluna fixa ao rolar para o lado */
   .scroll{-webkit-overflow-scrolling:touch}
@@ -2859,7 +2862,7 @@ function render(){
     if(prazoSel){const k=prazoSel;const fil=rs.filter(r=>r[k]).map(r=>({...r,cart:r[k],no:k==="no"?r.no:0,fora:k==="fora"?r.fora:0,pzOrig:r.cart}));rs.length=0;rs.push(...fil.sort((a,b)=>b.cart-a.cart));tt={cart:tt[k],no:k==="no"?tt.no:0,fora:k==="fora"?tt.fora:0};}
     {const nz=rs.filter(r=>r.cart>0);rs.length=0;rs.push(...nz);} // grupo zerado não aparece
     const m=Math.max(1,...rs.map(r=>r.cart));
-    return `<div class="cg">${rs.map(r=>`<div class="r${r.fam?" of":""}"${go(r.fam?{modo:"carteira",g:OUT,fam:r.fam,p,prazo:prazoSel}:{modo:"carteira",g:r.g,p,prazo:prazoSel})}><span class="nm" title="${esc(r.fam?r.nome:r.g)}"><i style="--c:${COR[r.g]}"></i>${r.fam?esc(r.nome):r.g}</span><div class="br" style="width:${Math.max(4,r.cart*100/m).toFixed(1)}%;min-width:${(r.no?26:0)+(r.fora?26:0)}px"><i style="flex:${r.no} 0 ${r.no?26:0}px;background:#2FA36B">${r.no||""}</i><i style="flex:${r.fora} 0 ${r.fora?26:0}px;background:#D9534A">${r.fora||""}</i></div><span class="n">${nf(r.cart)}</span><span class="p">${prazoSel?`<small class="dqt">de ${nf(r.pzOrig)}</small>`:pp(pctN(r.no,r.cart),metaDe(r.g))}</span></div>`).join("")||'<div class="empty">Nada aqui.</div>'}<div class="r tot"${go({modo:"carteira",p,prazo:prazoSel})}><span class="nm">Total ${p||(poloSel==="Todos"?"Interlagos e Grajaú":poloSel)}${prazoSel?(prazoSel==="fora"?" · fora do prazo":" · no prazo"):""}</span><div class="br" style="width:0"></div><span class="n">${nf(tt.cart)}</span><span class="p">${prazoSel?"":pp(pctN(tt.no,tt.cart))}</span></div></div>`;};
+    return `<div class="cg">${rs.map(r=>`<div class="r${r.fam?" of":""}"${go(r.fam?{modo:"carteira",g:OUT,fam:r.fam,p,prazo:prazoSel}:{modo:"carteira",g:r.g,p,prazo:prazoSel})}><span class="nm" title="${esc(r.fam?r.nome:r.g)}"><i style="--c:${COR[r.g]}"></i>${r.fam?esc(r.nome):r.g}</span><div class="bw"><div class="br" style="width:calc((100% - 70px) * ${(Math.max(1.5,r.cart*100/m)/100).toFixed(4)})"><i style="flex:${r.no} 1 0;min-width:${r.no?3:0}px;background:#2FA36B"></i><i style="flex:${r.fora} 1 0;min-width:${r.fora?3:0}px;background:#D9534A"></i></div><em class="bl">${r.no?`<b class="g">${nf(r.no)}</b>`:""}${r.fora?`<b class="v">${nf(r.fora)}</b>`:""}</em></div><span class="n">${nf(r.cart)}</span><span class="p">${prazoSel?`<small class="dqt">de ${nf(r.pzOrig)}</small>`:pp(pctN(r.no,r.cart),metaDe(r.g))}</span></div>`).join("")||'<div class="empty">Nada aqui.</div>'}<div class="r tot"${go({modo:"carteira",p,prazo:prazoSel})}><span class="nm">Total ${p||(poloSel==="Todos"?"Interlagos e Grajaú":poloSel)}${prazoSel?(prazoSel==="fora"?" · fora do prazo":" · no prazo"):""}</span><div class="br" style="width:0"></div><span class="n">${nf(tt.cart)}</span><span class="p">${prazoSel?"":pp(pctN(tt.no,tt.cart))}</span></div></div>`;};
   if(grpPolo&&poloSel!=="Todos"&&grpPolo!==poloSel)grpPolo="";
   $("segGrpPolo").innerHTML=segPoloBtns(grpPolo);$("cgTit").textContent=grpPolo||(poloSel==="Todos"?"Interlagos e Grajaú":poloSel);
   $("cgInt").innerHTML=cg(grpPolo||null);
