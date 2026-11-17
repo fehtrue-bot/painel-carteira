@@ -994,6 +994,7 @@ body.leitor .pubst{display:none}
 .rtd{display:flex;flex-wrap:wrap;gap:4px}.rtd i{font-style:normal;font-size:11px;font-weight:600;padding:2px 6px;border-radius:6px;background:#FCE9E8;color:#B0302A;font-variant-numeric:tabular-nums}
 .rtd i.al{background:#EEF1F4;color:#5E6E7B}
 .rtcq{margin:4px 14px 10px}
+.rt-anol{align-self:center;font-size:10.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#8A99A6;padding:0 4px 0 10px;border-left:1px solid #D5DEE6;margin-left:4px}
 .tsv{padding:4px 16px 16px}
 .tsv-mod{display:inline-flex;gap:4px;background:#EEF2F5;border-radius:9px;padding:3px;margin-top:6px}.tsv-mod button{all:unset;cursor:pointer;font-size:12.5px;font-weight:600;color:#3E5163;padding:5px 12px;border-radius:7px}.tsv-mod button[aria-pressed="true"]{background:#fff;color:#0B2545;box-shadow:0 1px 2px rgba(0,0,0,.08)}
 .tsn{padding:4px 16px 16px}
@@ -3766,7 +3767,9 @@ function rtCalc(){const k=rtModo+"|"+($("rtPde")&&$("rtPde").checked?1:0);if(rtC
   const grupos=[];let total=0;
   for(const [key,L] of G){total+=L.length;if(L.length<2)continue;L.sort((a,b)=>a[12]-b[12]);grupos.push({key,L});}
   rtCache={k,em:RB.em,grupos,total,ale};return rtCache;}
-function rtJanela(){if(rtPer==="tudo"||!RB.fim)return null;const f=rtMin(RB.fim.split("-").reverse().join("/")+" 23:59");const d={"15":15,"30":30,"90":90}[rtPer];return [f-d*1440,f];}
+function rtAnos(){if(!RB||!RB.R||!RB.R.length)return [];if(RB.__anos&&RB.__anos.em===RB.em)return RB.__anos.L;let mn=Infinity,mx=-Infinity;for(const r of RB.R){if(r[12]<mn)mn=r[12];if(r[12]>mx)mx=r[12];}
+  const a0=Number(rtIso(mn).slice(0,4)),a1=Number(rtIso(mx).slice(0,4));const L=[];for(let y=a1;y>=a0&&L.length<6;y--)L.push(String(y));RB.__anos={em:RB.em,L};return L;}
+function rtJanela(){if(/^a\d{4}$/.test(rtPer)){const y=rtPer.slice(1);return [rtMin("01/01/"+y+" 00:00"),rtMin("31/12/"+y+" 23:59")];}if(rtPer==="tudo"||!RB.fim)return null;const f=rtMin(RB.fim.split("-").reverse().join("/")+" 23:59");const d={"15":15,"30":30,"90":90}[rtPer];return [f-d*1440,f];}
 function rtFiltrar(){const C=rtCalc(),D=RB.D,J=rtJanela(),q="",pol=poloSel;
   const okP=r=>pol==="Todos"||RT_POLO[D.a[r[8]]]===pol;
   const out=[];let eventos=0;
@@ -3853,7 +3856,7 @@ function rtPorTss(){const D=RB.D,F=rtFiltrar(),C=rtCalc(),J=F.J;const pol=poloSe
   for(const o of F.out){const x=tg(o.g.L[0][1]);x.ev+=o.ev;x.G.push(o);}
   const L=[...T.values()].filter(x=>x.ev).sort((a,b)=>String(a.nome).localeCompare(String(b.nome),"pt-BR",{sensitivity:"base"}));const mx=Math.max(1,...L.map(x=>x.ev));
   const cap=v=>v?v.charAt(0)+v.slice(1).toLowerCase():"";
-  $("rtTnota").textContent=`${nf(F.eventos)} retrabalhos em ${nf(L.length)} serviços${J?" no período":""} · clique no serviço para ver os endereços`;
+  $("rtTnota").textContent=`${nf(F.eventos)} ${F.eventos===1?"retrabalho":"retrabalhos"} em ${nf(L.length)} ${L.length===1?"serviço":"serviços"}${/^a\d{4}$/.test(rtPer)?" em "+rtPer.slice(1):J?" no período":""} · clique no serviço para ver os endereços`;
   $("rtTlista").innerHTML=L.length?`<div class="tsv"><div class="tsv-h"><span>Serviço</span><span>Retrabalhos</span><span>Endereços</span><span></span></div>${L.map(x=>{
     const ends=x.G.slice().sort((a,b)=>b.g.L.length-a.g.L.length||b.ev-a.ev).slice(0,300).map(({g})=>{const r0=g.L[0];const end=D.e[r0[3]]+", "+r0[4];
       return `<div class="tsv-e" data-rbusca="${esc(end)}" title="Clique para ver todo o histórico do endereço"><span class="tsv-en"><b>${esc(end)}</b><small>${esc(D.b[r0[5]]||"")}</small></span><span class="tsv-q">${g.L.length}x</span><span class="tsv-os">${g.L.slice().reverse().map(r=>`<i class="${C.ale[r[9]]?"al":""}" title="${rtDm(r[12])} · ${esc(D.r[r[9]]||"")}">${esc(r[0])}</i>`).join("")}</span></div>`;}).join("");
@@ -3862,7 +3865,7 @@ function rtPorTss(){const D=RB.D,F=rtFiltrar(),C=rtCalc(),J=F.J;const pol=poloSe
 function rtPctModo(m){const old=rtModo;rtModo=m;const F=rtFiltrar();rtModo=old;return F.serv?F.eventos/F.serv:0;}
 function rtFiltros(){const D=RB.D,C=rtCalc();
   $("rtPolo").innerHTML=["Todos","Interlagos","Grajaú"].map(p=>`<button type="button" data-rpo="${p}" aria-pressed="${poloSel===p}">${p==="Todos"?"Os dois polos":p}</button>`).join("");
-  $("rtPer").innerHTML=[["tudo","Toda a base"],["15","15 dias"],["30","30 dias"],["90","90 dias"]].map(([k,l])=>`<button type="button" data-rp="${k}" aria-pressed="${rtPer===k}">${l}</button>`).join("");
+  $("rtPer").innerHTML=[["tudo","Toda a base"],["15","15 dias"],["30","30 dias"],["90","90 dias"]].map(([k,l])=>`<button type="button" data-rp="${k}" aria-pressed="${rtPer===k}">${l}</button>`).join("")+(rtAnos().length>0?`<span class="rt-anol">Ano</span>`+rtAnos().map(y=>`<button type="button" data-rp="a${y}" aria-pressed="${rtPer==="a"+y}">${y}</button>`).join(""):"");
   $("rtModo").innerHTML=[["todas","Todas as baixas"],["exec","Só executadas"]].map(([k,l])=>`<button type="button" data-rm="${k}" aria-pressed="${rtModo===k}" title="${k==="exec"?"tira imóvel fechado, outro serviço, duplicidade, nada consta, cancelado e parecidos":"tira só fim do dia e continua"}">${l}</button>`).join("");
   const todosT=[...new Set(C.grupos.map(g=>D.t[g.L[0][1]]))].sort();
   $("rtTssL").innerHTML=todosT.map(t=>`<option value="${esc(t)}">`).join("");if(document.activeElement!==$("rtTss"))$("rtTss").value=rtTssSel;}
