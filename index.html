@@ -1005,7 +1005,12 @@ body.leitor .pubst{display:none}
 .tsc-sel{height:32px;border:1px solid #C9D5DE;border-radius:8px;padding:0 8px;font-size:13px;background:#fff;color:#0B2545}
 .tsc-chips{display:flex;flex-wrap:wrap;gap:6px;flex:1}.tsc-chips button{all:unset;cursor:pointer;font-size:12.5px;font-weight:600;color:#24384C;background:#F1F5F8;border:1px solid #DCE4EB;border-radius:999px;padding:5px 12px}.tsc-chips button:hover{background:#E6F1F8}.tsc-chips button[aria-pressed="true"]{background:#0B2545;border-color:#0B2545;color:#fff}
 .tsq-sbr{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:end}.tsq-sb .tsq-busca{margin-top:0}
-.tsp{display:flex;flex-wrap:wrap;gap:10px}
+.tsp{display:flex;flex-wrap:wrap;gap:8px}
+.tsp .tsp-b{height:36px;padding:0 8px 0 11px;gap:5px;flex:0 1 auto;min-width:0}.tsp .tsp-b span{font-size:10px}
+.tsp .tsp-b select{font-size:13px;padding-right:18px;max-width:150px;text-overflow:ellipsis}
+.tsp .tsp-b:has(#rtCsrv) select,.tsp .tsp-b:has(#rtTsel) select{max-width:210px}
+.tsq-top{padding:10px 14px!important}
+#rtCsel{width:96px}#rtCsrv,#rtTsel{width:150px}#rtCano,#rtTano{width:78px}#rtCmes,#rtTmes{width:90px}#rtCmin,#rtTmin2{width:76px}.tsp{flex-wrap:nowrap!important;overflow-x:auto;scrollbar-width:thin}.tsp .tsp-b{flex:none}
 .tsp-b{position:relative;display:flex;align-items:center;gap:8px;background:#F1F5F8;border:1px solid #DCE4EB;border-radius:999px;padding:0 14px 0 16px;height:42px;cursor:pointer}.tsp-b:hover{background:#E8F1F8;border-color:#B9CFE0}
 .tsp-b span{font-size:11px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:#6B7A86}
 .tsp-b select{appearance:none;-webkit-appearance:none;border:0;background:transparent url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%230B2545' stroke-width='3' stroke-linecap='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") no-repeat right center;padding:0 22px 0 0;font-size:14px;font-weight:700;color:#0B2545;cursor:pointer;outline:none;max-width:260px}
@@ -3859,13 +3864,13 @@ function rtPorTss0(){const TSE=rtView==="tse";const dK=r=>TSE?r[9]:r[1];const dN
    const freq=new Map();for(const r of RB.R){const k=TSE?r[9]:r[1];freq.set(k,(freq.get(k)||0)+1);}const nms=[...freq].map(([k,c])=>[TSE?D.r[k]:D.t[k],c]).filter(x=>x[0]);
    const top=nms.slice().sort((a,b)=>b[1]-a[1]).slice(0,12).map(x=>x[0]).sort((a,b)=>a.localeCompare(b,"pt-BR"));if(rtTssSel&&!top.includes(rtTssSel)&&nms.some(x=>x[0]===rtTssSel))top.push(rtTssSel);
    const capS=v=>v.charAt(0)+v.slice(1).toLowerCase();const outros=nms.map(x=>x[0]).filter(v=>!top.includes(v)).sort((a,b)=>a.localeCompare(b,"pt-BR"));
-   const allN=nms.map(x=>x[0]).sort((a,b)=>a.localeCompare(b,"pt-BR"));const vz=(aq0?[[1,"Todas as vezes"]]:[]).concat([[2,"2x ou mais"],[3,"3x ou mais"],[4,"4x ou mais"],[5,"5x ou mais"]]);const vSel=aq0?rtMinV:Math.max(2,rtMinV);
+   const allN=nms.map(x=>x[0]).sort((a,b)=>a.localeCompare(b,"pt-BR"));const vz=(aq0?[[1,"Todas"]]:[]).concat([[2,"2x ou +"],[3,"3x ou +"],[4,"4x ou +"],[5,"5x ou +"]]);const vSel=aq0?rtMinV:Math.max(2,rtMinV);
    $("rtTctl").innerHTML=`<div class="tsp"><label class="tsp-b"><span>${TSE?"Resultado":"Serviço"}</span><select id="rtTsel"><option value="">Todos</option>${allN.map(v=>`<option value="${esc(v)}"${rtTssSel===v?" selected":""}>${esc(capS(v))}</option>`).join("")}</select></label>
      <label class="tsp-b"><span>Ano</span><select id="rtTano"></select></label>
      <label class="tsp-b"><span>Mês</span><select id="rtTmes"></select></label>
      <label class="tsp-b"><span>Vezes</span><select id="rtTmin2">${vz.map(([k,l])=>`<option value="${k}"${String(vSel)===String(k)?" selected":""}>${l}</option>`).join("")}</select></label></div>`;
-   {const sel=$("rtTano");const an=rtPerAno(rtPer);if(sel){sel.innerHTML=`<option value="">Todos os anos</option>`+rtAnos().map(y=>`<option value="${y}">${y}</option>`).join("");sel.value=an;}
-    const sm=$("rtTmes");if(sm){sm.innerHTML=`<option value="">Todos os meses</option>`+rtMeses(an).map(k=>`<option value="${k}">${MESN[Number(k.slice(5))-1]}/${k.slice(0,4)}</option>`).join("");sm.value=/^m/.test(rtPer)?rtPer.slice(1):"";}}}
+   {const sel=$("rtTano");const an=rtPerAno(rtPer);if(sel){sel.innerHTML=`<option value="">Todos</option>`+rtAnos().map(y=>`<option value="${y}">${y}</option>`).join("");sel.value=an;}
+    const sm=$("rtTmes");if(sm){sm.innerHTML=`<option value="">Todos</option>`+rtMeses(an).map(k=>`<option value="${k}">${MESN[Number(k.slice(5))-1]}/${k.slice(0,4)}</option>`).join("");sm.value=/^m/.test(rtPer)?rtPer.slice(1):"";}}}
   const MINV=()=>Math.max(String(($("rtTend")||{}).value||"").trim().length>=3?1:2,rtMinV);
   const ordL=(L,nv,ne)=>L.sort((a,b)=>rtOrd==="vez"?nv(b)-nv(a)||String(a.nome).localeCompare(String(b.nome),"pt-BR"):rtOrd==="end"?ne(b)-ne(a)||nv(b)-nv(a):String(a.nome).localeCompare(String(b.nome),"pt-BR",{sensitivity:"base"}));const pol=poloSel;const okP=r=>pol==="Todos"||RT_POLO[D.a[r[8]]]===pol;
   const aq=U(($("rtTend")&&$("rtTend").value)||"").trim();$("rtTtit").textContent=aq.length>=3?"O que foi feito no endereço":TSE?"Retrabalho por resultado (TSE)":"Retrabalho por serviço (TSS)";if(aq.length<3)$("rtTres").innerHTML=aq?'<div class="tsq-hint">Digite pelo menos 3 letras do endereço.</div>':"";
@@ -4093,11 +4098,11 @@ function rtCarteira(){const D=RB.D;
   if(rtCfil&&!tT.has(rtCfil))rtCfil="";
   const cap=t=>t.charAt(0)+t.slice(1).toLowerCase();
   {const allT=[...tT.keys()].sort((a,b)=>a.localeCompare(b,"pt-BR"));
-   $("rtCtsp").innerHTML=`<label class="tsp-b"><span>Carteira</span><select id="rtCsel"><option value="">${S.ult.dc?"Hoje · "+dmy(S.ult.dc):"Hoje"}</option>${CH.filter(x=>x.dc!==S.ult.dc).map(x=>`<option value="${x.dc}"${rtCdc===x.dc?" selected":""}>${dmy(x.dc)}</option>`).join("")}</select></label>
+   $("rtCtsp").innerHTML=`<label class="tsp-b"><span>Carteira</span><select id="rtCsel"><option value="">${S.ult.dc?"Hoje "+dm(S.ult.dc):"Hoje"}</option>${CH.filter(x=>x.dc!==S.ult.dc).map(x=>`<option value="${x.dc}"${rtCdc===x.dc?" selected":""}>${dmy(x.dc)}</option>`).join("")}</select></label>
     <label class="tsp-b"><span>Serviço</span><select id="rtCsrv"><option value="">Todos (${nf(itens.length)})</option>${allT.map(k=>`<option value="${esc(k)}"${rtCfil===k?" selected":""}>${esc(cap(k))} (${nf(tT.get(k))})</option>`).join("")}</select></label>
-    <label class="tsp-b"><span>Ano</span><select id="rtCano"><option value="">Toda a base</option><option value="90"${rtCano==="90"?" selected":""}>Últimos 90 dias</option>${rtAnos().map(y=>`<option value="a${y}"${rtPerAno(rtCano)===y?" selected":""}>${y}</option>`).join("")}</select></label>
-    <label class="tsp-b"><span>Mês</span><select id="rtCmes"><option value="">Todos os meses</option>${rtMeses(rtPerAno(rtCano)).map(k=>`<option value="${k}"${rtCano==="m"+k?" selected":""}>${MESN[Number(k.slice(5))-1]}/${k.slice(0,4)}</option>`).join("")}</select></label>
-    <label class="tsp-b"><span>Vezes</span><select id="rtCmin">${[[1,"1x ou mais"],[2,"2x ou mais"],[3,"3x ou mais"],[4,"4x ou mais"],[5,"5x ou mais"]].map(([k,l])=>`<option value="${k}"${rtCmin===k?" selected":""}>${l}</option>`).join("")}</select></label>`;}
+    <label class="tsp-b"><span>Ano</span><select id="rtCano"><option value="">Todos</option><option value="90"${rtCano==="90"?" selected":""}>90 dias</option>${rtAnos().map(y=>`<option value="a${y}"${rtPerAno(rtCano)===y?" selected":""}>${y}</option>`).join("")}</select></label>
+    <label class="tsp-b"><span>Mês</span><select id="rtCmes"><option value="">Todos</option>${rtMeses(rtPerAno(rtCano)).map(k=>`<option value="${k}"${rtCano==="m"+k?" selected":""}>${MESN[Number(k.slice(5))-1]}/${k.slice(0,4)}</option>`).join("")}</select></label>
+    <label class="tsp-b"><span>Vezes</span><select id="rtCmin">${[[1,"1x ou +"],[2,"2x ou +"],[3,"3x ou +"],[4,"4x ou +"],[5,"5x ou +"]].map(([k,l])=>`<option value="${k}"${rtCmin===k?" selected":""}>${l}</option>`).join("")}</select></label>`;}
   $("rtCkpi").innerHTML=
     rkCard({l:"Risco de retrabalho",c:"#F08C00",v:nf(itens.length),vc:"#E07F00",s:`OS de ${nf(ca.length)} na carteira${snap?" de "+dm(snap.dc):""}`,g:rkRing([[pc,"#F08C00"]],ca.length?Math.round(pc*100)+"%":""),attr:` data-rcf=""`,tip:"OS da carteira em endereço onde o mesmo serviço já foi feito · clique para ver todas"})+
     (top?rkCard({l:"Serviço que mais aparece",c:"#0096D6",v:`${nf(top[1])} <small>OS</small>`,s:`<span class="k2-srv">${esc(cap(top[0]))}</span>`,g:rkRing([[itens.length?top[1]/itens.length:0,"#0096D6"]],itens.length?Math.round(top[1]*100/itens.length)+"%":""),sel:rtCfil===top[0],attr:` data-rcf="${esc(top[0])}"`,tip:"clique para ver só esse serviço"}):"")+
