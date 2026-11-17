@@ -1001,6 +1001,10 @@ body.leitor .pubst{display:none}
 .tsc-f{display:flex;align-items:center;gap:8px}.tsc-f select{height:32px;border:1px solid #C9D5DE;border-radius:8px;padding:0 8px;font-size:13px;max-width:260px;background:#fff;color:#0B2545}
 .tsq-f2{grid-template-columns:minmax(0,1fr) 170px auto!important}.tsq-busca{margin-top:12px}.tsq-busca input{height:48px!important;font-size:15.5px!important;padding-left:14px!important}
 .rt-cons #rtPolo,.rt-cons #rtPer{display:none!important}.tsv-os i.hl{background:#FFE7B8;color:#7A4300;border-radius:5px;padding:0 5px;font-weight:800}
+.tsq-top{padding:12px 16px}.tsc2{display:flex;flex-direction:column;gap:10px}.tsc2-r{display:flex;flex-wrap:wrap;align-items:center;gap:8px}.tsc-ml{margin-left:10px}
+.tsc-sel{height:32px;border:1px solid #C9D5DE;border-radius:8px;padding:0 8px;font-size:13px;background:#fff;color:#0B2545}
+.tsc-chips{display:flex;flex-wrap:wrap;gap:6px;flex:1}.tsc-chips button{all:unset;cursor:pointer;font-size:12.5px;font-weight:600;color:#24384C;background:#F1F5F8;border:1px solid #DCE4EB;border-radius:999px;padding:5px 12px}.tsc-chips button:hover{background:#E6F1F8}.tsc-chips button[aria-pressed="true"]{background:#0B2545;border-color:#0B2545;color:#fff}
+.tsq-sbr{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:end}.tsq-sb .tsq-busca{margin-top:0}
 .tsv{padding:4px 16px 16px}
 .tsv-mod{display:inline-flex;gap:4px;background:#EEF2F5;border-radius:9px;padding:3px;margin-top:6px}.tsv-mod button{all:unset;cursor:pointer;font-size:12.5px;font-weight:600;color:#3E5163;padding:5px 12px;border-radius:7px}.tsv-mod button[aria-pressed="true"]{background:#fff;color:#0B2545;box-shadow:0 1px 2px rgba(0,0,0,.08)}
 .tsn{padding:4px 16px 16px}
@@ -2393,11 +2397,10 @@ body.com-bos .pbos{display:block;margin-bottom:4px}
       <details class="rx-box rx-cond" id="rtCondBox"><summary><b>Possível condomínio ou lote</b> <span id="rtCondN"></span><small>mesmo número com PDEs diferentes, ou várias OS no mesmo dia (cavalete múltiplo, ligações novas) — normalmente não é retrabalho</small></summary><div id="rtCond"></div></details>
     </div>
     <div id="rtV4" hidden>
-      <article class="tsq"><div class="tsq-t"><b>Quantas vezes o serviço foi feito no endereço</b><small>preencha um ou os dois campos</small></div>
-        <div class="tsq-f tsq-f2"><label class="tsq-i"><span>Serviço (TSS)</span><input type="search" id="rtTs2" list="rtTssL" placeholder="ex.: vazamento, cavalete" autocomplete="off"></label><label class="tsq-i tsq-a"><span>Ano da OS</span><select id="rtTano"></select></label><button type="button" id="rtTlimpa" class="tsq-x">Limpar</button></div>
-        <label class="tsq-i tsq-busca"><span>Pesquisar por endereço ou número da OS</span><input type="search" id="rtTend" placeholder="ex.: rua evangelista 120  ou  2639000005" autocomplete="off"></label>
-        <div id="rtTres"></div></article>
-      <article class="rx-box"><div class="rx-boxh"><div style="flex:1"><div id="rtTctl"></div><h3 id="rtTtit">Retrabalho por serviço (TSS)</h3><p class="rx-sub" id="rtTnota"></p></div></div><div id="rtTlista"></div></article>
+      <article class="tsq tsq-top"><div id="rtTctl"></div></article>
+      <article class="tsq tsq-sb"><div class="tsq-sbr"><label class="tsq-i tsq-busca"><span>Pesquisar por endereço ou número da OS</span><input type="search" id="rtTend" placeholder="ex.: rua evangelista 120  ou  2639000005" autocomplete="off"></label><button type="button" id="rtTlimpa" class="tsq-x">Limpar</button></div>
+        <input type="hidden" id="rtTs2"><div id="rtTres"></div></article>
+      <article class="rx-box"><div class="rx-boxh"><div style="flex:1"><h3 id="rtTtit">Retrabalho por serviço (TSS)</h3><p class="rx-sub" id="rtTnota"></p></div></div><div id="rtTlista"></div></article>
     </div>
     <div id="rtV2" hidden>
       <div class="rtbusca"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input type="search" id="rtBusca" placeholder="Rua e número — ex.: saint albans 199" aria-label="Pesquisar endereço"></div>
@@ -3836,16 +3839,22 @@ var rtOrd="az",rtMinV=1;
 function rtTselFill(){const sel=$("rtTsel");if(!sel||!RB)return;const TSE=rtView==="tse";const C=rtCalc();const cnt=new Map();for(const r of RB.R){const k=TSE?r[9]:r[1];cnt.set(k,(cnt.get(k)||0)+1);}
   const nm=[...cnt.keys()].map(i=>TSE?RB.D.r[i]:RB.D.t[i]).filter(Boolean);const U2=[...new Set(nm)].sort((a,b)=>a.localeCompare(b,"pt-BR"));
   sel.innerHTML=`<option value="">Todos</option>`+U2.map(v=>`<option value="${esc(v)}">${esc(v.charAt(0)+v.slice(1).toLowerCase())}</option>`).join("");sel.value=U2.includes(rtTssSel)?rtTssSel:"";}
-document.addEventListener("click",e=>{const o=e.target.closest("[data-rtord]");if(o){rtOrd=o.dataset.rtord;rtPorTss();return;}const m=e.target.closest("[data-rtmin]");if(m){rtMinV=Number(m.dataset.rtmin);rtPorTss();}});
-document.addEventListener("change",e=>{if(e.target&&e.target.id==="rtTsel"){rtTssSel=e.target.value;$("rtTs2").value=rtTssSel;$("rtTss").value=rtTssSel;rtPorTss();}});
+document.addEventListener("click",e=>{const sv=e.target.closest("[data-rtsrv]");if(sv){rtTssSel=sv.dataset.rtsrv;$("rtTss").value=rtTssSel;rtPorTss();return;}const o=e.target.closest("[data-rtord]");if(o){rtOrd=o.dataset.rtord;rtPorTss();return;}const m=e.target.closest("[data-rtmin]");if(m){rtMinV=Number(m.dataset.rtmin);rtPorTss();}});
+document.addEventListener("change",e=>{if(e.target&&e.target.id==="rtTano"){const v=e.target.value;rtPer=v?"a"+v:"tudo";renderRt();return;}if(e.target&&e.target.id==="rtTsel"){rtTssSel=e.target.value;$("rtTs2").value=rtTssSel;$("rtTss").value=rtTssSel;rtPorTss();}});
 function rtPorTss(){const _p=rtPer,_po=poloSel;poloSel="Todos";try{rtPorTss0();}finally{poloSel=_po;}}
-function rtPorTss0(){setTimeout(rtTselFill,0);const TSE=rtView==="tse";const dK=r=>TSE?r[9]:r[1];const dN0=i=>TSE?(RB.D.r[i]||"(sem resultado)"):(RB.D.t[i]||"(sem TSS)");{const sel=$("rtTano");if(sel){const an=rtAnos();sel.innerHTML=`<option value="">Todos os anos</option>`+an.map(y=>`<option value="${y}">${y}</option>`).join("");sel.value=/^a\d{4}$/.test(rtPer)?rtPer.slice(1):"";}}const D=RB.D,F=rtFiltrar(),C=rtCalc(),J=F.J;
+function rtPorTss0(){const TSE=rtView==="tse";const dK=r=>TSE?r[9]:r[1];const dN0=i=>TSE?(RB.D.r[i]||"(sem resultado)"):(RB.D.t[i]||"(sem TSS)");const D=RB.D,F=rtFiltrar(),C=rtCalc(),J=F.J;
   {const aq0=String(($("rtTend")||{}).value||"").trim().length>=3;const nomeD=TSE?"resultado":"serviço";
    const op=(id,vals,cur)=>vals.map(([k,l])=>`<button type="button" data-${id}="${k}" aria-pressed="${String(cur)===String(k)}">${l}</button>`).join("");
-   $("rtTctl").innerHTML=`<div class="tsc"><span class="tsc-l">Mostrar primeiro</span><div class="tsc-s">${op("rtord",[["az","A → Z"],["vez","Mais vezes"],["end","Mais endereços"]],rtOrd)}</div><span class="tsc-l">Vezes no endereço</span><div class="tsc-s">${op("rtmin",(aq0?[[1,"Todas"]]:[]).concat([[2,"2x ou mais"],[3,"3x ou mais"],[4,"4x ou mais"],[5,"5x ou mais"]]),aq0?rtMinV:Math.max(2,rtMinV))}</div><label class="tsc-f"><span class="tsc-l">Só este ${nomeD}</span><select id="rtTsel"><option value="">Todos</option></select></label></div>`;}
+   const freq=new Map();for(const r of RB.R){const k=TSE?r[9]:r[1];freq.set(k,(freq.get(k)||0)+1);}const nms=[...freq].map(([k,c])=>[TSE?D.r[k]:D.t[k],c]).filter(x=>x[0]);
+   const top=nms.slice().sort((a,b)=>b[1]-a[1]).slice(0,12).map(x=>x[0]).sort((a,b)=>a.localeCompare(b,"pt-BR"));if(rtTssSel&&!top.includes(rtTssSel)&&nms.some(x=>x[0]===rtTssSel))top.push(rtTssSel);
+   const capS=v=>v.charAt(0)+v.slice(1).toLowerCase();const outros=nms.map(x=>x[0]).filter(v=>!top.includes(v)).sort((a,b)=>a.localeCompare(b,"pt-BR"));
+   $("rtTctl").innerHTML=`<div class="tsc2"><div class="tsc2-r"><span class="tsc-l">Vezes</span><div class="tsc-s">${op("rtmin",(aq0?[[1,"Todas"]]:[]).concat([[2,"2x ou mais"],[3,"3x ou mais"],[4,"4x ou mais"],[5,"5x ou mais"]]),aq0?rtMinV:Math.max(2,rtMinV))}</div>
+     <span class="tsc-l tsc-ml">Ano da OS</span><select id="rtTano" class="tsc-sel"></select><span class="tsc-l tsc-ml">Mostrar primeiro</span><div class="tsc-s">${op("rtord",[["az","A → Z"],["vez","Mais vezes"],["end","Mais endereços"]],rtOrd)}</div></div>
+     <div class="tsc2-r"><span class="tsc-l">${TSE?"Resultado":"Serviço"}</span><div class="tsc-chips"><button type="button" data-rtsrv="" aria-pressed="${!rtTssSel}">Todos</button>${top.map(v=>`<button type="button" data-rtsrv="${esc(v)}" aria-pressed="${rtTssSel===v}">${esc(capS(v))}</button>`).join("")}${outros.length?`<select id="rtTsel" class="tsc-sel"><option value="">Outros ▾</option>${outros.map(v=>`<option value="${esc(v)}"${rtTssSel===v?" selected":""}>${esc(capS(v))}</option>`).join("")}</select>`:""}</div></div></div>`;
+   {const sel=$("rtTano");if(sel){sel.innerHTML=`<option value="">Todos</option>`+rtAnos().map(y=>`<option value="${y}">${y}</option>`).join("");sel.value=/^a\d{4}$/.test(rtPer)?rtPer.slice(1):"";}}}
   const MINV=()=>Math.max(String(($("rtTend")||{}).value||"").trim().length>=3?1:2,rtMinV);
   const ordL=(L,nv,ne)=>L.sort((a,b)=>rtOrd==="vez"?nv(b)-nv(a)||String(a.nome).localeCompare(String(b.nome),"pt-BR"):rtOrd==="end"?ne(b)-ne(a)||nv(b)-nv(a):String(a.nome).localeCompare(String(b.nome),"pt-BR",{sensitivity:"base"}));const pol=poloSel;const okP=r=>pol==="Todos"||RT_POLO[D.a[r[8]]]===pol;
-  const aq=U(($("rtTend")&&$("rtTend").value)||"").trim();$("rtTtit").textContent=aq.length>=3?"O que foi feito no endereço":TSE?"Retrabalho por resultado (TSE)":"Retrabalho por serviço (TSS)";{const lb=document.querySelector('label.tsq-i span');if(lb)lb.textContent=TSE?"Resultado (TSE)":"Serviço (TSS)";const i2=$("rtTs2");if(i2)i2.placeholder=TSE?"ex.: executado, imóvel fechado":"ex.: vazamento, cavalete";const t0=document.querySelector(".tsq-t b");if(t0)t0.textContent=TSE?"Quantas vezes o resultado se repetiu no endereço":"Quantas vezes o serviço foi feito no endereço";}if(aq.length<3)$("rtTres").innerHTML=aq?'<div class="tsq-hint">Digite pelo menos 3 letras do endereço.</div>':"";
+  const aq=U(($("rtTend")&&$("rtTend").value)||"").trim();$("rtTtit").textContent=aq.length>=3?"O que foi feito no endereço":TSE?"Retrabalho por resultado (TSE)":"Retrabalho por serviço (TSS)";if(aq.length<3)$("rtTres").innerHTML=aq?'<div class="tsq-hint">Digite pelo menos 3 letras do endereço.</div>':"";
   const osQ=aq.replace(/\s/g,"");const porOS=/^\d{6,}$/.test(osQ);let osKeys=null;
   if(porOS){osKeys=new Set();for(const [k,L0] of rtIndice())if(L0.some(r=>String(r[0]).includes(osQ)))osKeys.add(k);}
   if(aq.length>=3){const toks=porOS?[]:aq.split(/\s+/).filter(Boolean);const num=/^\d+$/.test(toks[toks.length-1])&&toks.length>1?toks.pop():"";
@@ -4111,7 +4120,6 @@ document.addEventListener("click",e=>{
 document.addEventListener("change",e=>{if(e.target&&e.target.id==="rtCsel"){rtCdc=e.target.value;rtCfil="";renderRt();}});
 {let te=null;$("rtTend").addEventListener("input",()=>{clearTimeout(te);te=setTimeout(()=>{if((rtView==="tss"||rtView==="tse"))rtPorTss();},250);});
  $("rtTs2").addEventListener("input",e=>{clearTimeout(te);te=setTimeout(()=>{rtTssSel=e.target.value.trim();$("rtTss").value=rtTssSel;rtPorTss();},300);});
- $("rtTano").onchange=e=>{const v=e.target.value;rtPer=v?"a"+v:"tudo";renderRt();};
  $("rtTlimpa").onclick=()=>{$("rtTend").value="";$("rtTs2").value="";rtTssSel="";$("rtTss").value="";rtPorTss();};}
 {let tt=null;$("rtTss").addEventListener("input",e=>{clearTimeout(tt);tt=setTimeout(()=>{rtTssSel=e.target.value.trim();renderRt();},300);});}
 $("rtPde").onchange=()=>{rtCache=null;renderRt();};
