@@ -2411,9 +2411,10 @@ body.com-bos .pbos{display:block;margin-bottom:4px}
       <div id="rtRes"></div>
     </div>
     <div id="rtV3" hidden>
-      <div class="rk-hist" id="rtChist"></div>
-      <div class="kcs k4" id="rtCkpi"></div>
-      <article class="rx-box" id="rtCbox"><div class="rx-boxh"><div><h3>Já feitas no mesmo endereço</h3><p class="rx-sub" id="rtCnota"></p></div><div class="rk-tools"><div class="seg2" id="rtCper"></div></div></div><div class="rtbusca rtcq"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input type="search" id="rtCq" placeholder="Pesquisar por endereço ou número da OS" aria-label="Pesquisar na carteira do dia por endereço ou OS" autocomplete="off"></div><div class="rk-chips" id="rtCfil"></div><div id="rtClista"></div></article>
+      <article class="tsq tsq-top"><div class="tsp" id="rtCtsp"></div></article>
+      <article class="tsq tsq-sb"><div class="tsq-sbr"><label class="tsq-i tsq-busca"><span>Pesquisar por endereço ou número da OS</span><input type="search" id="rtCq" placeholder="ex.: rua evangelista 120  ou  2639000005" autocomplete="off"></label><button type="button" id="rtClimpa" class="tsq-x">Limpar</button></div></article>
+      <div id="rtChist" hidden></div><div id="rtCkpi" hidden></div>
+      <article class="rx-box" id="rtCbox"><div class="rx-boxh"><div><h3>Já feitas no mesmo endereço</h3><p class="rx-sub" id="rtCnota"></p></div><div class="seg2" id="rtCper" hidden></div></div><div class="rk-chips" id="rtCfil" hidden></div><div id="rtClista"></div></article>
     </div>
       </div>
     </div>
@@ -3731,7 +3732,7 @@ document.addEventListener("click",e=>{if(e.target.closest("[data-outros]")){outA
 /* ================= RETRABALHO ================= */
 // Base: uma linha por OS+TSS executada (fim do dia e continua não entram). Guardada neste computador e enviada ao link da coordenação.
 // RB={v,em,fonte,ini,fim,D:{t,f,e,b,m,a,r,q,c},R:[[os,t,f,e,num,b,m,pde,a,r,q,c,min]]}
-var rtTsm="num";var RB=null,rtCache=null,rtPer="tudo",rtModo="todas",rtTssSel="",rtAbertos=new Set(),rtCarregando=false;
+var rtTsm="num",rtCano="",rtCmin=1;var RB=null,rtCache=null,rtPer="tudo",rtModo="todas",rtTssSel="",rtAbertos=new Set(),rtCarregando=false;
 var RT_E0=Date.UTC(2020,0,1)+3*3600000; // minutos contados a partir de 01/01/2020 00:00 (horário de Brasília)
 function rtMin(txt){const t=parseDT0(txt);return t==null?null:Math.round((t-new Date(2020,0,1).getTime())/60000);}
 function rtData(m){return new Date(new Date(2020,0,1).getTime()+m*60000);}
@@ -3831,7 +3832,7 @@ function rkCard(o){return `<div class="kc kc2 rx-clk${o.sel?" sel":""}"${o.attr|
 function renderRt(){if(rtView==="busca")rtView="tss";setTimeout(marcarCards,0);
   const sem=!RB||!RB.R||!RB.R.length;
   $("rtBase").hidden=LEITOR;$("rtAtual").hidden=LEITOR;
-  $("rtSub").innerHTML=[["geral","Análise de reincidência"],["tss","Consulta por TSS"],["tse","Consulta por TSE"],["cart","Carteira do dia"]].map(([k,l])=>`<button type="button" data-rv="${k}" aria-pressed="${rtView===k}"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${(k==="geral"?RT_IC.dash:RT_IC[k])}</svg>${l}</button>`).join("");
+  $("rtSub").innerHTML=[["geral","Análise de reincidência"],["tss","Consulta por TSS"],["tse","Consulta por TSE"],["cart","Consulta carteira"]].map(([k,l])=>`<button type="button" data-rv="${k}" aria-pressed="${rtView===k}"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${(k==="geral"?RT_IC.dash:RT_IC[k])}</svg>${l}</button>`).join("");
   $("rtV1").hidden=rtView!=="geral";$("rtFil").hidden=rtView!=="geral"&&!(rtView==="tss"||rtView==="tse");$("rtFil").classList.toggle("rt-cons",rtView==="tss"||rtView==="tse");{const sv=document.querySelector("#rtFil .rx-srv");if(sv)sv.hidden=(rtView==="tss"||rtView==="tse");}if(document.activeElement!==$("rtTs2"))$("rtTs2").value=rtTssSel;$("rtV4").hidden=!(rtView==="tss"||rtView==="tse");$("rtV2").hidden=rtView!=="busca";$("rtV3").hidden=rtView!=="cart";
   if(sem){$("rxOla").innerHTML=LEITOR?"Olá, <b>coordenação</b>":"Olá, <b>Fernanda</b>";$("rxPill").textContent="";$("rxData").textContent=new Date().toLocaleDateString("pt-BR");$("rtBaseN").textContent="vazia";$("rtInfo").textContent=LEITOR?"A base de retrabalho ainda não foi publicada.":"Ainda não há base. Use Importar base (arquivo .json.gz) ou Atualizar com executados.";
     ["rdTiles","rdMes","rdTop","rtLista","rtRes","rtCkpi","rtClista","rtCond"].forEach(i=>$(i).innerHTML="");return;}
@@ -4070,8 +4071,10 @@ function rtCarteira(){const D=RB.D;
   $("rtCper").innerHTML=[["tudo","Toda a base"],["90","Últimos 90 dias"]].map(([k,l])=>`<button type="button" data-rcp="${k}" aria-pressed="${rtCper===k}">${l}</button>`).join("");
   const fpS=x=>poloSel==="Todos"||x.p===poloSel;
   const ca=snap?{length:poloSel==="Todos"?snap.n:(snap.np||{})[poloSel]||0}:ultF().ca.filter(r=>fp(r));const itens=[];
-  if(snap){for(const x of snap.it){if(!fpS(x))continue;let h=x.h.filter(a=>!a[2]).map(a=>{const z=[];z[0]=a[0];z[12]=a[1];z.al=a[2];z.rs=a[3];if(a[4])z.cart=1;return z;});if(rtCper==="90")h=h.filter(z=>z[12]>=lim90);if(h.length)itens.push({r:x,h});}}
-  else for(const r of ca){let h=rtHistCart(r);if(rtCper==="90")h=h.filter(x=>x[12]>=lim90);if(h.length)itens.push({r,h});}
+  const anoJ=/^a\d{4}$/.test(rtCano)?[rtMin("01/01/"+rtCano.slice(1)+" 00:00"),rtMin("31/12/"+rtCano.slice(1)+" 23:59")]:null;
+  const fH=h=>{if(rtCano==="90")h=h.filter(z=>z[12]>=lim90);if(anoJ)h=h.filter(z=>z[12]>=anoJ[0]&&z[12]<=anoJ[1]);return h.length>=rtCmin?h:[];};
+  if(snap){for(const x of snap.it){if(!fpS(x))continue;let h=fH(x.h.filter(a=>!a[2]).map(a=>{const z=[];z[0]=a[0];z[12]=a[1];z.al=a[2];z.rs=a[3];if(a[4])z.cart=1;return z;}));if(h.length)itens.push({r:x,h});}}
+  else for(const r of ca){let h=fH(rtHistCart(r));if(h.length)itens.push({r,h});}
   itens.sort((a,b)=>(b.r.fora-a.r.fora)||b.h.length-a.h.length||b.h[b.h.length-1][12]-a.h[a.h.length-1][12]);
   const fora=itens.filter(x=>x.r.fora).length,noP=itens.length-fora;
   const SV=p=>`<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">${p}</svg>`;
@@ -4081,6 +4084,11 @@ function rtCarteira(){const D=RB.D;
   const tT=new Map();for(const x of itens){const k=x.r.tss||"(sem TSS)";tT.set(k,(tT.get(k)||0)+1);}const tops=[...tT].sort((a,b)=>b[1]-a[1]);const top=tops[0];
   if(rtCfil&&!tT.has(rtCfil))rtCfil="";
   const cap=t=>t.charAt(0)+t.slice(1).toLowerCase();
+  {const allT=[...tT.keys()].sort((a,b)=>a.localeCompare(b,"pt-BR"));
+   $("rtCtsp").innerHTML=`<label class="tsp-b"><span>Carteira</span><select id="rtCsel"><option value="">${S.ult.dc?"Hoje · "+dmy(S.ult.dc):"Hoje"}</option>${CH.filter(x=>x.dc!==S.ult.dc).map(x=>`<option value="${x.dc}"${rtCdc===x.dc?" selected":""}>${dmy(x.dc)}</option>`).join("")}</select></label>
+    <label class="tsp-b"><span>Serviço</span><select id="rtCsrv"><option value="">Todos (${nf(itens.length)})</option>${allT.map(k=>`<option value="${esc(k)}"${rtCfil===k?" selected":""}>${esc(cap(k))} (${nf(tT.get(k))})</option>`).join("")}</select></label>
+    <label class="tsp-b"><span>Ano</span><select id="rtCano"><option value="">Toda a base</option><option value="90"${rtCano==="90"?" selected":""}>Últimos 90 dias</option>${rtAnos().map(y=>`<option value="a${y}"${rtCano==="a"+y?" selected":""}>${y}</option>`).join("")}</select></label>
+    <label class="tsp-b"><span>Vezes</span><select id="rtCmin">${[[1,"1x ou mais"],[2,"2x ou mais"],[3,"3x ou mais"],[4,"4x ou mais"],[5,"5x ou mais"]].map(([k,l])=>`<option value="${k}"${rtCmin===k?" selected":""}>${l}</option>`).join("")}</select></label>`;}
   $("rtCkpi").innerHTML=
     rkCard({l:"Risco de retrabalho",c:"#F08C00",v:nf(itens.length),vc:"#E07F00",s:`OS de ${nf(ca.length)} na carteira${snap?" de "+dm(snap.dc):""}`,g:rkRing([[pc,"#F08C00"]],ca.length?Math.round(pc*100)+"%":""),attr:` data-rcf=""`,tip:"OS da carteira em endereço onde o mesmo serviço já foi feito · clique para ver todas"})+
     (top?rkCard({l:"Serviço que mais aparece",c:"#0096D6",v:`${nf(top[1])} <small>OS</small>`,s:`<span class="k2-srv">${esc(cap(top[0]))}</span>`,g:rkRing([[itens.length?top[1]/itens.length:0,"#0096D6"]],itens.length?Math.round(top[1]*100/itens.length)+"%":""),sel:rtCfil===top[0],attr:` data-rcf="${esc(top[0])}"`,tip:"clique para ver só esse serviço"}):"")+
@@ -4090,7 +4098,7 @@ function rtCarteira(){const D=RB.D;
   const bate=x=>{if(!cq)return true;if(cqD.length>=5&&cqD.length===cq.replace(/\s/g,"").length){if(String(x.r.os).includes(cqD))return true;if(x.h.some(z=>String(z[0]).includes(cqD)))return true;}
     const t=U((x.r.end||"")+" "+(x.r.bai||"")+" "+x.r.os).replace(/[^A-Z0-9 ]/g," ");return cqT.every(w=>t.includes(w));};
   const L=itens.filter(x=>(!rtCfil||(x.r.tss||"(sem TSS)")===rtCfil)&&bate(x)).sort((a,b)=>b.h.length-a.h.length||b.h[b.h.length-1][12]-a.h[a.h.length-1][12]);
-  $("rtCnota").textContent=cq?`${nf(L.length)} ${L.length===1?"OS encontrada":"OS encontradas"} para “${cq}”`:`${nf(L.length)} OS da carteira em endereço onde o mesmo serviço (mesma família) já foi feito antes, ${rtCper==="90"?"nos últimos 90 dias":"em qualquer data da base"} · ao lado, quantas vezes e as OS`;
+  $("rtCnota").textContent=cq?`${nf(L.length)} ${L.length===1?"OS encontrada":"OS encontradas"} para “${cq}”`:`${nf(L.length)} OS da carteira em endereço onde o mesmo serviço (mesma família) já foi feito antes, ${rtCano==="90"?"nos últimos 90 dias":/^a\d{4}$/.test(rtCano)?"em "+rtCano.slice(1):"em qualquer data da base"} · ao lado, quantas vezes e as OS`;
   const hoje=rtMin(new Date(agora).toLocaleDateString("pt-BR")+" 12:00");
   $("rtClista").innerHTML=L.length?`<div class="rk-list">${L.slice(0,400).map(({r,h})=>{const ul=h[h.length-1];const dd=Math.round((hoje-ul[12])/1440);const ale=rtCalc().ale;
     const key=r.os+"|"+r.tss,ab=rtCab.has(key);const D2=RB.D;
@@ -4122,7 +4130,8 @@ document.addEventListener("click",e=>{
   const c=e.target.closest("[data-rcp]");if(c){rtCper=c.dataset.rcp;renderRt();return;}
   const t=e.target.closest("[data-rtt]");if(t&&t.closest("#v-rt")){rtTssSel=(t.dataset.rtt===rtTssSel?"":t.dataset.rtt);renderRt();return;}
   const k=e.target.closest(".rx-row .rtl1");if(k){const key=k.parentElement.dataset.rtk;rtAbertos.has(key)?rtAbertos.delete(key):rtAbertos.add(key);renderRt();}});
-document.addEventListener("change",e=>{if(e.target&&e.target.id==="rtCsel"){rtCdc=e.target.value;rtCfil="";renderRt();}});
+document.addEventListener("change",e=>{const id=e.target&&e.target.id;if(id==="rtCsel"){rtCdc=e.target.value;rtCfil="";renderRt();}else if(id==="rtCsrv"){rtCfil=e.target.value;rtCarteira();}else if(id==="rtCano"){rtCano=e.target.value;rtCarteira();}else if(id==="rtCmin"){rtCmin=Number(e.target.value);rtCarteira();}});
+document.addEventListener("click",e=>{if(e.target&&e.target.id==="rtClimpa"){rtCfil="";rtCano="";rtCmin=1;$("rtCq").value="";rtCarteira();}});
 {let te=null;$("rtTend").addEventListener("input",()=>{clearTimeout(te);te=setTimeout(()=>{if((rtView==="tss"||rtView==="tse"))rtPorTss();},250);});
  $("rtTs2").addEventListener("input",e=>{clearTimeout(te);te=setTimeout(()=>{rtTssSel=e.target.value.trim();$("rtTss").value=rtTssSel;rtPorTss();},300);});
  $("rtTlimpa").onclick=()=>{$("rtTend").value="";$("rtTs2").value="";rtTssSel="";$("rtTss").value="";rtPorTss();};}
