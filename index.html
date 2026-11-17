@@ -1010,7 +1010,8 @@ body.leitor .pubst{display:none}
 .tsp .tsp-b select{font-size:13px;padding-right:18px;max-width:150px;text-overflow:ellipsis}
 .tsp .tsp-b:has(#rtCsrv) select,.tsp .tsp-b:has(#rtTsel) select{max-width:210px}
 .tsq-top{padding:10px 14px!important}
-#rtCsel{width:110px}#rtCano,#rtTano{width:90px}#rtCmes,#rtTmes{width:100px}#rtCmin,#rtTmin2{width:86px}.tsp{flex-wrap:wrap!important}.tsp .tsp-b{flex:none}
+#rtCsel{width:110px}#rtCano,#rtTano{width:90px}#rtCmes,#rtTmes{width:112px}#rtCmin,#rtTmin2{width:86px}.tsp{flex-wrap:wrap!important}.tsp .tsp-b{flex:none}
+.tsp-b:has(select:disabled){opacity:.55;cursor:default}.tsp-b select:disabled{cursor:default}
 .tsp .tsp-b:has(#rtCsrv),.tsp .tsp-b:has(#rtTsel){order:9;flex:1 1 100%;height:44px;border-radius:12px;padding:0 14px 0 16px}
 .tsp .tsp-b:has(#rtCsrv) span,.tsp .tsp-b:has(#rtTsel) span{font-size:11px}
 #rtCsrv,#rtTsel{width:100%;max-width:none!important;font-size:15px!important}
@@ -3793,7 +3794,8 @@ function rtCalc(){const k=rtModo+"|"+($("rtPde")&&$("rtPde").checked?1:0);if(rtC
   rtCache={k,em:RB.em,grupos,total,ale};return rtCache;}
 function rtAnos(){if(!RB||!RB.R||!RB.R.length)return [];if(RB.__anos&&RB.__anos.em===RB.em)return RB.__anos.L;let mn=Infinity,mx=-Infinity;for(const r of RB.R){if(r[12]<mn)mn=r[12];if(r[12]>mx)mx=r[12];}
   const a0=Number(rtIso(mn).slice(0,4)),a1=Number(rtIso(mx).slice(0,4));const L=[];for(let y=a1;y>=a0&&L.length<6;y--)L.push(String(y));RB.__anos={em:RB.em,L};return L;}
-const MESN=["jan","fev","mar","abr","mai","jun","jul","ago","set","out","nov","dez"];
+const MESN=["jan","fev","mar","abr","mai","jun","jul","ago","set","out","nov","dez"],MESL=["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];
+const mesOpts=(an,cur)=>an?`<option value="">Todos</option>`+rtMeses(an).slice().reverse().map(k=>`<option value="${k}"${cur==="m"+k?" selected":""}>${MESL[Number(k.slice(5))-1]}</option>`).join(""):`<option value="">escolha o ano</option>`;
 function rtPerJ(v){if(/^a\d{4}$/.test(v)){const y=v.slice(1);return [rtMin("01/01/"+y+" 00:00"),rtMin("31/12/"+y+" 23:59")];}const m=/^m(\d{4})-(\d{2})$/.exec(v);if(m){const y=m[1],mm=m[2],ld=new Date(Number(y),Number(mm),0).getDate();return [rtMin("01/"+mm+"/"+y+" 00:00"),rtMin(ld+"/"+mm+"/"+y+" 23:59")];}return null;}
 function rtPerAno(v){return /^[am]\d{4}/.test(v||"")?v.slice(1,5):"";}
 function rtPerTxt(v){const m=/^m(\d{4})-(\d{2})$/.exec(v||"");return m?MESN[Number(m[2])-1]+"/"+m[1]:/^a\d{4}$/.test(v||"")?v.slice(1):"";}
@@ -3873,7 +3875,7 @@ function rtPorTss0(){const TSE=rtView==="tse";const dK=r=>TSE?r[9]:r[1];const dN
      <label class="tsp-b"><span>Mês</span><select id="rtTmes"></select></label>
      <label class="tsp-b"><span>Vezes</span><select id="rtTmin2">${vz.map(([k,l])=>`<option value="${k}"${String(vSel)===String(k)?" selected":""}>${l}</option>`).join("")}</select></label></div>`;
    {const sel=$("rtTano");const an=rtPerAno(rtPer);if(sel){sel.innerHTML=`<option value="">Todos</option>`+rtAnos().map(y=>`<option value="${y}">${y}</option>`).join("");sel.value=an;}
-    const sm=$("rtTmes");if(sm){sm.innerHTML=`<option value="">Todos</option>`+rtMeses(an).map(k=>`<option value="${k}">${MESN[Number(k.slice(5))-1]}/${k.slice(0,4)}</option>`).join("");sm.value=/^m/.test(rtPer)?rtPer.slice(1):"";}}}
+    const sm=$("rtTmes");if(sm){sm.innerHTML=mesOpts(an,rtPer);sm.disabled=!an;}}}
   const MINV=()=>Math.max(String(($("rtTend")||{}).value||"").trim().length>=3?1:2,rtMinV);
   const ordL=(L,nv,ne)=>L.sort((a,b)=>rtOrd==="vez"?nv(b)-nv(a)||String(a.nome).localeCompare(String(b.nome),"pt-BR"):rtOrd==="end"?ne(b)-ne(a)||nv(b)-nv(a):String(a.nome).localeCompare(String(b.nome),"pt-BR",{sensitivity:"base"}));const pol=poloSel;const okP=r=>pol==="Todos"||RT_POLO[D.a[r[8]]]===pol;
   const aq=U(($("rtTend")&&$("rtTend").value)||"").trim();$("rtTtit").textContent=aq.length>=3?"O que foi feito no endereço":TSE?"Retrabalho por resultado (TSE)":"Retrabalho por serviço (TSS)";if(aq.length<3)$("rtTres").innerHTML=aq?'<div class="tsq-hint">Digite pelo menos 3 letras do endereço.</div>':"";
@@ -4104,7 +4106,7 @@ function rtCarteira(){const D=RB.D;
    $("rtCtsp").innerHTML=`<label class="tsp-b"><span>Carteira</span><select id="rtCsel"><option value="">${S.ult.dc?"Hoje "+dm(S.ult.dc):"Hoje"}</option>${CH.filter(x=>x.dc!==S.ult.dc).map(x=>`<option value="${x.dc}"${rtCdc===x.dc?" selected":""}>${dmy(x.dc)}</option>`).join("")}</select></label>
     <label class="tsp-b"><span>Serviço</span><select id="rtCsrv"><option value="">Todos (${nf(itens.length)})</option>${allT.map(k=>`<option value="${esc(k)}"${rtCfil===k?" selected":""}>${esc(cap(k))} (${nf(tT.get(k))})</option>`).join("")}</select></label>
     <label class="tsp-b"><span>Ano</span><select id="rtCano"><option value="">Todos</option><option value="90"${rtCano==="90"?" selected":""}>90 dias</option>${rtAnos().map(y=>`<option value="a${y}"${rtPerAno(rtCano)===y?" selected":""}>${y}</option>`).join("")}</select></label>
-    <label class="tsp-b"><span>Mês</span><select id="rtCmes"><option value="">Todos</option>${rtMeses(rtPerAno(rtCano)).map(k=>`<option value="${k}"${rtCano==="m"+k?" selected":""}>${MESN[Number(k.slice(5))-1]}/${k.slice(0,4)}</option>`).join("")}</select></label>
+    <label class="tsp-b"><span>Mês</span><select id="rtCmes"${rtPerAno(rtCano)?"":" disabled"}>${mesOpts(rtPerAno(rtCano),rtCano)}</select></label>
     <label class="tsp-b"><span>Vezes</span><select id="rtCmin">${[[1,"1x ou +"],[2,"2x ou +"],[3,"3x ou +"],[4,"4x ou +"],[5,"5x ou +"]].map(([k,l])=>`<option value="${k}"${rtCmin===k?" selected":""}>${l}</option>`).join("")}</select></label>`;}
   $("rtCkpi").innerHTML=
     rkCard({l:"Risco de retrabalho",c:"#F08C00",v:nf(itens.length),vc:"#E07F00",s:`OS de ${nf(ca.length)} na carteira${snap?" de "+dm(snap.dc):""}`,g:rkRing([[pc,"#F08C00"]],ca.length?Math.round(pc*100)+"%":""),attr:` data-rcf=""`,tip:"OS da carteira em endereço onde o mesmo serviço já foi feito · clique para ver todas"})+
