@@ -1007,7 +1007,8 @@ body.leitor .pubst{display:none}
 @media (max-width:640px){.tsn-h{display:none}.tsn-g{grid-template-columns:64px minmax(0,1fr)}.tsn-s{grid-template-columns:minmax(0,1fr) 40px}.tsn-s .tsv-os{grid-column:1/-1}}
 .tsq{background:#fff;border:1px solid #E3E8EE;border-radius:14px;padding:16px 18px;margin:0 0 14px;box-shadow:0 1px 2px rgba(16,40,70,.04)}
 .tsq-t{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:12px}.tsq-t b{font-size:15px;color:#0B2545}.tsq-t small{font-size:12px;color:#8A99A6}
-.tsq-f{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr) auto;gap:12px;align-items:end}
+.tsq-i select{height:42px;border:1px solid #C9D5DE;border-radius:10px;padding:0 10px;font-size:14.5px;color:#0B2545;background:#FAFCFE}
+.tsq-f{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr) 150px auto;gap:12px;align-items:end}
 .tsq-i{display:flex;flex-direction:column;gap:5px}.tsq-i span{font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:#6B7A86}
 .tsq-i input{height:42px;border:1px solid #C9D5DE;border-radius:10px;padding:0 12px;font-size:14.5px;color:#0B2545;background:#FAFCFE;outline:none}.tsq-i input:focus{border-color:#0096D6;background:#fff;box-shadow:0 0 0 3px rgba(0,150,214,.15)}
 .tsq-x{height:42px;padding:0 16px;border:1px solid #C9D5DE;border-radius:10px;background:#fff;color:#3E5163;font-weight:600;cursor:pointer}.tsq-x:hover{background:#F2F6F9}
@@ -2387,7 +2388,7 @@ body.com-bos .pbos{display:block;margin-bottom:4px}
     </div>
     <div id="rtV4" hidden>
       <article class="tsq"><div class="tsq-t"><b>Quantas vezes o serviço foi feito no endereço</b><small>preencha um ou os dois campos</small></div>
-        <div class="tsq-f"><label class="tsq-i"><span>Serviço (TSS)</span><input type="search" id="rtTs2" list="rtTssL" placeholder="ex.: vazamento, cavalete" autocomplete="off"></label><label class="tsq-i"><span>Endereço</span><input type="search" id="rtTend" placeholder="ex.: rua evangelista 120" autocomplete="off"></label><button type="button" id="rtTlimpa" class="tsq-x">Limpar</button></div>
+        <div class="tsq-f"><label class="tsq-i"><span>Serviço (TSS)</span><input type="search" id="rtTs2" list="rtTssL" placeholder="ex.: vazamento, cavalete" autocomplete="off"></label><label class="tsq-i"><span>Endereço</span><input type="search" id="rtTend" placeholder="ex.: rua evangelista 120" autocomplete="off"></label><label class="tsq-i tsq-a"><span>Ano da OS</span><select id="rtTano"></select></label><button type="button" id="rtTlimpa" class="tsq-x">Limpar</button></div>
         <div id="rtTres"></div></article>
       <article class="rx-box"><div class="rx-boxh"><div><h3 id="rtTtit">Retrabalho por serviço (TSS)</h3><p class="rx-sub" id="rtTnota"></p></div></div><div id="rtTlista"></div></article>
     </div>
@@ -3813,10 +3814,10 @@ var RT_IC=Object.assign({dash:'<path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"
 function rkRing(parts,txt){const R=24,C=2*Math.PI*R;let off=0,arcs="";for(const [v,cor] of parts){const L=Math.max(0,Math.min(1,v))*C;arcs+=`<circle cx="32" cy="32" r="${R}" fill="none" stroke="${cor}" stroke-width="8" stroke-dasharray="${L.toFixed(1)} ${C.toFixed(1)}" stroke-dashoffset="${(-off).toFixed(1)}" transform="rotate(-90 32 32)"/>`;off+=L;}
   return `<svg viewBox="0 0 64 64" class="k2-ring"><circle cx="32" cy="32" r="${R}" fill="none" class="trk" stroke-width="8"/>${arcs}${txt?`<text x="32" y="36" text-anchor="middle">${txt}</text>`:""}</svg>`;}
 function rkCard(o){return `<div class="kc kc2 rx-clk${o.sel?" sel":""}"${o.attr||""} role="button" tabindex="0" style="--c:${o.c}"${o.tip?` title="${esc(o.tip)}"`:""}><div class="k2-t"><span class="k2-l">${o.l}</span><span class="k2-v"${o.vc?` style="color:${o.vc}"`:""}>${o.v}</span><span class="k2-s">${o.s||""}</span></div><div class="k2-g">${o.g||""}</div></div>`;}
-function renderRt(){setTimeout(marcarCards,0);
+function renderRt(){if(rtView==="busca")rtView="tss";setTimeout(marcarCards,0);
   const sem=!RB||!RB.R||!RB.R.length;
   $("rtBase").hidden=LEITOR;$("rtAtual").hidden=LEITOR;
-  $("rtSub").innerHTML=[["geral","Análise de reincidência"],["tss","Por serviço (TSS)"],["busca","Consulta por endereço"],["cart","Carteira do dia"]].map(([k,l])=>`<button type="button" data-rv="${k}" aria-pressed="${rtView===k}"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${(k==="geral"?RT_IC.dash:RT_IC[k])}</svg>${l}</button>`).join("");
+  $("rtSub").innerHTML=[["geral","Análise de reincidência"],["tss","Consulta"],["cart","Carteira do dia"]].map(([k,l])=>`<button type="button" data-rv="${k}" aria-pressed="${rtView===k}"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${(k==="geral"?RT_IC.dash:RT_IC[k])}</svg>${l}</button>`).join("");
   $("rtV1").hidden=rtView!=="geral";$("rtFil").hidden=rtView!=="geral"&&rtView!=="tss";{const sv=document.querySelector("#rtFil .rx-srv");if(sv)sv.hidden=rtView==="tss";}if(document.activeElement!==$("rtTs2"))$("rtTs2").value=rtTssSel;$("rtV4").hidden=rtView!=="tss";$("rtV2").hidden=rtView!=="busca";$("rtV3").hidden=rtView!=="cart";
   if(sem){$("rxOla").innerHTML=LEITOR?"Olá, <b>coordenação</b>":"Olá, <b>Fernanda</b>";$("rxPill").textContent="";$("rxData").textContent=new Date().toLocaleDateString("pt-BR");$("rtBaseN").textContent="vazia";$("rtInfo").textContent=LEITOR?"A base de retrabalho ainda não foi publicada.":"Ainda não há base. Use Importar base (arquivo .json.gz) ou Atualizar com executados.";
     ["rdTiles","rdMes","rdTop","rtLista","rtRes","rtCkpi","rtClista","rtCond"].forEach(i=>$(i).innerHTML="");return;}
@@ -3824,7 +3825,7 @@ function renderRt(){setTimeout(marcarCards,0);
   {const ag=new Date();$("rxOla").innerHTML=LEITOR?"Olá, <b>coordenação</b>":"Olá, <b>Fernanda</b>";$("rxData").textContent=ag.toLocaleDateString("pt-BR");
    const prox=RB.em?new Date(RB.em+15*864e5):null;$("rxPill").innerHTML=`<i></i>Base atualizada em <b>${RB.em?new Date(RB.em).toLocaleString("pt-BR",{dateStyle:"short",timeStyle:"short"}):"–"}</b>${prox?` · próxima atualização <b>${prox.toLocaleDateString("pt-BR")}</b>`:""}`;}
   if(rtView==="geral"){rtFiltros();rtDash();rtGeral();}else if(rtView==="tss"){rtFiltros();rtPorTss();}else if(rtView==="busca")rtBuscar();else rtCarteira();}
-function rtPorTss(){const D=RB.D,F=rtFiltrar(),C=rtCalc(),J=F.J;const pol=poloSel;const okP=r=>pol==="Todos"||RT_POLO[D.a[r[8]]]===pol;
+function rtPorTss(){{const sel=$("rtTano");if(sel){const an=rtAnos();sel.innerHTML=`<option value="">Todos os anos</option>`+an.map(y=>`<option value="${y}">${y}</option>`).join("");sel.value=/^a\d{4}$/.test(rtPer)?rtPer.slice(1):"";}}const D=RB.D,F=rtFiltrar(),C=rtCalc(),J=F.J;const pol=poloSel;const okP=r=>pol==="Todos"||RT_POLO[D.a[r[8]]]===pol;
   const aq=U(($("rtTend")&&$("rtTend").value)||"").trim();$("rtTtit").textContent=aq.length>=3?"O que foi feito no endereço":"Retrabalho por serviço (TSS)";if(aq.length<3)$("rtTres").innerHTML=aq?'<div class="tsq-hint">Digite pelo menos 3 letras do endereço.</div>':"";
   if(aq.length>=3){const toks=aq.split(/\s+/).filter(Boolean);const num=/^\d+$/.test(toks[toks.length-1])&&toks.length>1?toks.pop():"";
     const qk=rtEndK(toks.join(" "));const T=new Map();let nEnd=new Set();
@@ -4075,7 +4076,7 @@ document.addEventListener("click",e=>{
   const rmx=e.target.closest("[data-rmes]");if(rmx){const m=rmx.dataset.rmes;rtMesSel=rtMesSel===m?"":m;renderRt();if(rtMesSel)setTimeout(()=>{const d=$("rdMesDet");if(d)d.scrollIntoView({behavior:"smooth",block:"start"});},60);return;}
   if(e.target.closest("#ruPrint")){document.body.classList.toggle("ru-only");window.scrollTo({top:0});const b=$("ruPrint");if(b)b.textContent=document.body.classList.contains("ru-only")?"Voltar ao painel":"Ver só este quadro (para print)";return;}
   const rr=e.target.closest("[data-rrua]");if(rr){rtRua=rr.dataset.rrua==="1";rtBuscar();return;}
-  const rb=e.target.closest("[data-rbusca]");if(rb){rtView="busca";renderRt();{const [e,n]=rtSepEnd(rb.dataset.rbusca);$("rtBusca").value=(rtEndK(e)+" "+rtNumK(n)).trim();}rtBuscar();window.scrollTo({top:0,behavior:"smooth"});return;}
+  const rb=e.target.closest("[data-rbusca]");if(rb){rtView="tss";{const [e,n]=rtSepEnd(rb.dataset.rbusca);$("rtTend").value=(rtEndK(e)+" "+rtNumK(n)).trim();}renderRt();window.scrollTo({top:0,behavior:"smooth"});return;}
   const rk=e.target.closest("[data-rck]");if(rk){const k=rk.dataset.rck;rtCab.has(k)?rtCab.delete(k):rtCab.add(k);renderRt();return;}
   const cf=e.target.closest("[data-rcf]");if(cf){const g2=cf.dataset.rcfgo;rtCfil=((cf.classList.contains("kc")||g2)&&rtCfil===cf.dataset.rcf)?"":cf.dataset.rcf;renderRt();if(g2&&rtCfil){const bx=$("rtCbox");if(bx)bx.scrollIntoView({behavior:"smooth",block:"start"});}return;}
   const c=e.target.closest("[data-rcp]");if(c){rtCper=c.dataset.rcp;renderRt();return;}
@@ -4084,6 +4085,7 @@ document.addEventListener("click",e=>{
 document.addEventListener("change",e=>{if(e.target&&e.target.id==="rtCsel"){rtCdc=e.target.value;rtCfil="";renderRt();}});
 {let te=null;$("rtTend").addEventListener("input",()=>{clearTimeout(te);te=setTimeout(()=>{if(rtView==="tss")rtPorTss();},250);});
  $("rtTs2").addEventListener("input",e=>{clearTimeout(te);te=setTimeout(()=>{rtTssSel=e.target.value.trim();$("rtTss").value=rtTssSel;rtPorTss();},300);});
+ $("rtTano").onchange=e=>{const v=e.target.value;rtPer=v?"a"+v:"tudo";renderRt();};
  $("rtTlimpa").onclick=()=>{$("rtTend").value="";$("rtTs2").value="";rtTssSel="";$("rtTss").value="";rtPorTss();};}
 {let tt=null;$("rtTss").addEventListener("input",e=>{clearTimeout(tt);tt=setTimeout(()=>{rtTssSel=e.target.value.trim();renderRt();},300);});}
 $("rtPde").onchange=()=>{rtCache=null;renderRt();};
