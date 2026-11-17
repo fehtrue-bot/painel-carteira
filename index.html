@@ -999,7 +999,7 @@ body.leitor .pubst{display:none}
 .tsc-l{font-size:10.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#7A8794}
 .tsc-s{display:flex;gap:2px;background:#E8EEF3;border-radius:8px;padding:3px}.tsc-s button{all:unset;cursor:pointer;font-size:12.5px;font-weight:600;color:#3E5163;padding:5px 10px;border-radius:6px}.tsc-s button[aria-pressed="true"]{background:#0B2545;color:#fff}
 .tsc-f{display:flex;align-items:center;gap:8px}.tsc-f select{height:32px;border:1px solid #C9D5DE;border-radius:8px;padding:0 8px;font-size:13px;max-width:260px;background:#fff;color:#0B2545}
-.tsq-f2{grid-template-columns:minmax(0,1fr) auto!important}.tsq-busca{margin-top:12px}.tsq-busca input{height:48px!important;font-size:15.5px!important;padding-left:14px!important}
+.tsq-f2{grid-template-columns:minmax(0,1fr) 170px auto!important}.tsq-busca{margin-top:12px}.tsq-busca input{height:48px!important;font-size:15.5px!important;padding-left:14px!important}
 .rt-cons #rtPolo,.rt-cons #rtPer{display:none!important}.tsv-os i.hl{background:#FFE7B8;color:#7A4300;border-radius:5px;padding:0 5px;font-weight:800}
 .tsv{padding:4px 16px 16px}
 .tsv-mod{display:inline-flex;gap:4px;background:#EEF2F5;border-radius:9px;padding:3px;margin-top:6px}.tsv-mod button{all:unset;cursor:pointer;font-size:12.5px;font-weight:600;color:#3E5163;padding:5px 12px;border-radius:7px}.tsv-mod button[aria-pressed="true"]{background:#fff;color:#0B2545;box-shadow:0 1px 2px rgba(0,0,0,.08)}
@@ -2394,8 +2394,8 @@ body.com-bos .pbos{display:block;margin-bottom:4px}
     </div>
     <div id="rtV4" hidden>
       <article class="tsq"><div class="tsq-t"><b>Quantas vezes o serviço foi feito no endereço</b><small>preencha um ou os dois campos</small></div>
-        <div class="tsq-f tsq-f2"><label class="tsq-i"><span>Serviço (TSS)</span><input type="search" id="rtTs2" list="rtTssL" placeholder="ex.: vazamento, cavalete" autocomplete="off"></label><button type="button" id="rtTlimpa" class="tsq-x">Limpar</button></div>
-        <label class="tsq-i tsq-busca"><span>Pesquisar por endereço ou número da OS</span><input type="search" id="rtTend" placeholder="ex.: rua evangelista 120  ou  2639000005" autocomplete="off"></label><select id="rtTano" hidden></select>
+        <div class="tsq-f tsq-f2"><label class="tsq-i"><span>Serviço (TSS)</span><input type="search" id="rtTs2" list="rtTssL" placeholder="ex.: vazamento, cavalete" autocomplete="off"></label><label class="tsq-i tsq-a"><span>Ano da OS</span><select id="rtTano"></select></label><button type="button" id="rtTlimpa" class="tsq-x">Limpar</button></div>
+        <label class="tsq-i tsq-busca"><span>Pesquisar por endereço ou número da OS</span><input type="search" id="rtTend" placeholder="ex.: rua evangelista 120  ou  2639000005" autocomplete="off"></label>
         <div id="rtTres"></div></article>
       <article class="rx-box"><div class="rx-boxh"><div style="flex:1"><div id="rtTctl"></div><h3 id="rtTtit">Retrabalho por serviço (TSS)</h3><p class="rx-sub" id="rtTnota"></p></div></div><div id="rtTlista"></div></article>
     </div>
@@ -3838,7 +3838,7 @@ function rtTselFill(){const sel=$("rtTsel");if(!sel||!RB)return;const TSE=rtView
   sel.innerHTML=`<option value="">Todos</option>`+U2.map(v=>`<option value="${esc(v)}">${esc(v.charAt(0)+v.slice(1).toLowerCase())}</option>`).join("");sel.value=U2.includes(rtTssSel)?rtTssSel:"";}
 document.addEventListener("click",e=>{const o=e.target.closest("[data-rtord]");if(o){rtOrd=o.dataset.rtord;rtPorTss();return;}const m=e.target.closest("[data-rtmin]");if(m){rtMinV=Number(m.dataset.rtmin);rtPorTss();}});
 document.addEventListener("change",e=>{if(e.target&&e.target.id==="rtTsel"){rtTssSel=e.target.value;$("rtTs2").value=rtTssSel;$("rtTss").value=rtTssSel;rtPorTss();}});
-function rtPorTss(){const _p=rtPer,_po=poloSel;rtPer="tudo";poloSel="Todos";try{rtPorTss0();}finally{rtPer=_p;poloSel=_po;}}
+function rtPorTss(){const _p=rtPer,_po=poloSel;poloSel="Todos";try{rtPorTss0();}finally{poloSel=_po;}}
 function rtPorTss0(){setTimeout(rtTselFill,0);const TSE=rtView==="tse";const dK=r=>TSE?r[9]:r[1];const dN0=i=>TSE?(RB.D.r[i]||"(sem resultado)"):(RB.D.t[i]||"(sem TSS)");{const sel=$("rtTano");if(sel){const an=rtAnos();sel.innerHTML=`<option value="">Todos os anos</option>`+an.map(y=>`<option value="${y}">${y}</option>`).join("");sel.value=/^a\d{4}$/.test(rtPer)?rtPer.slice(1):"";}}const D=RB.D,F=rtFiltrar(),C=rtCalc(),J=F.J;
   {const aq0=String(($("rtTend")||{}).value||"").trim().length>=3;const nomeD=TSE?"resultado":"serviço";
    const op=(id,vals,cur)=>vals.map(([k,l])=>`<button type="button" data-${id}="${k}" aria-pressed="${String(cur)===String(k)}">${l}</button>`).join("");
