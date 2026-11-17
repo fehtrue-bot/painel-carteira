@@ -3785,7 +3785,13 @@ function rtCalc(){const k=rtModo+"|"+($("rtPde")&&$("rtPde").checked?1:0);if(rtC
   rtCache={k,em:RB.em,grupos,total,ale};return rtCache;}
 function rtAnos(){if(!RB||!RB.R||!RB.R.length)return [];if(RB.__anos&&RB.__anos.em===RB.em)return RB.__anos.L;let mn=Infinity,mx=-Infinity;for(const r of RB.R){if(r[12]<mn)mn=r[12];if(r[12]>mx)mx=r[12];}
   const a0=Number(rtIso(mn).slice(0,4)),a1=Number(rtIso(mx).slice(0,4));const L=[];for(let y=a1;y>=a0&&L.length<6;y--)L.push(String(y));RB.__anos={em:RB.em,L};return L;}
-function rtJanela(){if(/^a\d{4}$/.test(rtPer)){const y=rtPer.slice(1);return [rtMin("01/01/"+y+" 00:00"),rtMin("31/12/"+y+" 23:59")];}if(rtPer==="tudo"||!RB.fim)return null;const f=rtMin(RB.fim.split("-").reverse().join("/")+" 23:59");const d={"15":15,"30":30,"90":90}[rtPer];return [f-d*1440,f];}
+const MESN=["jan","fev","mar","abr","mai","jun","jul","ago","set","out","nov","dez"];
+function rtPerJ(v){if(/^a\d{4}$/.test(v)){const y=v.slice(1);return [rtMin("01/01/"+y+" 00:00"),rtMin("31/12/"+y+" 23:59")];}const m=/^m(\d{4})-(\d{2})$/.exec(v);if(m){const y=m[1],mm=m[2],ld=new Date(Number(y),Number(mm),0).getDate();return [rtMin("01/"+mm+"/"+y+" 00:00"),rtMin(ld+"/"+mm+"/"+y+" 23:59")];}return null;}
+function rtPerAno(v){return /^[am]\d{4}/.test(v||"")?v.slice(1,5):"";}
+function rtPerTxt(v){const m=/^m(\d{4})-(\d{2})$/.exec(v||"");return m?MESN[Number(m[2])-1]+"/"+m[1]:/^a\d{4}$/.test(v||"")?v.slice(1):"";}
+function rtMeses(ano){if(!RB||!RB.R||!RB.R.length)return [];let mn=Infinity,mx=-Infinity;for(const r of RB.R){if(r[12]<mn)mn=r[12];if(r[12]>mx)mx=r[12];}
+  const a=rtIso(mn).slice(0,7),b=rtIso(mx).slice(0,7);const L=[];let [y,m]=b.split("-").map(Number);while(L.length<60){const k=y+"-"+String(m).padStart(2,"0");if(k<a)break;if(!ano||String(y)===String(ano))L.push(k);m--;if(!m){m=12;y--;}}return L;}
+function rtJanela(){{const j=rtPerJ(rtPer);if(j)return j;}if(/^a\d{4}$/.test(rtPer)){const y=rtPer.slice(1);return [rtMin("01/01/"+y+" 00:00"),rtMin("31/12/"+y+" 23:59")];}if(rtPer==="tudo"||!RB.fim)return null;const f=rtMin(RB.fim.split("-").reverse().join("/")+" 23:59");const d={"15":15,"30":30,"90":90}[rtPer];return [f-d*1440,f];}
 function rtFiltrar(){const C=rtCalc(),D=RB.D,J=rtJanela(),q="",pol=poloSel;
   const okP=r=>pol==="Todos"||RT_POLO[D.a[r[8]]]===pol;
   const out=[];let eventos=0;
@@ -3845,7 +3851,7 @@ function rtTselFill(){const sel=$("rtTsel");if(!sel||!RB)return;const TSE=rtView
   const nm=[...cnt.keys()].map(i=>TSE?RB.D.r[i]:RB.D.t[i]).filter(Boolean);const U2=[...new Set(nm)].sort((a,b)=>a.localeCompare(b,"pt-BR"));
   sel.innerHTML=`<option value="">Todos</option>`+U2.map(v=>`<option value="${esc(v)}">${esc(v.charAt(0)+v.slice(1).toLowerCase())}</option>`).join("");sel.value=U2.includes(rtTssSel)?rtTssSel:"";}
 document.addEventListener("click",e=>{const sv=e.target.closest("[data-rtsrv]");if(sv){rtTssSel=sv.dataset.rtsrv;$("rtTss").value=rtTssSel;rtPorTss();return;}const o=e.target.closest("[data-rtord]");if(o){rtOrd=o.dataset.rtord;rtPorTss();return;}const m=e.target.closest("[data-rtmin]");if(m){rtMinV=Number(m.dataset.rtmin);rtPorTss();}});
-document.addEventListener("change",e=>{if(e.target&&e.target.id==="rtTmin2"){rtMinV=Number(e.target.value);rtPorTss();return;}if(e.target&&e.target.id==="rtTano"){const v=e.target.value;rtPer=v?"a"+v:"tudo";renderRt();return;}if(e.target&&e.target.id==="rtTsel"){rtTssSel=e.target.value;$("rtTs2").value=rtTssSel;$("rtTss").value=rtTssSel;rtPorTss();}});
+document.addEventListener("change",e=>{if(e.target&&e.target.id==="rtTmin2"){rtMinV=Number(e.target.value);rtPorTss();return;}if(e.target&&e.target.id==="rtTano"){const v=e.target.value;rtPer=v?"a"+v:"tudo";renderRt();return;}if(e.target&&e.target.id==="rtTmes"){const v=e.target.value;rtPer=v?"m"+v:(rtPerAno(rtPer)?"a"+rtPerAno(rtPer):"tudo");renderRt();return;}if(e.target&&e.target.id==="rtTsel"){rtTssSel=e.target.value;$("rtTs2").value=rtTssSel;$("rtTss").value=rtTssSel;rtPorTss();}});
 function rtPorTss(){const _p=rtPer,_po=poloSel;poloSel="Todos";try{rtPorTss0();}finally{poloSel=_po;}}
 function rtPorTss0(){const TSE=rtView==="tse";const dK=r=>TSE?r[9]:r[1];const dN0=i=>TSE?(RB.D.r[i]||"(sem resultado)"):(RB.D.t[i]||"(sem TSS)");const D=RB.D,F=rtFiltrar(),C=rtCalc(),J=F.J;
   {const aq0=String(($("rtTend")||{}).value||"").trim().length>=3;const nomeD=TSE?"resultado":"serviço";
@@ -3856,8 +3862,10 @@ function rtPorTss0(){const TSE=rtView==="tse";const dK=r=>TSE?r[9]:r[1];const dN
    const allN=nms.map(x=>x[0]).sort((a,b)=>a.localeCompare(b,"pt-BR"));const vz=(aq0?[[1,"Todas as vezes"]]:[]).concat([[2,"2x ou mais"],[3,"3x ou mais"],[4,"4x ou mais"],[5,"5x ou mais"]]);const vSel=aq0?rtMinV:Math.max(2,rtMinV);
    $("rtTctl").innerHTML=`<div class="tsp"><label class="tsp-b"><span>${TSE?"Resultado":"Serviço"}</span><select id="rtTsel"><option value="">Todos</option>${allN.map(v=>`<option value="${esc(v)}"${rtTssSel===v?" selected":""}>${esc(capS(v))}</option>`).join("")}</select></label>
      <label class="tsp-b"><span>Ano</span><select id="rtTano"></select></label>
+     <label class="tsp-b"><span>Mês</span><select id="rtTmes"></select></label>
      <label class="tsp-b"><span>Vezes</span><select id="rtTmin2">${vz.map(([k,l])=>`<option value="${k}"${String(vSel)===String(k)?" selected":""}>${l}</option>`).join("")}</select></label></div>`;
-   {const sel=$("rtTano");if(sel){sel.innerHTML=`<option value="">Todos os anos</option>`+rtAnos().map(y=>`<option value="${y}">${y}</option>`).join("");sel.value=/^a\d{4}$/.test(rtPer)?rtPer.slice(1):"";}}}
+   {const sel=$("rtTano");const an=rtPerAno(rtPer);if(sel){sel.innerHTML=`<option value="">Todos os anos</option>`+rtAnos().map(y=>`<option value="${y}">${y}</option>`).join("");sel.value=an;}
+    const sm=$("rtTmes");if(sm){sm.innerHTML=`<option value="">Todos os meses</option>`+rtMeses(an).map(k=>`<option value="${k}">${MESN[Number(k.slice(5))-1]}/${k.slice(0,4)}</option>`).join("");sm.value=/^m/.test(rtPer)?rtPer.slice(1):"";}}}
   const MINV=()=>Math.max(String(($("rtTend")||{}).value||"").trim().length>=3?1:2,rtMinV);
   const ordL=(L,nv,ne)=>L.sort((a,b)=>rtOrd==="vez"?nv(b)-nv(a)||String(a.nome).localeCompare(String(b.nome),"pt-BR"):rtOrd==="end"?ne(b)-ne(a)||nv(b)-nv(a):String(a.nome).localeCompare(String(b.nome),"pt-BR",{sensitivity:"base"}));const pol=poloSel;const okP=r=>pol==="Todos"||RT_POLO[D.a[r[8]]]===pol;
   const aq=U(($("rtTend")&&$("rtTend").value)||"").trim();$("rtTtit").textContent=aq.length>=3?"O que foi feito no endereço":TSE?"Retrabalho por resultado (TSE)":"Retrabalho por serviço (TSS)";if(aq.length<3)$("rtTres").innerHTML=aq?'<div class="tsq-hint">Digite pelo menos 3 letras do endereço.</div>':"";
@@ -3898,7 +3906,7 @@ function rtPorTss0(){const TSE=rtView==="tse";const dK=r=>TSE?r[9]:r[1];const dN
   for(const x of T.values()){x.G=x.G.filter(o=>o.g.L.length>=MINV());x.ev=x.G.reduce((s,o)=>s+o.ev,0);}EVT=[...T.values()].reduce((s,x)=>s+x.ev,0);
   const L=ordL([...T.values()].filter(x=>x.ev),x=>x.ev,x=>x.G.length);const mx=Math.max(1,...L.map(x=>x.ev));
   const cap=v=>v?v.charAt(0)+v.slice(1).toLowerCase():"";
-  $("rtTnota").textContent=`${nf(EVT)} ${EVT===1?"retrabalho":"retrabalhos"} em ${nf(L.length)} ${TSE?(L.length===1?"resultado":"resultados"):(L.length===1?"serviço":"serviços")}${/^a\d{4}$/.test(rtPer)?" em "+rtPer.slice(1):J?" no período":""} · clique no ${TSE?"resultado":"serviço"} para ver os endereços`;
+  $("rtTnota").textContent=`${nf(EVT)} ${EVT===1?"retrabalho":"retrabalhos"} em ${nf(L.length)} ${TSE?(L.length===1?"resultado":"resultados"):(L.length===1?"serviço":"serviços")}${rtPerTxt(rtPer)?" em "+rtPerTxt(rtPer):J?" no período":""} · clique no ${TSE?"resultado":"serviço"} para ver os endereços`;
   $("rtTlista").innerHTML=L.length?`<div class="tsv"><div class="tsv-h"><span>${TSE?"Resultado (TSE)":"Serviço"}</span><span>Retrabalhos</span><span>Endereços</span><span></span></div>${L.map(x=>{
     const ends=x.G.slice().sort((a,b)=>b.g.L.length-a.g.L.length||b.ev-a.ev).slice(0,300).map(({g})=>{const r0=g.L[0];const end=D.e[r0[3]]+", "+r0[4];
       return `<div class="tsv-e" data-rbusca="${esc(end)}" title="Clique para ver todo o histórico do endereço"><span class="tsv-en"><b>${esc(end)}</b><small>${esc(D.b[r0[5]]||"")}</small></span><span class="tsv-q">${g.L.length}x</span><span class="tsv-os">${g.L.slice().reverse().map(r=>`<i class="${C.ale[r[9]]?"al":""}" title="${rtDm(r[12])} · ${esc(D.r[r[9]]||"")}">${esc(r[0])}</i>`).join("")}</span></div>`;}).join("");
@@ -4071,7 +4079,7 @@ function rtCarteira(){const D=RB.D;
   $("rtCper").innerHTML=[["tudo","Toda a base"],["90","Últimos 90 dias"]].map(([k,l])=>`<button type="button" data-rcp="${k}" aria-pressed="${rtCper===k}">${l}</button>`).join("");
   const fpS=x=>poloSel==="Todos"||x.p===poloSel;
   const ca=snap?{length:poloSel==="Todos"?snap.n:(snap.np||{})[poloSel]||0}:ultF().ca.filter(r=>fp(r));const itens=[];
-  const anoJ=/^a\d{4}$/.test(rtCano)?[rtMin("01/01/"+rtCano.slice(1)+" 00:00"),rtMin("31/12/"+rtCano.slice(1)+" 23:59")]:null;
+  const anoJ=rtPerJ(rtCano);
   const fH=h=>{if(rtCano==="90")h=h.filter(z=>z[12]>=lim90);if(anoJ)h=h.filter(z=>z[12]>=anoJ[0]&&z[12]<=anoJ[1]);return h.length>=rtCmin?h:[];};
   if(snap){for(const x of snap.it){if(!fpS(x))continue;let h=fH(x.h.filter(a=>!a[2]).map(a=>{const z=[];z[0]=a[0];z[12]=a[1];z.al=a[2];z.rs=a[3];if(a[4])z.cart=1;return z;}));if(h.length)itens.push({r:x,h});}}
   else for(const r of ca){let h=fH(rtHistCart(r));if(h.length)itens.push({r,h});}
@@ -4087,7 +4095,8 @@ function rtCarteira(){const D=RB.D;
   {const allT=[...tT.keys()].sort((a,b)=>a.localeCompare(b,"pt-BR"));
    $("rtCtsp").innerHTML=`<label class="tsp-b"><span>Carteira</span><select id="rtCsel"><option value="">${S.ult.dc?"Hoje · "+dmy(S.ult.dc):"Hoje"}</option>${CH.filter(x=>x.dc!==S.ult.dc).map(x=>`<option value="${x.dc}"${rtCdc===x.dc?" selected":""}>${dmy(x.dc)}</option>`).join("")}</select></label>
     <label class="tsp-b"><span>Serviço</span><select id="rtCsrv"><option value="">Todos (${nf(itens.length)})</option>${allT.map(k=>`<option value="${esc(k)}"${rtCfil===k?" selected":""}>${esc(cap(k))} (${nf(tT.get(k))})</option>`).join("")}</select></label>
-    <label class="tsp-b"><span>Ano</span><select id="rtCano"><option value="">Toda a base</option><option value="90"${rtCano==="90"?" selected":""}>Últimos 90 dias</option>${rtAnos().map(y=>`<option value="a${y}"${rtCano==="a"+y?" selected":""}>${y}</option>`).join("")}</select></label>
+    <label class="tsp-b"><span>Ano</span><select id="rtCano"><option value="">Toda a base</option><option value="90"${rtCano==="90"?" selected":""}>Últimos 90 dias</option>${rtAnos().map(y=>`<option value="a${y}"${rtPerAno(rtCano)===y?" selected":""}>${y}</option>`).join("")}</select></label>
+    <label class="tsp-b"><span>Mês</span><select id="rtCmes"><option value="">Todos os meses</option>${rtMeses(rtPerAno(rtCano)).map(k=>`<option value="${k}"${rtCano==="m"+k?" selected":""}>${MESN[Number(k.slice(5))-1]}/${k.slice(0,4)}</option>`).join("")}</select></label>
     <label class="tsp-b"><span>Vezes</span><select id="rtCmin">${[[1,"1x ou mais"],[2,"2x ou mais"],[3,"3x ou mais"],[4,"4x ou mais"],[5,"5x ou mais"]].map(([k,l])=>`<option value="${k}"${rtCmin===k?" selected":""}>${l}</option>`).join("")}</select></label>`;}
   $("rtCkpi").innerHTML=
     rkCard({l:"Risco de retrabalho",c:"#F08C00",v:nf(itens.length),vc:"#E07F00",s:`OS de ${nf(ca.length)} na carteira${snap?" de "+dm(snap.dc):""}`,g:rkRing([[pc,"#F08C00"]],ca.length?Math.round(pc*100)+"%":""),attr:` data-rcf=""`,tip:"OS da carteira em endereço onde o mesmo serviço já foi feito · clique para ver todas"})+
@@ -4098,7 +4107,7 @@ function rtCarteira(){const D=RB.D;
   const bate=x=>{if(!cq)return true;if(cqD.length>=5&&cqD.length===cq.replace(/\s/g,"").length){if(String(x.r.os).includes(cqD))return true;if(x.h.some(z=>String(z[0]).includes(cqD)))return true;}
     const t=U((x.r.end||"")+" "+(x.r.bai||"")+" "+x.r.os).replace(/[^A-Z0-9 ]/g," ");return cqT.every(w=>t.includes(w));};
   const L=itens.filter(x=>(!rtCfil||(x.r.tss||"(sem TSS)")===rtCfil)&&bate(x)).sort((a,b)=>b.h.length-a.h.length||b.h[b.h.length-1][12]-a.h[a.h.length-1][12]);
-  $("rtCnota").textContent=cq?`${nf(L.length)} ${L.length===1?"OS encontrada":"OS encontradas"} para “${cq}”`:`${nf(L.length)} OS da carteira em endereço onde o mesmo serviço (mesma família) já foi feito antes, ${rtCano==="90"?"nos últimos 90 dias":/^a\d{4}$/.test(rtCano)?"em "+rtCano.slice(1):"em qualquer data da base"} · ao lado, quantas vezes e as OS`;
+  $("rtCnota").textContent=cq?`${nf(L.length)} ${L.length===1?"OS encontrada":"OS encontradas"} para “${cq}”`:`${nf(L.length)} OS da carteira em endereço onde o mesmo serviço (mesma família) já foi feito antes, ${rtCano==="90"?"nos últimos 90 dias":rtPerTxt(rtCano)?"em "+rtPerTxt(rtCano):"em qualquer data da base"} · ao lado, quantas vezes e as OS`;
   const hoje=rtMin(new Date(agora).toLocaleDateString("pt-BR")+" 12:00");
   $("rtClista").innerHTML=L.length?`<div class="rk-list">${L.slice(0,400).map(({r,h})=>{const ul=h[h.length-1];const dd=Math.round((hoje-ul[12])/1440);const ale=rtCalc().ale;
     const key=r.os+"|"+r.tss,ab=rtCab.has(key);const D2=RB.D;
@@ -4130,7 +4139,7 @@ document.addEventListener("click",e=>{
   const c=e.target.closest("[data-rcp]");if(c){rtCper=c.dataset.rcp;renderRt();return;}
   const t=e.target.closest("[data-rtt]");if(t&&t.closest("#v-rt")){rtTssSel=(t.dataset.rtt===rtTssSel?"":t.dataset.rtt);renderRt();return;}
   const k=e.target.closest(".rx-row .rtl1");if(k){const key=k.parentElement.dataset.rtk;rtAbertos.has(key)?rtAbertos.delete(key):rtAbertos.add(key);renderRt();}});
-document.addEventListener("change",e=>{const id=e.target&&e.target.id;if(id==="rtCsel"){rtCdc=e.target.value;rtCfil="";renderRt();}else if(id==="rtCsrv"){rtCfil=e.target.value;rtCarteira();}else if(id==="rtCano"){rtCano=e.target.value;rtCarteira();}else if(id==="rtCmin"){rtCmin=Number(e.target.value);rtCarteira();}});
+document.addEventListener("change",e=>{const id=e.target&&e.target.id;if(id==="rtCsel"){rtCdc=e.target.value;rtCfil="";renderRt();}else if(id==="rtCsrv"){rtCfil=e.target.value;rtCarteira();}else if(id==="rtCano"){rtCano=e.target.value;rtCarteira();}else if(id==="rtCmes"){const v=e.target.value;rtCano=v?"m"+v:(rtPerAno(rtCano)?"a"+rtPerAno(rtCano):"");rtCarteira();}else if(id==="rtCmin"){rtCmin=Number(e.target.value);rtCarteira();}});
 document.addEventListener("click",e=>{if(e.target&&e.target.id==="rtClimpa"){rtCfil="";rtCano="";rtCmin=1;$("rtCq").value="";rtCarteira();}});
 {let te=null;$("rtTend").addEventListener("input",()=>{clearTimeout(te);te=setTimeout(()=>{if((rtView==="tss"||rtView==="tse"))rtPorTss();},250);});
  $("rtTs2").addEventListener("input",e=>{clearTimeout(te);te=setTimeout(()=>{rtTssSel=e.target.value.trim();$("rtTss").value=rtTssSel;rtPorTss();},300);});
