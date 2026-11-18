@@ -3870,7 +3870,7 @@ function rtPorTss0(){const TSE=rtView==="tse";const dK=r=>TSE?r[9]:r[1];const dN
    const freq=new Map();for(const r of RB.R){const k=TSE?r[9]:r[1];freq.set(k,(freq.get(k)||0)+1);}const nms=[...freq].map(([k,c])=>[TSE?D.r[k]:D.t[k],c]).filter(x=>x[0]);
    const top=nms.slice().sort((a,b)=>b[1]-a[1]).slice(0,12).map(x=>x[0]).sort((a,b)=>a.localeCompare(b,"pt-BR"));if(rtTssSel&&!top.includes(rtTssSel)&&nms.some(x=>x[0]===rtTssSel))top.push(rtTssSel);
    const capS=v=>v.charAt(0)+v.slice(1).toLowerCase();const outros=nms.map(x=>x[0]).filter(v=>!top.includes(v)).sort((a,b)=>a.localeCompare(b,"pt-BR"));
-   const allN=nms.map(x=>x[0]).sort((a,b)=>a.localeCompare(b,"pt-BR"));const vz=[[0,"Todas"]].concat(aq0?[[1,"1x"]]:[]).concat([[2,"2x"],[3,"3x"],[4,"4x ou mais"]]);if(!aq0&&rtMinV===1)rtMinV=0;const vSel=rtMinV;
+   const allN=nms.map(x=>x[0]).sort((a,b)=>a.localeCompare(b,"pt-BR"));const vz=[[0,"Todas"],[1,"1x"],[2,"2x"],[3,"3x"],[4,"4x ou mais"]];const vSel=rtMinV;
    $("rtTctl").innerHTML=`<div class="tsp"><label class="tsp-b"><span>${TSE?"Resultado":"Serviço"}</span><select id="rtTsel"><option value="">Todos</option>${allN.map(v=>`<option value="${esc(v)}"${rtTssSel===v?" selected":""}>${esc(capS(v))}</option>`).join("")}</select></label>
      <label class="tsp-b"><span>Ano</span><select id="rtTano"></select></label>
      <label class="tsp-b"><span>Mês</span><select id="rtTmes"></select></label>
@@ -3914,14 +3914,14 @@ function rtPorTss0(){const TSE=rtView==="tse";const dK=r=>TSE?r[9]:r[1];const dN
   if(!TSE){for(const o of F.out){const x=tg(o.g.L[0][1]);x.ev+=o.ev;x.G.push(o);}}
   else{EVT=0;const ends=new Set();for(const [k,L0] of rtIndice()){const M=new Map();for(const r of L0){if(!okP(r))continue;if(rtModo==="exec"&&C.ale[r[9]])continue;if(rtTssSel&&!U(dN0(dK(r))).includes(U(rtTssSel)))continue;if(J&&(r[12]<J[0]||r[12]>J[1]))continue;if(!M.has(r[9]))M.set(r[9],[]);M.get(r[9]).push(r);}
       for(const [ri,rows] of M){if(rows.length<2)continue;rows.sort((a,b)=>a[12]-b[12]);const o={g:{L:rows},ev:rows.length-1};const x=tg(ri);x.ev+=o.ev;x.G.push(o);EVT+=o.ev;ends.add(k);}}NEND=ends.size;}
-  for(const x of T.values()){x.G=x.G.filter(o=>vOk(o.g.L.length,rtMinV));x.ev=x.G.reduce((s,o)=>s+o.ev,0);}EVT=[...T.values()].reduce((s,x)=>s+x.ev,0);
+  for(const x of T.values()){x.G=x.G.filter(o=>vOk(o.g.L.length-1,rtMinV));x.ev=x.G.reduce((s,o)=>s+o.ev,0);}EVT=[...T.values()].reduce((s,x)=>s+x.ev,0);
   const L=ordL([...T.values()].filter(x=>x.ev),x=>x.ev,x=>x.G.length);const mx=Math.max(1,...L.map(x=>x.ev));
   const cap=v=>v?v.charAt(0)+v.slice(1).toLowerCase():"";
   $("rtTnota").textContent=`${nf(EVT)} ${EVT===1?"retrabalho":"retrabalhos"} em ${nf(L.length)} ${TSE?(L.length===1?"resultado":"resultados"):(L.length===1?"serviço":"serviços")}${rtPerTxt(rtPer)?" em "+rtPerTxt(rtPer):J?" no período":""} · clique no ${TSE?"resultado":"serviço"} para ver os endereços`;
   $("rtTlista").innerHTML=L.length?`<div class="tsv"><div class="tsv-h"><span>${TSE?"Resultado (TSE)":"Serviço"}</span><span>Retrabalhos</span><span>Endereços</span><span></span></div>${L.map(x=>{
     const ends=x.G.slice().sort((a,b)=>b.g.L.length-a.g.L.length||b.ev-a.ev).slice(0,300).map(({g})=>{const r0=g.L[0];const end=D.e[r0[3]]+", "+r0[4];
-      return `<div class="tsv-e" data-rbusca="${esc(end)}" title="Clique para ver todo o histórico do endereço"><span class="tsv-en"><b>${esc(end)}</b><small>${esc(D.b[r0[5]]||"")}</small></span><span class="tsv-q">${g.L.length}x</span><span class="tsv-os">${g.L.slice().reverse().map(r=>`<i class="${C.ale[r[9]]?"al":""}" title="${rtDm(r[12])} · ${esc(D.r[r[9]]||"")}">${esc(r[0])}</i>`).join("")}</span></div>`;}).join("");
-    return `<details class="tsv-d"><summary><span class="tsv-n" title="${esc(x.nome)}">${esc(cap(x.nome))}</span><span class="tsv-v">${nf(x.ev)}</span><span class="tsv-v2">${nf(x.G.length)}</span><span class="tsv-ch"></span></summary><div class="tsv-l"><div class="tsv-eh"><span>Endereço</span><span>Vezes</span><span>OS</span></div>${ends}</div></details>`;}).join("")}</div>`:'<div class="rtvazio">Nenhum retrabalho com esses filtros.</div>';}
+      return `<div class="tsv-e" data-rbusca="${esc(end)}" title="Clique para ver todo o histórico do endereço"><span class="tsv-en"><b>${esc(end)}</b><small>${esc(D.b[r0[5]]||"")}</small></span><span class="tsv-q" title="feito ${g.L.length} vezes no endereço">${g.L.length-1}x</span><span class="tsv-os">${g.L.slice().reverse().map(r=>`<i class="${C.ale[r[9]]?"al":""}" title="${rtDm(r[12])} · ${esc(D.r[r[9]]||"")}">${esc(r[0])}</i>`).join("")}</span></div>`;}).join("");
+    return `<details class="tsv-d"><summary><span class="tsv-n" title="${esc(x.nome)}">${esc(cap(x.nome))}</span><span class="tsv-v">${nf(x.ev)}</span><span class="tsv-v2">${nf(x.G.length)}</span><span class="tsv-ch"></span></summary><div class="tsv-l"><div class="tsv-eh"><span>Endereço</span><span>Repetiu</span><span>OS</span></div>${ends}</div></details>`;}).join("")}</div>`:'<div class="rtvazio">Nenhum retrabalho com esses filtros.</div>';}
 
 function rtPctModo(m){const old=rtModo;rtModo=m;const F=rtFiltrar();rtModo=old;return F.serv?F.eventos/F.serv:0;}
 function rtFiltros(){const D=RB.D,C=rtCalc();
