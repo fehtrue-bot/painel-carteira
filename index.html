@@ -1005,6 +1005,11 @@ body.leitor .pubst{display:none}
 .tsc-sel{height:32px;border:1px solid #C9D5DE;border-radius:8px;padding:0 8px;font-size:13px;background:#fff;color:#0B2545}
 .tsc-chips{display:flex;flex-wrap:wrap;gap:6px;flex:1}.tsc-chips button{all:unset;cursor:pointer;font-size:12.5px;font-weight:600;color:#24384C;background:#F1F5F8;border:1px solid #DCE4EB;border-radius:999px;padding:5px 12px}.tsc-chips button:hover{background:#E6F1F8}.tsc-chips button[aria-pressed="true"]{background:#0B2545;border-color:#0B2545;color:#fff}
 .tsq-sbr{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:end}.tsq-sb .tsq-busca{margin-top:0}
+.tsp-m{position:relative}.tsp-mb{all:unset;cursor:pointer;font-size:13px;font-weight:700;color:#0B2545;padding-right:18px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%230B2545' stroke-width='3' stroke-linecap='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") no-repeat right center;min-width:60px;max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tsp-pop{position:absolute;top:calc(100% + 6px);left:0;z-index:30;background:#fff;border:1px solid #D5DEE6;border-radius:10px;box-shadow:0 8px 24px rgba(11,37,64,.15);padding:8px;display:flex;flex-direction:column;gap:2px;min-width:150px}
+.tsp-pop label{display:flex;align-items:center;gap:8px;font-size:13.5px;font-weight:600;color:#0B2545;padding:6px 8px;border-radius:6px;cursor:pointer}.tsp-pop label:hover{background:#F2F8FB}.tsp-pop input{width:16px;height:16px;accent-color:#0B2545}
+.tsp-lim{all:unset;cursor:pointer;margin-top:4px;padding:6px 8px;font-size:12.5px;font-weight:700;color:#00639A;border-top:1px solid #EEF1F4}
+.tsq-top{overflow:visible!important}.tsp{overflow:visible!important}
 .tsp{display:flex;flex-wrap:wrap;gap:8px}
 .tsp .tsp-b{height:36px;padding:0 8px 0 11px;gap:5px;flex:0 1 auto;min-width:0}.tsp .tsp-b span{font-size:10px}
 .tsp .tsp-b select{font-size:13px;padding-right:18px;max-width:150px;text-overflow:ellipsis}
@@ -3741,7 +3746,7 @@ document.addEventListener("click",e=>{if(e.target.closest("[data-outros]")){outA
 /* ================= RETRABALHO ================= */
 // Base: uma linha por OS+TSS executada (fim do dia e continua não entram). Guardada neste computador e enviada ao link da coordenação.
 // RB={v,em,fonte,ini,fim,D:{t,f,e,b,m,a,r,q,c},R:[[os,t,f,e,num,b,m,pde,a,r,q,c,min]]}
-var rtTsm="num",rtCano="",rtCmin=0;var RB=null,rtCache=null,rtPer="tudo",rtModo="todas",rtTssSel="",rtAbertos=new Set(),rtCarregando=false;
+var rtTsm="num",rtCano="",rtCmin=0,rtCminS=new Set();var RB=null,rtCache=null,rtPer="tudo",rtModo="todas",rtTssSel="",rtAbertos=new Set(),rtCarregando=false;
 var RT_E0=Date.UTC(2020,0,1)+3*3600000; // minutos contados a partir de 01/01/2020 00:00 (horário de Brasília)
 function rtMin(txt){const t=parseDT0(txt);return t==null?null:Math.round((t-new Date(2020,0,1).getTime())/60000);}
 function rtData(m){return new Date(new Date(2020,0,1).getTime()+m*60000);}
@@ -3794,7 +3799,14 @@ function rtCalc(){const k=rtModo+"|"+($("rtPde")&&$("rtPde").checked?1:0);if(rtC
   rtCache={k,em:RB.em,grupos,total,ale};return rtCache;}
 function rtAnos(){if(!RB||!RB.R||!RB.R.length)return [];if(RB.__anos&&RB.__anos.em===RB.em)return RB.__anos.L;let mn=Infinity,mx=-Infinity;for(const r of RB.R){if(r[12]<mn)mn=r[12];if(r[12]>mx)mx=r[12];}
   const a0=Number(rtIso(mn).slice(0,4)),a1=Number(rtIso(mx).slice(0,4));const L=[];for(let y=a1;y>=a0&&L.length<6;y--)L.push(String(y));RB.__anos={em:RB.em,L};return L;}
-const vOk=(n,v)=>!v?true:v>=4?n>=4:n===v;
+const vOk=(n,v)=>{if(v instanceof Set){if(!v.size)return true;return v.has(Math.min(n,4));}return !v?true:v>=4?n>=4:n===v;};
+let VZ_ABERTO="";
+function vzPill(id,set){const ops=[[1,"1x"],[2,"2x"],[3,"3x"],[4,"4x ou mais"]];const txt=!set.size?"Todas":ops.filter(([k])=>set.has(k)).map(([,l])=>l).join(", ");
+  return `<div class="tsp-b tsp-m${VZ_ABERTO===id?" on":""}" data-vz="${id}"><span>Vezes</span><button type="button" class="tsp-mb" data-vzb="${id}">${txt}</button><div class="tsp-pop"${VZ_ABERTO===id?"":" hidden"}>${ops.map(([k,l])=>`<label><input type="checkbox" data-vzk="${id}" value="${k}"${set.has(k)?" checked":""}> ${l}</label>`).join("")}<button type="button" class="tsp-lim" data-vzc="${id}">Todas</button></div></div>`;}
+document.addEventListener("click",e=>{const b=e.target.closest("[data-vzb]");if(b){VZ_ABERTO=VZ_ABERTO===b.dataset.vzb?"":b.dataset.vzb;const pop=b.parentNode.querySelector(".tsp-pop");if(pop)pop.hidden=VZ_ABERTO!==b.dataset.vzb;b.parentNode.classList.toggle("on",!!VZ_ABERTO);return;}
+  const c=e.target.closest("[data-vzc]");if(c){(c.dataset.vzc==="C"?rtCminS:rtMinS).clear();c.dataset.vzc==="C"?rtCarteira():rtPorTss();return;}
+  if(VZ_ABERTO&&!e.target.closest(".tsp-m")){VZ_ABERTO="";document.querySelectorAll(".tsp-m .tsp-pop").forEach(p=>p.hidden=true);document.querySelectorAll(".tsp-m").forEach(p=>p.classList.remove("on"));}});
+document.addEventListener("change",e=>{const k=e.target&&e.target.dataset&&e.target.dataset.vzk;if(!k)return;const S2=k==="C"?rtCminS:rtMinS;const v=Number(e.target.value);e.target.checked?S2.add(v):S2.delete(v);k==="C"?rtCarteira():rtPorTss();});
 const MESN=["jan","fev","mar","abr","mai","jun","jul","ago","set","out","nov","dez"],MESL=["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];
 const mesOpts=(an,cur)=>an?`<option value="">Todos</option>`+rtMeses(an).slice().reverse().map(k=>`<option value="${k}"${cur==="m"+k?" selected":""}>${MESL[Number(k.slice(5))-1]}</option>`).join(""):`<option value="">escolha o ano</option>`;
 function rtPerJ(v){if(/^a\d{4}$/.test(v)){const y=v.slice(1);return [rtMin("01/01/"+y+" 00:00"),rtMin("31/12/"+y+" 23:59")];}const m=/^m(\d{4})-(\d{2})$/.exec(v);if(m){const y=m[1],mm=m[2],ld=new Date(Number(y),Number(mm),0).getDate();return [rtMin("01/"+mm+"/"+y+" 00:00"),rtMin(ld+"/"+mm+"/"+y+" 23:59")];}return null;}
@@ -3857,7 +3869,7 @@ function renderRt(){if(rtView==="busca")rtView="tss";setTimeout(marcarCards,0);
   {const ag=new Date();$("rxOla").innerHTML=LEITOR?"Olá, <b>coordenação</b>":"Olá, <b>Fernanda</b>";$("rxData").textContent=ag.toLocaleDateString("pt-BR");
    const prox=RB.em?new Date(RB.em+15*864e5):null;$("rxPill").innerHTML=`<i></i>Base atualizada em <b>${RB.em?new Date(RB.em).toLocaleString("pt-BR",{dateStyle:"short",timeStyle:"short"}):"–"}</b>${prox?` · próxima atualização <b>${prox.toLocaleDateString("pt-BR")}</b>`:""}`;}
   if(rtView==="geral"){rtFiltros();rtDash();rtGeral();}else if((rtView==="tss"||rtView==="tse")){rtFiltros();rtPorTss();}else if(rtView==="busca")rtBuscar();else rtCarteira();}
-var rtOrd="az",rtMinV=0;
+var rtOrd="az",rtMinV=0,rtMinS=new Set();
 function rtTselFill(){const sel=$("rtTsel");if(!sel||!RB)return;const TSE=rtView==="tse";const C=rtCalc();const cnt=new Map();for(const r of RB.R){const k=TSE?r[9]:r[1];cnt.set(k,(cnt.get(k)||0)+1);}
   const nm=[...cnt.keys()].map(i=>TSE?RB.D.r[i]:RB.D.t[i]).filter(Boolean);const U2=[...new Set(nm)].sort((a,b)=>a.localeCompare(b,"pt-BR"));
   sel.innerHTML=`<option value="">Todos</option>`+U2.map(v=>`<option value="${esc(v)}">${esc(v.charAt(0)+v.slice(1).toLowerCase())}</option>`).join("");sel.value=U2.includes(rtTssSel)?rtTssSel:"";}
@@ -3874,7 +3886,7 @@ function rtPorTss0(){const TSE=rtView==="tse";const dK=r=>TSE?r[9]:r[1];const dN
    $("rtTctl").innerHTML=`<div class="tsp"><label class="tsp-b"><span>${TSE?"Resultado":"Serviço"}</span><select id="rtTsel"><option value="">Todos</option>${allN.map(v=>`<option value="${esc(v)}"${rtTssSel===v?" selected":""}>${esc(capS(v))}</option>`).join("")}</select></label>
      <label class="tsp-b"><span>Ano</span><select id="rtTano"></select></label>
      <label class="tsp-b"><span>Mês</span><select id="rtTmes"></select></label>
-     <label class="tsp-b"><span>Vezes</span><select id="rtTmin2">${vz.map(([k,l])=>`<option value="${k}"${String(vSel)===String(k)?" selected":""}>${l}</option>`).join("")}</select></label></div>`;
+     ${vzPill("T",rtMinS)}</div>`;
    {const sel=$("rtTano");const an=rtPerAno(rtPer);if(sel){sel.innerHTML=`<option value="">Todos</option>`+rtAnos().map(y=>`<option value="${y}">${y}</option>`).join("");sel.value=an;}
     const sm=$("rtTmes");if(sm){sm.innerHTML=mesOpts(an,rtPer);sm.disabled=!an;}}}
   const MINV=()=>Math.max(String(($("rtTend")||{}).value||"").trim().length>=3?1:2,rtMinV);
@@ -3891,7 +3903,7 @@ function rtPorTss0(){const TSE=rtView==="tse";const dK=r=>TSE?r[9]:r[1];const dN
       for(const r of L0){if(!okP(r))continue;if(rtModo==="exec"&&C.ale[r[9]])continue;if(rtTssSel&&!U(dN0(dK(r))).includes(U(rtTssSel)))continue;if(J&&(r[12]<J[0]||r[12]>J[1]))continue;
         let x=T.get(dK(r));if(!x){x={nome:dN0(dK(r)),n:0,E:new Map()};T.set(dK(r),x);}x.n++;let a=x.E.get(k);if(!a){a={e,n,b:D.b[r[5]]||"",L:[]};x.E.set(k,a);}a.L.push(r);nEnd.add(k);}}
     const cap=v=>v?v.charAt(0)+v.slice(1).toLowerCase():"";const sc=e=>{if(e===qk||e==="RUA "+qk||e==="AVENIDA "+qk)return 0;const W=" "+e.replace(/[^A-Z0-9]+/g," ")+" ";return toks.every(t=>W.includes(" "+t+" "))?1:2;};
-    for(const x of T.values()){for(const [k,a] of [...x.E])if(!vOk(a.L.length,rtMinV))x.E.delete(k);x.n=[...x.E.values()].reduce((s,a)=>s+a.L.length,0);}
+    for(const x of T.values()){for(const [k,a] of [...x.E])if(!vOk(a.L.length,rtMinS))x.E.delete(k);x.n=[...x.E.values()].reduce((s,a)=>s+a.L.length,0);}
     const L=ordL([...T.values()].filter(x=>x.n),x=>x.n,x=>x.E.size);const tot=L.reduce((s,x)=>s+x.n,0);
     $("rtTres").innerHTML=`<div class="tsq-r"><div class="tsq-big"><b>${nf(tot)}</b><span>${tot===1?"vez":"vezes"}</span></div><div class="tsq-d"><b>${rtTssSel?esc(cap(L.length===1?L[0].nome:rtTssSel)):"Todos os serviços"}</b><span>${porOS?"OS "+esc(osQ)+" · "+esc([...nEnd].map(k=>k.split("|").slice(0,2).join(", ")).join(" / ")):esc($("rtTend").value.trim().toUpperCase())} · ${nf(nEnd.size)} ${nEnd.size===1?"endereço encontrado":"endereços encontrados"}</span></div></div>`;
     // visão por número: a rua inteira em ordem de numeração
@@ -3914,7 +3926,7 @@ function rtPorTss0(){const TSE=rtView==="tse";const dK=r=>TSE?r[9]:r[1];const dN
   if(!TSE){for(const o of F.out){const x=tg(o.g.L[0][1]);x.ev+=o.ev;x.G.push(o);}}
   else{EVT=0;const ends=new Set();for(const [k,L0] of rtIndice()){const M=new Map();for(const r of L0){if(!okP(r))continue;if(rtModo==="exec"&&C.ale[r[9]])continue;if(rtTssSel&&!U(dN0(dK(r))).includes(U(rtTssSel)))continue;if(J&&(r[12]<J[0]||r[12]>J[1]))continue;if(!M.has(r[9]))M.set(r[9],[]);M.get(r[9]).push(r);}
       for(const [ri,rows] of M){if(rows.length<2)continue;rows.sort((a,b)=>a[12]-b[12]);const o={g:{L:rows},ev:rows.length-1};const x=tg(ri);x.ev+=o.ev;x.G.push(o);EVT+=o.ev;ends.add(k);}}NEND=ends.size;}
-  for(const x of T.values()){x.G=x.G.filter(o=>vOk(o.g.L.length-1,rtMinV));x.ev=x.G.reduce((s,o)=>s+o.ev,0);}EVT=[...T.values()].reduce((s,x)=>s+x.ev,0);
+  for(const x of T.values()){x.G=x.G.filter(o=>vOk(o.g.L.length-1,rtMinS));x.ev=x.G.reduce((s,o)=>s+o.ev,0);}EVT=[...T.values()].reduce((s,x)=>s+x.ev,0);
   const L=ordL([...T.values()].filter(x=>x.ev),x=>x.ev,x=>x.G.length);const mx=Math.max(1,...L.map(x=>x.ev));
   const cap=v=>v?v.charAt(0)+v.slice(1).toLowerCase():"";
   $("rtTnota").textContent=`${nf(EVT)} ${EVT===1?"retrabalho":"retrabalhos"} em ${nf(L.length)} ${TSE?(L.length===1?"resultado":"resultados"):(L.length===1?"serviço":"serviços")}${rtPerTxt(rtPer)?" em "+rtPerTxt(rtPer):J?" no período":""} · clique no ${TSE?"resultado":"serviço"} para ver os endereços`;
@@ -4091,7 +4103,7 @@ function rtCarteira(){const D=RB.D;
   const fpS=x=>poloSel==="Todos"||x.p===poloSel;
   const ca=snap?{length:poloSel==="Todos"?snap.n:(snap.np||{})[poloSel]||0}:ultF().ca.filter(r=>fp(r));const itens=[];
   const anoJ=rtPerJ(rtCano);
-  const fH=h=>{if(rtCano==="90")h=h.filter(z=>z[12]>=lim90);if(anoJ)h=h.filter(z=>z[12]>=anoJ[0]&&z[12]<=anoJ[1]);return h.length&&vOk(h.length,rtCmin)?h:[];};
+  const fH=h=>{if(rtCano==="90")h=h.filter(z=>z[12]>=lim90);if(anoJ)h=h.filter(z=>z[12]>=anoJ[0]&&z[12]<=anoJ[1]);return h.length&&vOk(h.length,rtCminS)?h:[];};
   if(snap){for(const x of snap.it){if(!fpS(x))continue;let h=fH(x.h.filter(a=>!a[2]).map(a=>{const z=[];z[0]=a[0];z[12]=a[1];z.al=a[2];z.rs=a[3];if(a[4])z.cart=1;return z;}));if(h.length)itens.push({r:x,h});}}
   else for(const r of ca){let h=fH(rtHistCart(r));if(h.length)itens.push({r,h});}
   itens.sort((a,b)=>(b.r.fora-a.r.fora)||b.h.length-a.h.length||b.h[b.h.length-1][12]-a.h[a.h.length-1][12]);
@@ -4108,7 +4120,7 @@ function rtCarteira(){const D=RB.D;
     <label class="tsp-b"><span>Serviço</span><select id="rtCsrv"><option value="">Todos (${nf(itens.length)})</option>${allT.map(k=>`<option value="${esc(k)}"${rtCfil===k?" selected":""}>${esc(cap(k))} (${nf(tT.get(k))})</option>`).join("")}</select></label>
     <label class="tsp-b"><span>Ano</span><select id="rtCano"><option value="">Todos</option><option value="90"${rtCano==="90"?" selected":""}>90 dias</option>${rtAnos().map(y=>`<option value="a${y}"${rtPerAno(rtCano)===y?" selected":""}>${y}</option>`).join("")}</select></label>
     <label class="tsp-b"><span>Mês</span><select id="rtCmes"${rtPerAno(rtCano)?"":" disabled"}>${mesOpts(rtPerAno(rtCano),rtCano)}</select></label>
-    <label class="tsp-b"><span>Vezes</span><select id="rtCmin">${[[0,"Todas"],[1,"1x"],[2,"2x"],[3,"3x"],[4,"4x ou mais"]].map(([k,l])=>`<option value="${k}"${rtCmin===k?" selected":""}>${l}</option>`).join("")}</select></label>`;}
+    ${vzPill("C",rtCminS)}`;}
   $("rtCkpi").innerHTML=
     rkCard({l:"Risco de retrabalho",c:"#F08C00",v:nf(itens.length),vc:"#E07F00",s:`OS de ${nf(ca.length)} na carteira${snap?" de "+dm(snap.dc):""}`,g:rkRing([[pc,"#F08C00"]],ca.length?Math.round(pc*100)+"%":""),attr:` data-rcf=""`,tip:"OS da carteira em endereço onde o mesmo serviço já foi feito · clique para ver todas"})+
     (top?rkCard({l:"Serviço que mais aparece",c:"#0096D6",v:`${nf(top[1])} <small>OS</small>`,s:`<span class="k2-srv">${esc(cap(top[0]))}</span>`,g:rkRing([[itens.length?top[1]/itens.length:0,"#0096D6"]],itens.length?Math.round(top[1]*100/itens.length)+"%":""),sel:rtCfil===top[0],attr:` data-rcf="${esc(top[0])}"`,tip:"clique para ver só esse serviço"}):"")+
@@ -4151,10 +4163,10 @@ document.addEventListener("click",e=>{
   const t=e.target.closest("[data-rtt]");if(t&&t.closest("#v-rt")){rtTssSel=(t.dataset.rtt===rtTssSel?"":t.dataset.rtt);renderRt();return;}
   const k=e.target.closest(".rx-row .rtl1");if(k){const key=k.parentElement.dataset.rtk;rtAbertos.has(key)?rtAbertos.delete(key):rtAbertos.add(key);renderRt();}});
 document.addEventListener("change",e=>{const id=e.target&&e.target.id;if(id==="rtCsel"){rtCdc=e.target.value;rtCfil="";renderRt();}else if(id==="rtCsrv"){rtCfil=e.target.value;rtCarteira();}else if(id==="rtCano"){rtCano=e.target.value;rtCarteira();}else if(id==="rtCmes"){const v=e.target.value;rtCano=v?"m"+v:(rtPerAno(rtCano)?"a"+rtPerAno(rtCano):"");rtCarteira();}else if(id==="rtCmin"){rtCmin=Number(e.target.value);rtCarteira();}});
-document.addEventListener("click",e=>{if(e.target&&e.target.id==="rtClimpa"){rtCfil="";rtCano="";rtCmin=0;$("rtCq").value="";rtCarteira();}});
+document.addEventListener("click",e=>{if(e.target&&e.target.id==="rtClimpa"){rtCfil="";rtCano="";rtCmin=0;rtCminS.clear();$("rtCq").value="";rtCarteira();}});
 {let te=null;$("rtTend").addEventListener("input",()=>{clearTimeout(te);te=setTimeout(()=>{if((rtView==="tss"||rtView==="tse"))rtPorTss();},250);});
  $("rtTs2").addEventListener("input",e=>{clearTimeout(te);te=setTimeout(()=>{rtTssSel=e.target.value.trim();$("rtTss").value=rtTssSel;rtPorTss();},300);});
- $("rtTlimpa").onclick=()=>{$("rtTend").value="";$("rtTs2").value="";rtTssSel="";$("rtTss").value="";rtPorTss();};}
+ $("rtTlimpa").onclick=()=>{rtMinS.clear();$("rtTend").value="";$("rtTs2").value="";rtTssSel="";$("rtTss").value="";rtPorTss();};}
 {let tt=null;$("rtTss").addEventListener("input",e=>{clearTimeout(tt);tt=setTimeout(()=>{rtTssSel=e.target.value.trim();renderRt();},300);});}
 $("rtPde").onchange=()=>{rtCache=null;renderRt();};
 {let tb=null;$("rtBusca").addEventListener("input",()=>{clearTimeout(tb);tb=setTimeout(()=>{if(RB&&RB.R&&RB.R.length)rtBuscar();},250);});}
